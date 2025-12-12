@@ -1,0 +1,103 @@
+﻿@model List<Webgiasu.Models.User>
+@{
+    ViewData["Title"] = "Tìm gia sư";
+    Layout = "_StudentLayout";
+}
+
+<div>
+    <div class="page-header mb-4">
+        <h2 class="fw-bold mb-1">
+            <i class="bi bi-search text-primary"></i> Tìm gia sư
+        </h2>
+        <p class="text-muted mb-0">Khám phá và kết nối với gia sư phù hợp</p>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" placeholder="Tìm theo tên gia sư...">
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select">
+                                <option>Tất cả môn học</option>
+                                <option>Toán</option>
+                                <option>Vật lý</option>
+                                <option>Hóa học</option>
+                                <option>Tiếng Anh</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select">
+                                <option>Đánh giá: Tất cả</option>
+                                <option>5 sao</option>
+                                <option>4 sao trở lên</option>
+                                <option>3 sao trở lên</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-primary w-100">
+                                <i class="bi bi-search"></i> Tìm kiếm
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        @if (Model != null && Model.Any())
+        {
+        foreach (var tutor in Model.Where(u => u.IsApproved))
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <img src="https://ui-avatars.com/api/?name=@tutor.FullName&size=100&background=667eea&color=fff"
+                                 class="rounded-circle mb-3" width="100" height="100" alt="@tutor.FullName">
+
+                            <h5 class="fw-bold mb-1">@tutor.FullName</h5>
+                            <p class="text-muted small mb-3">@tutor.Email</p>
+
+                            <div class="mb-3">
+                                <span class="badge bg-primary me-1">Toán</span>
+                                <span class="badge bg-success me-1">Vật lý</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-half text-warning"></i>
+                                <span class="text-muted ms-2">(4.5)</span>
+                            </div>
+
+                            <div class="text-muted small mb-3">
+                                <i class="bi bi-check-circle text-success"></i>
+                                Đã giải <strong>15 bài</strong>
+                            </div>
+
+                            <button class="btn btn-primary btn-sm">
+                                <i class="bi bi-person-plus"></i> Xem hồ sơ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="bi bi-search" style="font-size: 5rem; color: #dee2e6;"></i>
+                    <h4 class="mt-3 text-muted">Không tìm thấy gia sư</h4>
+                    <p class="text-muted">Thử thay đổi điều kiện tìm kiếm</p>
+                </div>
+            </div>
+        }
+    </div>
+</div>

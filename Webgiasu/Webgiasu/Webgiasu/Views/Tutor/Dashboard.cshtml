@@ -1,0 +1,443 @@
+﻿@model Webgiasu.Models.ViewModels.TutorDashboardViewModel
+@{
+    ViewData["Title"] = "Trang chủ - Gia sư";
+    Layout = "~/Views/Shared/_TutorLayout.cshtml";
+    var avgRating = ViewBag.AverageRating ?? 0.0;
+    var totalRatings = ViewBag.TotalRatings ?? 0;
+}
+
+<!-- Page Header -->
+<div class="row mb-4 fade-in">
+    <div class="col">
+        <div class="d-flex align-items-center gap-3">
+            <div class="bg-gradient rounded-circle p-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <i class="bi bi-mortarboard text-white" style="font-size: 2rem;"></i>
+            </div>
+            <div>
+                <h2 class="fw-bold mb-1">Trang chủ Gia sư</h2>
+                <p class="text-muted mb-0">
+                    <i class="bi bi-calendar3"></i> @DateTime.Now.ToString("dddd, dd MMMM yyyy") 
+                    <span class="mx-2">•</span>
+                    <i class="bi bi-clock"></i> <span class="clock">@DateTime.Now.ToString("HH:mm")</span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-auto">
+        <a asp-action="AvailableProblems" class="btn btn-success btn-lg shadow-sm">
+            <i class="bi bi-search"></i> Tìm bài toán mới
+        </a>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-3 col-md-6">
+        <div class="card border-0 shadow-sm h-100 hover-lift">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted mb-2 small text-uppercase fw-semibold">Bài toán chờ giải</p>
+                        <h2 class="fw-bold mb-0 text-primary">@Model.AvailableProblems.Count</h2>
+                        <p class="text-muted small mb-0 mt-2">
+                            <i class="bi bi-arrow-up text-success"></i> Cơ hội mới
+                        </p>
+                    </div>
+                    <div class="bg-primary bg-opacity-10 p-3 rounded-circle">
+                        <i class="bi bi-list-task text-primary" style="font-size: 1.75rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card border-0 shadow-sm h-100 hover-lift">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted mb-2 small text-uppercase fw-semibold">Bài đã nhận</p>
+                        <h2 class="fw-bold mb-0 text-warning">@Model.MyAssignedProblems.Count</h2>
+                        <p class="text-muted small mb-0 mt-2">
+                            <i class="bi bi-clock-history"></i> Đang thực hiện
+                        </p>
+                    </div>
+                    <div class="bg-warning bg-opacity-10 p-3 rounded-circle">
+                        <i class="bi bi-briefcase text-warning" style="font-size: 1.75rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card border-0 shadow-sm h-100 hover-lift">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted mb-2 small text-uppercase fw-semibold">Đã hoàn thành</p>
+                        <h2 class="fw-bold mb-0 text-success">@Model.MySolutions.Count</h2>
+                        <p class="text-muted small mb-0 mt-2">
+                            <i class="bi bi-check-circle"></i> Thành công
+                        </p>
+                    </div>
+                    <div class="bg-success bg-opacity-10 p-3 rounded-circle">
+                        <i class="bi bi-check-circle text-success" style="font-size: 1.75rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card border-0 shadow-sm h-100 hover-lift">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted mb-2 small text-uppercase fw-semibold">Thu nhập</p>
+                        <h3 class="fw-bold mb-0 text-info">@Model.TotalEarnings.ToString("N0") đ</h3>
+                        <p class="text-muted small mb-0 mt-2">
+                            <i class="bi bi-graph-up"></i> Tháng này
+                        </p>
+                    </div>
+                    <div class="bg-info bg-opacity-10 p-3 rounded-circle">
+                        <i class="bi bi-cash-stack text-info" style="font-size: 1.75rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Rating Card -->
+@if (totalRatings > 0)
+{
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #fff9e6 0%, #fff3cc 100%);">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-3 text-center">
+                            <div class="position-relative d-inline-block">
+                                <i class="bi bi-star-fill text-warning" style="font-size: 4rem;"></i>
+                                <div class="position-absolute top-50 start-50 translate-middle">
+                                    <h2 class="fw-bold text-warning mb-0" style="font-size: 1.5rem; margin-top: 0.5rem;">
+                                        @avgRating.ToString("F1")
+                                    </h2>
+                                </div>
+                            </div>
+                            <p class="text-muted mb-0 mt-2 small">Trên 5.0</p>
+                            <p class="text-muted mb-0 small fw-semibold">Đánh giá trung bình</p>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= Math.Floor(avgRating))
+                                    {
+                                        <i class="bi bi-star-fill text-warning fs-3"></i>
+                                    }
+                                    else if (i - 0.5 <= avgRating)
+                                    {
+                                        <i class="bi bi-star-half text-warning fs-3"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-star text-muted fs-3"></i>
+                                    }
+                                }
+                            </div>
+                            <p class="mb-2 fw-semibold">
+                                <i class="bi bi-people-fill text-primary"></i> 
+                                <strong class="text-primary">@totalRatings</strong> học sinh đã đánh giá
+                            </p>
+                            @if (avgRating >= 4.5)
+                            {
+                                <span class="badge bg-success px-3 py-2">
+                                    <i class="bi bi-award-fill"></i> Gia sư xuất sắc!
+                                </span>
+                            }
+                            else if (avgRating >= 3.5)
+                            {
+                                <span class="badge bg-info px-3 py-2">
+                                    <i class="bi bi-hand-thumbs-up-fill"></i> Gia sư tốt!
+                                </span>
+                            }
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <a asp-action="MyRatings" class="btn btn-warning btn-lg shadow-sm">
+                                <i class="bi bi-star"></i> Xem chi tiết
+                            </a>
+                            <p class="text-muted small mb-0 mt-2">Xem tất cả đánh giá</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Main Content Grid -->
+<div class="row g-4">
+    <!-- Available Problems -->
+    <div class="col-lg-6 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header py-3" style="background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-1 fw-bold text-white">
+                            <i class="bi bi-list-task me-2"></i>Bài toán chờ giải
+                        </h5>
+                        <p class="text-white-50 small mb-0">Cơ hội kiếm tiền mới</p>
+                    </div>
+                    <span class="badge bg-white text-success fs-6">@Model.AvailableProblems.Count bài</span>
+                </div>
+            </div>
+            <div class="card-body pt-0">
+                @if (Model.AvailableProblems.Any())
+                {
+                    <div class="list-group list-group-flush">
+                        @foreach (var problem in Model.AvailableProblems.Take(5))
+                        {
+                            <div class="list-group-item border-0 px-0 py-3 hover-bg">
+                                <div class="d-flex w-100 justify-content-between align-items-start mb-2">
+                                    <h6 class="mb-0 fw-semibold text-dark">@problem.Title</h6>
+                                    <span class="badge bg-success px-3 py-2 fw-bold">@problem.Price.ToString("N0") đ</span>
+                                </div>
+                                <p class="mb-2 text-muted small">@problem.Description.Substring(0, Math.Min(80, problem.Description.Length))...</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge bg-secondary me-1">@problem.Type</span>
+                                        @if (problem.Difficulty == Webgiasu.Models.DifficultyLevel.Easy)
+                                        {
+                                            <span class="badge bg-success">Dễ</span>
+                                        }
+                                        else if (problem.Difficulty == Webgiasu.Models.DifficultyLevel.Medium)
+                                        {
+                                            <span class="badge bg-warning text-dark">Trung bình</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Khó</span>
+                                        }
+                                    </div>
+                                    <a asp-action="ProblemDetails" asp-route-id="@problem.Id" class="btn btn-sm btn-outline-success">
+                                        <i class="bi bi-eye"></i> Xem chi tiết
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    @if (Model.AvailableProblems.Count > 5)
+                    {
+                        <div class="text-center mt-3">
+                            <a asp-action="AvailableProblems" class="btn btn-outline-success">
+                                Xem tất cả (@Model.AvailableProblems.Count bài)
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <div class="mb-3">
+                            <i class="bi bi-inbox text-muted" style="font-size: 4rem; opacity: 0.3;"></i>
+                        </div>
+                        <h6 class="text-muted">Chưa có bài toán nào</h6>
+                        <p class="text-muted small">Hãy quay lại sau để tìm cơ hội mới</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- My Assigned Problems -->
+    <div class="col-lg-6 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header py-3" style="background: linear-gradient(135deg, #FF9800 0%, #FFC107 100%);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-1 fw-bold text-white">
+                            <i class="bi bi-briefcase me-2"></i>Bài toán đang giải
+                        </h5>
+                        <p class="text-white-50 small mb-0">Nhiệm vụ hiện tại của bạn</p>
+                    </div>
+                    <span class="badge bg-white text-warning fs-6">@Model.MyAssignedProblems.Count bài</span>
+                </div>
+            </div>
+            <div class="card-body pt-0">
+                @if (Model.MyAssignedProblems.Any())
+                {
+                    <div class="list-group list-group-flush">
+                        @foreach (var problem in Model.MyAssignedProblems.Take(5))
+                        {
+                            var solution = Model.MySolutions.FirstOrDefault(s => s.ProblemId == problem.Id);
+                            <div class="list-group-item border-0 px-0 py-3 hover-bg">
+                                <div class="d-flex w-100 justify-content-between align-items-start mb-2">
+                                    <h6 class="mb-0 fw-semibold text-dark">@problem.Title</h6>
+                                    @if (problem.Status == Webgiasu.Models.ProblemStatus.Solved)
+                                    {
+                                        <span class="badge bg-success px-2 py-1">
+                                            <i class="bi bi-check-circle"></i> Đã gửi
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark px-2 py-1">
+                                            <i class="bi bi-clock"></i> Đang giải
+                                        </span>
+                                    }
+                                </div>
+                                <p class="mb-2 text-muted small">
+                                    <i class="bi bi-calendar-event"></i> Deadline: 
+                                    <strong>@problem.Deadline.ToString("dd/MM/yyyy HH:mm")</strong>
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge bg-secondary me-1">@problem.Type</span>
+                                        <span class="text-success fw-bold">@problem.Price.ToString("N0") đ</span>
+                                    </div>
+                                    @if (problem.Status == Webgiasu.Models.ProblemStatus.InProgress)
+                                    {
+                                        <a asp-action="SubmitSolution" asp-route-problemId="@problem.Id" class="btn btn-sm btn-warning">
+                                            <i class="bi bi-send"></i> Gửi lời giải
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        @if (solution?.Rating != null)
+                                        {
+                                            <span class="text-warning fw-semibold">
+                                                <i class="bi bi-star-fill"></i> @solution.Rating/5
+                                            </span>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    @if (Model.MyAssignedProblems.Count > 5)
+                    {
+                        <div class="text-center mt-3">
+                            <a asp-action="MyProblems" class="btn btn-outline-warning">
+                                Xem tất cả (@Model.MyAssignedProblems.Count bài)
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <div class="mb-3">
+                            <i class="bi bi-briefcase text-muted" style="font-size: 4rem; opacity: 0.3;"></i>
+                        </div>
+                        <h6 class="text-muted">Bạn chưa nhận bài nào</h6>
+                        <p class="text-muted small mb-3">Hãy tìm và nhận bài toán mới</p>
+                        <a asp-action="AvailableProblems" class="btn btn-success">
+                            <i class="bi bi-search"></i> Tìm bài toán
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics -->
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header py-3" style="background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);">
+                <h5 class="mb-0 fw-bold text-white">
+                    <i class="bi bi-bar-chart me-2"></i>Thống kê tổng quan
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center g-4">
+                    <div class="col-md-3">
+                        <div class="p-3 rounded hover-lift">
+                            <div class="mb-3">
+                                <i class="bi bi-check2-circle text-primary" style="font-size: 3rem;"></i>
+                            </div>
+                            <h3 class="fw-bold text-primary mb-1">@Model.MySolutions.Count</h3>
+                            <p class="text-muted mb-0 small">Tổng bài đã giải</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3 rounded hover-lift">
+                            <div class="mb-3">
+                                <i class="bi bi-star text-success" style="font-size: 3rem;"></i>
+                            </div>
+                            <h3 class="fw-bold text-success mb-1">@Model.MySolutions.Count(s => s.Rating >= 4)</h3>
+                            <p class="text-muted mb-0 small">Đánh giá tốt (≥4⭐)</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3 rounded hover-lift">
+                            <div class="mb-3">
+                                <i class="bi bi-hourglass-split text-warning" style="font-size: 3rem;"></i>
+                            </div>
+                            <h3 class="fw-bold text-warning mb-1">@Model.MyAssignedProblems.Count(p => p.Status == Webgiasu.Models.ProblemStatus.InProgress)</h3>
+                            <p class="text-muted mb-0 small">Đang thực hiện</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3 rounded hover-lift">
+                            <div class="mb-3">
+                                <i class="bi bi-cash-coin text-info" style="font-size: 3rem;"></i>
+                            </div>
+                            <h3 class="fw-bold text-info mb-1">@Model.TotalEarnings.ToString("N0") đ</h3>
+                            <p class="text-muted mb-0 small">Tổng thu nhập</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        .hover-bg:hover {
+            background: #f8f9fa;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .list-group-item {
+            transition: all 0.3s ease;
+        }
+
+        .badge {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .card {
+            overflow: hidden;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+}

@@ -1,0 +1,244 @@
+﻿@{
+    ViewData["Title"] = "Nhật ký hệ thống";
+    Layout = "_AdminLayout";
+}
+
+<div class="page-header mb-4">
+<div class="d-flex justify-content-between align-items-center">
+    <div>
+        <h2 class="fw-bold mb-1">
+            <i class="bi bi-clock-history text-danger"></i> Nhật ký hệ thống
+        </h2>
+        <p class="text-muted mb-0">Theo dõi hoạt động và sự kiện hệ thống</p>
+    </div>
+        <div class="d-flex gap-2">
+            <select class="form-select">
+                <option>Hôm nay</option>
+                <option>7 ngày qua</option>
+                <option>30 ngày qua</option>
+                <option>Tùy chỉnh</option>
+            </select>
+            <button class="btn btn-outline-danger">
+                <i class="bi bi-trash"></i> Xóa log cũ
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" placeholder="Tìm kiếm trong nhật ký...">
+                    <select class="form-select" style="max-width: 200px;">
+                        <option>Tất cả mức độ</option>
+                        <option>Info</option>
+                        <option>Warning</option>
+                        <option>Error</option>
+                        <option>Critical</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th style="width: 140px;">Thời gian</th>
+                        <th style="width: 100px;">Mức độ</th>
+                        <th>Sự kiện</th>
+                        <th style="width: 150px;">Người dùng</th>
+                        <th style="width: 120px;">IP Address</th>
+                        <th style="width: 80px;">Chi tiết</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="text-muted small">15:45:23<br>25/12/2024</td>
+                        <td><span class="badge bg-info">INFO</span></td>
+                        <td>
+                            <i class="bi bi-person-check text-success me-2"></i>
+                            Đăng nhập thành công
+                        </td>
+                        <td>Admin</td>
+                        <td><code>192.168.1.1</code></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted small">15:42:11<br>25/12/2024</td>
+                        <td><span class="badge bg-success">SUCCESS</span></td>
+                        <td>
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            Duyệt gia sư mới: Nguyễn Văn A
+                        </td>
+                        <td>Admin</td>
+                        <td><code>192.168.1.1</code></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted small">15:38:55<br>25/12/2024</td>
+                        <td><span class="badge bg-warning">WARNING</span></td>
+                        <td>
+                            <i class="bi bi-exclamation-triangle text-warning me-2"></i>
+                            Đăng nhập thất bại - Sai mật khẩu
+                        </td>
+                        <td>user123</td>
+                        <td><code>192.168.1.5</code></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted small">15:35:42<br>25/12/2024</td>
+                        <td><span class="badge bg-danger">ERROR</span></td>
+                        <td>
+                            <i class="bi bi-x-circle text-danger me-2"></i>
+                            Lỗi xử lý thanh toán - Transaction #TX001
+                        </td>
+                        <td>System</td>
+                        <td><code>-</code></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted small">15:30:15<br>25/12/2024</td>
+                        <td><span class="badge bg-info">INFO</span></td>
+                        <td>
+                            <i class="bi bi-file-text text-info me-2"></i>
+                            Tạo bài toán mới: #P045
+                        </td>
+                        <td>student01</td>
+                        <td><code>192.168.1.10</code></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted small">15:28:03<br>25/12/2024</td>
+                        <td><span class="badge bg-success">SUCCESS</span></td>
+                        <td>
+                            <i class="bi bi-cash text-success me-2"></i>
+                            Thanh toán thành công - Transaction #TX002
+                        </td>
+                        <td>student02</td>
+                        <td><code>192.168.1.12</code></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted small">15:25:30<br>25/12/2024</td>
+                        <td><span class="badge bg-info">INFO</span></td>
+                        <td>
+                            <i class="bi bi-send text-info me-2"></i>
+                            Gửi lời giải cho bài toán #P044
+                        </td>
+                        <td>tutor01</td>
+                        <td><code>192.168.1.20</code></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted small">15:20:18<br>25/12/2024</td>
+                        <td><span class="badge bg-warning">WARNING</span></td>
+                        <td>
+                            <i class="bi bi-shield-exclamation text-warning me-2"></i>
+                            Phát hiện truy cập bất thường
+                        </td>
+                        <td>unknown</td>
+                        <td><code>45.123.45.67</code></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted small">15:15:07<br>25/12/2024</td>
+                        <td><span class="badge bg-dark">CRITICAL</span></td>
+                        <td>
+                            <i class="bi bi-exclamation-octagon text-danger me-2"></i>
+                            Lỗi kết nối database - Retry sau 3s
+                        </td>
+                        <td>System</td>
+                        <td><code>-</code></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted small">15:10:45<br>25/12/2024</td>
+                        <td><span class="badge bg-success">SUCCESS</span></td>
+                        <td>
+                            <i class="bi bi-gear text-success me-2"></i>
+                            Cập nhật cài đặt hệ thống
+                        </td>
+                        <td>Admin</td>
+                        <td><code>192.168.1.1</code></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <nav class="mt-3">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled"><a class="page-link" href="#">Trước</a></li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">...</a></li>
+                <li class="page-item"><a class="page-link" href="#">10</a></li>
+                <li class="page-item"><a class="page-link" href="#">Sau</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card border-0 shadow-sm bg-light">
+            <div class="card-body">
+                <h6 class="fw-bold mb-2"><i class="bi bi-info-circle text-primary"></i> Ghi chú</h6>
+                <ul class="mb-0 small">
+                    <li>Nhật ký được lưu trữ trong 90 ngày</li>
+                    <li>Các sự kiện Critical sẽ được gửi email ngay lập tức</li>
+                    <li>Có thể xuất nhật ký dưới dạng CSV hoặc JSON</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

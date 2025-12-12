@@ -1,0 +1,245 @@
+﻿@{
+    ViewData["Title"] = "Cài đặt hệ thống";
+    Layout = "_AdminLayout";
+}
+
+<style>
+    /* Settings menu active styling (màu đỏ) */
+    .settings-menu .list-group-item {
+        transition: all 0.18s ease;
+        cursor: pointer;
+    }
+
+    .settings-menu .list-group-item.active {
+        background-color: #dc3545 !important; /* bootstrap danger */
+        border-color: #dc3545 !important;
+        color: #fff !important;
+        box-shadow: 0 8px 20px rgba(220,53,69,0.18);
+        transform: translateY(-1px);
+    }
+
+    .settings-menu .list-group-item.active i {
+        color: #fff;
+    }
+
+    /* Hover effect to indicate interactivity */
+    .settings-menu .list-group-item:hover {
+        background-color: rgba(220,53,69,0.06);
+        color: #dc3545;
+    }
+</style>
+
+<div class="page-header mb-4" style="position : fixed">
+    <h2 class="fw-bold mb-1">
+        <i class="bi bi-gear text-danger"></i> Cài đặt hệ thống
+    </h2>
+    <p class="text-muted mb-0">Quản lý cấu hình và thiết lập hệ thống</p>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="list-group sticky-top settings-menu" style="top: 80px;">
+            <a href="#general" class="list-group-item list-group-item-action active">
+                <i class="bi bi-gear me-2"></i> Chung
+            </a>
+            <a href="#security" class="list-group-item list-group-item-action">
+                <i class="bi bi-shield-check me-2"></i> Bảo mật
+            </a>
+            <a href="#payment" class="list-group-item list-group-item-action">
+                <i class="bi bi-credit-card me-2"></i> Thanh toán
+            </a>
+            <a href="#email" class="list-group-item list-group-item-action">
+                <i class="bi bi-envelope me-2"></i> Email
+            </a>
+            <a href="#notification" class="list-group-item list-group-item-action">
+                <i class="bi bi-bell me-2"></i> Thông báo
+            </a>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        <div id="general" class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom">
+                <h5 class="mb-0" style="color : red">Cài đặt chung</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Tên hệ thống</label>
+                    <input type="text" class="form-control" value="Gia Sư Online">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Email liên hệ</label>
+                    <input type="email" class="form-control" value="support@giasu.com">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Số điện thoại</label>
+                    <input type="text" class="form-control" value="1900 xxxx">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Chế độ bảo trì</label>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="maintenanceMode">
+                        <label class="form-check-label" for="maintenanceMode">Bật chế độ bảo trì</label>
+                    </div>
+                </div>
+                <button class="btn btn-primary">
+                    <i class="bi bi-check"></i> Lưu thay đổi
+                </button>
+            </div>
+        </div>
+
+        <div id="security" class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom">
+                <h5 class="mb-0" style="color : red" >Bảo mật</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Thời gian timeout session (phút)</label>
+                    <input type="number" class="form-control" value="30">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Số lần đăng nhập sai tối đa</label>
+                    <input type="number" class="form-control" value="5">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Yêu cầu mật khẩu mạnh</label>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="strongPassword" checked>
+                        <label class="form-check-label" for="strongPassword">Bắt buộc mật khẩu phức tạp</label>
+                    </div>
+                </div>
+                <button class="btn btn-primary">
+                    <i class="bi bi-check"></i> Lưu thay đổi
+                </button>
+            </div>
+        </div>
+
+        <div id="payment" class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom">
+                <h5 class="mb-0" style="color : red">Cấu hình thanh toán</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Phí hệ thống (%)</label>
+                    <input type="number" class="form-control" value="10">
+                    <small class="text-muted">Phần trăm hoa hồng hệ thống thu từ mỗi giao dịch</small>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Giá tối thiểu (VNĐ)</label>
+                    <input type="number" class="form-control" value="50000">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Cổng thanh toán</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="momo" checked>
+                        <label class="form-check-label" for="momo">MoMo</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="vnpay" checked>
+                        <label class="form-check-label" for="vnpay">VNPay</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="zalopay">
+                        <label class="form-check-label" for="zalopay">ZaloPay</label>
+                    </div>
+                </div>
+                <button class="btn btn-primary">
+                    <i class="bi bi-check"></i> Lưu thay đổi
+                </button>
+            </div>
+        </div>
+
+        <div id="email" class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom">
+                <h5 class="mb-0" style="color : red">Cấu hình Email</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">SMTP Server</label>
+                    <input type="text" class="form-control" value="smtp.gmail.com">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">SMTP Port</label>
+                    <input type="number" class="form-control" value="587">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Email gửi</label>
+                    <input type="email" class="form-control" value="noreply@giasu.com">
+                </div>
+                <button class="btn btn-primary me-2">
+                    <i class="bi bi-check"></i> Lưu thay đổi
+                </button>
+                <button class="btn btn-outline-secondary">
+                    <i class="bi bi-send"></i> Gửi email test
+                </button>
+            </div>
+        </div>
+
+        <div id="notification" class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom">
+                <h5 class="mb-0" style="color : red">Cấu hình thông báo</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="emailNotif" checked>
+                        <label class="form-check-label" for="emailNotif">Gửi email thông báo</label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="pushNotif" checked>
+                        <label class="form-check-label" for="pushNotif">Push notification</label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="smsNotif">
+                        <label class="form-check-label" for="smsNotif">Gửi SMS (chưa hỗ trợ)</label>
+                    </div>
+                </div>
+                <button class="btn btn-primary">
+                    <i class="bi bi-check"></i> Lưu thay đổi
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function(){
+        // Click handler: khi click một mục, bật class active (màu đỏ)
+        var menuItems = document.querySelectorAll('.settings-menu .list-group-item');
+        menuItems.forEach(function(item){
+            item.addEventListener('click', function(e){
+                // remove active trên tất cả
+                menuItems.forEach(function(i){ i.classList.remove('active'); });
+                // add active cho item hiện tại
+                this.classList.add('active');
+            });
+        });
+
+        // Optional: cập nhật active theo section khi cuộn (intersection observer)
+        var sections = document.querySelectorAll('#general, #security, #payment, #email, #notification');
+        if('IntersectionObserver' in window && sections.length){
+            var observer = new IntersectionObserver(function(entries){
+                entries.forEach(function(entry){
+                    if(entry.isIntersecting){
+                        var id = entry.target.id;
+                        menuItems.forEach(function(a){
+                            var href = a.getAttribute('href') || '';
+                            if(href === '#' + id){
+                                a.classList.add('active');
+                            } else {
+                                a.classList.remove('active');
+                            }
+                        });
+                    }
+                });
+            }, { root: null, threshold: 0.5 });
+
+            sections.forEach(function(s){ observer.observe(s); });
+        }
+    })();
+</script>
+

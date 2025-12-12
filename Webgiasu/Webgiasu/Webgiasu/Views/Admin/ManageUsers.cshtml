@@ -1,0 +1,124 @@
+﻿@model IEnumerable<Webgiasu.Models.User>
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+    Layout = "_AdminLayout";
+}
+
+<!-- Page Header -->
+<div class="row mb-4">
+    <div class="col">
+        <h2 class="fw-bold">
+            <i class="bi bi-people text-danger"></i> Quản lý người dùng
+        </h2>
+        <p class="text-muted">Danh sách tất cả người dùng trong hệ thống</p>
+    </div>
+</div>
+
+<!-- Statistic Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card text-center shadow-sm card-hover">
+            <div class="card-body">
+                <h3 class="mb-0">@Model.Count(u => u.Role == Webgiasu.Models.UserRole.Student)</h3>
+                <p class="text-muted mb-0">Học sinh</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center shadow-sm card-hover">
+            <div class="card-body">
+                <h3 class="mb-0">@Model.Count(u => u.Role == Webgiasu.Models.UserRole.Tutor)</h3>
+                <p class="text-muted mb-0">Gia sư</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center shadow-sm card-hover">
+            <div class="card-body">
+                <h3 class="mb-0">@Model.Count(u => u.Role == Webgiasu.Models.UserRole.Admin)</h3>
+                <p class="text-muted mb-0">Quản trị viên</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Users Table -->
+<div class="card shadow-sm">
+    <div class="card-header py-3" style="background: linear-gradient(135deg, #DC143C 0%, #FF1744 100%);">
+        <h5 class="mb-0 text-white"><i class="bi bi-list-ul me-2"></i>Danh sách người dùng</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Họ tên</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Số điện thoại</th>
+                        <th>Vai trò</th>
+                        <th>Ngày đăng ký</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model.OrderByDescending(u => u.RegisteredDate))
+                    {
+                        <tr>
+                            <td class="fw-bold">#@user.Id</td>
+                            <td>@user.FullName</td>
+                            <td>@user.Username</td>
+                            <td>@user.Email</td>
+                            <td>@user.PhoneNumber</td>
+                            <td>
+                                @if (user.Role == Webgiasu.Models.UserRole.Student)
+                                {
+                                    <span class="badge bg-primary">
+                                        <i class="bi bi-person"></i> Học sinh
+                                    </span>
+                                }
+                                else if (user.Role == Webgiasu.Models.UserRole.Tutor)
+                                {
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-mortarboard"></i> Gia sư
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">
+                                        <i class="bi bi-shield"></i> Admin
+                                    </span>
+                                }
+                            </td>
+                            <td>@user.RegisteredDate.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                @if (user.Role == Webgiasu.Models.UserRole.Tutor)
+                                {
+                                    @if (user.IsApproved)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle"></i> Đã duyệt
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning">
+                                            <i class="bi bi-hourglass-split"></i> Chờ duyệt
+                                        </span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle"></i> Hoạt động
+                                    </span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

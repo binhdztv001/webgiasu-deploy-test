@@ -1,0 +1,126 @@
+﻿@model Webgiasu.Models.ViewModels.SubmitSolutionViewModel
+@{
+    ViewData["Title"] = "Gửi lời giải";
+    Layout = "_TutorLayout";
+    var problem = ViewBag.Problem as Webgiasu.Models.Problem;
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-file-text"></i> Thông tin bài toán</h4>
+            </div>
+            <div class="card-body">
+                <h5>@problem?.Title</h5>
+                <p class="text-muted">@problem?.Description</p>
+                <div class="mb-0">
+                    <span class="badge bg-secondary me-1">@problem?.Type</span>
+                    @if (problem?.Difficulty == Webgiasu.Models.DifficultyLevel.Easy)
+                    {
+                        <span class="badge bg-success me-1">Dễ</span>
+                    }
+                    else if (problem?.Difficulty == Webgiasu.Models.DifficultyLevel.Medium)
+                    {
+                        <span class="badge bg-warning me-1">Trung bình</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger me-1">Khó</span>
+                    }
+                    <span class="badge bg-info">@problem?.Price.ToString("N0") đ</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0"><i class="bi bi-send"></i> Gửi lời giải</h4>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="SubmitSolution" method="post" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="ProblemId" />
+                    
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Lưu ý:</strong> Hãy giải thích chi tiết từng bước để học sinh dễ hiểu
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Content" class="form-label fw-bold">
+                            <i class="bi bi-file-text"></i> Nội dung lời giải <span class="text-danger">*</span>
+                        </label>
+                        <textarea asp-for="Content" class="form-control" rows="15" placeholder="Nhập lời giải chi tiết của bạn...&#10;&#10;VD:&#10;Bước 1: Xác định dữ kiện...&#10;Bước 2: Áp dụng công thức...&#10;Bước 3: Tính toán...&#10;Kết luận: ..." required></textarea>
+                        <small class="text-muted">
+                            <i class="bi bi-lightbulb"></i> 
+                            Nên trình bày rõ ràng, có đánh số thứ tự các bước
+                        </small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="SolutionFile" class="form-label fw-bold">
+                            <i class="bi bi-paperclip"></i> File đính kèm (tùy chọn)
+                        </label>
+                        <input asp-for="SolutionFile" type="file" class="form-control" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" />
+                        <small class="text-muted">
+                            Hỗ trợ: PDF, Word, hình ảnh (Tối đa 10MB)
+                        </small>
+                    </div>
+
+                    <div class="card bg-light mb-4">
+                        <div class="card-body">
+                            <h5 class="mb-3"><i class="bi bi-check2-square"></i> Checklist trước khi gửi:</h5>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="check1" required />
+                                <label class="form-check-label" for="check1">
+                                    Đã kiểm tra lại toàn bộ lời giải
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="check2" required />
+                                <label class="form-check-label" for="check2">
+                                    Lời giải đã rõ ràng, dễ hiểu
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="check3" required />
+                                <label class="form-check-label" for="check3">
+                                    Đã trả lời đúng yêu cầu của đề bài
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-success">
+                        <h5 class="mb-2"><i class="bi bi-cash-coin"></i> Thu nhập từ bài này:</h5>
+                        <h3 class="text-success mb-0">@problem?.Price.ToString("N0") đ</h3>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg" onclick="return confirm('Bạn chắc chắn muốn gửi lời giải này?')">
+                            <i class="bi bi-send-check"></i> Gửi lời giải
+                        </button>
+                        <a asp-action="MyProblems" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Quay lại
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0"><i class="bi bi-lightbulb"></i> Gợi ý viết lời giải tốt</h5>
+            </div>
+            <div class="card-body">
+                <ul class="mb-0">
+                    <li>Trình bày có hệ thống, chia thành các bước rõ ràng</li>
+                    <li>Giải thích lý do tại sao sử dụng công thức/phương pháp đó</li>
+                    <li>Viết kết luận cuối cùng một cách rõ ràng</li>
+                    <li>Nếu có thể, vẽ hình hoặc sơ đồ minh họa</li>
+                    <li>Kiểm tra lại chính tả và các phép tính</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

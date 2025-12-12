@@ -1,0 +1,642 @@
+﻿@model Webgiasu.Models.ViewModels.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Trang chủ - Admin";
+    Layout = "_AdminLayout";
+}
+
+<!-- Header -->
+<div class="row mb-4">
+    <div class="col">
+        <h2 class="fw-bold">
+            <i class="bi bi-shield-check text-danger"></i> Trang chủ Admin
+        </h2>
+        <p class="text-muted">Tổng quan và thống kê hệ thống</p>
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-outline-primary" onclick="refreshDashboard()">
+            <i class="bi bi-arrow-clockwise"></i> Làm mới
+        </button>
+    </div>
+</div>
+
+<!-- Stat Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-0 shadow-sm h-100 card-hover">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted mb-2 small">TỔNG DOANH THU</p>
+                        <h3 class="fw-bold mb-0 text-success">@Model.TotalRevenue.ToString("N0") đ</h3>
+                        <p class="text-muted small mb-0 mt-2">
+                            <i class="bi bi-arrow-up text-success"></i> +12.5% so với tháng trước
+                        </p>
+                    </div>
+                    <div class="bg-success bg-opacity-10 p-3 rounded">
+                        <i class="bi bi-cash-stack text-success" style="font-size: 2rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-0 shadow-sm h-100 card-hover">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted mb-2 small">TỔNG BÀI GIẢI</p>
+                        <h3 class="fw-bold mb-0 text-warning">@Model.TotalProblems</h3>
+                        <p class="text-muted small mb-0 mt-2">
+                            <i class="bi bi-arrow-up text-success"></i> +8.2% so với tháng trước
+                        </p>
+                    </div>
+                    <div class="bg-warning bg-opacity-10 p-3 rounded">
+                        <i class="bi bi-journal-check text-warning" style="font-size: 2rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-0 shadow-sm h-100 card-hover">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted mb-2 small">TỔNG GIA SƯ</p>
+                        <h3 class="fw-bold mb-0 text-info">@Model.TotalTutors</h3>
+                        <p class="text-muted small mb-0 mt-2">
+                            <i class="bi bi-dash text-muted"></i> Không đổi
+                        </p>
+                    </div>
+                    <div class="bg-info bg-opacity-10 p-3 rounded">
+                        <i class="bi bi-mortarboard-fill text-info" style="font-size: 2rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-0 shadow-sm h-100 card-hover">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted mb-2 small">TỔNG HỌC SINH</p>
+                        <h3 class="fw-bold mb-0 text-primary">@Model.TotalStudents</h3>
+                        <p class="text-muted small mb-0 mt-2">
+                            <i class="bi bi-arrow-up text-success"></i> +15.3% so với tháng trước
+                        </p>
+                    </div>
+                    <div class="bg-primary bg-opacity-10 p-3 rounded">
+                        <i class="bi bi-people-fill text-primary" style="font-size: 2rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row 1: Revenue & Problems -->
+<div class="row g-4 mb-4">
+    <!-- Revenue Chart -->
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header py-3" style="background: linear-gradient(135deg, #DC143C 0%, #FF1744 100%);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-1 fw-bold text-white">
+                            <i class="bi bi-graph-up me-2"></i>Biểu đồ Doanh thu
+                        </h5>
+                        <p class="text-white-50 small mb-0">Theo thời gian</p>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <input type="radio" class="btn-check" name="revenueTimeFilter" id="revenueWeek" autocomplete="off" checked>
+                        <label class="btn btn-outline-warning btn-sm" for="revenueWeek" onclick="updateRevenueChart('week')">Tuần</label>
+
+                        <input type="radio" class="btn-check" name="revenueTimeFilter" id="revenueMonth" autocomplete="off">
+                        <label class="btn btn-outline-warning btn-sm" for="revenueMonth" onclick="updateRevenueChart('month')">Tháng</label>
+
+                        <input type="radio" class="btn-check" name="revenueTimeFilter" id="revenueQuarter" autocomplete="off">
+                        <label class="btn btn-outline-warning btn-sm" for="revenueQuarter" onclick="updateRevenueChart('quarter')">Quý</label>
+
+                        <input type="radio" class="btn-check" name="revenueTimeFilter" id="revenueYear" autocomplete="off">
+                        <label class="btn btn-outline-warning btn-sm" for="revenueYear" onclick="updateRevenueChart('year')">Năm</label>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <canvas id="revenueChart" height="80"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header py-3" style="background: linear-gradient(135deg, #DC143C 0%, #FF1744 100%);">
+                <h5 class="mb-0 text-white">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Cần xử lý
+                </h5>
+            </div>
+            <div class="card-body">
+                <a asp-action="PendingTutors" class="text-decoration-none">
+                    <div class="alert alert-danger d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h6 class="mb-0"><i class="bi bi-person-check"></i> Chờ duyệt gia sư</h6>
+                            <small>Cần phê duyệt ngay</small>
+                        </div>
+                        <h3 class="mb-0">@Model.PendingTutorApprovals</h3>
+                    </div>
+                </a>
+                <a asp-action="ManageProblems" class="text-decoration-none">
+                    <div class="alert alert-warning d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h6 class="mb-0"><i class="bi bi-activity"></i> Bài đang hoạt động</h6>
+                            <small>Đang được xử lý</small>
+                        </div>
+                        <h3 class="mb-0">@Model.ActiveProblems</h3>
+                    </div>
+                </a>
+
+                <div class="d-grid gap-2">
+                    <a asp-action="ManagePayments" class="btn btn-success">
+                        <i class="bi bi-credit-card"></i> Quản lý thanh toán
+                    </a>
+                    <a asp-action="ManageUsers" class="btn btn-primary">
+                        <i class="bi bi-people"></i> Quản lý người dùng
+                    </a>
+                    <a asp-action="Statistics" class="btn btn-info">
+                        <i class="bi bi-bar-chart"></i> Thống kê chi tiết
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row 2: Problems Count -->
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header py-3" style="background: linear-gradient(135deg, #DC143C 0%, #FF1744 100%);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-1 fw-bold text-white">
+                            <i class="bi bi-journal-text me-2"></i>Biểu đồ Số lượng Bài học / Bài giải
+                        </h5>
+                        <p class="text-white-50 small mb-0">Theo thời gian</p>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <input type="radio" class="btn-check" name="problemsTimeFilter" id="problemsWeek" autocomplete="off" checked>
+                        <label class="btn btn-outline-primary btn-sm" for="problemsWeek" onclick="updateProblemsChart('week')">Tuần</label>
+
+                        <input type="radio" class="btn-check" name="problemsTimeFilter" id="problemsMonth" autocomplete="off">
+                        <label class="btn btn-outline-primary btn-sm" for="problemsMonth" onclick="updateProblemsChart('month')">Tháng</label>
+
+                        <input type="radio" class="btn-check" name="problemsTimeFilter" id="problemsQuarter" autocomplete="off">
+                        <label class="btn btn-outline-primary btn-sm" for="problemsQuarter" onclick="updateProblemsChart('quarter')">Quý</label>
+
+                        <input type="radio" class="btn-check" name="problemsTimeFilter" id="problemsYear" autocomplete="off">
+                        <label class="btn btn-outline-primary btn-sm" for="problemsYear" onclick="updateProblemsChart('year')">Năm</label>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <canvas id="problemsChart" height="80"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row 3: Pie Charts -->
+<div class="row g-4 mb-4">
+    <!-- Problem Types Pie Chart -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header py-3" style="background: linear-gradient(135deg, #DC143C 0%, #FF1744 100%);">
+                <h5 class="mb-1 fw-bold text-white">
+                    <i class="bi bi-pie-chart me-2"></i>Tỉ lệ Loại Bài toán
+                </h5>
+                <p class="text-white-50 small mb-0">Phân bố theo môn học</p>
+            </div>
+            <div class="card-body">
+                <canvas id="problemTypesChart" height="250"></canvas>
+                <div class="mt-4">
+                    <div class="row text-center">
+                        <div class="col">
+                            <div class="border-start border-primary border-4 ps-2 text-start">
+                                <small class="text-muted">Toán</small>
+                                <h6 class="mb-0 fw-bold">35%</h6>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="border-start border-success border-4 ps-2 text-start">
+                                <small class="text-muted">Lý</small>
+                                <h6 class="mb-0 fw-bold">25%</h6>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="border-start border-warning border-4 ps-2 text-start">
+                                <small class="text-muted">Hóa</small>
+                                <h6 class="mb-0 fw-bold">20%</h6>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="border-start border-danger border-4 ps-2 text-start">
+                                <small class="text-muted">Văn</small>
+                                <h6 class="mb-0 fw-bold">12%</h6>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="border-start border-info border-4 ps-2 text-start">
+                                <small class="text-muted">Anh</small>
+                                <h6 class="mb-0 fw-bold">8%</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tutor Ratings Pie Chart -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header py-3" style="background: linear-gradient(135deg, #DC143C 0%, #FF1744 100%);">
+                <h5 class="mb-1 fw-bold text-white">
+                    <i class="bi bi-star me-2"></i>Tỉ lệ Gia sư theo Rating
+                </h5>
+                <p class="text-white-50 small mb-0">Phân bố theo mức đánh giá</p>
+            </div>
+            <div class="card-body">
+                <canvas id="tutorRatingsChart" height="250"></canvas>
+                <div class="mt-4">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <div class="border-start border-danger border-4 ps-2 text-start">
+                                <small class="text-muted">1-2 sao</small>
+                                <h6 class="mb-0 fw-bold">10%</h6>
+                                <small class="text-danger">Cần cải thiện</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="border-start border-warning border-4 ps-2 text-start">
+                                <small class="text-muted">3-4 sao</small>
+                                <h6 class="mb-0 fw-bold">35%</h6>
+                                <small class="text-warning">Khá tốt</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="border-start border-success border-4 ps-2 text-start">
+                                <small class="text-muted">5 sao</small>
+                                <h6 class="mb-0 fw-bold">55%</h6>
+                                <small class="text-success">Xuất sắc</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- System Info -->
+<div class="row g-4">
+    <div class="col-lg-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <i class="bi bi-clock text-primary" style="font-size: 2rem;"></i>
+                        <p class="mb-1 mt-2"><strong>Cập nhật lần cuối</strong></p>
+                        <p class="text-muted mb-0">@DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")</p>
+                    </div>
+                    <div class="col-md-3">
+                        <i class="bi bi-server text-success" style="font-size: 2rem;"></i>
+                        <p class="mb-1 mt-2"><strong>Trạng thái hệ thống</strong></p>
+                        <span class="badge bg-success">Hoạt động bình thường</span>
+                    </div>
+                    <div class="col-md-3">
+                        <i class="bi bi-people text-info" style="font-size: 2rem;"></i>
+                        <p class="mb-1 mt-2"><strong>Người dùng trực tuyến</strong></p>
+                        <p class="text-muted mb-0">@(Model.TotalStudents + Model.TotalTutors) người</p>
+                    </div>
+                    <div class="col-md-3">
+                        <i class="bi bi-shield-check text-warning" style="font-size: 2rem;"></i>
+                        <p class="mb-1 mt-2"><strong>Phiên bản</strong></p>
+                        <p class="text-muted mb-0">v1.0.0 - .NET 8</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        // Chart configuration
+        Chart.defaults.font.family = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+        Chart.defaults.color = '#6c757d';
+
+        // Revenue Chart Data
+        const revenueData = {
+            week: {
+                labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'CN'],
+                data: [1200000, 1500000, 1800000, 2100000, 2400000, 2000000, 1600000]
+            },
+            month: {
+                labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
+                data: [8000000, 9500000, 11000000, 10500000, 12000000, 13500000, 14000000, 13000000, 12500000, 15000000, 16500000, 18000000]
+            },
+            quarter: {
+                labels: ['Quý 1', 'Quý 2', 'Quý 3', 'Quý 4'],
+                data: [28500000, 36000000, 39500000, 49500000]
+            },
+            year: {
+                labels: ['2020', '2021', '2022', '2023', '2024'],
+                data: [85000000, 120000000, 145000000, 165000000, 153500000]
+            }
+        };
+
+        // Problems Chart Data
+        const problemsData = {
+            week: {
+                labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'CN'],
+                data: [15, 18, 22, 25, 30, 28, 20]
+            },
+            month: {
+                labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
+                data: [120, 135, 155, 140, 160, 175, 180, 165, 155, 190, 205, 220]
+            },
+            quarter: {
+                labels: ['Quý 1', 'Quý 2', 'Quý 3', 'Quý 4'],
+                data: [410, 475, 500, 615]
+            },
+            year: {
+                labels: ['2020', '2021', '2022', '2023', '2024'],
+                data: [1200, 1650, 1850, 2000, 2000]
+            }
+        };
+
+        // Initialize Revenue Chart
+        let revenueChart = new Chart(document.getElementById('revenueChart'), {
+            type: 'bar',
+            data: {
+                labels: revenueData.week.labels,
+                datasets: [{
+                    label: 'Doanh thu (VNĐ)',
+                    data: revenueData.week.data,
+                    backgroundColor: 'rgba(255, 193, 7, 0.8)',
+                    borderColor: 'rgba(255, 193, 7, 1)',
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: { size: 14, weight: 'bold' },
+                        bodyFont: { size: 13 },
+                        callbacks: {
+                            label: function(context) {
+                                return 'Doanh thu: ' + context.parsed.y.toLocaleString('vi-VN') + ' đ';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return (value / 1000000) + 'M';
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Initialize Problems Chart
+        let problemsChart = new Chart(document.getElementById('problemsChart'), {
+            type: 'line',
+            data: {
+                labels: problemsData.week.labels,
+                datasets: [{
+                    label: 'Số bài giải',
+                    data: problemsData.week.data,
+                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                    borderColor: 'rgba(13, 110, 253, 1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(13, 110, 253, 1)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: { size: 14, weight: 'bold' },
+                        bodyFont: { size: 13 }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 5
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Initialize Problem Types Pie Chart
+        const problemTypesChart = new Chart(document.getElementById('problemTypesChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Toán', 'Lý', 'Hóa', 'Văn', 'Anh'],
+                datasets: [{
+                    data: [35, 25, 20, 12, 8],
+                    backgroundColor: [
+                        'rgba(13, 110, 253, 0.8)',
+                        'rgba(25, 135, 84, 0.8)',
+                        'rgba(255, 193, 7, 0.8)',
+                        'rgba(220, 53, 69, 0.8)',
+                        'rgba(13, 202, 240, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(13, 110, 253, 1)',
+                        'rgba(25, 135, 84, 1)',
+                        'rgba(255, 193, 7, 1)',
+                        'rgba(220, 53, 69, 1)',
+                        'rgba(13, 202, 240, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            font: { size: 13, weight: 'bold' },
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: { size: 14, weight: 'bold' },
+                        bodyFont: { size: 13 },
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Initialize Tutor Ratings Pie Chart
+        const tutorRatingsChart = new Chart(document.getElementById('tutorRatingsChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['1-2 Sao', '3-4 Sao', '5 Sao'],
+                datasets: [{
+                    data: [10, 35, 55],
+                    backgroundColor: [
+                        'rgba(220, 53, 69, 0.8)',
+                        'rgba(255, 193, 7, 0.8)',
+                        'rgba(25, 135, 84, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(220, 53, 69, 1)',
+                        'rgba(255, 193, 7, 1)',
+                        'rgba(25, 135, 84, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            font: { size: 13, weight: 'bold' },
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: { size: 14, weight: 'bold' },
+                        bodyFont: { size: 13 },
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Update Revenue Chart based on filter
+        function updateRevenueChart(period) {
+            revenueChart.data.labels = revenueData[period].labels;
+            revenueChart.data.datasets[0].data = revenueData[period].data;
+            revenueChart.update('active');
+        }
+
+        // Update Problems Chart based on filter
+        function updateProblemsChart(period) {
+            problemsChart.data.labels = problemsData[period].labels;
+            problemsChart.data.datasets[0].data = problemsData[period].data;
+            problemsChart.update('active');
+        }
+
+        // Refresh Dashboard
+        function refreshDashboard() {
+            location.reload();
+        }
+
+        // Card hover effect
+        document.querySelectorAll('.card-hover').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.transition = 'all 0.3s ease';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+
+    <style>
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+        }
+
+        .btn-group .btn {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        canvas {
+            max-height: 400px;
+        }
+    </style>
+}

@@ -1,0 +1,246 @@
+﻿@model Webgiasu.Models.ViewModels.RatingViewModel
+@{
+    ViewData["Title"] = "Đánh giá Gia sư";
+    Layout = "_StudentLayout";
+}
+
+<div class="page-header d-flex flex-wrap justify-content-between align-items-center">
+    <div>
+        <h5 class="fw-bold mb-1 text-dark">
+            <i class="bi bi-star-fill text-warning me-2"></i>Đánh giá Gia sư
+        </h5>
+        <p class="text-muted mb-0 small">Chia sẻ trải nghiệm của bạn với gia sư</p>
+    </div>
+    <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i> Quay lại
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-warning text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-star-fill"></i> Đánh giá Gia sư
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <strong>Bài toán:</strong> @Model.ProblemTitle<br/>
+                    <strong>Gia sư:</strong> @Model.TutorName
+                </div>
+
+                <form asp-action="RateTutor" method="post">
+                    <input type="hidden" asp-for="ProblemId" />
+                    <input type="hidden" asp-for="TutorId" />
+
+                    <!-- Star Rating -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-star"></i> Đánh giá chất lượng (1-5 sao) <span class="text-danger">*</span>
+                        </label>
+                        
+                        <div class="star-rating-container">
+                            <div class="star-rating" id="starRating">
+                                <span class="star" data-value="1">?</span>
+                                <span class="star" data-value="2">?</span>
+                                <span class="star" data-value="3">?</span>
+                                <span class="star" data-value="4">?</span>
+                                <span class="star" data-value="5">?</span>
+                            </div>
+                            <input type="hidden" asp-for="Stars" id="starsInput" required />
+                            <div class="mt-2">
+                                <span id="ratingText" class="text-muted">Chọn số sao để đánh giá</span>
+                            </div>
+                            <span asp-validation-for="Stars" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- Comment -->
+                    <div class="mb-4">
+                        <label asp-for="Comment" class="form-label fw-bold">
+                            <i class="bi bi-chat-left-text"></i> Nhận xét (Tùy chọn)
+                        </label>
+                        <textarea asp-for="Comment" 
+                                  class="form-control" 
+                                  rows="5" 
+                                  placeholder="Chia sẻ trải nghiệm của bạn với gia sư này...&#10;&#10;Ví dụ:&#10;- Giải thích rất chi tiết và dễ hiểu&#10;- Phản hồi nhanh chóng&#10;- Lời giải chính xác và logic"></textarea>
+                        <div class="form-text">
+                            Nhận xét của bạn sẽ giúp gia sư cải thiện chất lượng dạy học
+                        </div>
+                    </div>
+
+                    <!-- Rating Guidelines -->
+                    <div class="card bg-light border-0 mb-4">
+                        <div class="card-body">
+                            <h6 class="fw-bold mb-3">
+                                <i class="bi bi-lightbulb text-warning"></i> Hướng dẫn đánh giá
+                            </h6>
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start">
+                                        <span class="text-warning me-2">?????</span>
+                                        <small><strong>5 sao:</strong> Xuất sắc, vượt mong đợi</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start">
+                                        <span class="text-warning me-2">?????</span>
+                                        <small><strong>4 sao:</strong> Tốt, đáp ứng yêu cầu</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start">
+                                        <span class="text-warning me-2">?????</span>
+                                        <small><strong>3 sao:</strong> Trung bình, cần cải thiện</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start">
+                                        <span class="text-warning me-2">?????</span>
+                                        <small><strong>2 sao:</strong> Kém, không đạt yêu cầu</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start">
+                                        <span class="text-warning me-2">?????</span>
+                                        <small><strong>1 sao:</strong> Rất kém, hoàn toàn không hài lòng</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-warning btn-lg">
+                            <i class="bi bi-send"></i> Gửi đánh giá
+                        </button>
+                        <a asp-action="Dashboard" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-x-circle"></i> Hủy
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .star-rating-container {
+        padding: 1.5rem;
+        background: linear-gradient(135deg, #fff9e6 0%, #fff3cc 100%);
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    .star-rating {
+        font-size: 3rem;
+        display: inline-block;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .star {
+        color: #ddd;
+        transition: all 0.3s ease;
+        display: inline-block;
+        margin: 0 0.2rem;
+    }
+
+    .star:hover,
+    .star.active {
+        color: #ffc107;
+        transform: scale(1.2);
+    }
+
+    .star.active {
+        animation: starPulse 0.5s ease;
+    }
+
+    @@keyframes starPulse {
+        0%, 100% { transform: scale(1.2); }
+        50% { transform: scale(1.4); }
+    }
+
+    #ratingText {
+        font-size: 1.2rem;
+        font-weight: 600;
+        display: block;
+    }
+
+    .rating-excellent { color: #28a745; }
+    .rating-good { color: #17a2b8; }
+    .rating-average { color: #ffc107; }
+    .rating-poor { color: #fd7e14; }
+    .rating-bad { color: #dc3545; }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+    <script>
+        const stars = document.querySelectorAll('.star');
+        const starsInput = document.getElementById('starsInput');
+        const ratingText = document.getElementById('ratingText');
+        let selectedRating = 0;
+
+        const ratingTexts = {
+            1: { text: '????? - R?t k�m', class: 'rating-bad' },
+            2: { text: '????? - K�m', class: 'rating-poor' },
+            3: { text: '????? - Trung b�nh', class: 'rating-average' },
+            4: { text: '????? - T?t', class: 'rating-good' },
+            5: { text: '????? - Xu?t s?c', class: 'rating-excellent' }
+        };
+
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                selectedRating = parseInt(this.dataset.value);
+                starsInput.value = selectedRating;
+                updateStars();
+                updateRatingText();
+            });
+
+            star.addEventListener('mouseenter', function() {
+                const hoverValue = parseInt(this.dataset.value);
+                highlightStars(hoverValue);
+            });
+        });
+
+        document.querySelector('.star-rating').addEventListener('mouseleave', function() {
+            highlightStars(selectedRating);
+        });
+
+        function highlightStars(value) {
+            stars.forEach((star, index) => {
+                if (index < value) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+
+        function updateStars() {
+            highlightStars(selectedRating);
+        }
+
+        function updateRatingText() {
+            const ratingInfo = ratingTexts[selectedRating];
+            if (ratingInfo) {
+                ratingText.textContent = ratingInfo.text;
+                ratingText.className = 'fw-bold ' + ratingInfo.class;
+            }
+        }
+
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            if (selectedRating === 0) {
+                e.preventDefault();
+                alert('Vui lòng chọn số sao để đánh giá!');
+                return false;
+            }
+        });
+    </script>
+}

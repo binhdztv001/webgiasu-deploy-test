@@ -1,0 +1,202 @@
+﻿@model Webgiasu.Models.ViewModels.AdminStatisticsViewModel
+@{
+    ViewData["Title"] = "Thống kê";
+    Layout = "_AdminLayout";
+}
+
+<div class="page-header mb-4">
+    <h2 class="fw-bold">
+        <i class="bi bi-bar-chart text-danger"></i> Thống kê hệ thống
+    </h2>
+    <p class="text-muted">Báo cáo và phân tích chi tiết</p>
+</div>
+
+<div class="row mb-4">
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-pie-chart"></i> Thống kê bài toán theo môn học</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Môn học</th>
+                                <th>Số lượng</th>
+                                <th>Tỷ lệ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var totalProblems = Model.ProblemsByType.Values.Sum();
+                            }
+                            @foreach (var item in Model.ProblemsByType.OrderByDescending(x => x.Value))
+                            {
+                                var percentage = totalProblems > 0 ? (item.Value * 100.0 / totalProblems) : 0;
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-secondary">@item.Key</span>
+                                    </td>
+                                    <td><strong>@item.Value</strong> bài</td>
+                                    <td>
+                                        <div class="progress" style="height: 20px;">
+                                            <div class="progress-bar bg-primary" role="progressbar" style="width: @percentage%" aria-valuenow="@percentage" aria-valuemin="0" aria-valuemax="100">
+                                                @percentage.ToString("F1")%
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                @if (!Model.ProblemsByType.Any())
+                {
+                    <div class="text-center py-4">
+                        <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-2">Chưa có dữ liệu</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="bi bi-graph-up"></i> Doanh thu theo tháng</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Tháng</th>
+                                <th>Doanh thu</th>
+                                <th>Biểu đồ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var maxRevenue = Model.RevenueByMonth.Values.Any() ? Model.RevenueByMonth.Values.Max() : 1;
+                            }
+                            @foreach (var item in Model.RevenueByMonth)
+                            {
+                                var percentage = maxRevenue > 0 ? (item.Value * 100 / maxRevenue) : 0;
+                                <tr>
+                                    <td><strong>@item.Key</strong></td>
+                                    <td class="text-success fw-bold">@item.Value.ToString("N0") đ</td>
+                                    <td>
+                                        <div class="progress" style="height: 20px;">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: @percentage%" aria-valuenow="@percentage" aria-valuemin="0" aria-valuemax="100">
+                                                @(item.Value > 0 ? item.Value.ToString("N0") : "")
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-success">
+                                <td><strong>Tổng</strong></td>
+                                <td class="fw-bold">@Model.RevenueByMonth.Values.Sum().ToString("N0") đ</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0"><i class="bi bi-trophy"></i> Top 5 Gia sư xuất sắc</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.TopTutors.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Xếp hạng</th>
+                                    <th>Họ tên</th>
+                                    <th>Email</th>
+                                    <th>Số điện thoại</th>
+                                    <th>Ngày tham gia</th>
+                                    <th>Đánh giá</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int rank = 1;
+                                }
+                                @foreach (var tutor in Model.TopTutors)
+                                {
+                                    var iconClass = rank switch
+                                    {
+                                        1 => "text-warning",
+                                        2 => "text-secondary",
+                                        3 => "text-danger",
+                                        _ => "text-muted"
+                                    };
+                                    <tr>
+                                        <td>
+                                            <span class="fs-4 @iconClass">
+                                                @if (rank <= 3)
+                                                {
+                                                    <i class="bi bi-trophy-fill"></i>
+                                                }
+                                                #@rank
+                                            </span>
+                                        </td>
+                                        <td class="fw-bold">@tutor.FullName</td>
+                                        <td>@tutor.Email</td>
+                                        <td>@tutor.PhoneNumber</td>
+                                        <td>@tutor.RegisteredDate.ToString("dd/MM/yyyy")</td>
+                                        <td>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                        </td>
+                                    </tr>
+                                    rank++;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
+                        <p class="text-muted mt-3">Chưa có dữ liệu thống kê</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card shadow-sm bg-light">
+            <div class="card-body">
+                <h5 class="mb-3"><i class="bi bi-info-circle"></i> Ghi chú</h5>
+                <ul class="mb-0">
+                    <li>Số liệu được cập nhật theo thời gian thực</li>
+                    <li>Doanh thu tính theo các giao dịch đã hoàn thành</li>
+                    <li>Top gia sư được xếp hạng theo số lượng bài giải và đánh giá</li>
+                    <li>Báo cáo chi tiết hơn có thể được xuất ra file Excel/PDF (tính năng sẽ được thêm)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

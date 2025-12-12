@@ -1,0 +1,94 @@
+﻿@model IEnumerable<Webgiasu.Models.User>
+@{
+    ViewData["Title"] = "Quản lý gia sư";
+    Layout = "_AdminLayout";
+}
+
+<!-- Page Header -->
+<div>
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="fw-bold">
+                <i class="bi bi-mortarboard text-danger"></i> Quản lý gia sư
+            </h2>
+            <p class="text-muted">Danh sách tất cả gia sư trong hệ thống</p>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm card-hover">
+                <div class="card-body">
+                    <h3 class="mb-0">@Model.Count(t => t.IsApproved)</h3>
+                    <p class="text-muted mb-0">Đã duyệt</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm card-hover">
+                <div class="card-body">
+                    <h3 class="mb-0">@Model.Count(t => !t.IsApproved)</h3>
+                    <p class="text-muted mb-0">Chờ duyệt</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm card-hover">
+                <div class="card-body">
+                    <h3 class="mb-0">@Model.Count()</h3>
+                    <p class="text-muted mb-0">Tổng số</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0"><i class="bi bi-list-ul"></i> Danh sách gia sư</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Họ tên</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Số điện thoại</th>
+                            <th>Ngày đăng ký</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var tutor in Model.OrderByDescending(t => t.RegisteredDate))
+                        {
+                            <tr>
+                                <td class="fw-bold">#@tutor.Id</td>
+                                <td>@tutor.FullName</td>
+                                <td>@tutor.Username</td>
+                                <td>@tutor.Email</td>
+                                <td>@tutor.PhoneNumber</td>
+                                <td>@tutor.RegisteredDate.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    @if (tutor.IsApproved)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle"></i> Đã duyệt
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning">
+                                            <i class="bi bi-hourglass-split"></i> Chờ duyệt
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

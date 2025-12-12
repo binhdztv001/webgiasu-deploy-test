@@ -1,0 +1,326 @@
+﻿@model Webgiasu.Models.User
+@{
+    ViewData["Title"] = "Cài đặt tài khoản";
+    Layout = "_StudentLayout";
+}
+
+<div>
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center">
+        <div>
+            <h5 class="fw-bold mb-1 text-dark">
+                <i class="bi bi-gear text-primary me-2"></i>Cài đặt tài khoản
+            </h5>
+            <p class="text-muted mb-0 small">Quản lý thông tin và cài đặt cá nhân</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+
+            <!-- Account Information -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header py-3" style="background: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%);">
+                    <h5 class="mb-0 text-white">
+                        <i class="bi bi-person-circle me-2"></i>Thông tin tài khoản
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="UpdateProfile" method="post">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-person text-primary me-1"></i> Họ và tên
+                                </label>
+                                <input type="text" name="FullName" class="form-control" value="@Model.FullName" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-phone text-primary me-1"></i> Số điện thoại
+                                </label>
+                                <input type="tel" name="PhoneNumber" class="form-control" value="@Model.PhoneNumber" required />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-envelope text-primary me-1"></i> Email
+                            </label>
+                            <input type="email" name="Email" class="form-control" value="@Model.Email" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-1"></i> Cập nhật thông tin
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Change Password -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header py-3" style="background: linear-gradient(135deg, #FF9800 0%, #FFA726 100%);">
+                    <h5 class="mb-0 text-white">
+                        <i class="bi bi-shield-lock me-2"></i>Đổi mật khẩu
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="ChangePassword" method="post" id="changePasswordForm">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-lock text-warning me-1"></i> Mật khẩu hiện tại
+                            </label>
+                            <input type="password" name="CurrentPassword" class="form-control" required />
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-lock-fill text-warning me-1"></i> Mật khẩu mới
+                                </label>
+                                <input type="password" name="NewPassword" id="newPassword" class="form-control" required minlength="6" />
+                                <div class="form-text">Tối thiểu 6 ký tự</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-shield-check text-warning me-1"></i> Xác nhận mật khẩu
+                                </label>
+                                <input type="password" id="confirmPassword" class="form-control" required />
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-key me-1"></i> Đổi mật khẩu
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Notification Settings -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header py-3" style="background: linear-gradient(135deg, #00BCD4 0%, #26C6DA 100%);">
+                    <h5 class="mb-0 text-white">
+                        <i class="bi bi-bell me-2"></i>Cài đặt thông báo
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                                <div>
+                                    <h6 class="mb-1 fw-bold">Thông báo Email</h6>
+                                    <small class="text-muted">Nhận thông báo qua email</small>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="emailNotif" checked>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                                <div>
+                                    <h6 class="mb-1 fw-bold">Bài giải hoàn thành</h6>
+                                    <small class="text-muted">Khi gia sư hoàn thành bài</small>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="solutionNotif" checked>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                                <div>
+                                    <h6 class="mb-1 fw-bold">Gia sư nhận bài</h6>
+                                    <small class="text-muted">Khi có gia sư nhận yêu cầu</small>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="acceptNotif" checked>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h6 class="mb-1 fw-bold">Thanh toán</h6>
+                                    <small class="text-muted">Nhắc nhở thanh toán</small>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="paymentNotif" checked>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Display Settings -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header py-3" style="background: linear-gradient(135deg, #9C27B0 0%, #BA68C8 100%);">
+                    <h5 class="mb-0 text-white">
+                        <i class="bi bi-palette me-2"></i>Giao diện
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Chế độ hiển thị</label>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-primary flex-fill theme-btn active" data-theme="light">
+                                <i class="bi bi-sun me-1"></i> Sáng
+                            </button>
+                            <button type="button" class="btn btn-outline-primary flex-fill theme-btn" data-theme="dark">
+                                <i class="bi bi-moon-stars me-1"></i> Tối
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Ngôn ngữ</label>
+                        <select class="form-select">
+                            <option selected>Tiếng Việt</option>
+                            <option disabled>English (Coming soon)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Privacy Settings -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header py-3 bg-secondary">
+                    <h5 class="mb-0 text-white">
+                        <i class="bi bi-shield-check me-2"></i>Quyền riêng tư
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                        <div>
+                            <h6 class="mb-1 fw-bold">Hiển thị hoạt động</h6>
+                            <small class="text-muted">Cho phép gia sư xem trạng thái online</small>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="showActivity" checked>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-1 fw-bold">Lịch sử học tập</h6>
+                            <small class="text-muted">Cho phép xem các bài đã gửi</small>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="showHistory">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Danger Zone -->
+            <div class="card shadow-sm border-danger">
+                <div class="card-header py-3 bg-danger">
+                    <h5 class="mb-0 text-white">
+                        <i class="bi bi-exclamation-triangle me-2"></i>Vùng nguy hiểm
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-1 fw-bold text-danger">Xóa tài khoản</h6>
+                            <small class="text-muted">Xóa vĩnh viễn tài khoản và toàn bộ dữ liệu. Không thể hoàn tác.</small>
+                        </div>
+                        <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                            <i class="bi bi-trash me-1"></i> Xóa tài khoản
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Delete Account Modal -->
+    <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">
+                        <i class="bi bi-exclamation-triangle me-2"></i>Xác nhận xóa tài khoản
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-octagon me-2"></i>
+                        <strong>Cảnh báo:</strong> Hành động này không thể hoàn tác!
+                    </div>
+                    <p>Bạn có chắc chắn muốn xóa tài khoản? Tất cả dữ liệu sẽ bị xóa vĩnh viễn.</p>
+                    <p class="mb-2">Nhập "<strong>XÓA TÀI KHOẢN</strong>" để xác nhận:</p>
+                    <input type="text" class="form-control" id="confirmDelete" placeholder="XÓA TÀI KHOẢN" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i> Hủy
+                    </button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn" disabled>
+                        <i class="bi bi-trash me-1"></i> Xóa vĩnh viễn
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Chuyển đổi giao diện (Theme switching)
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.theme-btn').forEach(b => {
+                    b.classList.remove('active', 'btn-primary');
+                    b.classList.add('btn-outline-primary');
+                });
+                this.classList.remove('btn-outline-primary');
+                this.classList.add('active', 'btn-primary');
+
+                const theme = this.dataset.theme;
+                localStorage.setItem('theme', theme);
+
+                if (theme === 'dark') {
+                    document.body.classList.add('dark-mode');
+                } else {
+                    document.body.classList.remove('dark-mode');
+                }
+            });
+        });
+
+        // Tải giao diện đã lưu
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            if (btn.dataset.theme === savedTheme) {
+                btn.classList.remove('btn-outline-primary');
+                btn.classList.add('active', 'btn-primary');
+            } else {
+                btn.classList.remove('active', 'btn-primary');
+                btn.classList.add('btn-outline-primary');
+            }
+        });
+
+        // Kiểm tra xác nhận mật khẩu
+        document.getElementById('changePasswordForm').addEventListener('submit', function (e) {
+            var newPass = document.getElementById('newPassword').value;
+            var confirmPass = document.getElementById('confirmPassword').value;
+
+            if (newPass !== confirmPass) {
+                e.preventDefault();
+                alert('Mật khẩu xác nhận không khớp!');
+                return false;
+            }
+        });
+
+        // Kiểm tra nhập chuỗi xác nhận xóa tài khoản
+        document.getElementById('confirmDelete').addEventListener('input', function () {
+            var btn = document.getElementById('confirmDeleteBtn');
+            if (this.value === 'XÓA TÀI KHOẢN') {
+                btn.disabled = false;
+            } else {
+                btn.disabled = true;
+            }
+        });
+
+        // Hành động khi nhấn nút xóa tài khoản (chưa phát triển)
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
+            alert('Tính năng xóa tài khoản đang được phát triển.');
+        });
+    </script>
+}
+

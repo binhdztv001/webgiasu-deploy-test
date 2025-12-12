@@ -1,0 +1,276 @@
+﻿@model Webgiasu.Models.User
+@{
+    ViewData["Title"] = "Hồ sơ cá nhân";
+    Layout = "_TutorLayout";
+}
+
+<div class="page-header mb-4">
+    <h2 class="fw-bold">
+        <i class="bi bi-mortarboard text-success"></i> Hồ sơ gia sư
+    </h2>
+    <p class="text-muted">Quản lý thông tin tài khoản gia sư của bạn</p>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body text-center p-4">
+                <div class="mb-4">
+                    <div class="rounded-circle bg-success bg-gradient text-white d-inline-flex align-items-center justify-content-center" style="width: 120px; height: 120px;">
+                        <i class="bi bi-mortarboard" style="font-size: 4rem;"></i>
+                    </div>
+                </div>
+                <h4 class="fw-bold mb-1">@Model.FullName</h4>
+                <p class="text-muted mb-3">@Model.Username</p>
+                <span class="badge bg-success badge-pill px-4 py-2">
+                    <i class="bi bi-mortarboard me-1"></i> Gia sư
+                </span>
+                
+                @if (Model.IsApproved)
+                {
+                    <div class="mt-3">
+                        <span class="badge bg-success">
+                            <i class="bi bi-check-circle me-1"></i> Đã được duyệt
+                        </span>
+                    </div>
+                }
+                else
+                {
+                    <div class="mt-3">
+                        <span class="badge bg-warning text-dark">
+                            <i class="bi bi-clock me-1"></i> Chờ duyệt
+                        </span>
+                    </div>
+                }
+                
+                <hr class="my-4" />
+                
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                        <i class="bi bi-pencil-square me-1"></i> Chỉnh sửa hồ sơ
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                        <i class="bi bi-key me-1"></i> Đổi mật khẩu
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-info-circle me-2"></i> Thông tin chi tiết
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="border-start border-success border-4 ps-3 mb-4">
+                            <label class="text-muted small mb-1">Họ và tên</label>
+                            <h6 class="fw-bold mb-0">@Model.FullName</h6>
+                        </div>
+                        
+                        <div class="border-start border-success border-4 ps-3 mb-4">
+                            <label class="text-muted small mb-1">Email</label>
+                            <h6 class="fw-bold mb-0">
+                                <i class="bi bi-envelope text-success me-1"></i> @Model.Email
+                            </h6>
+                        </div>
+                        
+                        <div class="border-start border-success border-4 ps-3 mb-4">
+                            <label class="text-muted small mb-1">Tên đăng nhập</label>
+                            <h6 class="fw-bold mb-0">
+                                <i class="bi bi-person-badge text-success me-1"></i> @Model.Username
+                            </h6>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="border-start border-success border-4 ps-3 mb-4">
+                            <label class="text-muted small mb-1">Số điện thoại</label>
+                            <h6 class="fw-bold mb-0">
+                                <i class="bi bi-phone text-success me-1"></i> @Model.PhoneNumber
+                            </h6>
+                        </div>
+                        
+                        <div class="border-start border-success border-4 ps-3 mb-4">
+                            <label class="text-muted small mb-1">Vai trò</label>
+                            <h6 class="fw-bold mb-0">
+                                <span class="badge bg-success">Gia sư</span>
+                            </h6>
+                        </div>
+                        
+                        <div class="border-start border-success border-4 ps-3 mb-4">
+                            <label class="text-muted small mb-1">Trạng thái</label>
+                            <h6 class="fw-bold mb-0">
+                                @if (Model.IsApproved)
+                                {
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle me-1"></i> Đã được duyệt
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="bi bi-clock me-1"></i> Chờ phê duyệt
+                                    </span>
+                                }
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+
+                @if (!Model.IsApproved)
+                {
+                    <div class="alert alert-warning border-0">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <strong>Lưu ý:</strong> Tài khoản của bạn đang chờ quản trị viên phê duyệt. Bạn sẽ nhận được thông báo qua email khi tài khoản được kích hoạt.
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-success border-0">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        <strong>Chúc mừng!</strong> Tài khoản của bạn đã được phê duyệt. Bạn có thể bắt đầu nhận và giải các bài toán.
+                    </div>
+                }
+            </div>
+
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-graph-up me-2"></i> Thống kê hoạt động
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <div class="border-end">
+                                <h3 class="text-success fw-bold mb-1">0</h3>
+                                <p class="text-muted mb-0 small">Bài đã giải</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <div class="border-end">
+                                <h3 class="text-warning fw-bold mb-1">0</h3>
+                                <p class="text-muted mb-0 small">Bài đang làm</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <h3 class="text-info fw-bold mb-1">0đ</h3>
+                            <p class="text-muted mb-0 small">Thu nhập</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" data-bs-backdrop="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content ">
+            <div class="modal-header" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-pencil-square me-2"></i> Chỉnh sửa hồ sơ
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-controller="Tutor" asp-action="UpdateProfile" method="post">
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-person text-success me-1"></i> Họ và tên
+                        </label>
+                        <input type="text" name="FullName" class="form-control" value="@Model.FullName" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-envelope text-success me-1"></i> Email
+                        </label>
+                        <input type="email" name="Email" class="form-control" value="@Model.Email" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-phone text-success me-1"></i> Số điện thoại
+                        </label>
+                        <input type="tel" name="PhoneNumber" class="form-control" value="@Model.PhoneNumber" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i> Hủy
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-circle me-1"></i> Lưu thay đổi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Change Password Modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" data-bs-backdrop="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-key me-2"></i> Đổi mật khẩu
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-controller="Tutor" asp-action="ChangePassword" method="post" id="changePasswordForm">
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-lock text-success me-1"></i> Mật khẩu hiện tại
+                        </label>
+                        <input type="password" name="CurrentPassword" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-lock-fill text-success me-1"></i> Mật khẩu mới
+                        </label>
+                        <input type="password" name="NewPassword" id="newPassword" class="form-control" required minlength="6" />
+                        <div class="form-text">Tối thiểu 6 ký tự</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-shield-lock text-success me-1"></i> Xác nhận mật khẩu mới
+                        </label>
+                        <input type="password" name="ConfirmPassword" id="confirmPassword" class="form-control" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i> Hủy
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-circle me-1"></i> Đổi mật khẩu
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+            var newPass = document.getElementById('newPassword').value;
+            var confirmPass = document.getElementById('confirmPassword').value;
+            
+            if (newPass !== confirmPass) {
+                e.preventDefault();
+                alert('Mật khẩu xác nhận không khớp!');
+                return false;
+            }
+        });
+    </script>
+}

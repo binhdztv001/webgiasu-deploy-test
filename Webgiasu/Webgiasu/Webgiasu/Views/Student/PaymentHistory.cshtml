@@ -1,0 +1,193 @@
+﻿@model List<Webgiasu.Models.Payment>
+@{
+    ViewData["Title"] = "Lịch sử thanh toán";
+    Layout = "_StudentLayout";
+}
+
+<div class="page-header d-flex flex-wrap justify-content-between align-items-center">
+    <div>
+        <h5 class="fw-bold mb-1 text-dark">
+            <i class="bi bi-clock-history text-primary me-2"></i>Lịch sử thanh toán
+        </h5>
+        <p class="text-muted mb-0 small">Xem lại các giao dịch thanh toán đã thực hiện</p>
+    </div>
+    <a asp-action="Payments" class="btn btn-primary">
+        <i class="bi bi-credit-card me-1"></i> Thanh toán mới
+    </a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card text-center shadow-sm border-success">
+            <div class="card-body">
+                <i class="bi bi-check-circle text-success" style="font-size: 2rem;"></i>
+                <h3 class="mt-2 mb-0">@Model.Count(p => p.Status == Webgiasu.Models.PaymentStatus.Completed)</h3>
+                <p class="text-muted mb-0">Đã thanh toán</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center shadow-sm border-warning">
+            <div class="card-body">
+                <i class="bi bi-hourglass-split text-warning" style="font-size: 2rem;"></i>
+                <h3 class="mt-2 mb-0">@Model.Count(p => p.Status == Webgiasu.Models.PaymentStatus.Pending)</h3>
+                <p class="text-muted mb-0">Chờ thanh toán</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center shadow-sm border-primary">
+            <div class="card-body">
+                <i class="bi bi-cash-stack text-primary" style="font-size: 2rem;"></i>
+                <h4 class="mt-2 mb-0">@Model.Where(p => p.Status == Webgiasu.Models.PaymentStatus.Completed).Sum(p => p.Amount).ToString("N0") đ</h4>
+                <p class="text-muted mb-0">Tổng đã chi</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header py-3" style="background: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%);">
+        <h5 class="mb-0 text-white"><i class="bi bi-list-ul me-2"></i>Danh sách giao dịch</h5>
+    </div>
+    <div class="card-body">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Mã GD</th>
+                            <th>Mã bài toán</th>
+                            <th>Số tiền</th>
+                            <th>Ngày tạo</th>
+                            <th>Ngày thanh toán</th>
+                            <th>Trạng thái</th>
+                            <th>Mã giao dịch</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var payment in Model.OrderByDescending(p => p.CreatedDate))
+                        {
+                            <tr>
+                                <td class="fw-bold">#@payment.Id</td>
+                                <td>
+                                    <a asp-action="ProblemDetails" asp-route-id="@payment.ProblemId" class="text-decoration-none">
+                                        #@payment.ProblemId
+                                    </a>
+                                </td>
+                                <td class="fw-bold text-success">@payment.Amount.ToString("N0") đ</td>
+                                <td>@payment.CreatedDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>
+                                    @if (payment.Status == Webgiasu.Models.PaymentStatus.Completed)
+                                    {
+                                        @payment.CreatedDate.ToString("dd/MM/yyyy HH:mm")
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (payment.Status == Webgiasu.Models.PaymentStatus.Completed)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle"></i> Đã thanh toán
+                                        </span>
+                                    }
+                                    else if (payment.Status == Webgiasu.Models.PaymentStatus.Pending)
+                                    {
+                                        <span class="badge bg-warning">
+                                            <i class="bi bi-hourglass-split"></i> Chờ thanh toán
+                                        </span>
+                                    }
+                                    else if (payment.Status == Webgiasu.Models.PaymentStatus.Failed)
+                                    {
+                                        <span class="badge bg-danger">
+                                            <i class="bi bi-x-circle"></i> Thất bại
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">
+                                            <i class="bi bi-arrow-return-left"></i> Hoàn tiền
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(payment.TransactionId))
+                                    {
+                                        <code class="small">@payment.TransactionId</code>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr class="table-primary">
+                            <td colspan="2" class="text-end fw-bold">Tổng cộng:</td>
+                            <td class="fw-bold text-success fs-5">@Model.Where(p => p.Status == Webgiasu.Models.PaymentStatus.Completed).Sum(p => p.Amount).ToString("N0") đ</td>
+                            <td colspan="4"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
+                <h5 class="text-muted mt-3">Chưa có lịch sử thanh toán</h5>
+                <p class="text-muted">Bạn chưa thực hiện giao dịch nào.</p>
+                <a asp-action="Dashboard" class="btn btn-primary">
+                    <i class="bi bi-arrow-left me-1"></i> Quay lại Dashboard
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-white">
+        <h6 class="mb-0 fw-bold">
+            <i class="bi bi-info-circle text-primary me-2"></i>Thông tin thanh toán
+        </h6>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h6 class="fw-bold mb-3">
+                    <i class="bi bi-credit-card-2-front text-primary me-2"></i>Phương thức thanh toán hỗ trợ
+                </h6>
+                <ul class="list-unstyled ms-3">
+                    <li class="mb-2">
+                        <i class="bi bi-bank text-primary me-2"></i> Chuyển khoản ngân hàng
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-wallet2 text-success me-2"></i> Ví điện tử (Momo, ZaloPay)
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-credit-card text-warning me-2"></i> Thẻ ATM/Visa
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h6 class="fw-bold mb-3">
+                    <i class="bi bi-shield-check text-success me-2"></i>Chính sách hoàn tiền
+                </h6>
+                <ul class="list-unstyled ms-3">
+                    <li class="mb-2 text-muted">
+                        <i class="bi bi-check-circle text-success me-2"></i> Hoàn tiền 100% nếu không có gia sư nhận bài trong 24h
+                    </li>
+                    <li class="mb-2 text-muted">
+                        <i class="bi bi-check-circle text-success me-2"></i> Hoàn tiền nếu bài giải không đạt yêu cầu
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,400 @@
+﻿@model Webgiasu.Models.User
+@{
+    ViewData["Title"] = "Cài đặt tài khoản";
+    Layout = "_TutorLayout";
+}
+
+<style>
+    input[type="file"]::file-selector-button {
+        background-color: #198754; /* màu bg-success của Bootstrap */
+        color: white; /* chữ trắng */
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+        input[type="file"]::file-selector-button:hover {
+            background-color: #157347; /* màu xanh đậm hơn khi hover */
+        }
+
+</style>
+
+<div class="page-header mb-4">
+    <h2 class="fw-bold">
+        <i class="bi bi-gear text-success"></i> Cài đặt tài khoản
+    </h2>
+    <p class="text-muted">Quản lý thông tin và cấu hình tài khoản cá nhân</p>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+
+        <!-- Thông tin tài khoản -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3" style="background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);">
+                <h5 class="mb-0 text-white">
+                    <i class="bi bi-person-circle me-2"></i> Thông tin tài khoản
+                </h5>
+            </div>
+
+            <div class="card-body p-4">
+                <form asp-action="UpdateProfile" method="post">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-person text-success me-1"></i> Họ và tên
+                            </label>
+                            <input type="text" name="FullName" class="form-control" value="@Model.FullName" required />
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-phone text-success me-1"></i> Số điện thoại
+                            </label>
+                            <input type="tel" name="PhoneNumber" class="form-control" value="@Model.PhoneNumber" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-envelope text-success me-1"></i> Email
+                        </label>
+                        <input type="email" name="Email" class="form-control" value="@Model.Email" required />
+                    </div>
+
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-circle me-1"></i> Cập nhật thông tin
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Hồ sơ gia sư -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3" style="background: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%);">
+                <h5 class="mb-0 text-white">
+                    <i class="bi bi-award me-2"></i> Hồ sơ gia sư
+                </h5>
+            </div>
+
+            <div class="card-body p-4">
+                <form asp-action="UpdateTutorProfile" method="post" enctype="multipart/form-data">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-person-lines-fill text-primary me-1"></i> Giới thiệu bản thân
+                        </label>
+                        <textarea name="Bio" class="form-control" rows="4" placeholder="Mô tả về bạn, kinh nghiệm giảng dạy, phong cách dạy học...">@Model.Bio</textarea>
+                        <div class="form-text">Hãy giới thiệu ngắn gọn để học sinh hiểu rõ hơn về bạn</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-book text-primary me-1"></i> Môn học chuyên dạy
+                        </label>
+                        <input type="text" name="Subjects" class="form-control" value="@Model.Subjects" placeholder="VD: Toán, Lý, Hóa, Tiếng Anh..." />
+                        <div class="form-text">Các môn bạn có thể dạy (ngăn cách bằng dấu phẩy)</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-mortarboard text-primary me-1"></i> Trình độ học vấn
+                            </label>
+                            <select name="Education" class="form-select">
+                                <option value="">-- Chọn trình độ --</option>
+                                <option value="Sinh viên">Sinh viên</option>
+                                <option value="Cử nhân">Cử nhân</option>
+                                <option value="Thạc sĩ">Thạc sĩ</option>
+                                <option value="Tiến sĩ">Tiến sĩ</option>
+                                <option value="Giáo viên">Giáo viên</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-clock-history text-primary me-1"></i> Kinh nghiệm (năm)
+                            </label>
+                            <input type="number" name="ExperienceYears" class="form-control" min="0" max="50" value="@Model.ExperienceYears" placeholder="VD: 3" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-patch-check text-primary me-1"></i> Chứng chỉ
+                        </label>
+                        <textarea name="Certificates" class="form-control" rows="3" placeholder="Liệt kê các chứng chỉ, bằng cấp liên quan...">@Model.Certificates</textarea>
+                        <div class="form-text">VD: IELTS 7.5, Chứng chỉ sư phạm, Giải Olympic...</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-file-earmark-arrow-up text-primary me-1"></i> Tải lên chứng chỉ (hình ảnh)
+                        </label>
+                        <input type="file" name="CertificateImages" class="form-control" multiple accept="image/*" />
+                        <div class="form-text">Tải lên tối đa 5 hình ảnh để tăng độ tin cậy</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-1"></i> Lưu hồ sơ gia sư
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Đổi mật khẩu -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3" style="background: linear-gradient(135deg, #FF9800 0%, #FFA726 100%);">
+                <h5 class="mb-0 text-white">
+                    <i class="bi bi-shield-lock me-2"></i> Đổi mật khẩu
+                </h5>
+            </div>
+
+            <div class="card-body p-4">
+                <form asp-action="ChangePassword" method="post" id="changePasswordForm">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-lock text-warning me-1"></i> Mật khẩu hiện tại
+                        </label>
+                        <input type="password" name="CurrentPassword" class="form-control" required />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-lock-fill text-warning me-1"></i> Mật khẩu mới
+                            </label>
+                            <input type="password" name="NewPassword" id="newPassword" class="form-control" required minlength="6" />
+                            <div class="form-text">Tối thiểu 6 ký tự</div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-shield-check text-warning me-1"></i> Xác nhận mật khẩu
+                            </label>
+                            <input type="password" id="confirmPassword" class="form-control" required />
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-warning">
+                        <i class="bi bi-key me-1"></i> Đổi mật khẩu
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Cài đặt thông báo -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3" style="background: linear-gradient(135deg, #00BCD4 0%, #26C6DA 100%);">
+                <h5 class="mb-0 text-white">
+                    <i class="bi bi-bell me-2"></i> Cài đặt thông báo
+                </h5>
+            </div>
+
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-md-6">
+
+                        <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                            <div>
+                                <h6 class="mb-1 fw-bold">Thông báo email</h6>
+                                <small class="text-muted">Gửi thông báo qua email</small>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="emailNotif" checked>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                            <div>
+                                <h6 class="mb-1 fw-bold">Bài toán mới</h6>
+                                <small class="text-muted">Khi có yêu cầu mới phù hợp</small>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="newProblemNotif" checked>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                            <div>
+                                <h6 class="mb-1 fw-bold">Đánh giá mới</h6>
+                                <small class="text-muted">Khi học sinh gửi đánh giá</small>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="ratingNotif" checked>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h6 class="mb-1 fw-bold">Thanh toán</h6>
+                                <small class="text-muted">Khi nhận được thanh toán</small>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="paymentNotif" checked>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quyền riêng tư -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3 bg-secondary">
+                <h5 class="mb-0 text-white">
+                    <i class="bi bi-shield-check me-2"></i> Quyền riêng tư
+                </h5>
+            </div>
+
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-md-6">
+
+                        <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                            <div>
+                                <h6 class="mb-1 fw-bold">Hồ sơ công khai</h6>
+                                <small class="text-muted">Hiển thị hồ sơ cho học sinh</small>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="showProfile" checked>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h6 class="mb-1 fw-bold">Hiển thị đánh giá</h6>
+                                <small class="text-muted">Cho phép học sinh xem đánh giá</small>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="showRating" checked>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                            <div>
+                                <h6 class="mb-1 fw-bold">Hiển thị thống kê</h6>
+                                <small class="text-muted">Số bài đã giải, thu nhập...</small>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="showStats" checked>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h6 class="mb-1 fw-bold">Hiển thị trạng thái online</h6>
+                                <small class="text-muted">Tình trạng hoạt động</small>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="showOnline" checked>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Vùng nguy hiểm -->
+        <div class="card shadow-sm">
+            <div class="card-header py-3 bg-danger">
+                <h5 class="mb-0 text-white">
+                    <i class="bi bi-exclamation-triangle me-2"></i> Vùng nguy hiểm
+                </h5>
+            </div>
+
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1 fw-bold text-danger">Xóa tài khoản</h6>
+                        <small class="text-muted">Xóa vĩnh viễn tài khoản và toàn bộ dữ liệu. Không thể khôi phục.</small>
+                    </div>
+
+                    <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                        <i class="bi bi-trash me-1"></i> Xóa tài khoản
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Modal xác nhận xóa tài khoản -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-exclamation-triangle me-2"></i> Xác nhận xóa tài khoản
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-octagon me-2"></i>
+                    <strong>Cảnh báo:</strong> Hành động này không thể hoàn tác!
+                </div>
+
+                <p>Bạn có chắc chắn muốn xóa tài khoản? Mọi dữ liệu sẽ bị xóa vĩnh viễn.</p>
+
+                <p class="mb-2">Nhập "<strong>XOA TAI KHOAN</strong>" để xác nhận:</p>
+                <input type="text" class="form-control" id="confirmDelete" placeholder="XOA TAI KHOAN" />
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i> Hủy
+                </button>
+
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn" disabled>
+                    <i class="bi bi-trash me-1"></i> Xóa vĩnh viễn
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        // Xác nhận mật khẩu
+        document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+            var newPass = document.getElementById('newPassword').value;
+            var confirmPass = document.getElementById('confirmPassword').value;
+
+            if (newPass !== confirmPass) {
+                e.preventDefault();
+                alert('Mật khẩu xác nhận không khớp!');
+                return false;
+            }
+        });
+
+        // Xác nhận xóa tài khoản
+        document.getElementById('confirmDelete').addEventListener('input', function() {
+            var btn = document.getElementById('confirmDeleteBtn');
+            btn.disabled = (this.value !== 'XOA TAI KHOAN');
+        });
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+            alert('Tính năng xóa tài khoản đang được phát triển.');
+        });
+    </script>
+}

@@ -1,0 +1,163 @@
+﻿@model List<Webgiasu.Models.Problem>
+@inject Webgiasu.Services.IUserService UserService
+@{
+    ViewData["Title"] = "Quản lý bài toán";
+    Layout = "_AdminLayout";
+}
+
+<div class="row mb-4">
+    <div class="col">
+        <h2 class="fw-bold">
+            <i class="bi bi-card-list text-danger"></i> Quản lý bài toán
+        </h2>
+        <p class="text-muted">Theo dõi tất cả bài toán trong hệ thống</p>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm card-hover">
+            <div class="card-body">
+                <h3 class="mb-0">@Model.Count(p => p.Status == Webgiasu.Models.ProblemStatus.WaitingForTutor)</h3>
+                <p class="text-muted mb-0">Chờ gia sư</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm card-hover">
+            <div class="card-body">
+                <h3 class="mb-0">@Model.Count(p => p.Status == Webgiasu.Models.ProblemStatus.InProgress)</h3>
+                <p class="text-muted mb-0">Đang giải</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm card-hover">
+            <div class="card-body">
+                <h3 class="mb-0">@Model.Count(p => p.Status == Webgiasu.Models.ProblemStatus.Solved)</h3>
+                <p class="text-muted mb-0">Đã giải</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center shadow-sm card-hover">
+            <div class="card-body">
+                <h3 class="mb-0">@Model.Count</h3>
+                <p class="text-muted mb-0">Tổng số</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-warning text-dark">
+        <h5 class="mb-0"><i class="bi bi-list-ul"></i> Danh sách bài toán</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tiêu đề</th>
+                        <th>Học sinh</th>
+                        <th>Gia sư</th>
+                        <th>Môn học</th>
+                        <th>Độ khó</th>
+                        <th>Ngày đăng</th>
+                        <th>Deadline</th>
+                        <th>Trạng thái</th>
+                        <th>Giá</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var problem in Model)
+                    {
+                        var student = UserService.GetUserById(problem.StudentId);
+                        var tutor = problem.AssignedTutorId.HasValue ? UserService.GetUserById(problem.AssignedTutorId.Value) : null;
+                        var statusClass = problem.Status switch
+                        {
+                            Webgiasu.Models.ProblemStatus.WaitingForTutor => "warning",
+                            Webgiasu.Models.ProblemStatus.InProgress => "info",
+                            Webgiasu.Models.ProblemStatus.Solved => "success",
+                            _ => "secondary"
+                        };
+                        var statusText = problem.Status switch
+                        {
+                            Webgiasu.Models.ProblemStatus.WaitingForTutor => "Chờ gia sư",
+                            Webgiasu.Models.ProblemStatus.InProgress => "Đang giải",
+                            Webgiasu.Models.ProblemStatus.Solved => "Đã giải",
+                            _ => "Khác"
+                        };
+                        <tr>
+                            <td class="fw-bold">#@problem.Id</td>
+                            <td>@problem.Title</td>
+                            <td>@student?.FullName</td>
+                            <td>
+                                @if (tutor != null)
+                                {
+                                    <span>@tutor.FullName</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td><span class="badge bg-secondary">@problem.Type</span></td>
+                            <td>
+                                @if (problem.Difficulty == Webgiasu.Models.DifficultyLevel.Easy)
+                                {
+                                    <span class="badge bg-success">Dễ</span>
+                                }
+                                else if (problem.Difficulty == Webgiasu.Models.DifficultyLevel.Medium)
+                                {
+                                    <span class="badge bg-warning">TB</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Khó</span>
+                                }
+                            </td>
+                            <td>@problem.CreatedDate.ToString("dd/MM/yyyy")</td>
+                            <td>@problem.Deadline.ToString("dd/MM/yyyy")</td>
+                            <td><span class="badge bg-@statusClass">@statusText</span></td>
+                            <td class="fw-bold text-success">@problem.Price.ToString("N0") đ</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a asp-action="ProblemDetails" asp-route-id="@problem.Id" class="btn btn-sm btn-outline-primary" title="Xem chi tiết">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteProblem(@problem.Id)" title="Xóa">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function deleteProblem(id) {
+            if (confirm('Bạn chắc chắn muốn xóa bài toán này?')) {
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '@Url.Action("DeleteProblem", "Admin")';
+                
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'id';
+                input.value = id;
+                form.appendChild(input);
+                
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
+}
