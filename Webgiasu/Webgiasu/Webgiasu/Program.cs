@@ -24,7 +24,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
         new CultureInfo("vi-VN"),
         new CultureInfo("en-US")
     };
-    
+
     options.DefaultRequestCulture = new RequestCulture("vi-VN");
     options.SupportedCultures = supportedCultures;
     options.SupportedUICultures = supportedCultures;
@@ -44,6 +44,11 @@ builder.Services.AddScoped<IProblemService, ProblemService>();
 builder.Services.AddScoped<ISolutionService, SolutionService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IRatingService, RatingService>();
+builder.Services.AddScoped<IFriendshipService, FriendshipService>();
+builder.Services.AddScoped<IMessageService, MessageService>();
+
+// Add SignalR
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -71,5 +76,8 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Map SignalR Hub
+app.MapHub<Webgiasu.Hubs.ChatHub>("/chatHub");
 
 app.Run();
