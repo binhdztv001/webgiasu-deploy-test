@@ -1,4 +1,4 @@
-/* ============================================
+﻿/* ============================================
    Dropdown Fix - Comprehensive Solution
    ============================================ */
 
@@ -19,13 +19,13 @@
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
 }
 
-.dropdown-menu.show {
-    display: block !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-    animation: dropdownFadeIn 0.2s ease-out forwards;
-}
+    .dropdown-menu.show {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        animation: dropdownFadeIn 0.2s ease-out forwards;
+    }
 
 /* ========== Dropdown Animation ========== */
 @keyframes dropdownFadeIn {
@@ -33,6 +33,7 @@
         opacity: 0;
         transform: translateY(-8px) translateZ(0);
     }
+
     100% {
         opacity: 1;
         transform: translateY(0) translateZ(0);
@@ -53,78 +54,78 @@
     background: #fff !important;
 }
 
-/* Profile Dropdown Header */
-.profile-dropdown .dropdown-header {
-    padding: 0 !important;
-    background: transparent !important;
-}
+    /* Profile Dropdown Header */
+    .profile-dropdown .dropdown-header {
+        padding: 0 !important;
+        background: transparent !important;
+    }
 
-.profile-dropdown .dropdown-header > div {
-    padding: 1.25rem 1rem !important;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border-bottom: 1px solid #e9ecef;
-}
+        .profile-dropdown .dropdown-header > div {
+            padding: 1.25rem 1rem !important;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 1px solid #e9ecef;
+        }
 
-.profile-dropdown .dropdown-header .profile-avatar-large {
-    width: 64px !important;
-    height: 64px !important;
-    border: 3px solid #fff !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
+        .profile-dropdown .dropdown-header .profile-avatar-large {
+            width: 64px !important;
+            height: 64px !important;
+            border: 3px solid #fff !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
 
-.profile-dropdown .dropdown-header h6 {
-    font-size: 1rem !important;
-    font-weight: 700 !important;
-    color: #212529 !important;
-    margin-bottom: 0.15rem !important;
-}
+        .profile-dropdown .dropdown-header h6 {
+            font-size: 1rem !important;
+            font-weight: 700 !important;
+            color: #212529 !important;
+            margin-bottom: 0.15rem !important;
+        }
 
-.profile-dropdown .dropdown-header small {
-    font-size: 0.8rem !important;
-    color: #6c757d !important;
-    font-weight: 500;
-}
+        .profile-dropdown .dropdown-header small {
+            font-size: 0.8rem !important;
+            color: #6c757d !important;
+            font-weight: 500;
+        }
 
-/* Profile Dropdown Divider */
-.profile-dropdown .dropdown-divider {
-    margin: 0 !important;
-    border-color: #e9ecef !important;
-    opacity: 1 !important;
-}
+    /* Profile Dropdown Divider */
+    .profile-dropdown .dropdown-divider {
+        margin: 0 !important;
+        border-color: #e9ecef !important;
+        opacity: 1 !important;
+    }
 
-/* Profile Menu Items */
-.profile-dropdown .profile-menu-item {
-    display: flex !important;
-    align-items: center !important;
-    padding: 0.85rem 1.25rem !important;
-    font-size: 0.9rem !important;
-    font-weight: 500 !important;
-    color: #495057 !important;
-    transition: all 0.2s ease !important;
-    border-left: 3px solid transparent !important;
-    background: transparent !important;
-}
+    /* Profile Menu Items */
+    .profile-dropdown .profile-menu-item {
+        display: flex !important;
+        align-items: center !important;
+        padding: 0.85rem 1.25rem !important;
+        font-size: 0.9rem !important;
+        font-weight: 500 !important;
+        color: #495057 !important;
+        transition: all 0.2s ease !important;
+        border-left: 3px solid transparent !important;
+        background: transparent !important;
+    }
 
-.profile-dropdown .profile-menu-item i {
-    font-size: 1.1rem !important;
-    width: 24px !important;
-    margin-right: 0.75rem !important;
-    color: #6c757d !important;
-    transition: all 0.2s ease !important;
-}
+        .profile-dropdown .profile-menu-item i {
+            font-size: 1.1rem !important;
+            width: 24px !important;
+            margin-right: 0.75rem !important;
+            color: #6c757d !important;
+            transition: all 0.2s ease !important;
+        }
 
-.profile-dropdown .profile-menu-item:hover {
-    background: linear-gradient(90deg, rgba(33, 150, 243, 0.08) 0%, transparent 100%) !important;
-    color: #2196F3 !important;
-    border-left-color: #2196F3 !important;
-    transform: none !important;
-    padding-left: 1.5rem !important;
-}
+        .profile-dropdown .profile-menu-item:hover {
+            background: linear-gradient(90deg, rgba(33, 150, 243, 0.08) 0%, transparent 100%) !important;
+            color: #2196F3 !important;
+            border-left-color: #2196F3 !important;
+            transform: none !important;
+            padding-left: 1.5rem !important;
+        }
 
-.profile-dropdown .profile-menu-item:hover i {
-    color: #2196F3 !important;
-    transform: translateX(2px) !important;
-}
+            .profile-dropdown .profile-menu-item:hover i {
+                color: #2196F3 !important;
+                transform: translateX(2px) !important;
+            }
 
 /* Tutor Theme - Green hover */
 .tutor-theme .profile-dropdown .profile-menu-item:hover,
@@ -134,10 +135,10 @@ body[data-theme="tutor"] .profile-dropdown .profile-menu-item:hover {
     border-left-color: #4CAF50 !important;
 }
 
-.tutor-theme .profile-dropdown .profile-menu-item:hover i,
-body[data-theme="tutor"] .profile-dropdown .profile-menu-item:hover i {
-    color: #4CAF50 !important;
-}
+    .tutor-theme .profile-dropdown .profile-menu-item:hover i,
+    body[data-theme="tutor"] .profile-dropdown .profile-menu-item:hover i {
+        color: #4CAF50 !important;
+    }
 
 /* Logout Item */
 .profile-dropdown .logout-item {
@@ -146,19 +147,19 @@ body[data-theme="tutor"] .profile-dropdown .profile-menu-item:hover i {
     margin-top: 0.25rem;
 }
 
-.profile-dropdown .logout-item i {
-    color: #dc3545 !important;
-}
+    .profile-dropdown .logout-item i {
+        color: #dc3545 !important;
+    }
 
-.profile-dropdown .logout-item:hover {
-    background: linear-gradient(90deg, rgba(220, 53, 69, 0.08) 0%, transparent 100%) !important;
-    color: #dc3545 !important;
-    border-left-color: #dc3545 !important;
-}
+    .profile-dropdown .logout-item:hover {
+        background: linear-gradient(90deg, rgba(220, 53, 69, 0.08) 0%, transparent 100%) !important;
+        color: #dc3545 !important;
+        border-left-color: #dc3545 !important;
+    }
 
-.profile-dropdown .logout-item:hover i {
-    color: #dc3545 !important;
-}
+        .profile-dropdown .logout-item:hover i {
+            color: #dc3545 !important;
+        }
 
 /* ========== Notification Dropdown ========== */
 .notification-dropdown {
@@ -174,19 +175,19 @@ body[data-theme="tutor"] .profile-dropdown .profile-menu-item:hover i {
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18) !important;
 }
 
-.notification-dropdown .dropdown-header {
-    padding: 1rem 1.25rem !important;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-bottom: none !important;
-}
+    .notification-dropdown .dropdown-header {
+        padding: 1rem 1.25rem !important;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-bottom: none !important;
+    }
 
-.notification-dropdown .dropdown-header h6 {
-    margin: 0 !important;
-    padding: 0 !important;
-    font-size: 1rem !important;
-    font-weight: 600 !important;
-    color: #fff !important;
-}
+        .notification-dropdown .dropdown-header h6 {
+            margin: 0 !important;
+            padding: 0 !important;
+            font-size: 1rem !important;
+            font-weight: 600 !important;
+            color: #fff !important;
+        }
 
 /* Notification scrollable area */
 .notification-dropdown-body {
@@ -194,27 +195,27 @@ body[data-theme="tutor"] .profile-dropdown .profile-menu-item:hover i {
     overflow-y: auto;
 }
 
-/* Smooth scrollbar for notification dropdown */
-.notification-dropdown::-webkit-scrollbar,
-.notification-dropdown-body::-webkit-scrollbar {
-    width: 6px;
-}
+    /* Smooth scrollbar for notification dropdown */
+    .notification-dropdown::-webkit-scrollbar,
+    .notification-dropdown-body::-webkit-scrollbar {
+        width: 6px;
+    }
 
-.notification-dropdown::-webkit-scrollbar-track,
-.notification-dropdown-body::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
+    .notification-dropdown::-webkit-scrollbar-track,
+    .notification-dropdown-body::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
 
-.notification-dropdown::-webkit-scrollbar-thumb,
-.notification-dropdown-body::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 10px;
-}
+    .notification-dropdown::-webkit-scrollbar-thumb,
+    .notification-dropdown-body::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 10px;
+    }
 
-.notification-dropdown::-webkit-scrollbar-thumb:hover,
-.notification-dropdown-body::-webkit-scrollbar-thumb:hover {
-    background: #a1a1a1;
-}
+        .notification-dropdown::-webkit-scrollbar-thumb:hover,
+        .notification-dropdown-body::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
 
 /* Dropdown toggle chevron animation */
 .profile-chevron {
@@ -238,15 +239,15 @@ body[data-theme="tutor"] .profile-dropdown .profile-menu-item:hover i {
     background: #fff;
 }
 
-.notification-item:last-child {
-    border-bottom: none;
-}
+    .notification-item:last-child {
+        border-bottom: none;
+    }
 
-.notification-item:hover {
-    background: #f8f9fa;
-    border-left-color: #667eea;
-    transform: none !important;
-}
+    .notification-item:hover {
+        background: #f8f9fa;
+        border-left-color: #667eea;
+        transform: none !important;
+    }
 
 .notification-icon {
     width: 42px;
@@ -259,35 +260,35 @@ body[data-theme="tutor"] .profile-dropdown .profile-menu-item:hover i {
     flex-shrink: 0;
 }
 
-.notification-icon i {
-    color: white;
-    font-size: 1.1rem;
-}
+    .notification-icon i {
+        color: white;
+        font-size: 1.1rem;
+    }
 
 .notification-content {
     flex: 1;
     min-width: 0;
 }
 
-.notification-content p {
-    margin: 0 0 0.25rem 0;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #212529;
-    line-height: 1.3;
-}
+    .notification-content p {
+        margin: 0 0 0.25rem 0;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #212529;
+        line-height: 1.3;
+    }
 
-.notification-content small {
-    font-size: 0.8rem;
-    color: #6c757d;
-    line-height: 1.4;
-    display: block;
-}
+    .notification-content small {
+        font-size: 0.8rem;
+        color: #6c757d;
+        line-height: 1.4;
+        display: block;
+    }
 
-.notification-content small.text-muted {
-    color: #adb5bd !important;
-    font-size: 0.75rem;
-}
+        .notification-content small.text-muted {
+            color: #adb5bd !important;
+            font-size: 0.75rem;
+        }
 
 /* View all link */
 .notification-dropdown .dropdown-item.text-center {
@@ -343,7 +344,7 @@ body[data-theme="tutor"] .profile-dropdown .profile-menu-item:hover i {
         right: 1rem !important;
         left: 1rem !important;
     }
-    
+
     .profile-dropdown {
         width: calc(100vw - 2rem) !important;
         min-width: calc(100vw - 2rem) !important;
@@ -358,7 +359,7 @@ body[data-theme="tutor"] .profile-dropdown .profile-menu-item:hover i {
         min-width: 320px !important;
         max-width: 320px !important;
     }
-    
+
     .profile-dropdown {
         width: 260px !important;
         min-width: 260px !important;
@@ -382,11 +383,11 @@ body[data-theme="tutor"] .profile-dropdown .profile-menu-item:hover i {
     z-index: 1050 !important;
 }
 
-.top-header .dropdown-menu.show {
-    z-index: 1060 !important;
-}
+    .top-header .dropdown-menu.show {
+        z-index: 1060 !important;
+    }
 
-/* ========== MODAL FIX - ??m b?o modal hi?n th? ?�ng ========== */
+/* ========== MODAL FIX - Đảm bảo modal hiển thị đúng ========== */
 
 /* Reset body overflow khi modal m? */
 body.modal-open {
@@ -394,7 +395,7 @@ body.modal-open {
     padding-right: 0 !important;
 }
 
-/* Modal z-index cao h?n t?t c? */
+/* Modal z-index cao hơn tất cả */
 .modal {
     z-index: 1070 !important;
     position: fixed !important;
@@ -415,7 +416,7 @@ body.modal-open {
     margin: 1.75rem auto !important;
 }
 
-/* ??m b?o modal content hi?n th? ?�ng */
+/* Đảm bảo modal content hiển thị đúng */
 .modal-content {
     position: relative !important;
     background: #fff !important;
@@ -432,14 +433,14 @@ body.modal-open {
     border-radius: 16px 16px 0 0 !important;
 }
 
-.modal-header .btn-close-white {
-    filter: brightness(0) invert(1);
-    opacity: 0.8;
-}
+    .modal-header .btn-close-white {
+        filter: brightness(0) invert(1);
+        opacity: 0.8;
+    }
 
-.modal-header .btn-close-white:hover {
-    opacity: 1;
-}
+        .modal-header .btn-close-white:hover {
+            opacity: 1;
+        }
 
 /* Modal body */
 .modal-body {
@@ -461,10 +462,10 @@ body.modal-open {
     transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
 }
 
-.modal .form-control:focus {
-    border-color: #2196F3 !important;
-    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.15) !important;
-}
+    .modal .form-control:focus {
+        border-color: #2196F3 !important;
+        box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.15) !important;
+    }
 
 /* Buttons trong modal */
 .modal .btn {
@@ -473,27 +474,27 @@ body.modal-open {
     font-weight: 600 !important;
 }
 
-/* Fix cho layout c� overflow hidden - CH? khi modal KH�NG m? */
+/* Fix cho layout có overflow hidden - Chỉ khi modal KHÔNG mở */
 html:not(.modal-open),
 body:not(.modal-open) {
-    /* Gi? overflow nh? c? */
+    /* Giữ overflow như cũ */
 }
 
-/* Khi modal m?, cho ph�p hi?n th? */
+/* Khi modal mở, cho phép hiển thị */
 html.modal-open .layout-container,
 body.modal-open .layout-container {
     overflow: visible !important;
 }
 
-/* ??m b?o modal hi?n th? khi c� fixed layout */
+/* Đảm bảo modal hiển thị khi có fixed layout */
 .modal.show {
     display: block !important;
 }
 
-.modal.show .modal-dialog {
-    transform: none !important;
-    opacity: 1 !important;
-}
+    .modal.show .modal-dialog {
+        transform: none !important;
+        opacity: 1 !important;
+    }
 
 /* Animation cho modal */
 .modal.fade .modal-dialog {
