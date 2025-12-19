@@ -114,60 +114,8 @@
                     </div>
 
                     <!-- Messages -->
-                    <div class="dropdown">
+                    @await Component.InvokeAsync("MessageDropdown")
 
-
-                        <button class="btn btn-link position-relative" type="button" data-bs-toggle="dropdown" style="color: rgba(255,255,255,0.9);">
-                            <i class="bi bi-chat-dots fs-5"></i>
-                            <span class="position-absolute bottom-0 start-70 rounded-pill bg-danger px-1 py-0"
-                                  style="font-size: 0.58rem;">
-                                2
-                            </span>
-                        </button>
-
-
-
-                        <ul class="dropdown-menu dropdown-menu-end notification-dropdown">
-                        <li class="dropdown-header" style="background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%); padding: 1rem 1.25rem; margin: -0.5rem -0.5rem 0.5rem -0.5rem; border-radius: 12px 12px 0 0;">
-                            <h6 class="mb-0 text-white">Tin nhắn</h6>
-                        </li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <a class="dropdown-item notification-item" href="#">
-                                    <div class="d-flex">
-                                        <div class="notification-icon bg-primary">
-                                            <i class="bi bi-person"></i>
-                                        </div>
-                                        <div class="notification-content">
-                                            <p class="mb-1 fw-semibold">Nguyễn Văn A</p>
-                                            <small class="text-muted">Em cần hỏi thêm về bài tập...</small>
-                                            <small class="d-block text-muted mt-1">10 phút trước</small>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item notification-item" href="#">
-                                    <div class="d-flex">
-                                        <div class="notification-icon bg-success">
-                                            <i class="bi bi-person"></i>
-                                        </div>
-                                        <div class="notification-content">
-                                            <p class="mb-1 fw-semibold">Trần Thị B</p>
-                                            <small class="text-muted">Cảm ơn thầy đã giải đáp!</small>
-                                            <small class="d-block text-muted mt-1">30 phút trước</small>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <a class="dropdown-item text-center fw-semibold" asp-controller="Tutor" asp-action="Messages" style="color: #4CAF50 !important;">
-                                    Xem tất cả tin nhắn
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
 
                     <!-- Profile -->
                     <div class="dropdown">
@@ -263,6 +211,18 @@
                                 <span class="position-absolute bottom-0 start-70 rounded-pill bg-success px-1 py-0"
                                       style="font-size: 0.58rem;">
                                     5
+                                </span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Tutor" asp-action="FriendShip">
+                                <i class="bi bi-people"></i>
+                                <span>Bạn bè</span>
+
+                                <span class="position-absolute bottom-0 start-70 rounded-pill bg-success px-1 py-0"
+                                      style="font-size: 0.58rem;">
+                                    3
                                 </span>
                             </a>
                         </li>

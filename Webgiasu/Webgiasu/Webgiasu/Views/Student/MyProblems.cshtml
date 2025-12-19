@@ -4,161 +4,163 @@
     Layout = "_StudentLayout";
 }
 
-<div class="page-header d-flex flex-wrap justify-content-between align-items-center">
-    <div class="mb-2 mb-md-0">
-        <h5 class="fw-bold mb-1 text-dark">
-            <i class="bi bi-journal-text text-primary me-2"></i>Danh sách bài đã gửi
-        </h5>
-        <p class="text-muted mb-0 small">Quản lý và theo dõi các bài toán của bạn</p>
-    </div>
-    <a asp-action="CreateProblem" class="btn btn-primary btn-sm">
-        <i class="bi bi-plus-circle me-1"></i> Gửi bài mới
-    </a>
-</div>
-
-<div class="row mb-4">
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                        <div class="bg-warning bg-opacity-10 rounded p-3">
-                            <i class="bi bi-clock text-warning fs-3"></i>
-                        </div>
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h6 class="text-muted mb-1">Chờ gia sư</h6>
-                        <h3 class="fw-bold mb-0">@Model.Count(p => p.Status == Webgiasu.Models.ProblemStatus.WaitingForTutor)</h3>
-                    </div>
-                </div>
-            </div>
+<div>
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center">
+        <div class="mb-2 mb-md-0">
+            <h5 class="fw-bold mb-1 text-dark">
+                <i class="bi bi-journal-text text-primary me-2"></i>Danh sách bài đã gửi
+            </h5>
+            <p class="text-muted mb-0 small">Quản lý và theo dõi các bài toán của bạn</p>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                        <div class="bg-info bg-opacity-10 rounded p-3">
-                            <i class="bi bi-hourglass-split text-info fs-3"></i>
-                        </div>
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h6 class="text-muted mb-1">Đang giải</h6>
-                        <h3 class="fw-bold mb-0">@Model.Count(p => p.Status == Webgiasu.Models.ProblemStatus.InProgress)</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                        <div class="bg-success bg-opacity-10 rounded p-3">
-                            <i class="bi bi-check-circle text-success fs-3"></i>
-                        </div>
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h6 class="text-muted mb-1">Hoàn thành</h6>
-                        <h3 class="fw-bold mb-0">@Model.Count(p => p.Status == Webgiasu.Models.ProblemStatus.Solved)</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                        <div class="bg-primary bg-opacity-10 rounded p-3">
-                            <i class="bi bi-list-check text-primary fs-3"></i>
-                        </div>
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h6 class="text-muted mb-1">Tổng bài</h6>
-                        <h3 class="fw-bold mb-0">@Model.Count</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-@if (Model.Any())
-{
-    <div class="row">
-        @foreach (var problem in Model.OrderByDescending(p => p.CreatedDate))
-        {
-            <div class="col-md-6 mb-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <h5 class="fw-bold mb-0">@problem.Title</h5>
-                            @if (problem.Status == Webgiasu.Models.ProblemStatus.WaitingForTutor)
-                            {
-                                <span class="badge bg-warning">Chờ gia sư</span>
-                            }
-                            else if (problem.Status == Webgiasu.Models.ProblemStatus.InProgress)
-                            {
-                                <span class="badge bg-info">Đang giải</span>
-                            }
-                            else if (problem.Status == Webgiasu.Models.ProblemStatus.Solved)
-                            {
-                                <span class="badge bg-success">Hoàn thành</span>
-                            }
-                        </div>
-                        
-                        <p class="text-muted mb-3">@(problem.Description != null && problem.Description.Length > 100 ? problem.Description.Substring(0, 100) + "..." : problem.Description)</p>
-                        
-                        <div class="d-flex gap-2 mb-3">
-                            <span class="badge bg-secondary">@problem.Type</span>
-                            @if (problem.Difficulty == Webgiasu.Models.DifficultyLevel.Easy)
-                            {
-                                <span class="badge bg-success">Dễ</span>
-                            }
-                            else if (problem.Difficulty == Webgiasu.Models.DifficultyLevel.Medium)
-                            {
-                                <span class="badge bg-warning">Trung bình</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-danger">Khó</span>
-                            }
-                            <span class="badge bg-primary">@problem.Price.ToString("N0") đ</span>
-                        </div>
-                        
-                        <div class="text-muted small mb-3">
-                            <i class="bi bi-calendar"></i> @problem.CreatedDate.ToString("dd/MM/yyyy HH:mm")
-                        </div>
-                        
-                        <div class="d-flex gap-2">
-                            <a asp-action="ProblemDetails" asp-route-id="@problem.Id" class="btn btn-sm btn-primary">
-                                <i class="bi bi-eye"></i> Xem chi tiết
-                            </a>
-                            @if (problem.Status == Webgiasu.Models.ProblemStatus.Solved)
-                            {
-                                <a asp-action="RateTutor" asp-route-problemId="@problem.Id" class="btn btn-sm btn-warning">
-                                    <i class="bi bi-star"></i> Đánh giá
-                                </a>
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
-}
-else
-{
-    <div class="text-center py-5">
-        <i class="bi bi-inbox" style="font-size: 5rem; color: #dee2e6;"></i>
-        <h4 class="mt-3 text-muted">Chưa có bài toán nào</h4>
-        <p class="text-muted">Hãy gửi bài toán đầu tiên của bạn!</p>
-        <a asp-action="CreateProblem" class="btn btn-primary mt-3">
-            <i class="bi bi-plus-circle"></i> Gửi bài mới
+        <a asp-action="CreateProblem" class="btn btn-primary btn-sm">
+            <i class="bi bi-plus-circle me-1"></i> Gửi bài mới
         </a>
     </div>
-}
+
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-warning bg-opacity-10 rounded p-3">
+                                <i class="bi bi-clock text-warning fs-3"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-1">Chờ gia sư</h6>
+                            <h3 class="fw-bold mb-0">@Model.Count(p => p.Status == Webgiasu.Models.ProblemStatus.WaitingForTutor)</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-info bg-opacity-10 rounded p-3">
+                                <i class="bi bi-hourglass-split text-info fs-3"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-1">Đang giải</h6>
+                            <h3 class="fw-bold mb-0">@Model.Count(p => p.Status == Webgiasu.Models.ProblemStatus.InProgress)</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-success bg-opacity-10 rounded p-3">
+                                <i class="bi bi-check-circle text-success fs-3"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-1">Hoàn thành</h6>
+                            <h3 class="fw-bold mb-0">@Model.Count(p => p.Status == Webgiasu.Models.ProblemStatus.Solved)</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-primary bg-opacity-10 rounded p-3">
+                                <i class="bi bi-list-check text-primary fs-3"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-1">Tổng bài</h6>
+                            <h3 class="fw-bold mb-0">@Model.Count</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="row">
+            @foreach (var problem in Model.OrderByDescending(p => p.CreatedDate))
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="fw-bold mb-0">@problem.Title</h5>
+                                @if (problem.Status == Webgiasu.Models.ProblemStatus.WaitingForTutor)
+                                {
+                                    <span class="badge bg-warning">Chờ gia sư</span>
+                                }
+                                else if (problem.Status == Webgiasu.Models.ProblemStatus.InProgress)
+                                {
+                                    <span class="badge bg-info">Đang giải</span>
+                                }
+                                else if (problem.Status == Webgiasu.Models.ProblemStatus.Solved)
+                                {
+                                    <span class="badge bg-success">Hoàn thành</span>
+                                }
+                            </div>
+
+                            <p class="text-muted mb-3">@(problem.Description != null && problem.Description.Length > 100 ? problem.Description.Substring(0, 100) + "..." : problem.Description)</p>
+
+                            <div class="d-flex gap-2 mb-3">
+                                <span class="badge bg-secondary">@problem.Type</span>
+                                @if (problem.Difficulty == Webgiasu.Models.DifficultyLevel.Easy)
+                                {
+                                    <span class="badge bg-success">Dễ</span>
+                                }
+                                else if (problem.Difficulty == Webgiasu.Models.DifficultyLevel.Medium)
+                                {
+                                    <span class="badge bg-warning">Trung bình</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Khó</span>
+                                }
+                                <span class="badge bg-primary">@problem.Price.ToString("N0") đ</span>
+                            </div>
+
+                            <div class="text-muted small mb-3">
+                                <i class="bi bi-calendar"></i> @problem.CreatedDate.ToString("dd/MM/yyyy HH:mm")
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <a asp-action="ProblemDetails" asp-route-id="@problem.Id" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-eye"></i> Xem chi tiết
+                                </a>
+                                @if (problem.Status == Webgiasu.Models.ProblemStatus.Solved)
+                                {
+                                    <a asp-action="RateTutor" asp-route-problemId="@problem.Id" class="btn btn-sm btn-warning">
+                                        <i class="bi bi-star"></i> Đánh giá
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-inbox" style="font-size: 5rem; color: #dee2e6;"></i>
+            <h4 class="mt-3 text-muted">Chưa có bài toán nào</h4>
+            <p class="text-muted">Hãy gửi bài toán đầu tiên của bạn!</p>
+            <a asp-action="CreateProblem" class="btn btn-primary mt-3">
+                <i class="bi bi-plus-circle"></i> Gửi bài mới
+            </a>
+        </div>
+    }
+</div>
