@@ -1,4 +1,4 @@
-/* ===========================
+ï»¿/* ===========================
    STUDENT LAYOUT STYLES - FULLY OPTIMIZED
    =========================== */
 
@@ -23,17 +23,17 @@
 }
 
 /* ===========================
-   BODY & HTML - Không scroll body
+   BODY & HTML - KhÃ´ng scroll body
    =========================== */
 
 html, body {
     height: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
-    overflow: hidden !important; /* Body không scroll */
+    overflow: hidden !important; /* Body khÃ´ng scroll */
 }
 
-    /* Cho phép scroll khi modal m? */
+    /* Cho phÃ©p scroll khi modal m? */
     html.modal-open,
     body.modal-open {
         overflow: hidden !important;
@@ -56,7 +56,7 @@ html, body {
     align-items: center !important;
     padding: 0 !important;
     margin: 0 !important;
-    overflow: visible !important; /* Cho phép dropdown hi?n th? */
+    overflow: visible !important; /* Cho phÃ©p dropdown hi?n th? */
 }
 
     /* Shimmer/Shine Effect for Header */
@@ -523,7 +523,7 @@ html, body {
 }
 
 /* ===========================
-   SIDEBAR - Fixed bên trái
+   SIDEBAR - Fixed bÃªn trÃ¡i
    =========================== */
 
 .sidebar {
@@ -541,7 +541,7 @@ html, body {
     scrollbar-color: rgba(255, 255, 255, 0.3) transparent; /* Firefox */
 }
 
-    /* Sidebar Scrollbar - gi?ng Tutor và Admin */
+    /* Sidebar Scrollbar - gi?ng Tutor vÃ  Admin */
     .sidebar::-webkit-scrollbar {
         width: 6px;
     }
@@ -810,7 +810,7 @@ html, body {
     }
 
 /* ===========================
-   MAIN CONTENT - Chi?m ph?n còn l?i
+   MAIN CONTENT - Chi?m ph?n cÃ²n l?i
    =========================== */
 
 .main-content {
@@ -826,7 +826,7 @@ html, body {
     }
 
 /* ===========================
-   CONTENT WRAPPER - CH? PH?N NÀY SCROLL (bao g?m footer)
+   CONTENT WRAPPER - CH? PH?N NÃ€Y SCROLL (bao g?m footer)
    =========================== */
 
 .content-wrapper {
@@ -840,7 +840,7 @@ html, body {
     flex-direction: column !important;
 }
 
-    /* N?i dung chính - s? d?ng wrapper */
+    /* N?i dung chÃ­nh - s? d?ng wrapper */
     .content-wrapper > .dashboard-container,
     .content-wrapper > .page-header:first-child,
     .content-wrapper > div:first-child:not(.alert):not(.content-footer),
@@ -867,7 +867,7 @@ html, body {
         }
 
 /* ===========================
-   CONTENT FOOTER - Luôn ? cu?i, n?n tr?ng ngang h?t
+   CONTENT FOOTER - LuÃ´n ? cu?i, n?n tr?ng ngang h?t
    =========================== */
 
 .content-footer {
@@ -875,14 +875,14 @@ html, body {
     background: white !important;
     border-top: 1px solid #e9ecef;
     margin-top: auto; /* ??y footer xu?ng cu?i */
-    margin-left: -1.25rem; /* Kéo ra ngoài padding */
-    margin-right: -1.25rem; /* Kéo ra ngoài padding */
+    margin-left: -1.25rem; /* KÃ©o ra ngoÃ i padding */
+    margin-right: -1.25rem; /* KÃ©o ra ngoÃ i padding */
     padding-left: 1.25rem;
     padding-right: 1.25rem;
     flex-shrink: 0;
 }
 
-/* Kho?ng cách t?i thi?u gi?a content và footer */
+/* Kho?ng cÃ¡ch t?i thi?u gi?a content vÃ  footer */
 .content-wrapper > *:not(.content-footer):last-of-type {
     margin-bottom: 1.5rem;
 }
@@ -953,11 +953,11 @@ html, body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
     border-radius: 12px !important;
     background: white !important;
-    transform: none !important; /* Không bay */
+    transform: none !important; /* KhÃ´ng bay */
 }
 
     .content-wrapper .card:hover {
-        transform: none !important; /* Không bay khi hover */
+        transform: none !important; /* KhÃ´ng bay khi hover */
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
     }
 
@@ -1177,7 +1177,7 @@ html, body {
 }
 
 @media (max-width: 992px) {
-    /* Sidebar ?n trên mobile */
+    /* Sidebar ?n trÃªn mobile */
     .sidebar {
         position: fixed;
         left: 0;
@@ -1194,7 +1194,7 @@ html, body {
             box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
         }
 
-    /* Main content chi?m full width trên mobile */
+    /* Main content chi?m full width trÃªn mobile */
     .main-content,
     .main-content.expanded {
         width: 100%;
@@ -1297,7 +1297,7 @@ html, body {
    PERFORMANCE OPTIMIZATIONS
    =========================== */
 
-/* Modal z-index fix - ??m b?o modal hi?n th? trên t?t c? */
+/* Modal z-index fix - ??m b?o modal hi?n th? trÃªn t?t c? */
 .modal {
     z-index: 2000 !important;
     position: fixed !important;
@@ -1305,9 +1305,9 @@ html, body {
 
 .modal-backdrop {
     position: fixed !important;
-    z-index: 1040 !important; /* th?p h?n modal và header */
-    pointer-events: none !important; /* tránh ch?n click vào modal */
-    background-color: rgba(0, 0, 0, 0.4) !important;
+    z-index: 1040 !important; /* th?p h?n modal vÃ  header */
+    pointer-events: none !important; /* trÃ¡nh ch?n click vÃ o modal */
+    background-color: rgba(0, 0, 0, 0.4);
     filter: none !important;
 }
 
@@ -1327,7 +1327,7 @@ html, body {
     transition: none !important;
 }
 
-/* Cho phép t??ng tác v?i modal */
+/* Cho phÃ©p t??ng tÃ¡c v?i modal */
 .modal.show {
     overflow-x: hidden;
     overflow-y: auto;
@@ -1390,14 +1390,14 @@ img {
 
     .page-header h2,
     .page-header h5 {
-        font-size: 1.25rem !important; /* ??ng nh?t kích c? tiêu ?? */
+        font-size: 1.25rem !important; /* ??ng nh?t kÃ­ch c? tiÃªu ?? */
         font-weight: 700 !important;
         color: #212529 !important;
         margin-bottom: 0.25rem !important;
     }
 
     .page-header p {
-        font-size: 0.875rem !important; /* ??ng nh?t kích c? mô t? */
+        font-size: 0.875rem !important; /* ??ng nh?t kÃ­ch c? mÃ´ t? */
         color: #6c757d !important;
         margin-bottom: 0 !important;
     }
@@ -1481,7 +1481,7 @@ img {
     border-radius: 12px;
 }
 
-/* Cards trong content - không bay */
+/* Cards trong content - khÃ´ng bay */
 .content-wrapper .card {
     animation: fadeInUp 0.4s ease-out;
     animation-fill-mode: both;
@@ -1569,7 +1569,7 @@ img {
             }
 }
 
-/* Form pages - không hover bay */
+/* Form pages - khÃ´ng hover bay */
 .content-wrapper > .row > .col-lg-8 > .card,
 .content-wrapper > .row > .col-lg-4 > .card {
     transition: box-shadow 0.2s ease;

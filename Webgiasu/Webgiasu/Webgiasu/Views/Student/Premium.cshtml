@@ -1,0 +1,201 @@
+﻿@model Webgiasu.Models.User
+
+@{
+    ViewData["Title"] = "Nâng cấp Premium";
+    Layout = "_StudentLayout";
+    bool isPremium = Model.IsPremium 
+        && Model.PremiumExpiredAt.HasValue
+        && Model.PremiumExpiredAt > DateTime.Now;
+}
+
+<div>
+    <!-- Header -->
+    <div class="row page-header d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h5 class="fw-bold mb-1 text-dark">
+                <i class="bi bi-gem text-primary me-2"></i>Nâng cấp Premium
+            </h5>
+            <p class="text-muted mb-0 small">
+                Mở khóa các quyền lợi đặc biệt dành cho học sinh
+            </p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- LEFT: Premium Info -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <div class="mb-4">
+                        <div class="rounded-circle bg-warning bg-gradient text-white
+                                    d-inline-flex align-items-center justify-content-center"
+                             style="width: 120px; height: 120px;">
+                            <i class="bi bi-gem" style="font-size: 3.5rem;"></i>
+                        </div>
+                    </div>
+
+                    <h4 class="fw-bold mb-1">Student Premium</h4>
+                    <p class="text-muted mb-3">Dành cho học sinh</p>
+
+                    <h2 class="text-primary fw-bold mb-3">
+                        99.000đ / tháng
+                    </h2>
+
+                    @if (isPremium)
+                    {
+                        <button class="btn btn-success btn-lg" disabled>
+                            <i class="bi bi-patch-check-fill me-1"></i>
+                            Đã là Premium
+                        </button>
+
+                        <div class="text-muted small mt-2">
+                            Hết hạn: @Model.PremiumExpiredAt?.ToString("dd/MM/yyyy")
+                        </div>
+                    }
+                    else
+                    {
+                        <button class="btn btn-primary btn-lg"
+                                data-bs-toggle="modal"
+                                data-bs-target="#confirmPremiumModal">
+                            <i class="bi bi-gem me-1"></i>
+                            Nâng cấp Premium
+                        </button>
+                    }
+
+                    <hr class="my-4" />
+
+                    <p class="text-muted small mb-0">
+                        Nâng cấp để được ưu tiên và tiếp cận gia sư tốt hơn
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Benefits -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm h-100">
+                <div class="card-header py-3"
+                     style="background: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%);">
+                    <h5 class="mb-0 text-white">
+                        <i class="bi bi-star-fill me-2"></i>Quyền lợi Premium
+                    </h5>
+                </div>
+
+                <div class="card-body p-4">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="border-start border-primary border-4 ps-3 mb-4">
+                                <h6 class="fw-bold mb-1">
+                                    <i class="bi bi-person-lines-fill text-primary me-1"></i>
+                                    Xem hồ sơ gia sư
+                                </h6>
+                                <p class="text-muted small mb-0">
+                                    Xem chi tiết thông tin, kinh nghiệm, đánh giá gia sư
+                                </p>
+                            </div>
+
+                            <div class="border-start border-primary border-4 ps-3 mb-4">
+                                <h6 class="fw-bold mb-1">
+                                    <i class="bi bi-lightning-charge text-primary me-1"></i>
+                                    Ưu tiên bài đăng
+                                </h6>
+                                <p class="text-muted small mb-0">
+                                    Bài toán của bạn được đẩy lên trước
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="border-start border-primary border-4 ps-3 mb-4">
+                                <h6 class="fw-bold mb-1">
+                                    <i class="bi bi-graph-up-arrow text-primary me-1"></i>
+                                    Tăng tỉ lệ được nhận
+                                </h6>
+                                <p class="text-muted small mb-0">
+                                    Gia sư dễ thấy và nhận bài hơn
+                                </p>
+                            </div>
+
+                            <div class="border-start border-primary border-4 ps-3 mb-4">
+                                <h6 class="fw-bold mb-1">
+                                    <i class="bi bi-award text-primary me-1"></i>
+                                    Gợi ý gia sư tốt hơn
+                                </h6>
+                                <p class="text-muted small mb-0">
+                                    Hệ thống ưu tiên đề xuất gia sư phù hợp
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info border-0 mb-4">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        Premium giúp bạn tiếp cận gia sư nhanh và hiệu quả hơn.
+                    </div>
+
+                    @if (!isPremium)
+                    {
+                        <div class="d-grid">
+                            <button class="bg-warning bg-gradient btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#confirmPremiumModal">
+                                <i class="bi bi-gem me-1"></i> Nâng cấp ngay
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="d-grid">
+                            <button class="btn btn-success btn-lg" disabled>
+                                <i class="bi bi-check-circle me-1"></i> Đã kích hoạt Premium
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Xác nhận nâng cấp -->
+<div class="modal fade"
+     id="confirmPremiumModal"
+     tabindex="-1"
+     data-bs-backdrop="false"
+     data-bs-keyboard="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header"
+                 style="background: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%);">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-gem me-2"></i>Xác nhận nâng cấp
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body text-center p-4">
+                <i class="bi bi-patch-check-fill text-success fs-1 mb-3"></i>
+
+                <h5 class="fw-bold mb-2">Nâng cấp Student Premium?</h5>
+                <p class="text-muted mb-0">
+                    Tài khoản của bạn sẽ được kích hoạt quyền lợi Premium ngay lập tức.
+                </p>
+
+                <div class="alert alert-warning border-0 mt-3 small">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Chức năng này dùng để <strong>test demo</strong>, chưa có thanh toán thật.
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">
+                    Hủy
+                </button>
+
+                <form asp-action="UpgradePremium" method="post">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        Xác nhận nâng cấp
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

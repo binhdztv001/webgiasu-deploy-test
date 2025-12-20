@@ -1,6 +1,6 @@
 ﻿/* ===========================
    GLOBAL ANIMATIONS CSS
-   Hiệu ứng cho toàn bộ website
+   Hi?u ?ng cho toàn b? website
    =========================== */
 
 /* ===========================
@@ -486,8 +486,8 @@
     }
 
     .btn-animated:hover::before {
-        width: 400px;
-        height: 400px;
+        width: 120%;
+        height: 160%;
     }
 
     .btn-animated:hover {

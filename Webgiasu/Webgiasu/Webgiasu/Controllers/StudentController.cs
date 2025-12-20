@@ -119,17 +119,44 @@ namespace Webgiasu.Controllers
             var userId = GetCurrentUserId();
             if (userId == 0) return RedirectToAction("Login", "Account");
 
+            var currentUser = _userService.GetUserById(userId);
+            var hasPremium = PremiumService.HasPremium(currentUser);
+
             var problem = _problemService.GetProblemById(id);
             if (problem == null || problem.StudentId != userId)
             {
                 return NotFound();
             }
 
+            User assignedTutor = null;
+
+            if (problem.AssignedTutorId.HasValue)
+            {
+                if (hasPremium)
+                {
+                    // Premium: xem full hồ sơ
+                    assignedTutor = _userService.GetUserById(problem.AssignedTutorId.Value);
+                }
+                else
+                {
+                    // Free: chỉ xem thông tin cơ bản
+                    var tutor = _userService.GetUserById(problem.AssignedTutorId.Value);
+                    if (tutor != null)
+                    {
+                        assignedTutor = new User
+                        {
+                            Id = tutor.Id,
+                            FullName = tutor.FullName,
+                        };
+                    }
+                }
+            }
+
             var model = new ProblemDetailsViewModel
             {
                 Problem = problem,
                 Student = _userService.GetUserById(problem.StudentId),
-                AssignedTutor = problem.AssignedTutorId.HasValue ? _userService.GetUserById(problem.AssignedTutorId.Value) : null,
+                AssignedTutor = assignedTutor,
                 Solution = _solutionService.GetSolutionByProblemId(problem.Id),
                 Payment = _paymentService.GetPaymentByProblemId(problem.Id)
             };
@@ -137,6 +164,7 @@ namespace Webgiasu.Controllers
             // Check if student has rated this problem
             ViewBag.HasRated = await _ratingService.HasStudentRatedProblemAsync(id, userId);
 
+            ViewBag.HasPremium = hasPremium;
             return View(model);
         }
 
@@ -650,6 +678,44 @@ namespace Webgiasu.Controllers
             ViewBag.TotalUnread = _messageService.GetTotalUnreadCount(userId);
 
             return View(messages);
+        }
+
+        // Đăng ký premium
+        public IActionResult Premium()
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0)
+                return RedirectToAction("Login", "Account");
+
+            var user = _userService.GetUserById(userId);
+            if (user == null)
+                return NotFound();
+
+            return View(user);
+        }
+
+        // Fake for testing, change code after adding payment function
+        [HttpPost]
+        public IActionResult UpgradePremium()
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0)
+                return RedirectToAction("Login", "Account");
+
+            var user = _userService.GetUserById(userId);
+            if (user == null)
+                return NotFound();
+
+            // FAKE PAYMENT
+            user.IsPremium = true;
+            user.PremiumExpiredAt = DateTime.Now.AddMonths(1); // demo 1 tháng
+
+            _userService.UpdateUser(user);
+
+            HttpContext.Session.SetString("IsPremium", "true");
+
+            TempData["Success"] = "Nâng cấp Premium thành công!";
+            return RedirectToAction("Premium");
         }
 
     }
