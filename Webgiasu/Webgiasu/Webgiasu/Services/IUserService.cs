@@ -13,5 +13,7 @@ namespace Webgiasu.Services
         bool ApproveTutor(int tutorId);
         List<User> GetUsersByRole(UserRole role);
         bool UpdateUser(User user);
+        bool IsPremium(int userId);
+
     }
 }

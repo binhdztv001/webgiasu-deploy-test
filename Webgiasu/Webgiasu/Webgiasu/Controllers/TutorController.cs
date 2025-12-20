@@ -377,36 +377,74 @@ namespace Webgiasu.Controllers
         }
 
         // Account Settings
-                public IActionResult Settings()
-                {
-                    var userId = GetCurrentUserId();
-                    if (userId == 0) return RedirectToAction("Login", "Account");
+        public IActionResult Settings()
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return RedirectToAction("Login", "Account");
 
-                    var user = _userService.GetUserById(userId);
-                    if (user == null) return NotFound();
+            var user = _userService.GetUserById(userId);
+            if (user == null) return NotFound();
 
-                    return View(user);
-                }
-
-                [HttpPost]
-                public IActionResult UpdateTutorProfile(string? bio, string? subjects, string? education, int? experienceYears, string? certificates)
-                {
-                    var userId = GetCurrentUserId();
-                    if (userId == 0) return RedirectToAction("Login", "Account");
-
-                    var user = _userService.GetUserById(userId);
-                    if (user != null)
-                    {
-                        user.Bio = bio;
-                        user.Subjects = subjects;
-                        user.Education = education;
-                        user.ExperienceYears = experienceYears;
-                        user.Certificates = certificates;
-                
-                        _userService.UpdateUser(user);
-                        TempData["Success"] = "Cập nhật hồ sơ gia sư thành công!";
-                    }
-                    return RedirectToAction("Settings");
-                }
-            }
+            return View(user);
         }
+
+        [HttpPost]
+        public IActionResult UpdateTutorProfile(string? bio, string? subjects, string? education, int? experienceYears, string? certificates)
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return RedirectToAction("Login", "Account");
+
+            var user = _userService.GetUserById(userId);
+            if (user != null)
+            {
+                user.Bio = bio;
+                user.Subjects = subjects;
+                user.Education = education;
+                user.ExperienceYears = experienceYears;
+                user.Certificates = certificates;
+                
+                _userService.UpdateUser(user);
+                TempData["Success"] = "Cập nhật hồ sơ gia sư thành công!";
+            }
+            return RedirectToAction("Settings");
+        }
+
+        // Premium
+        public IActionResult Premium()
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0)
+                return RedirectToAction("Login", "Account");
+
+            var user = _userService.GetUserById(userId);
+            if (user == null)
+                return NotFound();
+
+            return View(user);
+        }
+
+        // Fake for testing, change code after adding payment function
+        [HttpPost]
+        public IActionResult UpgradePremium()
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0)
+                return RedirectToAction("Login", "Account");
+
+            var user = _userService.GetUserById(userId);
+            if (user == null)
+                return NotFound();
+
+            // FAKE PAYMENT
+            user.IsPremium = true;
+            user.PremiumExpiredAt = DateTime.Now.AddMonths(1); // demo 1 tháng
+
+            _userService.UpdateUser(user);
+
+            HttpContext.Session.SetString("IsPremium", "true");
+
+            TempData["Success"] = "Nâng cấp Premium thành công!";
+            return RedirectToAction("Premium");
+        }
+    }
+}

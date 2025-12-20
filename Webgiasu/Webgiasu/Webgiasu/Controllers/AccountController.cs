@@ -43,6 +43,7 @@ namespace Webgiasu.Controllers
                     HttpContext.Session.SetInt32("UserId", user.Id);
                     HttpContext.Session.SetString("UserName", user.FullName);
                     HttpContext.Session.SetString("UserRole", user.Role.ToString());
+                    HttpContext.Session.SetString("IsPremium", user.IsPremium ? "true" : "false");
 
                     // Redirect based on role
                     return user.Role switch

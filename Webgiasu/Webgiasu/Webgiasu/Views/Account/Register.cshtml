@@ -101,7 +101,7 @@
                             </div>
                         </div>
 
-                        @if (Model.Role == Webgiasu.Models.UserRole.Tutor)
+                        @* @if (Model.Role == Webgiasu.Models.UserRole.Tutor)
                         {
                             <div class="alert alert-warning border-0 shadow-sm alert-animated fade-in-up delay-4">
                                 <i class="bi bi-exclamation-triangle-fill me-2 icon-pulse"></i>
@@ -114,7 +114,7 @@
                                 <i class="bi bi-info-circle-fill me-2 icon-pulse"></i>
                                 <strong>Thông tin:</strong> Sau khi đăng ký thành công, bạn có thể đăng nhập ngay lập tức và sử dụng các tính năng của hệ thống.
                             </div>
-                        }
+                        } *@
 
                         <div class="d-grid gap-2 mb-3 fade-in-up delay-5">
                             <button type="submit" class="btn btn-@roleColor btn-lg btn-pill btn-animated shadow-sm">
@@ -190,7 +190,7 @@
         transform: translateY(-2px);
     }
     
-    .btn-animated {
+    /* .btn-animated {
         position: relative;
         overflow: hidden;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -201,7 +201,7 @@
         position: absolute;
         top: 50%;
         left: 50%;
-        width: 0;
+        width: 100%;
         height: 0;
         border-radius: 50%;
         background: rgba(255, 255, 255, 0.3);
@@ -221,7 +221,7 @@
     
     .btn-pill {
         border-radius: 50px;
-    }
+    } */
     
     .alert-animated {
         border-radius: 12px;

@@ -19,6 +19,9 @@ namespace Webgiasu.Models
         public int? ExperienceYears { get; set; } // S? n?m kinh nghi?m
         public string? Certificates { get; set; } // Ch?ng ch?
 
+        // Premium
+        public bool IsPremium { get; set; } = false;
+        public DateTime? PremiumExpiredAt { get; set; }
 
     }
 }

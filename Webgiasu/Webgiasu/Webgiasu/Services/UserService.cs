@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Webgiasu.Models;
@@ -74,5 +75,20 @@ namespace Webgiasu.Services
             _db.SaveChanges();
             return true;
         }
+        public bool IsPremium(int userId)
+        {
+            var user = _db.Users.Find(userId);
+            return user != null && user.IsPremium;
+        }
+        public List<User> GetTutorsForStudentSelection()
+        {
+            return _db.Users
+                .Where(u => u.Role == UserRole.Tutor)
+                .OrderByDescending(u => u.IsPremium)
+                .ThenByDescending(u => u.ExperienceYears)
+                .ThenByDescending(u => u.RegisteredDate)
+                .ToList();
+        }
+
     }
 }
