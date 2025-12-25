@@ -1,4 +1,4 @@
-namespace Webgiasu.Models
+﻿namespace Webgiasu.Models
 {
     public enum ProblemType
     {
@@ -16,7 +16,8 @@ namespace Webgiasu.Models
     {
         Easy,
         Medium,
-        Hard
+        Hard,
+        options
     }
 
     public enum ProblemStatus
@@ -36,10 +37,13 @@ namespace Webgiasu.Models
         public ProblemType Type { get; set; }
         public DifficultyLevel Difficulty { get; set; }
         public string ImageUrl { get; set; } = string.Empty;
+        public string? AttachmentFile { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime Deadline { get; set; }
         public ProblemStatus Status { get; set; }
         public int? AssignedTutorId { get; set; }
         public decimal Price { get; set; }
+
+        public ICollection<ProblemGroup>? Groups { get; set; }
     }
 }

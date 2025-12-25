@@ -1,10 +1,20 @@
 ﻿@model Webgiasu.Models.ViewModels.TutorDashboardViewModel
+@using System.Text.RegularExpressions
+
 @{
     ViewData["Title"] = "Trang chủ - Gia sư";
     Layout = "~/Views/Shared/_TutorLayout.cshtml";
     var avgRating = ViewBag.AverageRating ?? 0.0;
     var totalRatings = ViewBag.TotalRatings ?? 0;
 }
+
+@functions {
+    string StripHtml(string input)
+    {
+        return Regex.Replace(input ?? "", "<.*?>", string.Empty);
+    }
+}
+
 
 <!-- Page Header -->
 <div class="row mb-4 fade-in">
@@ -201,7 +211,12 @@
                                     <h6 class="mb-0 fw-semibold text-dark">@problem.Title</h6>
                                     <span class="badge bg-success px-3 py-2 fw-bold">@problem.Price.ToString("N0") đ</span>
                                 </div>
-                                <p class="mb-2 text-muted small">@problem.Description.Substring(0, Math.Min(80, problem.Description.Length))...</p>
+                                <p class="mb-2 text-muted small">
+                                    @{
+                                        var preview = StripHtml(problem.Description);
+                                    }
+                                    @(preview.Length > 80 ? preview.Substring(0, 80) + "..." : preview)
+                                </p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <span class="badge bg-secondary me-1">@problem.Type</span>

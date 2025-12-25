@@ -1,137 +1,500 @@
 ﻿@{
     ViewData["Title"] = "Tin nhắn";
     Layout = "_StudentLayout";
+    var conversations = ViewBag.Conversations as List<Webgiasu.Models.User>;
+    var friends = ViewBag.Friends as List<Webgiasu.Models.User>;
+    var selectedUser = ViewBag.SelectedUser as Webgiasu.Models.User;
+    var messages = ViewBag.Messages as List<Webgiasu.Models.Message>;
+    var currentUserId = (int)ViewBag.CurrentUserId;
 }
 
 <div class="page-header d-flex flex-wrap justify-content-between align-items-center">
-    <div>
-        <h5 class="fw-bold mb-1 text-dark">
-            <i class="bi bi-chat-dots text-primary me-2"></i>Tin nhắn
-        </h5>
-        <p class="text-muted mb-0 small">Trò chuyện với gia sư của bạn</p>
+<div>
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h5 class="fw-bold mb-1 text-dark">
+                <i class="bi bi-chat-dots text-primary me-2"></i>Tin nhắn
+            </h5>
+            <p class="text-muted mb-0 small">Trò chuyện với bạn bè của bạn</p>
+        </div>
     </div>
-</div>
 
-<div class="row">
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header py-3" style="background: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%);">
-                <div class="input-group">
-                    <span class="input-group-text bg-white border-0"><i class="bi bi-search"></i></span>
-                    <input type="text" class="form-control border-0" placeholder="Tìm kiếm...">
+    <div class="row">
+        <!-- Conversations List -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm" style="height: 600px; display: flex; flex-direction: column;">
+                <div class="card-header py-3" style="background: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%);">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-0"><i class="bi bi-search text-primary"></i></span>
+                        <input type="text" id="searchConversation" class="form-control border-0" placeholder="Tìm kiếm bạn bè...">
+                    </div>
                 </div>
-            </div>
-            <div class="card-body p-0" style="height: 500px; overflow-y: auto;">
-                <div class="list-group list-group-flush">
-                    <a href="#" class="list-group-item list-group-item-action active">
-                        <div class="d-flex align-items-center">
-                            <img src="https://ui-avatars.com/api/?name=Nguyen+Van+A&size=40" class="rounded-circle me-3" width="40" height="40">
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between">
-                                    <h6 class="mb-0">Thầy Nguyễn Văn A</h6>
-                                    <small class="text-muted">5 phút</small>
-                                </div>
-                                <small class="text-muted">Đã gửi lời giải cho bạn</small>
-                            </div>
-                            <span class="badge bg-danger rounded-pill">3</span>
+                
+                <!-- Danh sách bạn bè -->
+                @if (friends != null && friends.Any())
+                {
+                    <div class="px-3 py-2 bg-light border-bottom">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted fw-bold">
+                                <i class="bi bi-people-fill me-1"></i>BẠN BÈ (@friends.Count)
+                            </small>
+                            <button class="btn btn-sm btn-link text-primary p-0" onclick="toggleFriendsList()">
+                                <i class="bi bi-chevron-down" id="friendsToggleIcon"></i>
+                            </button>
                         </div>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <div class="d-flex align-items-center">
-                            <img src="https://ui-avatars.com/api/?name=Tran+Thi+B&size=40" class="rounded-circle me-3" width="40" height="40">
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between">
-                                    <h6 class="mb-0">Cô Trần Thị B</h6>
-                                    <small class="text-muted">1 giờ</small>
+                    </div>
+                    
+                    <div id="friendsList" class="border-bottom" style="max-height: 200px; overflow-y: auto; display: none;">
+                        @foreach (var friend in friends)
+                        {
+                            var roleText = friend.Role == Webgiasu.Models.UserRole.Tutor ? "Gia sư" : "Học sinh";
+                            var roleIcon = friend.Role == Webgiasu.Models.UserRole.Tutor ? "briefcase-fill" : "person-fill";
+                            
+                            <a href="javascript:void(0)" onclick="loadConversation(@friend.Id)" 
+                               class="list-group-item list-group-item-action border-0 friend-item"
+                               data-user-id="@friend.Id"
+                               data-user-name="@friend.FullName.ToLower()">
+                                <div class="d-flex align-items-center py-1">
+                                    <img src="https://ui-avatars.com/api/?name=@Uri.EscapeDataString(friend.FullName)&size=32" 
+                                         class="rounded-circle me-2" width="32" height="32">
+                                    <div class="flex-grow-1 overflow-hidden">
+                                        <div class="d-flex justify-content-between">
+                                            <span class="small fw-bold text-truncate">@friend.FullName</span>
+                                        </div>
+                                        <small class="text-muted">
+                                            <i class="bi bi-@roleIcon" style="font-size: 10px;"></i> @roleText
+                                        </small>
+                                    </div>
+                                    <button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); loadConversation(@friend.Id)">
+                                        <i class="bi bi-chat-fill"></i>
+                                    </button>
                                 </div>
-                                <small class="text-muted">Cảm ơn em!</small>
-                            </div>
+                            </a>
+                        }
+                    </div>
+                }
+
+                <!-- Tin nhắn gần đây -->
+                <div class="px-3 py-2 bg-light border-bottom">
+                    <small class="text-muted fw-bold">
+                        <i class="bi bi-clock-history me-1"></i>TIN NHẮN GẦN ĐÂY
+                    </small>
+                </div>
+
+                <div class="flex-grow-1" style="overflow-y: auto;">
+                    @if (conversations == null || !conversations.Any())
+                    {
+                        <div class="text-center p-4">
+                            <i class="bi bi-chat-dots text-muted" style="font-size: 48px;"></i>
+                            <p class="text-muted mt-3 mb-2">Chưa có cuộc trò chuyện nào</p>
+                            <p class="text-muted small">Chọn bạn bè ở trên để bắt đầu chat</p>
                         </div>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <div class="d-flex align-items-center">
-                            <img src="https://ui-avatars.com/api/?name=Le+Van+C&size=40" class="rounded-circle me-3" width="40" height="40">
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between">
-                                    <h6 class="mb-0">Thầy Lê Văn C</h6>
-                                    <small class="text-muted">2 giờ</small>
-                                </div>
-                                <small class="text-muted">Em cần hỗ trợ gì không?</small>
-                            </div>
+                    }
+                    else
+                    {
+                        <div class="list-group list-group-flush" id="conversationsList">
+                            @foreach (var user in conversations)
+                            {
+                                var lastMsg = ViewBag.LastMessages as Dictionary<int, Webgiasu.Models.Message>;
+                                var unreadCount = 0;
+                                var isActive = selectedUser != null && selectedUser.Id == user.Id ? "active" : "";
+                                var roleText = user.Role == Webgiasu.Models.UserRole.Tutor ? "Gia sư" : "Học sinh";
+                                
+                                <a href="javascript:void(0)" onclick="loadConversation(@user.Id)" 
+                                   class="list-group-item list-group-item-action conversation-item @isActive" 
+                                   data-user-id="@user.Id"
+                                   data-user-name="@user.FullName.ToLower()">
+                                    <div class="d-flex align-items-center">
+                                        <div class="position-relative">
+                                            <img src="https://ui-avatars.com/api/?name=@Uri.EscapeDataString(user.FullName)&size=40" 
+                                                 class="rounded-circle me-3" width="40" height="40">
+                                            <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-light rounded-circle" style="width: 12px; height: 12px; margin-right: 8px;">
+                                            </span>
+                                        </div>
+                                        <div class="flex-grow-1 overflow-hidden">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h6 class="mb-0 fw-bold">@user.FullName</h6>
+                                                <small class="text-muted last-message-time"></small>
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted text-truncate last-message-preview">@roleText</small>
+                                                <span class="badge bg-danger rounded-pill unread-badge" style="display: none;">0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            }
                         </div>
-                    </a>
+                    }
                 </div>
             </div>
         </div>
-    </div>
-    
-    <div class="col-md-8">
-        <div class="card border-0 shadow-sm" style="height: 600px; display: flex; flex-direction: column;">
-            <div class="card-header py-3" style="background: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%);">
-                <div class="d-flex align-items-center">
-                    <img src="https://ui-avatars.com/api/?name=Nguyen+Van+A&size=40" class="rounded-circle me-3" width="40" height="40">
-                    <div>
-                        <h6 class="mb-0 text-white">Thầy Nguyễn Văn A</h6>
-                        <small class="text-white-50"><i class="bi bi-circle-fill" style="font-size: 8px; color: #4CAF50;"></i> Đang hoạt động</small>
+
+        <!-- Chat Area -->
+        <div class="col-md-8">
+            @if (selectedUser == null)
+            {
+                <div class="card border-0 shadow-sm" style="height: 600px;">
+                    <div class="card-body d-flex align-items-center justify-content-center">
+                        <div class="text-center">
+                            <i class="bi bi-chat-square-text text-muted" style="font-size: 64px;"></i>
+                            <h5 class="text-muted mt-3">Chọn một cuộc trò chuyện để bắt đầu</h5>
+                            <p class="text-muted">Hoặc chọn bạn bè từ danh sách bên trái</p>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
+            else
+            {
+                <div class="card border-0 shadow-sm" style="height: 600px; display: flex; flex-direction: column;">
+                    <!-- Chat Header -->
+                    <div class="card-header py-3" style="background: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%);">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <img src="https://ui-avatars.com/api/?name=@Uri.EscapeDataString(selectedUser.FullName)&size=40" 
+                                     class="rounded-circle me-3" width="40" height="40">
+                                <div>
+                                    <h6 class="mb-0 text-white fw-bold">@selectedUser.FullName</h6>
+                                    <small class="text-white-50">
+                                        <i class="bi bi-circle-fill" style="font-size: 8px; color: #4CAF50;"></i> 
+                                        <span id="typingIndicator">Đang hoạt động</span>
+                                    </small>
+                                </div>
             
             <div class="card-body flex-grow-1" style="overflow-y: auto;">
                 <div class="mb-3">
                     <div class="d-flex justify-content-start mb-2">
                         <div>
                             <img src="https://ui-avatars.com/api/?name=Nguyen+Van+A&size=32" class="rounded-circle me-2" width="32" height="32">
-                        </div>
-                        <div>
-                            <div class="bg-light rounded p-3 shadow-sm" style="max-width: 400px;">
-                                <p class="mb-0">Chào em! Thầy đã xem bài toán của em rồi.</p>
                             </div>
-                            <small class="text-muted">15:30</small>
+                            <div>
+                                <a href="/Student/FriendShip" class="btn btn-sm btn-light">
+                                    <i class="bi bi-info-circle"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="mb-3">
-                    <div class="d-flex justify-content-end mb-2">
-                        <div class="text-end">
-                            <div class="bg-primary text-white rounded p-3 shadow-sm" style="max-width: 400px;">
-                                <p class="mb-0">Dạ, em cảm ơn thầy ạ!</p>
+
+                    <!-- Messages Area -->
+                    <div class="card-body flex-grow-1 p-3" id="messagesContainer" style="overflow-y: auto; background-color: #f8f9fa;">
+                        @if (messages != null && messages.Any())
+                        {
+                            @foreach (var msg in messages)
+                            {
+                                var isMine = msg.SenderId == currentUserId;
+                                var alignClass = isMine ? "justify-content-end" : "justify-content-start";
+                                var bgClass = isMine ? "bg-primary text-white" : "bg-white";
+                                var avatarUrl = $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(msg.Sender?.FullName ?? "User")}&size=32";
+                                
+                                <div class="mb-3 d-flex @alignClass message-item" data-message-id="@msg.Id">
+                                    @if (!isMine)
+                                    {
+                                        <div>
+                                            <img src="@avatarUrl" class="rounded-circle me-2" width="32" height="32">
+                                        </div>
+                                    }
+                                    <div style="max-width: 70%;">
+                                        <div class="@bgClass rounded-3 p-3 shadow-sm">
+                                            <p class="mb-0">@msg.Content</p>
+                                        </div>
+                                        <small class="text-muted d-block mt-1" style="@(isMine ? "text-align: right;" : "")">
+                                            @msg.SentDate.ToString("HH:mm")
+                                            @if (isMine && msg.IsRead)
+                                            {
+                                                <i class="bi bi-check-all text-primary" title="Đã đọc"></i>
+                                            }
+                                            else if (isMine)
+                                            {
+                                                <i class="bi bi-check" title="Đã gửi"></i>
+                                            }
+                                        </small>
+                                    </div>
+                                    @if (isMine)
+                                    {
+                                        <div>
+                                            <img src="@avatarUrl" class="rounded-circle ms-2" width="32" height="32">
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="text-center text-muted mt-5">
+                                <i class="bi bi-chat-dots" style="font-size: 48px;"></i>
+                                <p class="mt-3">Chưa có tin nhắn nào. Hãy bắt đầu cuộc trò chuyện!</p>
                             </div>
-                            <small class="text-muted">15:32</small>
-                        </div>
-                        <div>
-                            <img src="https://ui-avatars.com/api/?name=Student&size=32" class="rounded-circle ms-2" width="32" height="32">
-                        </div>
+                        }
+                    </div>
+
+                    <!-- Message Input -->
+                    <div class="card-footer bg-white border-top p-3">
+                        <form id="messageForm" onsubmit="sendMessage(event)">
+                            <div class="input-group">
+                                <button class="btn btn-outline-secondary" type="button" title="Đính kèm file">
+                                    <i class="bi bi-paperclip"></i>
+                                </button>
+                                <input type="text" id="messageInput" class="form-control" 
+                                       placeholder="Nhập tin nhắn..." autocomplete="off"
+                                       data-receiver-id="@selectedUser.Id">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="bi bi-send-fill"></i> Gửi
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
-                
-                <div class="mb-3">
-                    <div class="d-flex justify-content-start mb-2">
-                        <div>
-                            <img src="https://ui-avatars.com/api/?name=Nguyen+Van+A&size=32" class="rounded-circle me-2" width="32" height="32">
-                        </div>
-                        <div>
-                            <div class="bg-light rounded p-3 shadow-sm" style="max-width: 400px;">
-                                <p class="mb-0">Thầy đã gửi lời giải chi tiết. Em xem và feedback nhé!</p>
-                            </div>
-                            <small class="text-muted">15:45</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card-footer bg-white border-top">
-                <div class="input-group">
-                    <button class="btn btn-outline-secondary" type="button">
-                        <i class="bi bi-paperclip"></i>
-                    </button>
-                    <input type="text" class="form-control" placeholder="Nhập tin nhắn...">
-                    <button class="btn btn-primary" type="button">
-                        <i class="bi bi-send"></i> Gửi
-                    </button>
-                </div>
-            </div>
+            }
         </div>
     </div>
 </div>
+
+<!-- SignalR và Chat JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
+<script>
+    const currentUserId = @currentUserId;
+    const selectedUserId = @(selectedUser?.Id ?? 0);
+    let connection;
+    let typingTimeout;
+
+    // Toggle friends list
+    function toggleFriendsList() {
+        const list = document.getElementById('friendsList');
+        const icon = document.getElementById('friendsToggleIcon');
+        
+        if (list.style.display === 'none') {
+            list.style.display = 'block';
+            icon.className = 'bi bi-chevron-up';
+        } else {
+            list.style.display = 'none';
+            icon.className = 'bi bi-chevron-down';
+        }
+    }
+
+    // Khởi tạo SignalR connection
+    async function initializeSignalR() {
+        connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chatHub")
+            .withAutomaticReconnect()
+            .build();
+
+        // Event: Nhận tin nhắn mới
+        connection.on("ReceiveMessage", function (message) {
+            console.log("Received message:", message);
+            
+            if (message.senderId === selectedUserId) {
+                appendMessage(message, false);
+                scrollToBottom();
+                connection.invoke("MarkAsRead", message.id, currentUserId);
+            }
+            
+            updateConversationPreview(message.senderId, message.content, "vừa xong");
+        });
+
+        connection.on("MessageSent", function (message) {
+            console.log("Message sent:", message);
+            appendMessage(message, true);
+            scrollToBottom();
+            updateConversationPreview(message.receiverId, message.content, "vừa xong");
+        });
+
+        connection.on("MessageRead", function (messageId) {
+            const messageElement = document.querySelector(`[data-message-id="${messageId}"] i.bi-check`);
+            if (messageElement) {
+                messageElement.className = "bi bi-check-all text-primary";
+                messageElement.title = "Đã đọc";
+            }
+        });
+
+        connection.on("UserTyping", function (senderId) {
+            if (senderId === selectedUserId) {
+                document.getElementById("typingIndicator").textContent = "Đang gõ...";
+            }
+        });
+
+        connection.on("UserStoppedTyping", function (senderId) {
+            if (senderId === selectedUserId) {
+                document.getElementById("typingIndicator").textContent = "Đang hoạt động";
+            }
+        });
+
+        connection.on("Error", function (message) {
+            alert(message);
+        });
+
+        try {
+            await connection.start();
+            console.log("SignalR Connected");
+            await connection.invoke("Connect", currentUserId);
+        } catch (err) {
+            console.error("SignalR Connection Error:", err);
+            setTimeout(initializeSignalR, 5000);
+        }
+    }
+
+    async function sendMessage(event) {
+        event.preventDefault();
+        
+        const input = document.getElementById("messageInput");
+        const content = input.value.trim();
+        const receiverId = parseInt(input.dataset.receiverId);
+        
+        if (!content) {
+            alert("Vui lòng nhập nội dung tin nhắn!");
+            return;
+        }
+
+        try {
+            await connection.invoke("SendMessage", currentUserId, receiverId, content);
+            input.value = "";
+            
+            if (typingTimeout) {
+                clearTimeout(typingTimeout);
+            }
+            await connection.invoke("StopTyping", currentUserId, receiverId);
+        } catch (err) {
+            console.error("Send Message Error:", err);
+            alert("Có lỗi xảy ra khi gửi tin nhắn!");
+        }
+    }
+
+    function appendMessage(message, isMine) {
+        const container = document.getElementById("messagesContainer");
+        const alignClass = isMine ? "justify-content-end" : "justify-content-start";
+        const bgClass = isMine ? "bg-primary text-white" : "bg-white";
+        const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(message.senderName || "User")}&size=32`;
+        
+        const messageHtml = `
+            <div class="mb-3 d-flex ${alignClass} message-item" data-message-id="${message.id}">
+                ${!isMine ? `<div><img src="${avatarUrl}" class="rounded-circle me-2" width="32" height="32"></div>` : ''}
+                <div style="max-width: 70%;">
+                    <div class="${bgClass} rounded-3 p-3 shadow-sm">
+                        <p class="mb-0">${escapeHtml(message.content)}</p>
+                    </div>
+                    <small class="text-muted d-block mt-1" style="${isMine ? 'text-align: right;' : ''}">
+                        ${message.sentDate}
+                        ${isMine ? '<i class="bi bi-check" title="Đã gửi"></i>' : ''}
+                    </small>
+                </div>
+                ${isMine ? `<div><img src="${avatarUrl}" class="rounded-circle ms-2" width="32" height="32"></div>` : ''}
+            </div>
+        `;
+        
+        container.insertAdjacentHTML('beforeend', messageHtml);
+    }
+
+    function scrollToBottom() {
+        const container = document.getElementById("messagesContainer");
+        if (container) {
+            container.scrollTop = container.scrollHeight;
+        }
+    }
+
+    function loadConversation(userId) {
+        window.location.href = `/Student/Messages?userId=${userId}`;
+    }
+
+    function updateConversationPreview(userId, lastMessage, time) {
+        const item = document.querySelector(`[data-user-id="${userId}"]`);
+        if (item) {
+            const preview = item.querySelector('.last-message-preview');
+            const timeElem = item.querySelector('.last-message-time');
+            
+            if (preview) preview.textContent = lastMessage.substring(0, 30) + (lastMessage.length > 30 ? '...' : '');
+            if (timeElem) timeElem.textContent = time;
+            
+            const parent = item.parentElement;
+            parent.insertBefore(item, parent.firstChild);
+        }
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    document.getElementById("messageInput")?.addEventListener("input", async function() {
+        const receiverId = parseInt(this.dataset.receiverId);
+        
+        if (typingTimeout) {
+            clearTimeout(typingTimeout);
+        }
+        
+        if (connection && this.value.trim()) {
+            await connection.invoke("Typing", currentUserId, receiverId);
+            
+            typingTimeout = setTimeout(async () => {
+                await connection.invoke("StopTyping", currentUserId, receiverId);
+            }, 1000);
+        }
+    });
+
+    // Search conversation and friends
+    document.getElementById("searchConversation")?.addEventListener("input", function() {
+        const searchTerm = this.value.toLowerCase();
+        const conversationItems = document.querySelectorAll(".conversation-item");
+        const friendItems = document.querySelectorAll(".friend-item");
+        
+        conversationItems.forEach(item => {
+            const userName = item.dataset.userName;
+            item.style.display = userName.includes(searchTerm) ? "" : "none";
+        });
+        
+        friendItems.forEach(item => {
+            const userName = item.dataset.userName;
+            item.style.display = userName.includes(searchTerm) ? "" : "none";
+        });
+        
+        // Auto show friends list when searching
+        if (searchTerm && friendItems.length > 0) {
+            document.getElementById('friendsList').style.display = 'block';
+            document.getElementById('friendsToggleIcon').className = 'bi bi-chevron-up';
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        initializeSignalR();
+        scrollToBottom();
+    });
+</script>
+
+<style>
+    .conversation-item:hover, .friend-item:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .conversation-item.active {
+        background-color: #e3f2fd;
+        border-left: 4px solid #2196F3;
+    }
+    
+    .friend-item {
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    
+    #messagesContainer::-webkit-scrollbar, #friendsList::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    #messagesContainer::-webkit-scrollbar-thumb, #friendsList::-webkit-scrollbar-thumb {
+        background-color: #cbd5e0;
+        border-radius: 3px;
+    }
+    
+    .message-item {
+        animation: slideIn 0.3s ease-out;
+    }
+    
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

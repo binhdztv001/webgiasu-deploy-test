@@ -1,0 +1,149 @@
+﻿@model List<ProblemGroup>
+@{
+    ViewData["Title"] = "Nhóm của tôi";
+    Layout = "~/Views/Shared/_StudentLayout.cshtml";
+}
+
+<div>
+    <!-- Page Header -->
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h5 class="fw-bold mb-1 text-dark">
+                <i class="bi bi-people-fill text-success me-2"></i>Nhóm của tôi
+            </h5>
+            <p class="text-muted mb-0 small">Quản lý các nhóm học tập bạn đã tham gia</p>
+        </div>
+        <a asp-action="CreateProblem" class="btn btn-success btn-sm">
+            <i class="bi bi-plus-circle me-1"></i> Tạo nhóm mới
+        </a>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="row">
+            @foreach (var group in Model)
+            {
+                <div class="col-lg-6 col-xl-4 mb-4">
+                    <div class="card border-0 shadow-sm h-100 hover-card">
+                        <div class="card-header bg-gradient-success text-white">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <h6 class="mb-0 fw-bold">
+                                    <i class="bi bi-people-fill me-2"></i>@group.GroupName
+                                </h6>
+                                <span class="badge bg-white text-success">
+                                    @group.Members.Count <i class="bi bi-person-fill"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <!-- Problem Title -->
+                            <h6 class="fw-bold text-primary mb-3">
+                                <i class="bi bi-journal-text me-1"></i>@group.Problem.Title
+                            </h6>
+
+                            <!-- Problem Info -->
+                            <div class="mb-3">
+                                <span class="badge bg-primary me-1">@group.Problem.Type</span>
+                                <span class="badge bg-warning text-dark">@group.Problem.Difficulty</span>
+                            </div>
+
+                            <!-- Price Info -->
+                            <div class="bg-light rounded p-3 mb-3">
+                                <div class="row text-center">
+                                    <div class="col-6 border-end">
+                                        <small class="text-muted d-block">Tổng chi phí</small>
+                                        <span class="fw-bold text-success">@group.TotalPrice.ToString("N0") đ</span>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted d-block">Mỗi người</small>
+                                        <span class="fw-bold text-primary">@group.PricePerMember.ToString("N0") đ</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Status & Date -->
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="badge bg-@(group.Status == ProblemGroupStatus.Open ? "success" : group.Status == ProblemGroupStatus.InProgress ? "warning" : group.Status == ProblemGroupStatus.Completed ? "primary" : "secondary")">
+                                    @(group.Status == ProblemGroupStatus.Open ? "Đang mở" :
+                                                                group.Status == ProblemGroupStatus.InProgress ? "Đang giải" :
+                                                                group.Status == ProblemGroupStatus.Completed ? "Hoàn thành" : "Đã hủy")
+                        </span>
+                        <small class="text-muted">
+                            <i class="bi bi-calendar me-1"></i>@group.CreatedAt.ToString("dd/MM/yyyy")
+                        </small>
+                    </div>
+
+                            <!-- Members Preview -->
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="avatar-group me-2">
+                            @foreach (var member in group.Members.Take(3))
+                                    {
+                                        <img src="https://ui-avatars.com/api/?name=@Uri.EscapeDataString(member.User.FullName)&background=random&size=32"
+                                             class="rounded-circle border border-2 border-white"
+                                             alt="@member.User.FullName"
+                                             width="32" height="32"
+                                             title="@member.User.FullName"
+                                             style="margin-left: -8px;">
+                                    }
+                                    @if (group.Members.Count > 3)
+                                    {
+                                        <span class="avatar-more rounded-circle bg-secondary text-white d-inline-flex align-items-center justify-content-center border border-2 border-white"
+                                              style="width: 32px; height: 32px; margin-left: -8px; font-size: 0.75rem;">
+                                            +@(group.Members.Count - 3)
+                                        </span>
+                                    }
+                                </div>
+                                <small class="text-muted">@group.Members.Count thành viên</small>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white border-top-0">
+                            <a asp-action="GroupDetails" asp-route-id="@group.Id" class="btn btn-sm btn-outline-success w-100">
+                                <i class="bi bi-eye me-1"></i> Xem chi tiết
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-people text-muted" style="font-size: 5rem;"></i>
+                <h5 class="mt-3 mb-2 fw-bold">Chưa có nhóm nào</h5>
+                <p class="text-muted mb-4">Tạo nhóm mới để chia sẻ chi phí thuê gia sư với bạn bè</p>
+                <a asp-action="CreateProblem" class="btn btn-success">
+                    <i class="bi bi-plus-circle me-1"></i> Tạo nhóm đầu tiên
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <style>
+        .hover-card {
+            transition: all 0.3s ease;
+        }
+
+            .hover-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15) !important;
+            }
+
+        .bg-gradient-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .avatar-group {
+            display: flex;
+            align-items: center;
+        }
+
+            .avatar-group img:first-child,
+            .avatar-group .avatar-more:first-child {
+                margin-left: 0 !important;
+            }
+    </style>
+}

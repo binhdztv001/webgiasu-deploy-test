@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Localization;
+﻿using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.Text;
@@ -44,6 +44,15 @@ builder.Services.AddScoped<IProblemService, ProblemService>();
 builder.Services.AddScoped<ISolutionService, SolutionService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IRatingService, RatingService>();
+builder.Services.AddScoped<IFriendshipService, FriendshipService>();
+builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<ICommunityService, CommunityService>();
+
+// ✅ ADD: Register Problem Group Service
+builder.Services.AddScoped<IProblemGroupService, ProblemGroupService>();
+
+// Add SignalR
+builder.Services.AddSignalR();
 
 // SePay configuration
 builder.Services.Configure<SePayOptions>(builder.Configuration.GetSection("SePay"));
@@ -75,5 +84,9 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Map SignalR Hub
+app.MapHub<Webgiasu.Hubs.ChatHub>("/chatHub");
+app.MapHub<Webgiasu.Hubs.CommunityHub>("/communityHub");
 
 app.Run();

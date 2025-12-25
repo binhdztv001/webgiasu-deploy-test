@@ -43,11 +43,11 @@
                         
                         <div class="star-rating-container">
                             <div class="star-rating" id="starRating">
-                                <span class="star" data-value="1">?</span>
-                                <span class="star" data-value="2">?</span>
-                                <span class="star" data-value="3">?</span>
-                                <span class="star" data-value="4">?</span>
-                                <span class="star" data-value="5">?</span>
+                                <span class="star bi bi-star-fill" data-value="1"></span>
+                                <span class="star bi bi-star-fill" data-value="2"></span>
+                                <span class="star bi bi-star-fill" data-value="3"></span>
+                                <span class="star bi bi-star-fill" data-value="4"></span>
+                                <span class="star bi bi-star-fill" data-value="5"></span>
                             </div>
                             <input type="hidden" asp-for="Stars" id="starsInput" required />
                             <div class="mt-2">
@@ -80,31 +80,32 @@
                             <div class="row g-2">
                                 <div class="col-md-6">
                                     <div class="d-flex align-items-start">
-                                        <span class="text-warning me-2">?????</span>
+                                        <span class="text-warning me-2">★★★★★</span>
+
                                         <small><strong>5 sao:</strong> Xuất sắc, vượt mong đợi</small>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="d-flex align-items-start">
-                                        <span class="text-warning me-2">?????</span>
+                                        <span class="text-warning me-2">★★★★★</span>
                                         <small><strong>4 sao:</strong> Tốt, đáp ứng yêu cầu</small>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="d-flex align-items-start">
-                                        <span class="text-warning me-2">?????</span>
+                                        <span class="text-warning me-2">★★★★★</span>
                                         <small><strong>3 sao:</strong> Trung bình, cần cải thiện</small>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="d-flex align-items-start">
-                                        <span class="text-warning me-2">?????</span>
+                                        <span class="text-warning me-2">★★★★★</span>
                                         <small><strong>2 sao:</strong> Kém, không đạt yêu cầu</small>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="d-flex align-items-start">
-                                        <span class="text-warning me-2">?????</span>
+                                        <span class="text-warning me-2">★★★★★</span>
                                         <small><strong>1 sao:</strong> Rất kém, hoàn toàn không hài lòng</small>
                                     </div>
                                 </div>
@@ -134,6 +135,19 @@
         border-radius: 12px;
         text-align: center;
     }
+
+    .star {
+        color: #ddd;
+        transition: all 0.25s ease;
+        display: inline-block;
+        margin: 0 0.25rem;
+    }
+
+        .star:hover,
+        .star.active {
+            color: #ffc107;
+            transform: scale(1.25);
+        }
 
     .star-rating {
         font-size: 3rem;
@@ -186,13 +200,14 @@
         const ratingText = document.getElementById('ratingText');
         let selectedRating = 0;
 
-        const ratingTexts = {
-            1: { text: '????? - R?t k�m', class: 'rating-bad' },
-            2: { text: '????? - K�m', class: 'rating-poor' },
-            3: { text: '????? - Trung b�nh', class: 'rating-average' },
-            4: { text: '????? - T?t', class: 'rating-good' },
-            5: { text: '????? - Xu?t s?c', class: 'rating-excellent' }
+                const ratingTexts = {
+            1: { text: '★ - Rất kém', class: 'rating-bad' },
+            2: { text: '★★ - Kém', class: 'rating-poor' },
+            3: { text: '★★★ - Trung bình', class: 'rating-average' },
+            4: { text: '★★★★ - Tốt', class: 'rating-good' },
+            5: { text: '★★★★★ - Xuất sắc', class: 'rating-excellent' }
         };
+
 
         stars.forEach(star => {
             star.addEventListener('click', function() {

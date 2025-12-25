@@ -1,4 +1,4 @@
-namespace Webgiasu.Models
+ï»¿namespace Webgiasu.Models
 {
     public class User
     {
@@ -9,16 +9,20 @@ namespace Webgiasu.Models
         public string Email { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
         public UserRole Role { get; set; }
-        public bool IsApproved { get; set; } // Dành cho Tutor
+        public bool IsApproved { get; set; } // DÃ nh cho Tutor
         public DateTime RegisteredDate { get; set; }
 
         // Tutor Profile Fields
-        public string? Bio { get; set; } // Gi?i thi?u b?n thân
-        public string? Subjects { get; set; } // Môn h?c chuyên d?y
-        public string? Education { get; set; } // Trình ?? h?c v?n
+        public string? Bio { get; set; } // Gi?i thi?u b?n thÃ¢n
+        public string? Subjects { get; set; } // MÃ´n h?c chuyÃªn d?y
+        public string? Education { get; set; } // TrÃ¬nh ?? h?c v?n
         public int? ExperienceYears { get; set; } // S? n?m kinh nghi?m
         public string? Certificates { get; set; } // Ch?ng ch?
-
-
+        public ICollection<ProblemGroup>? CreatedGroups { get; set; }
+        public ICollection<ProblemGroupMember>? GroupMemberships { get; set; }
+        public ICollection<ProblemGroupInvite>? ReceivedInvites { get; set; }
+        public ICollection<ProblemGroupInvite>? SentInvites { get; set; }
     }
+
+
 }

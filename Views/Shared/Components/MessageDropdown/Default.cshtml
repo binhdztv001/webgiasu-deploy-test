@@ -1,0 +1,72 @@
+﻿@using Webgiasu.Models.ViewModels
+@model MessageDropdownVM
+
+@{
+    var targetController = (ViewBag.MessageController as string) ?? "Student";
+}
+
+<div class="dropdown">
+    <button class="btn btn-link position-relative" type="button" data-bs-toggle="dropdown"
+            style="color: rgba(255,255,255,0.9);">
+        <i class="bi bi-chat-dots fs-5"></i>
+
+        @if (Model.UnreadCount > 0)
+        {
+            <span class="position-absolute bottom-0 start-70 rounded-pill bg-danger px-1 py-0"
+                  style="font-size: 0.58rem;">
+                @Model.UnreadCount
+            </span>
+        }
+    </button>
+
+    <ul class="dropdown-menu dropdown-menu-end notification-dropdown">
+        <li class="dropdown-header" style="background: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%);">
+            <h6 class="mb-0 text-white">Tin nhắn</h6>
+        </li>
+
+        <li><hr class="dropdown-divider"></li>
+
+        @if (!Model.Messages.Any())
+        {
+            <li class="dropdown-item text-muted text-center">
+                Không có tin nhắn mới
+            </li>
+        }
+        else
+        {
+            @foreach (var msg in Model.Messages)
+            {
+                <li>
+                    <a class="dropdown-item notification-item"
+                       asp-controller="@(targetController)"
+                       asp-action="Messages"
+                       asp-route-userId="@msg.SenderId">
+                        <div class="d-flex">
+                            <div class="notification-icon bg-primary">
+                                <i class="bi bi-person"></i>
+                            </div>
+                            <div class="notification-content">
+                                <p class="mb-1 fw-semibold">@msg.Sender.FullName</p>
+                                <small class="text-muted">
+                                    @msg.Content.Substring(0, Math.Min(30, msg.Content.Length))
+                                </small>
+                                <small class="d-block text-muted mt-1">
+                                    @msg.SentDate.ToString("HH:mm dd/MM")
+                                </small>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            }
+        }
+
+        <li><hr class="dropdown-divider"></li>
+        <li>
+            <a class="dropdown-item text-center text-primary fw-semibold"
+               asp-controller="@(targetController)"
+               asp-action="Messages">
+                Xem tất cả tin nhắn
+            </a>
+        </li>
+    </ul>
+</div>

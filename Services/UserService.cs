@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Webgiasu.Models;
@@ -25,7 +25,19 @@ namespace Webgiasu.Services
             return true;
         }
 
-        public User? GetUserById(int id) => _db.Users.Find(id);
+        //maaux
+        public User? GetUserById(int id)
+        {
+            try
+            {
+                return _db.Users.Find(id);
+            }
+
+            catch
+            {
+                return new User();
+            }
+        }
 
         public List<User> GetAllUsers() => _db.Users.ToList();
 

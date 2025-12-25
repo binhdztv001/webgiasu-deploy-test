@@ -255,7 +255,7 @@ body {
 }
 
 .btn:hover::before {
-  width: 500px;
+  width: 1500px;
   height: 500px;
 }
 
