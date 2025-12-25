@@ -45,6 +45,10 @@ builder.Services.AddScoped<ISolutionService, SolutionService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IRatingService, RatingService>();
 
+// SePay configuration
+builder.Services.Configure<SePayOptions>(builder.Configuration.GetSection("SePay"));
+builder.Services.AddSingleton<ISePayGateway, SePayGateway>();
+
 var app = builder.Build();
 
 // Use Request Localization

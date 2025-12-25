@@ -53,7 +53,7 @@ namespace Webgiasu.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("Webgiasu.Models.Problem", b =>
@@ -102,7 +102,7 @@ namespace Webgiasu.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Problems");
+                    b.ToTable("Problems", (string)null);
                 });
 
             modelBuilder.Entity("Webgiasu.Models.Rating", b =>
@@ -139,7 +139,7 @@ namespace Webgiasu.Migrations
 
                     b.HasIndex("TutorId");
 
-                    b.ToTable("Ratings");
+                    b.ToTable("Ratings", (string)null);
                 });
 
             modelBuilder.Entity("Webgiasu.Models.Solution", b =>
@@ -175,7 +175,7 @@ namespace Webgiasu.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Solutions");
+                    b.ToTable("Solutions", (string)null);
                 });
 
             modelBuilder.Entity("Webgiasu.Models.User", b =>
@@ -232,7 +232,7 @@ namespace Webgiasu.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Webgiasu.Models.Rating", b =>

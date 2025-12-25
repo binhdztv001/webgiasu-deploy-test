@@ -79,9 +79,9 @@
                                 <td class="fw-bold text-success">@payment.Amount.ToString("N0") đ</td>
                                 <td>@payment.CreatedDate.ToString("dd/MM/yyyy HH:mm")</td>
                                 <td>
-                                    @if (payment.Status == Webgiasu.Models.PaymentStatus.Completed)
+                                    @if (payment.Status == Webgiasu.Models.PaymentStatus.Completed && payment.CompletedDate.HasValue)
                                     {
-                                        @payment.CreatedDate.ToString("dd/MM/yyyy HH:mm")
+                                        @payment.CompletedDate.Value.ToString("dd/MM/yyyy HH:mm")
                                     }
                                     else
                                     {

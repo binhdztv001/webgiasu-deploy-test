@@ -209,14 +209,11 @@
 
                     @if (Model.Payment.Status == Webgiasu.Models.PaymentStatus.Pending)
                     {
-                        <form asp-controller="Student" asp-action="ProcessPayment" method="post">
-                            <input type="hidden" name="paymentId" value="@Model.Payment.Id" />
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-success">
-                                    <i class="bi bi-credit-card"></i> Thanh toán ngay
-                                </button>
-                            </div>
-                        </form>
+                        <div class="d-grid">
+                            <a asp-controller="Student" asp-action="PaymentCheckout" asp-route-paymentId="@Model.Payment.Id" class="btn btn-success">
+                                <i class="bi bi-credit-card"></i> Thanh toán ngay
+                            </a>
+                        </div>
                     }
                     else
                     {

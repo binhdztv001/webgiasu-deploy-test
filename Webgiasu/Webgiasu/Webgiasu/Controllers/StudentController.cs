@@ -12,15 +12,17 @@ namespace Webgiasu.Controllers
         private readonly IPaymentService _paymentService;
         private readonly IUserService _userService;
         private readonly IRatingService _ratingService;
+        private readonly ISePayGateway _sePayGateway;
 
         public StudentController(IProblemService problemService, ISolutionService solutionService, 
-            IPaymentService paymentService, IUserService userService, IRatingService ratingService)
+            IPaymentService paymentService, IUserService userService, IRatingService ratingService, ISePayGateway sePayGateway)
         {
             _problemService = problemService;
             _solutionService = solutionService;
             _paymentService = paymentService;
             _userService = userService;
             _ratingService = ratingService;
+            _sePayGateway = sePayGateway;
         }
 
         private int GetCurrentUserId()
@@ -239,9 +241,57 @@ namespace Webgiasu.Controllers
             var payment = _paymentService.GetPaymentById(paymentId);
             if (payment != null && payment.StudentId == userId)
             {
-                _paymentService.UpdatePaymentStatus(paymentId, PaymentStatus.Completed);
-                TempData["Success"] = "Thanh toán thành công!";
+                return RedirectToAction("PaymentCheckout", new { paymentId });
             }
+            TempData["Error"] = "Không tìm thấy giao dịch hoặc không hợp lệ.";
+            return RedirectToAction("Payments");
+        }
+
+        [HttpGet]
+        public IActionResult PaymentCheckout(int paymentId)
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return RedirectToAction("Login", "Account");
+
+            var payment = _paymentService.GetPaymentById(paymentId);
+            if (payment == null || payment.StudentId != userId || payment.Status != PaymentStatus.Pending)
+            {
+                return NotFound();
+            }
+
+            var successUrl = Url.Action("PaymentResult", "Student", new { paymentId, status = "success" }, Request.Scheme);
+            var errorUrl = Url.Action("PaymentResult", "Student", new { paymentId, status = "error" }, Request.Scheme);
+            var cancelUrl = Url.Action("PaymentResult", "Student", new { paymentId, status = "cancel" }, Request.Scheme);
+
+            var checkout = _sePayGateway.BuildCheckout(payment, successUrl!, errorUrl!, cancelUrl!);
+            return View(checkout);
+        }
+
+        [HttpGet]
+        public IActionResult PaymentResult(int paymentId, string status)
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return RedirectToAction("Login", "Account");
+
+            var payment = _paymentService.GetPaymentById(paymentId);
+            if (payment == null || payment.StudentId != userId)
+            {
+                return NotFound();
+            }
+
+            if (string.Equals(status, "success", StringComparison.OrdinalIgnoreCase))
+            {
+                TempData["Success"] = "Thanh toán đang được xác nhận. Vui lòng đợi webhook cập nhật trạng thái.";
+            }
+            else if (string.Equals(status, "cancel", StringComparison.OrdinalIgnoreCase))
+            {
+                TempData["Warning"] = "Bạn đã hủy thanh toán.";
+            }
+            else
+            {
+                TempData["Error"] = "Thanh toán không thành công.";
+            }
+
             return RedirectToAction("Payments");
         }
 
