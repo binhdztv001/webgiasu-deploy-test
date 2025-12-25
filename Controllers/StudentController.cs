@@ -35,11 +35,12 @@ namespace Webgiasu.Controllers
         private readonly ICommunityService _communityService;
         private readonly IHubContext<CommunityHub> _hubContext;
         private readonly IProblemGroupService _problemGroupService;
+        private readonly ISePayGateway _sePayGateway;
 
         public StudentController(IProblemService problemService, ISolutionService solutionService, 
             IPaymentService paymentService, IUserService userService, IRatingService ratingService,
             IFriendshipService friendshipService, IMessageService messageService, 
-            ICommunityService communityService, IHubContext<CommunityHub> hubContext, IProblemGroupService problemGroupService)
+            ICommunityService communityService, IHubContext<CommunityHub> hubContext, IProblemGroupService problemGroupService, ISePayGateway sePayGateway)
         {
             _problemService = problemService;
             _solutionService = solutionService;
@@ -51,6 +52,7 @@ namespace Webgiasu.Controllers
             _communityService = communityService;
             _hubContext = hubContext;
             _problemGroupService = problemGroupService;
+            _sePayGateway = sePayGateway;
         }
 
         private int GetCurrentUserId()
@@ -72,6 +74,7 @@ namespace Webgiasu.Controllers
                     Payments = _paymentService.GetPaymentsByStudentId(userId)
                 };
 
+            // Get solutions for student's problems
                 foreach (var problem in model.MyProblems)
                 {
                     var solution = _solutionService.GetSolutionByProblemId(problem.Id);
@@ -131,6 +134,7 @@ namespace Webgiasu.Controllers
                     Payment = _paymentService.GetPaymentByProblemId(problem.Id)
                 };
 
+            // Check if student has rated this problem
                 ViewBag.HasRated = await _ratingService.HasStudentRatedProblemAsync(id, userId);
 
                 return View(model);
@@ -159,12 +163,14 @@ namespace Webgiasu.Controllers
                     return RedirectToAction("Dashboard");
                 }
 
+            // Check if already rated
                 if (await _ratingService.HasStudentRatedProblemAsync(problemId, userId))
                 {
                     TempData["Warning"] = "Bạn đã đánh giá gia sư cho bài toán này rồi!";
                     return RedirectToAction("ProblemDetails", new { id = problemId });
                 }
 
+            // Check if solution exists and problem is solved
                 var solution = _solutionService.GetSolutionByProblemId(problemId);
                 if (solution == null || problem.Status != ProblemStatus.Solved)
                 {
@@ -266,25 +272,64 @@ namespace Webgiasu.Controllers
         [HttpPost]
         public IActionResult ProcessPayment(int paymentId)
         {
-            try
-            {
-                var userId = GetCurrentUserId();
-                if (userId == 0) return RedirectToAction("Login", "Account");
+            var userId = GetCurrentUserId();
+            if (userId == 0) return RedirectToAction("Login", "Account");
 
-                var payment = _paymentService.GetPaymentById(paymentId);
-                if (payment != null && payment.StudentId == userId)
-                {
-                    _paymentService.UpdatePaymentStatus(paymentId, PaymentStatus.Completed);
-                    TempData["Success"] = "Thanh toán thành công!";
-                }
-                return RedirectToAction("Payments");
-            }
-            catch (Exception ex)
+            var payment = _paymentService.GetPaymentById(paymentId);
+            if (payment != null && payment.StudentId == userId)
             {
-                Console.WriteLine($"❌ Error in ProcessPayment: {ex.Message}");
-                TempData["Error"] = "Đã xảy ra lỗi khi xử lý thanh toán!";
-                return RedirectToAction("Payments");
+                return RedirectToAction("PaymentCheckout", new { paymentId });
             }
+            TempData["Error"] = "Không tìm thấy giao dịch hoặc không hợp lệ.";
+            return RedirectToAction("Payments");
+        }
+
+        [HttpGet]
+        public IActionResult PaymentCheckout(int paymentId)
+            {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return RedirectToAction("Login", "Account");
+
+            var payment = _paymentService.GetPaymentById(paymentId);
+            if (payment == null || payment.StudentId != userId || payment.Status != PaymentStatus.Pending)
+            {
+                return NotFound();
+            }
+
+            var successUrl = Url.Action("PaymentResult", "Student", new { paymentId, status = "success" }, Request.Scheme);
+            var errorUrl = Url.Action("PaymentResult", "Student", new { paymentId, status = "error" }, Request.Scheme);
+            var cancelUrl = Url.Action("PaymentResult", "Student", new { paymentId, status = "cancel" }, Request.Scheme);
+
+            var checkout = _sePayGateway.BuildCheckout(payment, successUrl!, errorUrl!, cancelUrl!);
+            return View(checkout);
+        }
+
+        [HttpGet]
+        public IActionResult PaymentResult(int paymentId, string status)
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return RedirectToAction("Login", "Account");
+
+            var payment = _paymentService.GetPaymentById(paymentId);
+            if (payment == null || payment.StudentId != userId)
+            {
+                return NotFound();
+            }
+
+            if (string.Equals(status, "success", StringComparison.OrdinalIgnoreCase))
+            {
+                TempData["Success"] = "Thanh toán đang được xác nhận. Vui lòng đợi webhook cập nhật trạng thái.";
+            }
+            else if (string.Equals(status, "cancel", StringComparison.OrdinalIgnoreCase))
+            {
+                TempData["Warning"] = "Bạn đã hủy thanh toán.";
+            }
+            else
+            {
+                TempData["Error"] = "Thanh toán không thành công.";
+            }
+
+            return RedirectToAction("Payments");
         }
 
         // Profile Management
@@ -370,6 +415,7 @@ namespace Webgiasu.Controllers
             }
         }
 
+        // NEW ACTIONS
         public IActionResult MyProblems()
         {
             try
@@ -582,6 +628,7 @@ namespace Webgiasu.Controllers
                     .Where(p => p.Status == ProblemStatus.Solved)
                     .ToList();
 
+            // Get all tutors for displaying in view
                 var tutorIds = problems.Where(p => p.AssignedTutorId.HasValue)
                                        .Select(p => p.AssignedTutorId.Value)
                                        .Distinct()

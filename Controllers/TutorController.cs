@@ -77,6 +77,7 @@ namespace Webgiasu.Controllers
                     MySolutions = _solutionService.GetSolutionsByTutorId(userId)
                 };
 
+            // Calculate total earnings
                 model.TotalEarnings = 0;
                 foreach (var solution in model.MySolutions)
                 {
@@ -87,6 +88,7 @@ namespace Webgiasu.Controllers
                     }
                 }
 
+            // Get average rating
                 var avgRating = await _ratingService.GetAverageRatingForTutorAsync(userId);
                 ViewBag.AverageRating = avgRating;
                 ViewBag.TotalRatings = (await _ratingService.GetRatingsByTutorIdAsync(userId)).Count;
@@ -203,6 +205,7 @@ namespace Webgiasu.Controllers
                 var userId = GetCurrentUserId();
                 if (userId == 0) return RedirectToAction("Login", "Account");
 
+            // If no problemId provided, redirect to MyProblems
                 if (!problemId.HasValue)
                 {
                     TempData["Warning"] = "Vui lòng chọn bài toán để gửi lời giải!";
@@ -216,6 +219,7 @@ namespace Webgiasu.Controllers
                     return RedirectToAction("MyProblems");
                 }
 
+            // Check if tutor is assigned to this problem
                 if (problem.AssignedTutorId != userId)
                 {
                     TempData["Error"] = "Bạn không có quyền gửi lời giải cho bài toán này!";
@@ -258,6 +262,7 @@ namespace Webgiasu.Controllers
 
                     if (_solutionService.CreateSolution(solution))
                     {
+                    // Update problem status
                         var problem = _problemService.GetProblemById(model.ProblemId);
                         if (problem != null)
                         {
