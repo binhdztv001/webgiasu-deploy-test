@@ -1,0 +1,1686 @@
+﻿@{
+    ViewData["Title"] = "Cộng đồng";
+    Layout = "_TutorLayout";
+}
+
+<div>
+    <div>
+        <div class="container-fluid py-4">
+            <div class="page-header d-flex flex-wrap justify-content-between align-items-center mb-4">
+                <div>
+                    <h5 class="fw-bold mb-1 text-dark">
+                        <i class="bi bi-people text-primary me-2"></i>Cộng đồng
+                    </h5>
+                    <p class="text-muted mb-0 small">Chia sẻ kiến thức, kinh nghiệm và kết nối với cộng đồng</p>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Main feed -->
+                <div class="col-lg-8">
+                    <!-- Create Post Card -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="https://ui-avatars.com/api/?name=@(ViewBag.CurrentUserName)&background=667eea&color=fff&size=48"
+                                     class="rounded-circle me-3" width="48" height="48" alt="Avatar">
+                                <button type="button" class="form-control form-control-lg rounded-pill"
+                                        data-bs-toggle="modal" data-bs-target="#createPostModal"
+                                        style="background: #f8f9fa; border: 1px solid #dee2e6; cursor: pointer;">
+                                    Bạn đang nghĩ gì? Chia sẻ với cộng đồng...
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Posts Container -->
+                    <div id="postsContainer">
+                        <!-- Posts will be loaded here by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body">
+                            <h6 class="card-title fw-bold mb-3">
+                                <i class="bi bi-graph-up text-primary me-2"></i> Hoạt động của bạn
+                            </h6>
+                            <div class="row text-center">
+                                <div class="col-6 border-end pb-3">
+                                    <div class="h5 fw-bold text-primary mb-0" id="userPostCount">@((ViewBag.UserPostCount ?? 0))</div>
+                                    <small class="text-muted">Bài viết</small>
+                                </div>
+                                <div class="col-6 pb-3">
+                                    <div class="h5 fw-bold text-success mb-0" id="totalReactions">0</div>
+                                    <small class="text-muted">Lượt cảm xúc</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reaction Guide -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <h6 class="card-title fw-bold mb-3">
+                                <i class="bi bi-emoji-smile text-warning me-2"></i> Hướng dẫn Reactions
+                            </h6>
+                            <div class="reaction-guide">
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="reaction-emoji me-2" style="font-size: 1.5rem;">👍</span>
+                                    <small>Like - Thích</small>
+                                </div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="reaction-emoji me-2" style="font-size: 1.5rem;">❤️</span>
+                                    <small>Love - Yêu thích</small>
+                                </div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="reaction-emoji me-2" style="font-size: 1.5rem;">😆</span>
+                                    <small>Haha - Hài hước</small>
+                                </div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="reaction-emoji me-2" style="font-size: 1.5rem;">😡</span>
+                                    <small>Angry - Phẫn nộ</small>
+                                </div>
+                            </div>
+                            <p class="small text-muted mt-3 mb-0">
+                                <i class="bi bi-info-circle"></i> Hover vào nút Thích để chọn cảm xúc. Click lại để hủy.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Post Modal -->
+    <div class="modal fade" id="createPostModal" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tạo bài viết mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createPostForm">
+                        <div class="mb-3">
+                            <label for="postCategory" class="form-label">Chuyên đề</label>
+                            <select class="form-control" id="postCategory" name="category">
+                                <option value="">-- Chọn chuyên đề --</option>
+                                <option value="Toán học">Toán học</option>
+                                <option value="Hóa học">Hóa học</option>
+                                <option value="Vật lý">Vật lý</option>
+                                <option value="Tiếng Anh">Tiếng Anh</option>
+                                <option value="Tin học">Tin học</option>
+                                <option value="Lịch sử">Lịch sử</option>
+                                <option value="Địa lý">Địa lý</option>
+                                <option value="Khác">Khác</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="postContent" class="form-label">Nội dung</label>
+                            <textarea class="form-control" id="postContent" rows="5" placeholder="Nhập nội dung bài viết..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="submitPostBtn">Đăng bài</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Post Modal -->
+    <div class="modal fade" id="editPostModal" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chỉnh sửa bài viết</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editPostForm">
+                        <input type="hidden" id="editPostId" />
+                        <div class="mb-3">
+                            <label for="editPostCategory" class="form-label">Chuyên đề</label>
+                            <select class="form-control" id="editPostCategory">
+                                <option value="">-- Chọn chuyên đề --</option>
+                                <option value="Toán học">Toán học</option>
+                                <option value="Hóa học">Hóa học</option>
+                                <option value="Vật lý">Vật lý</option>
+                                <option value="Tiếng Anh">Tiếng Anh</option>
+                                <option value="Tin học">Tin học</option>
+                                <option value="Lịch sử">Lịch sử</option>
+                                <option value="Địa lý">Địa lý</option>
+                                <option value="Khác">Khác</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editPostContent" class="form-label">Nội dung</label>
+                            <textarea class="form-control" id="editPostContent" rows="5" placeholder="Nhập nội dung bài viết..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="updatePostBtn">Cập nhật</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SignalR & Reaction Script -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+<script>
+    // ==================== CONSTANTS ====================
+    let connection;
+    const currentUserId = @((ViewBag.CurrentUserId ?? 0));
+    const currentUserName = @Html.Raw(System.Text.Json.JsonSerializer.Serialize((ViewBag.CurrentUserName ?? "").ToString()));
+    const activeComments = {};
+    const typingState = {};
+    const typingTimers = {};
+    const joinedPosts = new Set();
+
+    // Reaction configuration
+    const REACTIONS = {
+        like: { emoji: '👍', label: 'Thích', color: '#0d6efd' },
+        love: { emoji: '❤️', label: 'Yêu thích', color: '#dc3545' },
+        haha: { emoji: '😆', label: 'Haha', color: '#ffc107' },
+        angry: { emoji: '😡', label: 'Phẫn nộ', color: '#fd7e14' }
+    };
+
+        // ==================== SIGNALR CONNECTION ====================
+    async function initSignalR() {
+        try {
+            console.log('🔌 Initializing SignalR...');
+
+            // ✅ FIX: Tạo connection TRƯỚC khi đăng ký listeners
+            connection = new signalR.HubConnectionBuilder()
+                .withUrl("/communityHub")
+                .withAutomaticReconnect()
+                .configureLogging(signalR.LogLevel.Information)
+                .build();
+
+            console.log('✅ Connection object created:', connection);
+
+            // ✅ FIX: Đăng ký listeners SAU khi connection đã được tạo
+            // Listen for comment events
+            connection.on("CommentAdded", (comment) => {
+                console.log('📩 CommentAdded event received:', comment);
+                addCommentToDOM(comment);
+            });
+
+            connection.on("CommentDeleted", (id) => {
+                console.log('🗑️ CommentDeleted event received:', id);
+                removeCommentFromDOM(id);
+            });
+
+            connection.on("PostCreated", (post) => {
+                console.log('📝 PostCreated event received:', post);
+                loadPosts();
+            });
+
+            connection.on("UserTyping", payload => {
+                console.log('⌨️ UserTyping event received:', payload);
+                handleUserTyping(payload);
+            });
+
+            // ✨ Listen for Reaction events
+            connection.on("PostReactionUpdated", (payload) => {
+                console.log('👍 PostReactionUpdated event received:', payload);
+                handlePostReactionUpdate(payload);
+            });
+
+            connection.on("CommentReactionUpdated", (payload) => {
+                console.log('💬 CommentReactionUpdated event received:', payload);
+                handleCommentReactionUpdate(payload);
+            });
+
+            // ✅ Listen for Post Update/Delete events
+            connection.on("PostUpdated", (payload) => {
+                console.log('✏️ PostUpdated event received:', payload);
+                const { postId, content, category } = payload;
+                const postContent = document.querySelector(`[data-post-id="${postId}"] .post-content`);
+                if (postContent) {
+                    postContent.textContent = content;
+                }
+
+                const postEl = document.querySelector(`[data-post-id="${postId}"]`);
+                if (postEl && category) {
+                    const badge = postEl.querySelector('.badge');
+                    if (badge) {
+                        badge.textContent = category;
+                    }
+                }
+            });
+
+            connection.on("PostDeleted", (payload) => {
+                console.log('🗑️ PostDeleted event received:', payload);
+                const { postId } = payload;
+                const postEl = document.querySelector(`[data-post-id="${postId}"]`);
+                if (postEl) {
+                    postEl.style.transition = 'opacity 0.3s';
+                    postEl.style.opacity = '0';
+                    setTimeout(() => postEl.remove(), 300);
+                }
+            });
+
+            // ✅ FIX: Start connection SAU khi đã đăng ký tất cả listeners
+            await connection.start();
+            console.log('✅ SignalR connected successfully');
+            console.log('Connection state:', connection.state);
+
+        } catch (err) {
+            console.error("❌ SignalR start error:", err);
+            console.error("Error stack:", err.stack);
+
+            // Retry after 5 seconds
+            setTimeout(() => {
+                console.log('🔄 Retrying SignalR connection...');
+                initSignalR();
+            }, 5000);
+        }
+    }
+
+    // ==================== REACTION HANDLERS ====================
+
+           // Handle real-time post reaction updates
+    function handlePostReactionUpdate(payload) {
+        console.log('📢 Received PostReactionUpdated:', payload);
+
+        const { postId, userId, userReaction, reactionStats } = payload;
+        const postEl = document.querySelector(`[data-post-id="${postId}"]`);
+        if (!postEl) {
+            console.warn('❌ Post not found:', postId);
+            return;
+        }
+
+        // ✅ ALWAYS update reaction stats (for ALL users)
+        // But only update userReaction if it's the current user
+
+        if (userId === currentUserId) {
+            // Current user reacted - update everything
+            console.log('✅ Current user reacted');
+            updatePostReactionBar(postId, reactionStats, userReaction);
+            updateTotalReactionCount();
+        } else {
+            // Other user reacted - only update stats, keep current user's reaction
+            console.log('ℹ️ Other user reacted, keeping current user reaction');
+            const currentBtn = postEl.querySelector('.post-reaction-btn');
+            const existingReaction = currentBtn ? currentBtn.dataset.userReaction : null;
+            updatePostReactionBar(postId, reactionStats, existingReaction || null);
+        }
+    }
+
+    // Handle real-time comment reaction updates
+    function handleCommentReactionUpdate(payload) {
+        const { commentId, userId, userReaction, reactionStats } = payload;
+        const commentEl = document.querySelector(`[data-comment-id="${commentId}"]`);
+        if (!commentEl) return;
+
+        // ✅ FIX: Tương tự với comment
+        if (userId !== currentUserId) {
+            const currentBtn = commentEl.querySelector('.comment-reaction-btn');
+            const existingReaction = currentBtn ? currentBtn.dataset.userReaction : null;
+            updateCommentReactionBar(commentId, reactionStats, existingReaction || null);
+        } else {
+            updateCommentReactionBar(commentId, reactionStats, userReaction);
+        }
+    }
+    // React to a post (via SignalR)
+    async function reactToPost(postId, reactionType) {
+        try {
+            const result = await connection.invoke('ReactPost', postId, currentUserId, reactionType);
+            console.log('ReactPost result:', result);
+            // Server will broadcast to all clients including sender
+        } catch (err) {
+            console.error('React to post error:', err);
+            alert('Không thể cảm xúc. Vui lòng thử lại.');
+        }
+    }
+
+    // React to a comment (via SignalR)
+    async function reactToComment(commentId, reactionType) {
+        try {
+            const result = await connection.invoke('ReactComment', commentId, currentUserId, reactionType);
+            console.log('ReactComment result:', result);
+        } catch (err) {
+            console.error('React to comment error:', err);
+            alert('Không thể cảm xúc. Vui lòng thử lại.');
+        }
+    }
+
+
+
+    // ==================== UI RENDERING ====================
+
+    // Render reaction picker popup
+    function createReactionPicker(targetType, targetId) {
+        const picker = document.createElement('div');
+        picker.className = 'reaction-picker';
+        picker.innerHTML = Object.entries(REACTIONS).map(([type, config]) => `
+            <button class="reaction-btn" data-reaction="${type}" title="${config.label}">
+                ${config.emoji}
+            </button>
+        `).join('');
+
+        // Attach click handlers
+        picker.querySelectorAll('.reaction-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const reaction = btn.dataset.reaction;
+                if (targetType === 'post') {
+                    reactToPost(targetId, reaction);
+                } else if (targetType === 'comment') {
+                    reactToComment(targetId, reaction);
+                }
+                picker.remove();
+            });
+        });
+
+        return picker;
+    }
+
+    // Update post reaction bar display
+    function updatePostReactionBar(postId, reactionStats, userReaction) {
+        console.log('🔄 Updating post reaction bar:', { postId, reactionStats, userReaction });
+
+        const postEl = document.querySelector(`[data-post-id="${postId}"]`);
+        if (!postEl) {
+            console.warn('❌ Post element not found:', postId);
+            return;
+        }
+
+        // Calculate total reactions
+        const totalReactions = reactionStats.reduce((sum, stat) => sum + stat.count, 0);
+        console.log('📊 Total reactions:', totalReactions);
+
+        // ✅ FIX 1: Update reaction summary (ở NGOÀI .post-reaction-bar)
+        // Tìm reaction summary ở mức card-body, không phải trong post-reaction-bar
+        const summaryContainer = postEl.querySelector('.card-body > .d-flex.justify-content-between.small.text-muted');
+        if (summaryContainer) {
+            let summaryEl = summaryContainer.querySelector('.reaction-summary');
+
+            if (reactionStats.length > 0 && totalReactions > 0) {
+                const summaryHTML = reactionStats.slice(0, 3).map(stat =>
+                    `<span class="reaction-emoji-small">${REACTIONS[stat.reactionType]?.emoji || '👍'}</span>`
+                ).join('') + ` <span class="reaction-count">${totalReactions}</span>`;
+
+                if (summaryEl) {
+                    summaryEl.innerHTML = summaryHTML;
+                    summaryEl.style.display = 'flex';
+                } else {
+                    // Create if not exists
+                    summaryEl = document.createElement('div');
+                    summaryEl.className = 'reaction-summary';
+                    summaryEl.style.cssText = 'display: flex; align-items: center; gap: 2px;';
+                    summaryEl.innerHTML = summaryHTML;
+                    summaryContainer.insertBefore(summaryEl, summaryContainer.firstChild);
+                }
+            } else {
+                // Remove summary if no reactions
+                if (summaryEl) {
+                    summaryEl.style.display = 'none';
+                }
+            }
+        }
+
+        // ✅ FIX 2: Update main reaction button
+        const reactionBar = postEl.querySelector('.post-reaction-bar');
+        if (!reactionBar) {
+            console.warn('❌ Reaction bar not found');
+            return;
+        }
+
+        const mainBtn = reactionBar.querySelector('.post-reaction-btn');
+        if (mainBtn) {
+            if (userReaction) {
+                const config = REACTIONS[userReaction];
+                if (config) {
+                    mainBtn.innerHTML = `${config.emoji} <span class="reaction-label">${config.label}</span>`;
+                    mainBtn.style.color = config.color;
+                    mainBtn.classList.add('active');
+                }
+            } else {
+                mainBtn.innerHTML = `👍 <span class="reaction-label">Thích</span>`;
+                mainBtn.style.color = '';
+                mainBtn.classList.remove('active');
+            }
+            mainBtn.dataset.userReaction = userReaction || '';
+            console.log('✅ Updated button for user:', userReaction);
+        }
+    }
+
+    // Update comment reaction bar display
+    function updateCommentReactionBar(commentId, reactionStats, userReaction) {
+        const commentEl = document.querySelector(`[data-comment-id="${commentId}"]`);
+        if (!commentEl) return;
+
+        const reactionBar = commentEl.querySelector('.comment-reaction-bar');
+        if (!reactionBar) return;
+
+        const totalReactions = reactionStats.reduce((sum, stat) => sum + stat.count, 0);
+
+        // Update count display
+        const countEl = reactionBar.querySelector('.comment-reaction-count');
+        if (countEl) {
+            if (totalReactions > 0) {
+                countEl.textContent = totalReactions;
+                countEl.style.display = 'inline';
+            } else {
+                countEl.style.display = 'none';
+            }
+        }
+
+        // Update button state
+        const btn = reactionBar.querySelector('.comment-reaction-btn');
+        if (btn) {
+            if (userReaction) {
+                const config = REACTIONS[userReaction];
+                btn.innerHTML = `${config.emoji}`;
+                btn.style.color = config.color;
+                btn.classList.add('active');
+            } else {
+                btn.innerHTML = `👍`;
+                btn.style.color = '';
+                btn.classList.remove('active');
+            }
+            btn.dataset.userReaction = userReaction || '';
+        }
+    }
+
+    // Update total reaction count in sidebar
+    async function updateTotalReactionCount() {
+        // This is optional - you can track user's total reactions received
+        // For now, just leave it as placeholder
+    }
+
+    // ==================== JOIN POSTS ====================
+    async function joinAllVisiblePosts() {
+        const postElements = document.querySelectorAll('[data-post-id]');
+        for (const postEl of postElements) {
+            const postId = parseInt(postEl.dataset.postId);
+            if (postId && !joinedPosts.has(postId)) {
+                try {
+                    await connection.invoke("JoinPost", postId);
+                    joinedPosts.add(postId);
+                } catch (e) {
+                    console.warn(`Failed to join post-${postId}:`, e);
+                }
+            }
+        }
+    }
+
+    // ==================== LOAD POSTS ====================
+           async function loadPosts() {
+        console.log('🔄 Loading posts...');
+        try {
+            const response = await fetch('/Tutor/GetAllPosts', { cache: 'no-store' });
+            console.log('📡 Response status:', response.status);
+
+            if (!response.ok) {
+                console.error('❌ GetAllPosts failed:', response.status);
+                const errorText = await response.text();
+                console.error('Error details:', errorText);
+                return;
+            }
+
+            const posts = await response.json();
+            console.log('📦 Received posts:', posts);
+            console.log('📊 Posts count:', posts.length);
+
+            if (!Array.isArray(posts)) {
+                console.warn('⚠️ GetAllPosts returned non-array:', typeof posts);
+                return;
+            }
+
+            if (posts.length === 0) {
+                console.warn('⚠️ No posts found');
+                const container = document.getElementById('postsContainer');
+                container.innerHTML = '<div class="alert alert-info">Chưa có bài viết nào. Hãy tạo bài viết đầu tiên!</div>';
+                return;
+            }
+
+            const container = document.getElementById('postsContainer');
+            container.innerHTML = '';
+
+            // ✅ FIX: Không cần fetch thêm reactions nữa
+            for (const post of posts) {
+                console.log('🔨 Creating post HTML for:', post.id);
+                const reactionData = {
+                    stats: post.reactionStats || [],
+                    userReaction: post.userReaction || null
+                };
+
+                const postHtml = createPostHTML(post, reactionData);
+                container.insertAdjacentHTML('beforeend', postHtml);
+            }
+
+            console.log('✅ All posts rendered');
+            attachPostEventListeners();
+            await joinAllVisiblePosts();
+
+        } catch (error) {
+            console.error("❌ Error loading posts:", error);
+            console.error("Error stack:", error.stack);
+        }
+    }
+
+    // Fetch post reactions from server
+    async function fetchPostReactions(postId) {
+        try {
+            const response = await fetch(`/Tutor/GetPostReactions?postId=${postId}`);
+            const data = await response.json();
+            return {
+                stats: data.reactionStats || [],
+                userReaction: data.userReaction || null
+            };
+        } catch (err) {
+            console.error('Error fetching post reactions:', err);
+            return { stats: [], userReaction: null };
+        }
+    }
+
+    // Create post HTML with reaction bar
+        function createPostHTML(post, reactionData) {
+        const { stats, userReaction } = reactionData;
+        const totalReactions = stats.reduce((sum, stat) => sum + stat.count, 0);
+
+        const userReactionConfig = userReaction ? REACTIONS[userReaction] : null;
+        const reactionBtnContent = userReactionConfig
+            ? `${userReactionConfig.emoji} <span class="reaction-label">${userReactionConfig.label}</span>`
+            : `👍 <span class="reaction-label">Thích</span>`;
+        const reactionBtnColor = userReactionConfig ? userReactionConfig.color : '';
+        const reactionBtnClass = userReaction ? 'active' : '';
+
+        // Reaction summary
+        let reactionSummary = '';
+        if (stats.length > 0) {
+            reactionSummary = `
+                <div class="reaction-summary" style="display: flex; align-items: center; gap: 2px;">
+                    ${stats.slice(0, 3).map(stat =>
+                        `<span class="reaction-emoji-small">${REACTIONS[stat.reactionType]?.emoji || '👍'}</span>`
+                    ).join('')}
+                    <span class="reaction-count ms-1">${totalReactions}</span>
+                </div>
+            `;
+        }
+
+        // ✨ NEW: Dropdown menu cho author
+        const isAuthor = post.userId === currentUserId;
+                const postMenu = isAuthor ? `
+        <div class="dropdown post-menu-dropdown">
+            <button class="btn btn-link text-muted p-1 post-menu-btn"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    title="Tùy chọn bài viết">
+                <i class="bi bi-three-dots fs-5"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-start shadow-sm border-0 post-dropdown-menu" style="min-width: 280px;">
+                <!-- Chỉnh sửa -->
+                <li>
+                    <a class="dropdown-item py-2 d-flex align-items-center"
+                       href="#"
+                       onclick="editPost(${post.id}); return false;">
+                        <div class="menu-icon-wrapper bg-light rounded-circle d-flex align-items-center justify-content-center me-3"
+                             style="width: 36px; height: 36px;">
+                            <i class="bi bi-pencil-square text-dark"></i>
+                        </div>
+                        <div>
+                            <div class="fw-semibold">Chỉnh sửa bài viết</div>
+                            <small class="text-muted">Thay đổi nội dung hoặc chuyên đề.</small>
+                        </div>
+                    </a>
+                </li>
+
+                <!-- Xóa bài viết -->
+                <li>
+                    <a class="dropdown-item py-2 d-flex align-items-center text-danger"
+                       href="#"
+                       onclick="deletePost(${post.id}); return false;">
+                        <div class="menu-icon-wrapper bg-danger bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3"
+                             style="width: 36px; height: 36px;">
+                            <i class="bi bi-trash3 text-danger"></i>
+                        </div>
+                        <div>
+                            <div class="fw-semibold">Xóa bài viết</div>
+                            <small class="text-danger opacity-75">Xóa vĩnh viễn bài viết này.</small>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    ` : '';
+
+        return `
+            <div class="card border-0 shadow-sm mb-4" data-post-id="${post.id}">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="d-flex align-items-center flex-grow-1">
+                            <img src="${post.authorAvatar}" class="rounded-circle me-3" width="48" height="48" alt="${post.authorName}">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-0 fw-bold">${post.authorName}</h6>
+                                <small class="text-muted">${post.createdAt}</small>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            ${post.category ? `<span class="badge bg-secondary">${post.category}</span>` : ''}
+                            ${postMenu}
+                        </div>
+                    </div>
+
+                    <p class="mb-3 post-content" data-post-id="${post.id}">${escapeHtml(post.content)}</p>
+
+                    <div class="d-flex justify-content-between align-items-center small text-muted border-top pt-2 mb-2">
+                        ${reactionSummary}
+                        <div class="commentCount">${post.commentCount ?? 0} bình luận</div>
+                    </div>
+
+                    <div class="d-flex justify-content-around pt-2 post-reaction-bar">
+                        <div class="reaction-btn-wrapper position-relative">
+                            <button class="btn btn-link text-muted post-reaction-btn ${reactionBtnClass}"
+                                    data-post-id="${post.id}"
+                                    data-user-reaction="${userReaction || ''}"
+                                    style="color: ${reactionBtnColor};">
+                                ${reactionBtnContent}
+                            </button>
+                        </div>
+                        <button class="btn btn-link text-muted toggle-comments">
+                            <i class="bi bi-chat"></i> Bình luận
+                        </button>
+                        <button class="btn btn-link text-muted">
+                            <i class="bi bi-share"></i> Chia sẻ
+                        </button>
+                    </div>
+
+                    <div class="comments-section mt-3" style="display: none;">
+                        <div class="border-top pt-3">
+                            <div class="commentsList mb-3" style="max-height: 300px; overflow-y: auto;"></div>
+                            <div class="typingIndicator small text-muted mt-2"></div>
+                            <div class="d-flex gap-2 mt-3">
+                                <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(currentUserName)}&background=667eea&color=fff&size=32"
+                                     class="rounded-circle" width="32" height="32" alt="Your Avatar">
+                                <div class="flex-grow-1 d-flex gap-2">
+                                    <input type="text" class="form-control form-control-sm comment-input"
+                                           placeholder="Viết bình luận..." data-post-id="${post.id}">
+                                    <div class="form-check align-self-center">
+                                        <input class="form-check-input anonymous-checkbox" type="checkbox" data-post-id="${post.id}" title="Bình luận ẩn danh">
+                                        <label class="form-check-label small" title="Bình luận ẩn danh"><i class="bi bi-eye-slash"></i></label>
+                                    </div>
+                                    <button class="btn btn-primary btn-sm send-comment" data-post-id="${post.id}">
+                                        <i class="bi bi-send"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+        // ==================== ATTACH EVENT LISTENERS ====================
+    function attachPostEventListeners() {
+        // Reaction button with hover picker
+        document.querySelectorAll('.post-reaction-btn').forEach(btn => {
+            const wrapper = btn.closest('.reaction-btn-wrapper');
+            let picker = null;
+            let hoverTimeout = null;
+            let leaveTimeout = null;
+
+            btn.addEventListener('mouseenter', () => {
+                if (leaveTimeout) {
+                    clearTimeout(leaveTimeout);
+                    leaveTimeout = null;
+                }
+
+                hoverTimeout = setTimeout(() => {
+                    if (!picker) {
+                        const postId = parseInt(btn.dataset.postId);
+                        picker = createReactionPicker('post', postId);
+                        wrapper.appendChild(picker);
+
+                        picker.addEventListener('mouseenter', () => {
+                            if (leaveTimeout) {
+                                clearTimeout(leaveTimeout);
+                                leaveTimeout = null;
+                            }
+                        });
+
+                        picker.addEventListener('mouseleave', () => {
+                            leaveTimeout = setTimeout(() => {
+                                if (picker) {
+                                    picker.remove();
+                                    picker = null;
+                                }
+                            }, 50);
+                        });
+                    }
+                }, 300);
+            });
+
+            wrapper.addEventListener('mouseleave', () => {
+                clearTimeout(hoverTimeout);
+                leaveTimeout = setTimeout(() => {
+                    if (picker) {
+                        picker.remove();
+                        picker = null;
+                    }
+                }, 500);
+            });
+
+            // ✅ FIX: Direct click = toggle current reaction hoặc set like
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const postId = parseInt(btn.dataset.postId);
+                const currentReaction = btn.dataset.userReaction;
+
+                if (currentReaction) {
+                    // ✅ Đã có reaction → Click lại để REMOVE
+                    console.log(`🗑️ Removing reaction: ${currentReaction}`);
+                    reactToPost(postId, currentReaction);
+                } else {
+                    // ✅ Chưa có reaction → Click để thêm "like"
+                    console.log('➕ Adding like reaction');
+                    reactToPost(postId, 'like');
+                }
+            });
+        });
+
+        // Toggle comments
+        document.querySelectorAll('.toggle-comments').forEach(btn => {
+            btn.addEventListener('click', toggleCommentsHandler);
+        });
+
+        // Comment input
+        document.querySelectorAll('.comment-input').forEach(input => {
+            input.addEventListener('keypress', commentKeyHandler);
+        });
+
+        // Send comment button
+        document.querySelectorAll('.send-comment').forEach(btn => {
+            btn.addEventListener('click', sendCommentButtonHandler);
+        });
+    }
+
+    // ==================== COMMENT FUNCTIONS ====================
+    async function loadComments(postId) {
+        if (activeComments[postId]) return;
+        try {
+            const response = await fetch(`/Tutor/GetPostComments?postId=${postId}`);
+            const comments = await response.json();
+            const container = document.querySelector(`[data-post-id="${postId}"] .commentsList`);
+            container.innerHTML = '';
+
+            for (const comment of comments) {
+                const reactionData = await fetchCommentReactions(comment.id);
+                renderComment(comment, container, reactionData);
+            }
+
+            activeComments[postId] = true;
+            await connection.invoke("JoinPost", postId);
+        } catch (error) {
+            console.error("Error loading comments:", error);
+        }
+    }
+
+    async function fetchCommentReactions(commentId) {
+        try {
+            const response = await fetch(`/Tutor/GetCommentReactions?commentId=${commentId}`);
+            const data = await response.json();
+            return {
+                stats: data.reactionStats || [],
+                userReaction: data.userReaction || null
+            };
+        } catch (err) {
+            console.error('Error fetching comment reactions:', err);
+            return { stats: [], userReaction: null };
+        }
+    }
+
+    function renderComment(comment, container, reactionData) {
+        if (!container) return;
+        if (container.querySelector(`[data-comment-id="${comment.id}"]`)) return;
+
+        const { stats, userReaction } = reactionData;
+        const totalReactions = stats.reduce((sum, stat) => sum + stat.count, 0);
+
+        const userReactionConfig = userReaction ? REACTIONS[userReaction] : null;
+        const reactionBtnContent = userReactionConfig ? userReactionConfig.emoji : '👍';
+        const reactionBtnColor = userReactionConfig ? userReactionConfig.color : '';
+        const reactionBtnClass = userReaction ? 'active' : '';
+
+        const html = `
+            <div class="comment mb-3" data-comment-id="${comment.id}">
+                <div class="d-flex gap-2">
+                    <img src="${comment.authorAvatar}" class="rounded-circle" width="32" height="32" alt="${comment.authorName}">
+                    <div class="flex-grow-1">
+                        <div class="bg-light p-2 rounded">
+                            <strong class="small">${escapeHtml(comment.authorName)}</strong>
+                            <p class="mb-0 small text-dark">${escapeHtml(comment.content)}</p>
+                        </div>
+                        <div class="d-flex align-items-center gap-3 mt-1 comment-reaction-bar">
+                            <small class="text-muted">${comment.createdAt}</small>
+                            <div class="reaction-btn-wrapper position-relative d-inline-block">
+                                <button class="btn btn-link btn-sm p-0 text-muted comment-reaction-btn ${reactionBtnClass}"
+                                        data-comment-id="${comment.id}"
+                                        data-user-reaction="${userReaction || ''}"
+                                        style="color: ${reactionBtnColor};">
+                                    ${reactionBtnContent}
+                                </button>
+                            </div>
+                            <span class="comment-reaction-count small" style="${totalReactions > 0 ? '' : 'display: none;'}">${totalReactions}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', html);
+
+        // Attach reaction handler
+        const commentEl = container.querySelector(`[data-comment-id="${comment.id}"]`);
+        attachCommentReactionHandler(commentEl);
+    }
+
+     // ==================== COMMENT REACTION HANDLER ====================
+    function attachCommentReactionHandler(commentEl) {
+        const btn = commentEl.querySelector('.comment-reaction-btn');
+        const wrapper = btn.closest('.reaction-btn-wrapper');
+        let picker = null;
+        let hoverTimeout = null;
+        let leaveTimeout = null;
+
+        btn.addEventListener('mouseenter', () => {
+            if (leaveTimeout) {
+                clearTimeout(leaveTimeout);
+                leaveTimeout = null;
+            }
+
+            hoverTimeout = setTimeout(() => {
+                if (!picker) {
+                    const commentId = parseInt(btn.dataset.commentId);
+                    picker = createReactionPicker('comment', commentId);
+                    wrapper.appendChild(picker);
+
+                    picker.addEventListener('mouseenter', () => {
+                        if (leaveTimeout) {
+                            clearTimeout(leaveTimeout);
+                            leaveTimeout = null;
+                        }
+                    });
+
+                    picker.addEventListener('mouseleave', () => {
+                        leaveTimeout = setTimeout(() => {
+                            if (picker) {
+                                picker.remove();
+                                picker = null;
+                            }
+                        }, 500);
+                    });
+                }
+            }, 300);
+        });
+
+        wrapper.addEventListener('mouseleave', () => {
+            clearTimeout(hoverTimeout);
+            leaveTimeout = setTimeout(() => {
+                if (picker) {
+                    picker.remove();
+                    picker = null;
+                }
+            }, 50);
+        });
+
+        // ✅ FIX: Click = toggle current reaction
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const commentId = parseInt(btn.dataset.commentId);
+            const currentReaction = btn.dataset.userReaction;
+
+            if (currentReaction) {
+                // ✅ Đã có reaction → Click lại để REMOVE
+                console.log(`🗑️ Removing comment reaction: ${currentReaction}`);
+                reactToComment(commentId, currentReaction);
+            } else {
+                // ✅ Chưa có reaction → Click để thêm "like"
+                console.log('➕ Adding like to comment');
+                reactToComment(commentId, 'like');
+            }
+        });
+    }
+
+    function addCommentToDOM(comment) {
+        if (document.querySelector(`[data-comment-id="${comment.id}"]`)) return;
+        const container = document.querySelector(`[data-post-id="${comment.postId}"] .commentsList`);
+        if (!container) return;
+
+        const reactionData = { stats: [], userReaction: null };
+        renderComment(comment, container, reactionData);
+
+        const countEl = document.querySelector(`[data-post-id="${comment.postId}"] .commentCount`);
+        const count = container.querySelectorAll('.comment').length;
+        if (countEl) countEl.textContent = `${count} bình luận`;
+    }
+
+    function removeCommentFromDOM(commentId) {
+        const el = document.querySelector(`[data-comment-id="${commentId}"]`);
+        if (el) el.remove();
+    }
+
+        async function sendComment(postId) {
+        console.log('📤 Sending comment for post:', postId);
+
+        const input = document.querySelector(`[data-post-id="${postId}"] .comment-input`);
+        const checkbox = document.querySelector(`[data-post-id="${postId}"] .anonymous-checkbox`);
+
+        if (!input) {
+            console.error('❌ Input not found');
+            return;
+        }
+
+        if (!input.value.trim()) {
+            console.warn('⚠️ Empty comment');
+            return;
+        }
+
+        const content = input.value.trim();
+        const isAnon = checkbox ? checkbox.checked : false;
+        const sendBtn = document.querySelector(`[data-post-id="${postId}"] .send-comment`);
+
+        console.log('📝 Comment data:', { postId, content, isAnon, currentUserId });
+
+        if (sendBtn) sendBtn.disabled = true;
+
+        try {
+            // ✅ FIX: Kiểm tra connection state trước khi gọi
+            if (connection.state !== signalR.HubConnectionState.Connected) {
+                console.warn('⚠️ SignalR not connected, attempting to reconnect...');
+                await connection.start();
+            }
+
+            // ✅ FIX: Bọc JoinPost trong try-catch riêng
+            try {
+                await connection.invoke("JoinPost", postId);
+                console.log('✅ Joined post group');
+            } catch (joinErr) {
+                console.warn('⚠️ Failed to join post group:', joinErr);
+                // Continue anyway - không chặn việc gửi comment
+            }
+
+            console.log('🌐 Sending POST request to /Tutor/PostComment');
+            const res = await fetch('/Tutor/PostComment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ postId, content, isAnonymous: isAnon })
+            });
+
+            console.log('📥 Response status:', res.status);
+
+            if (!res.ok) {
+                const errorText = await res.text();
+                console.error('❌ Server error:', errorText);
+                alert(`Lỗi server: ${res.status} - ${errorText}`);
+                return;
+            }
+
+            const data = await res.json();
+            console.log('✅ Response data:', data);
+
+            if (data && data.success) {
+                if (data.comment) {
+                    console.log('➕ Adding comment to DOM');
+                    addCommentToDOM(data.comment);
+                }
+                input.value = '';
+                if (checkbox) checkbox.checked = false;
+
+                // ✅ FIX: Bọc Typing trong try-catch
+                try {
+                    await connection.invoke("Typing", postId, currentUserId, currentUserName, false);
+                } catch (typingErr) {
+                    console.warn('⚠️ Failed to send typing indicator:', typingErr);
+                }
+            } else {
+                console.error('❌ Server returned success=false');
+                alert('Không gửi được bình luận: ' + (data.message || 'Unknown error'));
+            }
+        } catch (err) {
+            console.error("❌ SendComment error:", err);
+            alert('Lỗi: ' + err.message);
+        } finally {
+            if (sendBtn) sendBtn.disabled = false;
+        }
+    }
+
+    // ==================== UTILITY FUNCTIONS ====================
+    function escapeHtml(text) {
+        if (!text) return '';
+        return text.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+                   .replaceAll('"', '&quot;').replaceAll("'", '&#039;');
+    }
+
+    function toggleCommentsHandler() {
+        const postId = this.closest('[data-post-id]').dataset.postId;
+        const section = this.closest('[data-post-id]').querySelector('.comments-section');
+        if (section.style.display === 'none') {
+            section.style.display = 'block';
+            loadComments(postId).then(() => {
+                const inputEl = document.querySelector(`[data-post-id="${postId}"] .comment-input`);
+                attachTypingHandlers(postId, inputEl);
+            });
+        } else {
+            section.style.display = 'none';
+            connection.invoke("Typing", postId, currentUserId, currentUserName, false).catch(() => {});
+        }
+    }
+
+    function commentKeyHandler(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendComment(this.dataset.postId);
+        }
+    }
+
+    function sendCommentButtonHandler() {
+        sendComment(this.dataset.postId);
+    }
+
+    function attachTypingHandlers(postId, inputEl) {
+        if (!inputEl) return;
+        const sendTyping = (isTyping) => {
+            connection.invoke("Typing", postId, currentUserId, currentUserName, isTyping).catch(() => {});
+        };
+
+        inputEl.addEventListener('input', () => {
+            sendTyping(true);
+            if (typingTimers[postId]) clearTimeout(typingTimers[postId]);
+            typingTimers[postId] = setTimeout(() => {
+                sendTyping(false);
+                delete typingTimers[postId];
+            }, 1500);
+        });
+
+        inputEl.addEventListener('blur', () => {
+            sendTyping(false);
+            if (typingTimers[postId]) {
+                clearTimeout(typingTimers[postId]);
+                delete typingTimers[postId];
+            }
+        });
+    }
+
+    function handleUserTyping(payload) {
+        const postId = payload.postId;
+        if (!typingState[postId]) typingState[postId] = {};
+
+        if (payload.isTyping) {
+            typingState[postId][payload.userId] = { userId: payload.userId, userName: payload.userName, ts: Date.now() };
+            setTimeout(() => {
+                const entry = typingState[postId][payload.userId];
+                if (entry && (Date.now() - entry.ts) > 5000) {
+                    delete typingState[postId][payload.userId];
+                    updateTypingIndicator(postId);
+                }
+            }, 5500);
+        } else {
+            delete typingState[postId][payload.userId];
+        }
+
+        updateTypingIndicator(postId);
+    }
+
+    function updateTypingIndicator(postId) {
+        const postEl = document.querySelector(`[data-post-id="${postId}"]`);
+        if (!postEl) return;
+        const ind = postEl.querySelector('.typingIndicator');
+        if (!ind) return;
+
+        const m = typingState[postId];
+        if (!m) { ind.textContent = ''; return; }
+
+        const names = Object.values(m).filter(u => u.userId !== currentUserId).map(u => u.userName);
+        const unique = [...new Set(names)];
+
+        if (unique.length === 0) {
+            ind.textContent = '';
+        } else if (unique.length === 1) {
+            ind.textContent = `${unique[0]} đang bình luận...`;
+        } else if (unique.length === 2) {
+            ind.textContent = `${unique[0]} và ${unique[1]} đang bình luận...`;
+        } else {
+            ind.textContent = `${unique[0]} và ${unique.length - 1} người khác đang bình luận...`;
+        }
+    }
+
+    // ==================== CREATE POST ====================
+    document.getElementById('submitPostBtn').addEventListener('click', async function() {
+        const content = document.getElementById('postContent').value.trim();
+        const category = document.getElementById('postCategory').value;
+
+        if (!content) {
+            alert('Vui lòng nhập nội dung bài viết!');
+            return;
+        }
+
+        try {
+            const response = await fetch('/Tutor/CreatePost', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content, category, title: category || 'Bài viết' })
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                document.getElementById('postContent').value = '';
+                document.getElementById('postCategory').value = '';
+                const modal = bootstrap.Modal.getInstance(document.getElementById('createPostModal'));
+                modal.hide();
+                await loadPosts();
+                alert('Bài viết đã được đăng thành công!');
+            } else {
+                alert('Lỗi: ' + result.message);
+            }
+        } catch (error) {
+            console.error("Error creating post:", error);
+            alert('Lỗi khi tạo bài viết!');
+        }
+    });
+
+        // ==================== EDIT POST ====================
+    async function editPost(postId) {
+        try {
+            const response = await fetch(`/Tutor/GetPostById?id=${postId}`);
+            const post = await response.json();
+
+            if (post) {
+                document.getElementById('editPostId').value = post.id;
+                document.getElementById('editPostContent').value = post.content;
+                document.getElementById('editPostCategory').value = post.category || '';
+
+                const modal = new bootstrap.Modal(document.getElementById('editPostModal'));
+                modal.show();
+            }
+        } catch (error) {
+            console.error('Error loading post:', error);
+            alert('Không thể tải bài viết!');
+        }
+    }
+
+    document.getElementById('updatePostBtn').addEventListener('click', async function() {
+        const postId = parseInt(document.getElementById('editPostId').value);
+        const content = document.getElementById('editPostContent').value.trim();
+        const category = document.getElementById('editPostCategory').value;
+
+        if (!content) {
+            alert('Vui lòng nhập nội dung bài viết!');
+            return;
+        }
+
+        try {
+            const response = await fetch('/Tutor/UpdatePost', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ postId, content, category })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('editPostModal'));
+                modal.hide();
+
+                // Update UI locally
+                const postContent = document.querySelector(`[data-post-id="${postId}"] .post-content`);
+                if (postContent) {
+                    postContent.textContent = content;
+                }
+
+                alert('Cập nhật bài viết thành công!');
+            } else {
+                alert('Lỗi: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error updating post:', error);
+            alert('Lỗi khi cập nhật bài viết!');
+        }
+    });
+
+    // ==================== DELETE POST ====================
+    async function deletePost(postId) {
+        if (!confirm('Bạn có chắc chắn muốn xóa bài viết này?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch('/Tutor/DeletePost', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ postId })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Remove post from DOM
+                const postEl = document.querySelector(`[data-post-id="${postId}"]`);
+                if (postEl) {
+                    postEl.remove();
+                }
+                alert('Xóa bài viết thành công!');
+            } else {
+                alert('Lỗi: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error deleting post:', error);
+            alert('Lỗi khi xóa bài viết!');
+        }
+    }
+
+
+    // ==================== INITIALIZATION ====================
+    document.addEventListener('DOMContentLoaded', async () => {
+        await initSignalR();
+        await loadPosts();
+    });
+
+        (async function() {
+        console.log('🚀 App initialization started...');
+        console.log('📍 DOM state:', document.readyState);
+        console.log('👤 Current User ID:', currentUserId);
+        console.log('👤 Current User Name:', currentUserName);
+
+        try {
+            // Step 1: Initialize SignalR
+            await initSignalR();
+            console.log('✅ Step 1: SignalR initialized');
+
+            // Step 2: Load posts
+            await loadPosts();
+            console.log('✅ Step 2: Posts loaded');
+
+            console.log('🎉 App initialization completed!');
+
+        } catch (error) {
+            console.error('❌ Initialization error:', error);
+            console.error('Error details:', error.stack);
+            alert('Lỗi khởi tạo ứng dụng. Vui lòng reload trang.');
+        }
+    })();
+</script>
+
+<style>
+    /* ==================== ANIMATIONS ==================== */
+    .comments-section {
+        animation: slideDown 0.3s ease-out;
+    }
+
+    @@keyframes slideDown {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .comment {
+        transition: all 0.3s ease;
+        position: relative;
+        /* ✅ Xóa border cũ */
+        border: none !important;
+        border-bottom: none !important;
+        box-shadow: none !important;
+    }
+
+        .comment::before {
+            /* ✅ Xóa pseudo-element cũ nếu có */
+            display: none !important;
+        }
+
+        .comment::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+            transition: width 0.3s ease;
+            z-index: 10;
+        }
+
+        .comment:hover {
+            background: rgba(76, 175, 80, 0.08) !important;
+            padding: 8px;
+            margin: 0 -8px;
+            border-radius: 8px;
+            /* ✅ Xóa tất cả border và shadow cũ */
+            border: none !important;
+            border-bottom: none !important;
+            box-shadow: none !important;
+            border-image: none !important;
+        }
+
+            .comment:hover::after {
+                width: 100%;
+            }
+    /* ==================== REACTION STYLES ==================== */
+    .reaction-picker {
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: white;
+        border-radius: 30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        padding: 8px 12px;
+        display: flex;
+        gap: 8px;
+        z-index: 1000;
+        margin-bottom: 8px;
+        animation: popIn 0.2s ease-out;
+    }
+
+    @@keyframes popIn {
+        from {
+            opacity: 0;
+            transform: translateX(-50%) translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    }
+
+    .reaction-picker .reaction-btn {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 50%;
+        transition: transform 0.2s, background 0.2s;
+    }
+
+        .reaction-picker .reaction-btn:hover {
+            transform: scale(1.3);
+            background: rgba(0,0,0,0.05);
+        }
+
+    .post-reaction-btn, .comment-reaction-btn {
+        transition: all 0.2s;
+        font-weight: normal;
+    }
+
+        .post-reaction-btn.active, .comment-reaction-btn.active {
+            font-weight: 600;
+        }
+
+        .post-reaction-btn:hover, .comment-reaction-btn:hover {
+            text-decoration: none;
+            opacity: 0.8;
+        }
+
+    .reaction-emoji-small {
+        font-size: 1.2rem;
+        line-height: 1;
+    }
+
+    .reaction-count {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+
+    .reaction-summary {
+        align-items: center;
+        gap: 4px;
+    }
+
+    .reaction-btn-wrapper {
+        display: inline-block;
+    }
+
+    .typingIndicator {
+        min-height: 20px;
+        font-style: italic;
+    }
+
+    .reaction-label {
+        font-size: 0.9rem;
+    }
+
+    .comment-reaction-count {
+        color: #6c757d;
+    }
+
+    /* Reaction Guide */
+    .reaction-guide .reaction-emoji {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        text-align: center;
+    }
+
+    /* ==================== POST MENU DROPDOWN (Green Theme) ==================== */
+    .post-menu-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.2s;
+    }
+
+        .post-menu-btn:hover {
+            background-color: rgba(40, 167, 69, 0.1) !important; /* ✅ Xanh lá nhạt */
+        }
+
+    .post-dropdown-menu {
+        padding: 8px;
+        animation: dropdownFadeIn 0.15s ease-out;
+    }
+
+    @@keyframes dropdownFadeIn {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .post-dropdown-menu .dropdown-item {
+        border-radius: 8px;
+        transition: background-color 0.2s;
+        padding: 8px 12px !important;
+    }
+
+        .post-dropdown-menu .dropdown-item:hover {
+            background-color: rgba(40, 167, 69, 0.12) !important; /* ✅ Xanh lá */
+        }
+
+        .post-dropdown-menu .dropdown-item.text-danger:hover {
+            background-color: rgba(220, 53, 69, 0.1) !important; /* Giữ màu đỏ cho Delete */
+        }
+
+    .menu-icon-wrapper {
+        flex-shrink: 0;
+    }
+
+    .post-dropdown-menu .dropdown-divider {
+        margin: 4px 0;
+        opacity: 0.1;
+    }
+
+    /* ==================== FORCE DROPDOWN TO LEFT ==================== */
+    .post-menu-dropdown {
+        position: relative;
+    }
+
+        .post-menu-dropdown .dropdown-menu {
+            left: auto !important;
+            right: 100% !important;
+            top: 0 !important;
+            margin-right: 8px;
+            transform: none !important;
+        }
+
+    /* Fallback nếu menu bị cắt ra ngoài màn hình */
+    @@media (max-width: 768px) {
+        .post-menu-dropdown .dropdown-menu
+
+    {
+        right: 0 !important;
+        left: auto !important;
+    }
+
+    }
+    /* ==================== POST MENU DROPDOWN (Green Gradient Theme) ==================== */
+    .post-menu-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+
+        .post-menu-btn:hover {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.15) 0%, rgba(102, 187, 106, 0.15) 100%) !important;
+        }
+
+    .post-dropdown-menu {
+        padding: 8px;
+        animation: dropdownFadeIn 0.15s ease-out;
+    }
+
+    @@keyframes dropdownFadeIn {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .post-dropdown-menu .dropdown-item {
+        border-radius: 8px;
+        transition: all 0.2s;
+        padding: 8px 12px !important;
+    }
+
+        /* ✅ Hover cho "Chỉnh sửa bài viết" - gradient xanh lá */
+        .post-dropdown-menu .dropdown-item:not(.text-danger):hover {
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%) !important;
+            color: white !important;
+        }
+
+            .post-dropdown-menu .dropdown-item:not(.text-danger):hover .text-muted {
+                color: rgba(255, 255, 255, 0.9) !important;
+            }
+
+            .post-dropdown-menu .dropdown-item:not(.text-danger):hover .text-dark {
+                color: white !important;
+            }
+
+            .post-dropdown-menu .dropdown-item:not(.text-danger):hover .menu-icon-wrapper {
+                background: rgba(255, 255, 255, 0.2) !important;
+            }
+
+                .post-dropdown-menu .dropdown-item:not(.text-danger):hover .menu-icon-wrapper i {
+                    color: white !important;
+                }
+
+        /* ✅ Hover cho "Xóa bài viết" - giữ màu đỏ */
+        .post-dropdown-menu .dropdown-item.text-danger:hover {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+            color: white !important;
+        }
+
+            .post-dropdown-menu .dropdown-item.text-danger:hover small {
+                color: rgba(255, 255, 255, 0.9) !important;
+            }
+
+            .post-dropdown-menu .dropdown-item.text-danger:hover .menu-icon-wrapper {
+                background: rgba(255, 255, 255, 0.2) !important;
+            }
+
+                .post-dropdown-menu .dropdown-item.text-danger:hover .menu-icon-wrapper i {
+                    color: white !important;
+                }
+
+    .menu-icon-wrapper {
+        flex-shrink: 0;
+        transition: all 0.2s;
+    }
+
+    .post-dropdown-menu .dropdown-divider {
+        margin: 4px 0;
+        opacity: 0.1;
+    }
+
+    /* ==================== FORCE DROPDOWN TO LEFT ==================== */
+    .post-menu-dropdown {
+        position: relative;
+    }
+
+        .post-menu-dropdown .dropdown-menu {
+            left: auto !important;
+            right: 100% !important;
+            top: 0 !important;
+            margin-right: 8px;
+            transform: none !important;
+        }
+
+    /* Fallback nếu menu bị cắt ra ngoài màn hình */
+    @@media (max-width: 768px) {
+        .post-menu-dropdown .dropdown-menu
+
+    {
+        right: 0 !important;
+        left: auto !important;
+    }
+
+    }
+
+    /* ==================== FIX: Remove blue-violet underline ==================== */
+    .comment,
+    .comment:hover,
+    .comment:focus,
+    .comment:active {
+        border-image: none !important;
+        border-image-source: none !important;
+        border-image-slice: initial !important;
+        background-image: none !important;
+        box-shadow: none !important;
+    }
+
+        /* Force remove any existing underline */
+        .comment * {
+            border-image: none !important;
+        }
+</style>
