@@ -1,0 +1,179 @@
+﻿@model List<ProblemGroupInvite>
+@{
+    ViewData["Title"] = "Lời mời nhóm";
+    Layout = "~/Views/Shared/_StudentLayout.cshtml";
+}
+
+<div>
+    <!-- Page Header -->
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h5 class="fw-bold mb-1 text-dark">
+                <i class="bi bi-envelope-fill text-primary me-2"></i>Lời mời tham gia nhóm
+            </h5>
+            <p class="text-muted mb-0 small">Quản lý các lời mời vào nhóm học tập</p>
+        </div>
+        <a asp-action="MyGroups" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-people-fill me-1"></i> Nhóm của tôi
+        </a>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="row">
+            @foreach (var invite in Model)
+            {
+                <div class="col-lg-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <!-- Sender Info -->
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="https://ui-avatars.com/api/?name=@Uri.EscapeDataString(invite.InvitedByUser.FullName)&background=667eea&color=fff&size=60"
+                                     class="rounded-circle me-3" alt="Avatar" width="60" height="60">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0 fw-bold">@invite.InvitedByUser.FullName</h6>
+                                    <small class="text-muted">đã mời bạn tham gia nhóm</small>
+                                    <div class="mt-1">
+                                        <small class="text-muted">
+                                            <i class="bi bi-clock me-1"></i>@invite.InvitedAt.ToString("dd/MM/yyyy HH:mm")
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-3">
+
+                            <!-- Group Info -->
+                            <div class="bg-light rounded p-3 mb-3">
+                                <h6 class="fw-bold text-success mb-2">
+                                    <i class="bi bi-people-fill me-1"></i>@invite.Group.GroupName
+                                </h6>
+                                <p class="mb-2 small">
+                                    <i class="bi bi-journal-text text-primary me-1"></i>
+                                    <span class="fw-semibold">Bài toán:</span> @invite.Group.Problem.Title
+                                </p>
+                                <div class="d-flex gap-2 mb-2">
+                                    <span class="badge bg-primary">@invite.Group.Problem.Type</span>
+                                    <span class="badge bg-warning text-dark">@invite.Group.Problem.Difficulty</span>
+                                </div>
+                            </div>
+
+                            <!-- Price Info -->
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <div class="bg-success bg-opacity-10 rounded p-2 text-center">
+                                        <small class="text-muted d-block">Tổng chi phí</small>
+                                        <span class="fw-bold text-success">@invite.Group.TotalPrice.ToString("N0") đ</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="bg-primary bg-opacity-10 rounded p-2 text-center">
+                                        <small class="text-muted d-block">Chi phí của bạn</small>
+                                        <span class="fw-bold text-primary">@invite.Group.PricePerMember.ToString("N0") đ</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Members Count -->
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-people text-muted me-2"></i>
+                                <small class="text-muted">
+                                    Hiện có @invite.Group.Members.Count thành viên trong nhóm
+                                </small>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <button class="btn btn-success w-100" onclick="acceptInvite(@invite.Id)">
+                                        <i class="bi bi-check-circle me-1"></i> Chấp nhận
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button class="btn btn-outline-danger w-100" onclick="rejectInvite(@invite.Id)">
+                                        <i class="bi bi-x-circle me-1"></i> Từ chối
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-envelope-open text-muted" style="font-size: 5rem;"></i>
+                <h5 class="mt-3 mb-2 fw-bold">Không có lời mời nào</h5>
+                <p class="text-muted mb-4">Bạn chưa có lời mời tham gia nhóm nào</p>
+                <a asp-action="MyGroups" class="btn btn-primary">
+                    <i class="bi bi-people-fill me-1"></i> Xem nhóm của tôi
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function acceptInvite(inviteId) {
+            console.log('Accepting invite:', inviteId); // Debug
+
+            if (!confirm('Bạn có chắc muốn tham gia nhóm này?')) return;
+
+            // ✅ FIX: Send as form data instead of JSON
+            fetch('/Student/AcceptGroupInvite', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `inviteId=${inviteId}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log('Response:', data); // Debug
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                alert('Đã xảy ra lỗi: ' + err.message);
+            });
+        }
+
+        function rejectInvite(inviteId) {
+            console.log('Rejecting invite:', inviteId); // Debug
+
+            if (!confirm('Bạn có chắc muốn từ chối lời mời này?')) return;
+
+            // ✅ FIX: Send as form data
+            fetch('/Student/RejectGroupInvite', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `inviteId=${inviteId}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log('Response:', data); // Debug
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                alert('Đã xảy ra lỗi: ' + err.message);
+            });
+        }
+    </script>
+}

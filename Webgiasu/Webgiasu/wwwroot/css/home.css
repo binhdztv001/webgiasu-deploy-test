@@ -1,0 +1,282 @@
+/* Additional Home Page Styles */
+
+/* ===========================
+   HOVER CARD WITH GLOW EFFECT
+   =========================== */
+
+.hover-card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: visible !important;
+    border-radius: 16px;
+    background: white;
+    z-index: 1;
+}
+
+/* Shimmer effect */
+.hover-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: left 0.6s ease;
+    z-index: 10;
+    pointer-events: none;
+    border-radius: 16px;
+}
+
+.hover-card:hover::before {
+    left: 100%;
+}
+
+/* Glow effect on hover */
+.hover-card:hover {
+    transform: translateY(-12px) scale(1.02);
+    z-index: 10;
+}
+
+/* Student Card - Blue Glow (first card) */
+.row.g-4 > .col-md-4:first-child .hover-card:hover,
+.row.g-4 > div:first-child .hover-card:hover {
+    box-shadow: 
+        0 0 20px rgba(33, 150, 243, 0.5),
+        0 0 40px rgba(33, 150, 243, 0.4),
+        0 0 60px rgba(33, 150, 243, 0.3),
+        0 0 80px rgba(33, 150, 243, 0.2),
+        0 25px 50px rgba(33, 150, 243, 0.3) !important;
+}
+
+/* Tutor Card - Green Glow (second card) */
+.row.g-4 > .col-md-4:nth-child(2) .hover-card:hover,
+.row.g-4 > div:nth-child(2) .hover-card:hover {
+    box-shadow: 
+        0 0 20px rgba(76, 175, 80, 0.5),
+        0 0 40px rgba(76, 175, 80, 0.4),
+        0 0 60px rgba(76, 175, 80, 0.3),
+        0 0 80px rgba(76, 175, 80, 0.2),
+        0 25px 50px rgba(76, 175, 80, 0.3) !important;
+}
+
+/* Admin Card - Red Glow (third card) */
+.row.g-4 > .col-md-4:nth-child(3) .hover-card:hover,
+.row.g-4 > .col-md-4:last-child .hover-card:hover,
+.row.g-4 > div:nth-child(3) .hover-card:hover {
+    box-shadow: 
+        0 0 20px rgba(220, 20, 60, 0.5),
+        0 0 40px rgba(220, 20, 60, 0.4),
+        0 0 60px rgba(220, 20, 60, 0.3),
+        0 0 80px rgba(220, 20, 60, 0.2),
+        0 25px 50px rgba(220, 20, 60, 0.3) !important;
+}
+
+/* Icon container glow on hover */
+.hover-card .rounded-circle {
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.hover-card:hover .rounded-circle {
+    transform: scale(1.15);
+}
+
+/* Student icon glow */
+.row.g-4 > .col-md-4:first-child .hover-card:hover .rounded-circle,
+.row.g-4 > div:first-child .hover-card:hover .rounded-circle {
+    box-shadow: 
+        0 0 20px rgba(33, 150, 243, 0.6),
+        0 0 40px rgba(33, 150, 243, 0.4),
+        0 0 60px rgba(33, 150, 243, 0.2);
+}
+
+/* Tutor icon glow */
+.row.g-4 > .col-md-4:nth-child(2) .hover-card:hover .rounded-circle,
+.row.g-4 > div:nth-child(2) .hover-card:hover .rounded-circle {
+    box-shadow: 
+        0 0 20px rgba(76, 175, 80, 0.6),
+        0 0 40px rgba(76, 175, 80, 0.4),
+        0 0 60px rgba(76, 175, 80, 0.2);
+}
+
+/* Admin icon glow */
+.row.g-4 > .col-md-4:nth-child(3) .hover-card:hover .rounded-circle,
+.row.g-4 > .col-md-4:last-child .hover-card:hover .rounded-circle,
+.row.g-4 > div:nth-child(3) .hover-card:hover .rounded-circle {
+    box-shadow: 
+        0 0 20px rgba(220, 20, 60, 0.6),
+        0 0 40px rgba(220, 20, 60, 0.4),
+        0 0 60px rgba(220, 20, 60, 0.2);
+}
+
+/* Pulse animation for icons on hover */
+@keyframes iconPulseGlow {
+    0%, 100% {
+        transform: scale(1.15);
+    }
+    50% {
+        transform: scale(1.25);
+    }
+}
+
+.hover-card:hover .rounded-circle {
+    animation: iconPulseGlow 1.5s ease-in-out infinite;
+}
+
+/* Button glow on card hover */
+.row.g-4 > .col-md-4:first-child .hover-card:hover .btn-primary,
+.row.g-4 > div:first-child .hover-card:hover .btn-primary {
+    box-shadow: 0 0 25px rgba(33, 150, 243, 0.6);
+}
+
+.row.g-4 > .col-md-4:nth-child(2) .hover-card:hover .btn-success,
+.row.g-4 > div:nth-child(2) .hover-card:hover .btn-success {
+    box-shadow: 0 0 25px rgba(76, 175, 80, 0.6);
+}
+
+.row.g-4 > .col-md-4:nth-child(3) .hover-card:hover .btn-danger,
+.row.g-4 > .col-md-4:last-child .hover-card:hover .btn-danger,
+.row.g-4 > div:nth-child(3) .hover-card:hover .btn-danger {
+    box-shadow: 0 0 25px rgba(220, 20, 60, 0.6);
+}
+
+/* Outline button glow */
+.row.g-4 > .col-md-4:first-child .hover-card:hover .btn-outline-primary,
+.row.g-4 > div:first-child .hover-card:hover .btn-outline-primary {
+    box-shadow: 0 0 15px rgba(33, 150, 243, 0.4);
+}
+
+.row.g-4 > .col-md-4:nth-child(2) .hover-card:hover .btn-outline-success,
+.row.g-4 > div:nth-child(2) .hover-card:hover .btn-outline-success {
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.4);
+}
+
+/* ===========================
+   TEXT GRADIENT
+   =========================== */
+
+.text-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-decoration: none !important;
+    display: inline-block;
+}
+
+.text-gradient i {
+    -webkit-text-fill-color: #667eea;
+    background: none;
+}
+
+/* ===========================
+   FADE IN SECTION
+   =========================== */
+
+.fade-in {
+    position: relative;
+    z-index: 10;
+}
+
+.fade-in h1,
+.fade-in p,
+.fade-in .badge {
+    position: relative;
+    z-index: 11;
+}
+
+/* ===========================
+   ICON BOUNCE ANIMATION
+   =========================== */
+
+@keyframes iconBounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.icon-bounce {
+    display: inline-block;
+    animation: iconBounce 2s ease-in-out infinite;
+}
+
+/* ===========================
+   SHADOW SOFT
+   =========================== */
+
+.shadow-soft {
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+/* ===========================
+   HOVER LIFT EFFECT
+   =========================== */
+
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+}
+
+/* ===========================
+   HOVER SCALE EFFECT
+   =========================== */
+
+.hover-scale {
+    transition: transform 0.3s ease;
+}
+
+.hover-scale:hover {
+    transform: scale(1.05);
+}
+
+/* ===========================
+   CARD GLASS EFFECT
+   =========================== */
+
+.card-glass {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ===========================
+   ICON PULSE ANIMATION
+   =========================== */
+
+@keyframes iconPulseStats {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+.icon-pulse {
+    animation: iconPulseStats 2s ease-in-out infinite;
+}
+
+/* ===========================
+   BUTTON PILL STYLE
+   =========================== */
+
+.btn-pill {
+    border-radius: 50px;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-pill:hover {
+    transform: translateY(-2px);
+}
+

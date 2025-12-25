@@ -1,0 +1,313 @@
+﻿@model Webgiasu.Models.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Đăng ký";
+    var roleText = Model.Role switch
+    {
+        Webgiasu.Models.UserRole.Student => "Học sinh",
+        Webgiasu.Models.UserRole.Tutor => "Gia sư",
+        _ => "Người dùng"
+    };
+    var roleIcon = Model.Role switch
+    {
+        Webgiasu.Models.UserRole.Student => "bi-person-circle",
+        Webgiasu.Models.UserRole.Tutor => "bi-mortarboard",
+        _ => "bi-person"
+    };
+    var roleColor = Model.Role switch
+    {
+        Webgiasu.Models.UserRole.Student => "primary",
+        Webgiasu.Models.UserRole.Tutor => "success",
+        _ => "secondary"
+    };
+    var glowClass = Model.Role switch
+    {
+        Webgiasu.Models.UserRole.Student => "hover-glow-primary",
+        Webgiasu.Models.UserRole.Tutor => "hover-glow-success",
+        _ => "hover-glow-primary"
+    };
+}
+
+<link rel="stylesheet" href="~/css/animations.css" asp-append-version="true" />
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="card shadow-lg border-0 register-card @glowClass fade-in">
+                <div class="card-header bg-@roleColor bg-gradient text-white text-center py-4 register-header">
+                    <div class="mb-2 icon-container">
+                        <i class="@roleIcon icon-bounce" style="font-size: 3rem;"></i>
+                    </div>
+                    <h2 class="fw-bold mb-1 fade-in-up delay-1">Đăng ký tài khoản</h2>
+                    <p class="mb-0 fade-in-up delay-2">Vai trò: <span class="badge bg-white text-@roleColor badge-animated">@roleText</span></p>
+                </div>
+                
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="Register" method="post" id="registerForm">
+                        <input type="hidden" asp-for="Role" />
+                        
+                        <div class="mb-4 fade-in-up delay-2">
+                            <label asp-for="FullName" class="form-label fw-bold">
+                                <i class="bi bi-person-fill text-@roleColor me-1"></i> Họ và tên <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="FullName" class="form-control form-control-lg form-control-animated" placeholder="VD: Nguyễn Văn An" required />
+                            <div class="form-text">Nhập đầy đủ họ và tên của bạn</div>
+                        </div>
+
+                        <div class="mb-4 fade-in-up delay-2">
+                            <label asp-for="Username" class="form-label fw-bold">
+                                <i class="bi bi-person-badge-fill text-@roleColor me-1"></i> Tên đăng nhập <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Username" class="form-control form-control-lg form-control-animated" placeholder="VD: nguyenvanan" required pattern="[a-zA-Z0-9_]+" />
+                            <div class="form-text">Chỉ sử dụng chữ cái, số và dấu gạch dưới (_)</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4 fade-in-up delay-3">
+                                <label asp-for="Email" class="form-label fw-bold">
+                                    <i class="bi bi-envelope-fill text-@roleColor me-1"></i> Email <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="Email" type="email" class="form-control form-control-lg form-control-animated" placeholder="email@example.com" required />
+                            </div>
+                            <div class="col-md-6 mb-4 fade-in-up delay-3">
+                                <label asp-for="PhoneNumber" class="form-label fw-bold">
+                                    <i class="bi bi-phone-fill text-@roleColor me-1"></i> Số điện thoại <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="PhoneNumber" class="form-control form-control-lg form-control-animated" placeholder="0901234567" required pattern="[0-9]{10,11}" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4 fade-in-up delay-4">
+                                <label asp-for="Password" class="form-label fw-bold">
+                                    <i class="bi bi-lock-fill text-@roleColor me-1"></i> Mật khẩu <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <input asp-for="Password" type="password" class="form-control form-control-lg form-control-animated" placeholder="Tối thiểu 6 ký tự" required minlength="6" id="Password" />
+                                    <button class="btn btn-outline-secondary toggle-password" type="button" data-target="Password">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4 fade-in-up delay-4">
+                                <label asp-for="ConfirmPassword" class="form-label fw-bold">
+                                    <i class="bi bi-shield-lock-fill text-@roleColor me-1"></i> Xác nhận <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <input asp-for="ConfirmPassword" type="password" class="form-control form-control-lg form-control-animated" placeholder="Nhập lại mật khẩu" required id="ConfirmPassword" />
+                                    <button class="btn btn-outline-secondary toggle-password" type="button" data-target="ConfirmPassword">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (Model.Role == Webgiasu.Models.UserRole.Tutor)
+                        {
+                            <div class="alert alert-warning border-0 shadow-sm alert-animated fade-in-up delay-4">
+                                <i class="bi bi-exclamation-triangle-fill me-2 icon-pulse"></i>
+                                <strong>Lưu ý quan trọng:</strong> Tài khoản gia sư cần được quản trị viên phê duyệt trước khi có thể sử dụng. Bạn sẽ nhận được thông báo qua email khi tài khoản được kích hoạt.
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-info border-0 shadow-sm alert-animated fade-in-up delay-4">
+                                <i class="bi bi-info-circle-fill me-2 icon-pulse"></i>
+                                <strong>Thông tin:</strong> Sau khi đăng ký thành công, bạn có thể đăng nhập ngay lập tức và sử dụng các tính năng của hệ thống.
+                            </div>
+                        }
+
+                        <div class="d-grid gap-2 mb-3 fade-in-up delay-5">
+                            <button type="submit" class="btn btn-@roleColor btn-lg btn-pill btn-animated shadow-sm">
+                                <i class="bi bi-person-plus-fill me-2"></i> Đăng ký ngay
+                            </button>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <div class="text-center fade-in-up delay-5">
+                            <p class="text-muted mb-3">Đã có tài khoản?</p>
+                            <a asp-action="Login" asp-route-role="@Model.Role.ToString()" class="btn btn-outline-@roleColor btn-pill btn-animated px-5">
+                                <i class="bi bi-box-arrow-in-right me-2"></i> Đăng nhập
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card-footer bg-light text-center py-3 fade-in-up delay-5">
+                    <a asp-controller="Home" asp-action="Index" asp-route-role="@Model.Role.ToString()" class="btn btn-outline-@roleColor btn-pill btn-animated px-5">
+                        <i class="bi bi-arrow-left me-1"></i> Quay lại trang chủ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .register-card {
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .register-card:hover {
+        transform: translateY(-10px);
+    }
+    
+    .register-header {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .register-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        animation: shimmer 3s infinite;
+    }
+    
+    @@keyframes shimmer {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+    
+    .icon-container {
+        display: inline-block;
+    }
+    
+    .form-control-animated {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+    }
+    
+    .form-control-animated:focus {
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+        transform: translateY(-2px);
+    }
+    
+    .btn-animated {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .btn-animated::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+    
+    .btn-animated:hover::before {
+        width: 400px;
+        height: 400px;
+    }
+    
+    .btn-animated:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn-pill {
+        border-radius: 50px;
+    }
+    
+    .alert-animated {
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+    
+    .alert-animated:hover {
+        transform: translateX(5px);
+    }
+    
+    .input-group .btn {
+        border-radius: 0 12px 12px 0;
+        border-color: #e9ecef;
+    }
+    
+    .input-group .form-control {
+        border-radius: 12px 0 0 12px;
+    }
+    
+    /* Floating animation for card on load */
+    @@keyframes floatIn {
+        0% {
+            opacity: 0;
+            transform: translateY(50px) scale(0.95);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+    
+    .register-card {
+        animation: floatIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle password visibility
+            document.querySelectorAll('.toggle-password').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var targetId = this.getAttribute('data-target');
+                    var input = document.getElementById(targetId);
+                    var icon = this.querySelector('i');
+                    
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.remove('bi-eye');
+                        icon.classList.add('bi-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        icon.classList.remove('bi-eye-slash');
+                        icon.classList.add('bi-eye');
+                    }
+                });
+            });
+            
+            // Form validation
+            document.getElementById('registerForm').addEventListener('submit', function(e) {
+                var password = document.getElementById('Password').value;
+                var confirmPassword = document.getElementById('ConfirmPassword').value;
+                
+                if (password !== confirmPassword) {
+                    e.preventDefault();
+                    alert('Mật khẩu xác nhận không khớp!');
+                    return false;
+                }
+                
+                if (password.length < 6) {
+                    e.preventDefault();
+                    alert('Mật khẩu phải có ít nhất 6 ký tự!');
+                    return false;
+                }
+            });
+            
+            // Add focus animations to inputs
+            const inputs = document.querySelectorAll('.form-control-animated');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('focused');
+                });
+                input.addEventListener('blur', function() {
+                    this.parentElement.classList.remove('focused');
+                });
+            });
+        });
+    </script>
+}
