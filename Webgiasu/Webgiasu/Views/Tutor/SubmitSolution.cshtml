@@ -13,7 +13,7 @@
             </div>
             <div class="card-body">
                 <h5>@problem?.Title</h5>
-                <p class="text-muted">@problem?.Description</p>
+                <p class="text-muted">@Html.Raw(problem?.Description)</p>
                 <div class="mb-0">
                     <span class="badge bg-secondary me-1">@problem?.Type</span>
                     @if (problem?.Difficulty == Webgiasu.Models.DifficultyLevel.Easy)
@@ -124,3 +124,28 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace('editorDescription', {
+            height: 300,
+
+            removePlugins: 'elementspath,save,print,preview,find,flash,forms,iframe,fullscreen',
+
+            removeButtons: 'Save,NewPage,ExportPdf,Preview,Print,Templates,SelectAll,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Flash,Iframe,Maximize,Source',
+
+            toolbar: [
+                { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike'] },
+                { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
+                { name: 'links', items: ['Link', 'Unlink'] },
+                { name: 'insert', items: ['Image', 'Table', 'Mathjax'] },
+                { name: 'styles', items: ['Format', 'FontSize'] },
+                { name: 'colors', items: ['TextColor', 'BGColor'] },
+                { name: 'tools', items: ['Source'] }
+            ]
+        });
+        CKEDITOR.config.versionCheck = false;
+    </script>
+
+}

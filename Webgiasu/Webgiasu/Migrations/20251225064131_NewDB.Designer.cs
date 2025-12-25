@@ -12,8 +12,8 @@ using Webgiasu.Models;
 namespace Webgiasu.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251225041859_CreateProblemGroupInvites")]
-    partial class CreateProblemGroupInvites
+    [Migration("20251225064131_NewDB")]
+    partial class NewDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -292,6 +292,9 @@ namespace Webgiasu.Migrations
 
                     b.Property<int?>("AssignedTutorId")
                         .HasColumnType("int");
+
+                    b.Property<string>("AttachmentFile")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");

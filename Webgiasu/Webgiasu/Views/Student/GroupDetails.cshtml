@@ -112,7 +112,7 @@
                         </span>
                     </div>
                     <div class="border-start border-4 border-primary ps-3 py-2 bg-light rounded">
-                        <p class="mb-0 text-muted">@Model.Problem.Description</p>
+                        <p class="mb-0 text-muted">@Html.Raw(Model.Problem.Description)</p>
                     </div>
                     <div class="mt-3">
                         <a asp-action="ProblemDetails" asp-route-id="@Model.Problem.Id" class="btn btn-sm btn-outline-primary">

@@ -19,6 +19,7 @@ namespace Webgiasu.Models.ViewModels
         public DifficultyLevel Difficulty { get; set; }
 
         public IFormFile? ImageFile { get; set; }
+        public IFormFile? AttachmentFile { get; set; }
 
         [Required(ErrorMessage = "Vui lòng chọn deadline")]
         public DateTime Deadline { get; set; }

@@ -30,7 +30,7 @@
                             <span class="badge bg-success">Hoàn thành</span>
                         </div>
                         
-                        <p class="text-muted small mb-3">@(problem.Description != null && problem.Description.Length > 80 ? problem.Description.Substring(0, 80) + "..." : problem.Description)</p>
+                        <p class="text-muted small mb-3">@Html.Raw(problem.Description != null && problem.Description.Length > 80 ? problem.Description.Substring(0, 80) + "..." : problem.Description)</p>
                         
                         @if (tutor != null)
                         {
