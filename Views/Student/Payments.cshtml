@@ -124,9 +124,12 @@
                                     <td>
                                         @if (payment.Status == Webgiasu.Models.PaymentStatus.Pending)
                                         {
-                                            <a asp-action="PaymentCheckout" asp-route-paymentId="@payment.Id" class="btn btn-sm btn-success">
-                                                <i class="bi bi-credit-card"></i> Thanh toán
-                                            </a>
+                                            <form asp-action="ProcessPayment" method="post" class="d-inline">
+                                                <input type="hidden" name="paymentId" value="@payment.Id" />
+                                                <button type="submit" class="btn btn-sm btn-success">
+                                                    <i class="bi bi-credit-card"></i> Thanh toán
+                                                </button>
+                                            </form>
                                         }
                                         else if (payment.Status == Webgiasu.Models.PaymentStatus.Completed)
                                         {

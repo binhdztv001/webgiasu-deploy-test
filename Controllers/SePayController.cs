@@ -205,7 +205,7 @@ namespace Webgiasu.Controllers
         {
             id = 0;
             if (string.IsNullOrWhiteSpace(value)) return false;
-            var idx = value.IndexOf("PAY-", StringComparison.OrdinalIgnoreCase);
+            var idx = value.IndexOf("LEARNTUTOR-", StringComparison.OrdinalIgnoreCase);
             if (idx < 0) return false;
             var start = idx + 4;
             var digits = new string(value.Skip(start).TakeWhile(char.IsDigit).ToArray());

@@ -47,7 +47,7 @@ namespace Webgiasu.Services
                 ["order_amount"] = ((long)payment.Amount).ToString(),
                 ["operation"] = "PURCHASE",
                 ["order_description"] = $"Thanh toan bai toan #{payment.ProblemId}",
-                ["order_invoice_number"] = $"PAY-{payment.Id}",
+                ["order_invoice_number"] = $"LEARNTUTOR-{payment.Id}",
                 ["customer_id"] = payment.StudentId.ToString(),
                 ["success_url"] = successUrl,
                 ["error_url"] = errorUrl,

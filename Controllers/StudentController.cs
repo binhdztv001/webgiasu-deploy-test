@@ -40,7 +40,7 @@ namespace Webgiasu.Controllers
         public StudentController(IProblemService problemService, ISolutionService solutionService, 
             IPaymentService paymentService, IUserService userService, IRatingService ratingService,
             IFriendshipService friendshipService, IMessageService messageService, 
-            ICommunityService communityService, IHubContext<CommunityHub> hubContext, IProblemGroupService problemGroupService)
+            ICommunityService communityService, IHubContext<CommunityHub> hubContext, IProblemGroupService problemGroupService, ISePayGateway sePayGateway)
         {
             _problemService = problemService;
             _solutionService = solutionService;
@@ -110,8 +110,6 @@ namespace Webgiasu.Controllers
                 TempData["Error"] = "Đã xảy ra lỗi!";
                 return RedirectToAction("Dashboard");
             }
-        }
-            return View(model);
         }
 
         public async Task<IActionResult> ProblemDetails(int id)
@@ -274,19 +272,17 @@ namespace Webgiasu.Controllers
         [HttpPost]
         public IActionResult ProcessPayment(int paymentId)
         {
-            try
-            {
-                var userId = GetCurrentUserId();
-                if (userId == 0) return RedirectToAction("Login", "Account");
+            var userId = GetCurrentUserId();
+            if (userId == 0) return RedirectToAction("Login", "Account");
 
-                var payment = _paymentService.GetPaymentById(paymentId);
-                if (payment != null && payment.StudentId == userId)
-                {
+            var payment = _paymentService.GetPaymentById(paymentId);
+            if (payment != null && payment.StudentId == userId)
+            {
                 return RedirectToAction("PaymentCheckout", new { paymentId });
-                }
-            TempData["Error"] = "Không tìm thấy giao dịch hoặc không hợp lệ.";
-                return RedirectToAction("Payments");
             }
+            TempData["Error"] = "Không tìm thấy giao dịch hoặc không hợp lệ.";
+            return RedirectToAction("Payments");
+        }
 
         [HttpGet]
         public IActionResult PaymentCheckout(int paymentId)
