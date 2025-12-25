@@ -1,2 +1,205 @@
-# NghienCuuKhoaHoc-AppGiaSu
-Nghi√™n c·ª©u khoa h·ªçc - nh√≥m HI·∫øu, Ho√†ng, To√†n, Thanh, B√¨nh
+# H? th?ng Gia s? Online - ASP.NET Core MVC
+
+## Gi?i thi?u
+H? th?ng k?t n?i h?c sinh v‡ gia s?, cho phÈp h?c sinh ??ng b‡i to·n v‡ nh?n l?i gi?i t? gia s?. H? th?ng s? d?ng **mock data** (khÙng k?t n?i database).
+
+## CÙng ngh? s? d?ng
+- **ASP.NET Core 8.0 MVC**
+- **Bootstrap 5** cho giao di?n
+- **Bootstrap Icons** cho icon
+- **Session** ?? qu?n l˝ ??ng nh?p
+- **Mock Services** thay th? Database
+
+## C?u tr˙c d? ·n
+
+```
+Webgiasu/
+??? Controllers/           # C·c controller x? l˝ logic
+?   ??? HomeController.cs
+?   ??? AccountController.cs
+?   ??? StudentController.cs
+?   ??? TutorController.cs
+?   ??? AdminController.cs
+??? Models/               # C·c model d? li?u
+?   ??? User.cs
+?   ??? Problem.cs
+?   ??? Solution.cs
+?   ??? Payment.cs
+?   ??? ViewModels/
+??? Services/            # Mock services
+?   ??? MockUserService.cs
+?   ??? MockProblemService.cs
+?   ??? MockSolutionService.cs
+?   ??? MockPaymentService.cs
+??? Views/              # Giao di?n
+    ??? Home/
+    ??? Account/
+    ??? Student/
+    ??? Tutor/
+    ??? Admin/
+```
+
+## C·c ch?c n?ng chÌnh
+
+### 1. H?c sinh (Student)
+- ? ??ng k˝ / ??ng nh?p
+- ? ??ng b‡i to·n (tiÍu ??, mÙ t?, mÙn h?c, ?? khÛ, deadline, hÏnh ?nh)
+- ? Xem danh s·ch b‡i to·n ?„ ??ng
+- ? Xem l?i gi?i t? gia s?
+- ? ?·nh gi· l?i gi?i (rating & feedback)
+- ? Thanh to·n (mock)
+- ? Dashboard v?i th?ng kÍ
+
+### 2. Gia s? (Tutor)
+- ? ??ng k˝ / ??ng nh?p (c?n admin duy?t)
+- ? Xem danh s·ch b‡i to·n ch? gi?i
+- ? Nh?n b‡i to·n
+- ? G?i l?i gi?i (text + file)
+- ? Xem b‡i to·n ?„ nh?n
+- ? Xem l?i gi?i ?„ g?i
+- ? Dashboard v?i th?ng kÍ thu nh?p
+
+### 3. Admin
+- ? Dashboard t?ng quan
+- ? Duy?t t‡i kho?n gia s?
+- ? Qu?n l˝ danh s·ch b‡i to·n
+- ? Qu?n l˝ thanh to·n
+- ? Th?ng kÍ chi ti?t (b‡i to·n, doanh thu, top gia s?)
+- ? Qu?n l˝ ng??i d˘ng
+- ? XÛa b‡i to·n
+
+## T‡i kho?n demo
+
+### H?c sinh
+- **Username**: `student1` / **Password**: `123456`
+- **Username**: `student2` / **Password**: `123456`
+
+### Gia s? (?„ ???c duy?t)
+- **Username**: `tutor1` / **Password**: `123456`
+- **Username**: `tutor2` / **Password**: `123456`
+
+### Gia s? (ch?a ???c duy?t)
+- **Username**: `tutor3` / **Password**: `123456`
+
+### Admin
+- **Username**: `admin` / **Password**: `admin123`
+
+## C·ch ch?y d? ·n
+
+### YÍu c?u
+- .NET 8.0 SDK
+- Visual Studio 2022 ho?c VS Code
+- Browser hi?n ??i (Chrome, Edge, Firefox)
+
+### C·c b??c
+
+1. **Clone ho?c m? project**
+```bash
+cd Webgiasu
+```
+
+2. **Restore packages**
+```bash
+dotnet restore
+```
+
+3. **Build project**
+```bash
+dotnet build
+```
+
+4. **Run project**
+```bash
+dotnet run
+```
+
+5. **M? browser**
+```
+https://localhost:7xxx
+ho?c
+http://localhost:5xxx
+```
+
+## TÌnh n?ng n?i b?t
+
+### ?? Giao di?n
+- Bootstrap 5 responsive
+- Bootstrap Icons
+- Hover effects
+- Alert messages
+- Badge & progress bars
+
+### ?? D? li?u Mock
+- KhÙng c?n database
+- D? li?u l?u trong memory (List<T>)
+- Reset khi restart app
+- D? d‡ng test v‡ demo
+
+### ?? X·c th?c
+- Session-based authentication
+- Role-based authorization
+- Redirect theo role
+- Protected routes
+
+### ?? Th?ng kÍ
+- Dashboard cho t?ng role
+- Bi?u ?? progress bar
+- T?ng quan s? li?u
+- Top performers
+
+## M? r?ng trong t??ng lai
+
+- [ ] K?t n?i Database (SQL Server / PostgreSQL)
+- [ ] Entity Framework Core
+- [ ] Upload file th?t
+- [ ] Email notification
+- [ ] Real-time chat
+- [ ] Payment gateway integration
+- [ ] Export PDF/Excel
+- [ ] Search & Filter
+- [ ] Pagination
+- [ ] API cho mobile app
+
+## L?u ˝
+
+?? **D? li?u mock**: M?i thay ??i s? m?t khi restart ?ng d?ng
+
+?? **Upload file**: Ch? l‡ mock, file khÙng th?c s? ???c l?u
+
+?? **Thanh to·n**: Ch? c?p nh?t tr?ng th·i, khÙng cÛ giao d?ch th?t
+
+## C?u tr˙c Database (n?u mu?n m? r?ng)
+
+```sql
+Users (Id, Username, Password, FullName, Email, Phone, Role, IsApproved, RegisteredDate)
+Problems (Id, StudentId, Title, Description, Type, Difficulty, ImageUrl, CreatedDate, Deadline, Status, AssignedTutorId, Price)
+Solutions (Id, ProblemId, TutorId, Content, FileUrl, SubmittedDate, Rating, Feedback)
+Payments (Id, StudentId, ProblemId, Amount, Status, CreatedDate, CompletedDate, TransactionId)
+```
+
+## Screenshots
+
+### Trang ch?
+- Ch?n vai trÚ (Student / Tutor / Admin)
+- H??ng d?n s? d?ng
+
+### Student Dashboard
+- Th?ng kÍ b‡i to·n
+- Danh s·ch b‡i ?„ ??ng
+- Tr?ng th·i thanh to·n
+
+### Tutor Dashboard
+- B‡i to·n ch? gi?i
+- B‡i ?ang th?c hi?n
+- Thu nh?p
+
+### Admin Dashboard
+- T?ng quan h? th?ng
+- Duy?t gia s?
+- Th?ng kÍ chi ti?t
+
+## T·c gi?
+D? ·n ???c t?o ra cho m?c ?Ìch h?c t?p v‡ demo.
+
+## License
+MIT License - T? do s? d?ng cho m?c ?Ìch h?c t?p.
