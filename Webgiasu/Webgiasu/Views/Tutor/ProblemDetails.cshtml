@@ -59,7 +59,7 @@
 
                 <h5 class="mb-3"><i class="bi bi-file-text"></i> Mô tả chi tiết:</h5>
                 <div class="bg-light p-3 rounded">
-                    <p class="mb-0">@Model.Problem.Description</p>
+                    <p class="mb-0">@Html.Raw(Model.Problem.Description)</p>
                 </div>
 
                 @if (!string.IsNullOrEmpty(Model.Problem.ImageUrl) && Model.Problem.ImageUrl != "/images/default.jpg")

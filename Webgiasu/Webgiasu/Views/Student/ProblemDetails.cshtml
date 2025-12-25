@@ -72,7 +72,7 @@
                         <hr />
 
                         <h5 class="mb-3"><i class="bi bi-file-text"></i> Mô tả chi tiết:</h5>
-                        <p class="text-justify">@Model.Problem.Description</p>
+                        <p class="text-justify">@Html.Raw(Model.Problem.Description)</p>
 
                         @if (!string.IsNullOrEmpty(Model.Problem.ImageUrl) && Model.Problem.ImageUrl != "/images/default.jpg")
                         {

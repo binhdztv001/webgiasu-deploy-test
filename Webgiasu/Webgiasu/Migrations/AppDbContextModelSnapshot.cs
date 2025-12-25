@@ -290,6 +290,9 @@ namespace Webgiasu.Migrations
                     b.Property<int?>("AssignedTutorId")
                         .HasColumnType("int");
 
+                    b.Property<string>("AttachmentFile")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 

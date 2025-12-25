@@ -109,79 +109,6 @@ namespace Webgiasu.Controllers
             }
         }
 
-        //[HttpPost]
-        //public IActionResult CreateProblem(CreateProblemViewModel model, decimal? CustomPrice)
-        //{
-        //    try
-        //    {
-        //        var userId = GetCurrentUserId();
-        //        if (userId == 0) return RedirectToAction("Login", "Account");
-
-        //        if (ModelState.IsValid)
-        //        {
-        //            // Calculate price based on difficulty
-        //            decimal price;
-
-        //            if (model.Difficulty == DifficultyLevel.options && CustomPrice.HasValue)
-        //            {
-        //                // Use custom price if "options" is selected
-        //                price = CustomPrice.Value;
-
-        //                // Validate minimum price
-        //                if (price < 10000)
-        //                {
-        //                    TempData["Error"] = "Giá tối thiểu là 10,000 đ!";
-        //                    return View(model);
-        //                }
-        //            }
-        //            else
-        //            {
-        //                // Use fixed price based on difficulty
-        //                price = model.Difficulty switch
-        //                {
-        //                    DifficultyLevel.Easy => 40000,
-        //                    DifficultyLevel.Medium => 60000,
-        //                    DifficultyLevel.Hard => 90000,
-        //                    _ => 50000
-        //                };
-        //            }
-
-        //            var problem = new Problem
-        //            {
-        //                StudentId = userId,
-        //                Title = model.Title,
-        //                Description = model.Description,
-        //                Type = model.Type,
-        //                Difficulty = model.Difficulty,
-        //                ImageUrl = model.ImageFile != null ? $"/images/{model.ImageFile.FileName}" : "/images/default.jpg",
-        //                Deadline = model.Deadline,
-        //                Price = price
-        //            };
-
-        //            if (_problemService.CreateProblem(problem))
-        //            {
-        //                var payment = new Payment
-        //                {
-        //                    StudentId = userId,
-        //                    ProblemId = problem.Id,
-        //                    Amount = price
-        //                };
-        //                _paymentService.CreatePayment(payment);
-
-        //                TempData["Success"] = "Đăng bài toán thành công!";
-        //                return RedirectToAction("Dashboard");
-        //            }
-        //        }
-        //        return View(model);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"❌ Error in CreateProblem POST: {ex.Message}");
-        //        TempData["Error"] = "Đã xảy ra lỗi khi tạo bài toán!";
-        //        return View(model);
-        //    }
-        //}
-
         public async Task<IActionResult> ProblemDetails(int id)
         {
             try
@@ -1439,6 +1366,51 @@ namespace Webgiasu.Controllers
                             _ => 50000
                         };
                     }
+                    
+                    string? attachmentUrl = null;
+
+                    if (model.AttachmentFile != null && model.AttachmentFile.Length > 0)
+                    {
+                        var allowedExtensions = new[] { ".pdf", ".doc", ".docx" };
+                        var allowedMimeTypes = new[]
+                        {
+                            "application/pdf",
+                            "application/msword",
+                            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        };
+
+                        var ext = Path.GetExtension(model.AttachmentFile.FileName).ToLowerInvariant();
+
+                        if (!allowedExtensions.Contains(ext))
+                        {
+                            ModelState.AddModelError("AttachmentFile", "Chỉ cho phép file PDF, DOC, DOCX.");
+                            return View(model);
+                        }
+
+                        if (!allowedMimeTypes.Contains(model.AttachmentFile.ContentType))
+                        {
+                            ModelState.AddModelError("AttachmentFile", "Định dạng file không hợp lệ.");
+                            return View(model);
+                        }
+
+                        if (model.AttachmentFile.Length > 10 * 1024 * 1024)
+                        {
+                            ModelState.AddModelError("AttachmentFile", "File tối đa 10MB.");
+                            return View(model);
+                        }
+
+                        // Upload file
+                        var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/files");
+                        Directory.CreateDirectory(uploadDir);
+
+                        var fileName = $"{Guid.NewGuid()}{ext}";
+                        var filePath = Path.Combine(uploadDir, fileName);
+
+                        using var stream = new FileStream(filePath, FileMode.Create);
+                        model.AttachmentFile.CopyTo(stream);
+
+                        attachmentUrl = "/files/" + fileName;
+                    }
 
                     // Create Problem
                     var problem = new Problem
@@ -1449,6 +1421,7 @@ namespace Webgiasu.Controllers
                         Type = model.Type,
                         Difficulty = model.Difficulty,
                         ImageUrl = model.ImageFile != null ? $"/images/{model.ImageFile.FileName}" : "/images/default.jpg",
+                        AttachmentFile = attachmentUrl,
                         Deadline = model.Deadline,
                         Price = price,
                         CreatedDate = DateTime.Now,

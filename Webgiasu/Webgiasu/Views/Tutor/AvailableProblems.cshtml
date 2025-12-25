@@ -28,10 +28,10 @@
                             </div>
 
                             <p class="card-text text-muted">
-                                @(problem.Description.Length > 150
+                                @Html.Raw(problem.Description.Length > 150
                                                         ? problem.Description.Substring(0, 150) + "..."
                                                         : problem.Description)
-                    </p>
+                            </p>
 
                             <div class="mb-3">
                                 <span class="badge bg-secondary me-1">

@@ -128,7 +128,13 @@
                                 </div>
                             </div>
 
-                            <p class="text-muted mb-3">@(problem.Description != null && problem.Description.Length > 100 ? problem.Description.Substring(0, 100) + "..." : problem.Description)</p>
+                            <p class="text-muted mb-3">
+                                @Html.Raw(
+                                    problem.Description != null && problem.Description.Length > 200
+                                    ? problem.Description.Substring(0, 200) + "..."
+                                    : problem.Description
+                                )
+                            </p>
 
                             <div class="d-flex gap-2 mb-3 flex-wrap">
                                 <span class="badge bg-secondary">@problem.Type</span>

@@ -37,6 +37,7 @@
         public ProblemType Type { get; set; }
         public DifficultyLevel Difficulty { get; set; }
         public string ImageUrl { get; set; } = string.Empty;
+        public string? AttachmentFile { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime Deadline { get; set; }
         public ProblemStatus Status { get; set; }

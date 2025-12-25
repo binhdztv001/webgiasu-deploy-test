@@ -154,6 +154,17 @@
                             <small class="text-muted">Hỗ trợ: JPG, PNG, GIF (Tối đa 5MB)</small>
                         </div>
 
+                        <div class="mb-3">
+                            <label asp-for="AttachmentFile" class="form-label fw-semibold">
+                                <i class="bi bi-image text-primary me-1"></i> Tài liệu bài toán (nếu có)
+                            </label>
+                            <input asp-for="AttachmentFile"
+                                   type="file"
+                                   class="form-control"
+                                   accept=".pdf,.doc,.docx" />
+                            <small class="text-muted">Hỗ trợ: .docx, .xlsx, .pdf(Tối đa 50MB)</small>
+                        </div>
+
                         <div class="d-grid gap-2 mt-4">
                             <button type="submit" class="btn btn-primary" id="submitBtn">
                                 <i class="bi bi-send me-1"></i> <span id="submitBtnText">Đăng bài toán</span>
@@ -351,6 +362,29 @@
         const todayString = today.toISOString().slice(0, 16);
         deadlineInput.min = todayString;
         deadlineInput.value = todayString;
+    </script>
+
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace('Description', {
+            height: 300,
+
+            removePlugins: 'elementspath,save,print,preview,find,flash,forms,iframe,fullscreen,sourcearea,maximize',
+
+            removeButtons: 'Save,NewPage,ExportPdf,Preview,Print,Templates,SelectAll,' +
+                           'Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,' +
+                           'Flash,Iframe,Maximize,Source',
+
+            toolbar: [
+                { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike'] },
+                { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
+                { name: 'links', items: ['Link', 'Unlink'] },
+                { name: 'insert', items: ['Image', 'Table', 'Mathjax'] },
+                { name: 'styles', items: ['Format', 'FontSize'] },
+                { name: 'colors', items: ['TextColor', 'BGColor'] }
+            ]
+        });
+        CKEDITOR.config.versionCheck = false;
     </script>
 
     }
