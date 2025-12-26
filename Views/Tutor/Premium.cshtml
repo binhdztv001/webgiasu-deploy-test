@@ -1,0 +1,147 @@
+﻿@using Webgiasu.Services
+@inject IPremiumService PremiumService
+@model Webgiasu.Models.User
+
+@{
+    ViewData["Title"] = "Nâng cấp Premium";
+    Layout = "_TutorLayout";
+
+    var userId = Context.Session.GetInt32("UserId");
+    bool isPremium = false;
+    if (userId.HasValue)
+    {
+        isPremium = PremiumService.IsPremium(userId.Value);
+    }
+}
+
+<div class="container py-4">
+
+    <h4 class="fw-bold mb-1">
+        <i class="bi bi-gem text-success me-2"></i> Nâng cấp Premium
+    </h4>
+    <p class="text-muted mb-4">Mở khóa các quyền lợi đặc biệt dành cho gia sư</p>
+
+    <div class="row g-4">
+        <!-- CARD TRÁI -->
+        <div class="col-md-4">
+            <div class="card text-center p-4 shadow-sm">
+                <div class="mb-3">
+                    <i class="bi bi-gem text-warning" style="font-size:48px"></i>
+                </div>
+
+                <h5 class="fw-bold">Tutor Premium</h5>
+                <p class="text-muted mb-2">Dành cho gia sư</p>
+
+                <h3 class="text-success fw-bold mb-3">99.000đ / tháng</h3>
+
+                @if (isPremium)
+                {
+                    <span class="badge bg-success px-3 py-2">Đang sử dụng Premium</span>
+                }
+                else
+                {
+                    <button class="btn btn-success w-100" id="btnUpgrade">
+                        <i class="bi bi-gem me-1"></i> Nâng cấp Premium
+                    </button>
+                }
+
+                <hr />
+                <small class="text-muted">Nâng cấp để hồ sơ nổi bật và nhận yêu cầu nhanh hơn</small>
+            </div>
+        </div>
+
+        <!-- CARD PHẢI -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header py-3" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                    <h5 class="mb-0 text-white"><i class="bi bi-star-fill text-warning"></i> Quyền lợi Premium</h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-2">
+                        <div class="col-md-6 mb-3">
+                            <div class="border-start border-success border-4 ps-3 mb-4">
+                                <strong><i class="bi bi-person-circle"></i> Xem hồ sơ gia sư</strong>
+                                <p class="text-muted mb-0">Xem chi tiết thông tin, kinh nghiệm, đánh giá</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="border-start border-success border-4 ps-3 mb-4">
+                                <strong><i class="bi bi-graph-up-arrow"></i> Tăng tỉ lệ được nhận</strong>
+                                <p class="text-muted mb-0">Gia sư dễ thấy và nhận bài hơn</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="border-start border-success border-4 ps-3 mb-4">
+                                <strong><i class="bi bi-lightning-charge-fill"></i> Ưu tiên bài đăng</strong>
+                                    <p class="text-muted mb-0">Bài toán được đẩy lên trước</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="border-start border-success border-4 ps-3 mb-4">
+                                <strong><i class="bi bi-bullseye"></i> Gợi ý gia sư tốt hơn</strong>
+                                <p class="text-muted mb-0">Hệ thống đề xuất gia sư phù hợp</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-info border-0">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        Premium giúp bạn tiếp cận gia sư nhanh và hiệu quả hơn
+                    </div>
+                </div>
+            </div>
+
+            @if (!isPremium)
+            {
+                <button class="btn btn-warning w-100 mt-3" id="btnUpgradeBottom">
+                    <i class="bi bi-gem me-1"></i> Nâng cấp ngay
+                </button>
+            }
+        </div>
+    </div>
+
+    <!-- Upgrade Premium Modal -->
+    <div class="modal fade" id="upgradePremiumModal" tabindex="-1" data-bs-backdrop="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" style="background: linear-gradient(135deg, #FFC107 0%, #FFB300 100%);">
+                    <h5 class="modal-title text-dark">
+                        <i class="bi bi-gem me-2"></i> Xác nhận nâng cấp Premium
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p>Bạn có chắc chắn muốn nâng cấp lên <strong>Student Premium</strong> với giá <strong>99.000đ / tháng</strong>?</p>
+                    <p class="text-muted mb-0">Sau khi nâng cấp, bạn sẽ nhận được đầy đủ quyền lợi Premium.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i> Hủy
+                    </button>
+                    <button type="button" class="btn btn-warning" id="confirmUpgradeBtn">
+                        <i class="bi bi-gem me-1"></i> Nâng cấp ngay
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById("confirmUpgradeBtn").addEventListener("click", function() {
+            fetch("/Student/UpgradePremium", { method: "POST" })
+                .then(res => {
+                    if(res.ok) location.reload();
+                    else alert("Không thể nâng cấp Premium");
+                });
+        });
+
+        // Mở modal khi bấm nút Upgrade trên page
+        document.querySelectorAll("#btnUpgrade, #btnUpgradeBottom").forEach(btn => {
+            btn.addEventListener("click", function() {
+                var upgradeModal = new bootstrap.Modal(document.getElementById("upgradePremiumModal"));
+                upgradeModal.show();
+            });
+        });
+    </script>
+}
