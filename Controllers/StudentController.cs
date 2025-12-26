@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Webgiasu.Hubs;
 using Webgiasu.Models;
 using Webgiasu.Models.ViewModels;
@@ -25,6 +26,8 @@ namespace Webgiasu.Controllers
             public string Content { get; set; } = "";
             public bool IsAnonymous { get; set; } = true;
         }
+
+        private readonly AppDbContext _db;
         private readonly IProblemService _problemService;
         private readonly ISolutionService _solutionService;
         private readonly IPaymentService _paymentService;
@@ -37,11 +40,12 @@ namespace Webgiasu.Controllers
         private readonly IProblemGroupService _problemGroupService;
         private readonly ISePayGateway _sePayGateway;
 
-        public StudentController(IProblemService problemService, ISolutionService solutionService, 
+        public StudentController(AppDbContext db, IProblemService problemService, ISolutionService solutionService, 
             IPaymentService paymentService, IUserService userService, IRatingService ratingService,
             IFriendshipService friendshipService, IMessageService messageService, 
             ICommunityService communityService, IHubContext<CommunityHub> hubContext, IProblemGroupService problemGroupService, ISePayGateway sePayGateway)
         {
+            _db=db;
             _problemService = problemService;
             _solutionService = solutionService;
             _paymentService = paymentService;
@@ -120,10 +124,33 @@ namespace Webgiasu.Controllers
                 if (userId == 0) return RedirectToAction("Login", "Account");
 
                 var problem = _problemService.GetProblemById(id);
-                if (problem == null || problem.StudentId != userId)
+                if (problem == null)
                 {
                     return NotFound();
                 }
+
+                // ✅ Kiểm tra quyền truy cập: Owner HOẶC thành viên nhóm
+                bool hasAccess = problem.StudentId == userId; // Owner
+
+                if (!hasAccess)
+                {
+                    // Kiểm tra xem user có phải là thành viên nhóm không
+                    var group = _problemGroupService.GetGroupByProblemId(problem.Id);
+                    if (group != null)
+                    {
+                        var members = _problemGroupService.GetGroupMembers(group.Id);
+                        hasAccess = members.Any(m => m.UserId == userId);
+                    }
+                }
+
+                if (!hasAccess)
+                {
+                    TempData["Error"] = "Bạn không có quyền xem bài toán này!";
+                    return RedirectToAction("Dashboard");
+                }
+
+                // ✅ Load group info nếu là bài toán nhóm
+                var groupInfo = _problemGroupService.GetGroupByProblemId(problem.Id);
 
                 var model = new ProblemDetailsViewModel
                 {
@@ -131,10 +158,12 @@ namespace Webgiasu.Controllers
                     Student = _userService.GetUserById(problem.StudentId),
                     AssignedTutor = problem.AssignedTutorId.HasValue ? _userService.GetUserById(problem.AssignedTutorId.Value) : null,
                     Solution = _solutionService.GetSolutionByProblemId(problem.Id),
-                    Payment = _paymentService.GetPaymentByProblemId(problem.Id)
+                    Payment = _paymentService.GetPaymentByProblemId(problem.Id),
+                    Group = groupInfo, // ✅ Thêm thông tin nhóm
+                    GroupMembers = groupInfo != null ? _problemGroupService.GetGroupMembers(groupInfo.Id) : null
                 };
 
-            // Check if student has rated this problem
+                // Check if student has rated this problem
                 ViewBag.HasRated = await _ratingService.HasStudentRatedProblemAsync(id, userId);
 
                 return View(model);
@@ -1717,12 +1746,63 @@ namespace Webgiasu.Controllers
                 if (group == null)
                     return Json(new { success = false, message = "Không tìm thấy nhóm!" });
 
+                // ✅ Kiểm tra: Không cho phép owner rời nhóm
                 if (group.CreatedByUserId == userId)
                     return Json(new { success = false, message = "Người tạo nhóm không thể rời khỏi nhóm!" });
 
+                // ✅ KIỂM TRA MỚI: Không cho phép rời nhóm nếu tutor đã nhận bài
+                var problem = _problemService.GetProblemById(group.ProblemId);
+                if (problem != null)
+                {
+                    // Kiểm tra nếu đã có tutor nhận bài
+                    if (problem.AssignedTutorId.HasValue)
+                    {
+                        return Json(new
+                        {
+                            success = false,
+                            message = "Không thể rời nhóm khi gia sư đã nhận bài! Bạn cần hoàn thành thanh toán phần của mình."
+                        });
+                    }
+
+                    // Kiểm tra nếu đã có lời giải (double check)
+                    var solution = _solutionService.GetSolutionByProblemId(problem.Id);
+                    if (solution != null)
+                    {
+                        return Json(new
+                        {
+                            success = false,
+                            message = "Không thể rời nhóm khi gia sư đã gửi lời giải! Bạn đã xem được kết quả và cần hoàn thành thanh toán."
+                        });
+                    }
+
+                    // Kiểm tra nếu bài toán đang được giải hoặc đã hoàn thành
+                    if (problem.Status == ProblemStatus.InProgress || problem.Status == ProblemStatus.Solved)
+                    {
+                        return Json(new
+                        {
+                            success = false,
+                            message = "Không thể rời nhóm khi bài toán đang được giải hoặc đã hoàn thành!"
+                        });
+                    }
+                }
+
+                // ✅ KIỂM TRA THÊM: Không cho phép rời nếu đã thanh toán
+                var members = _problemGroupService.GetGroupMembers(groupId);
+                var currentMember = members.FirstOrDefault(m => m.UserId == userId);
+
+                if (currentMember != null && currentMember.PaymentStatus == GroupPaymentStatus.Paid)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Bạn đã thanh toán cho nhóm này. Không thể rời nhóm sau khi đã thanh toán!"
+                    });
+                }
+
+                // ✅ Cho phép rời nhóm nếu chưa có tutor và chưa thanh toán
                 if (_problemGroupService.RemoveMember(groupId, userId))
                 {
-                    return Json(new { success = true, message = "Đã rời khỏi nhóm!" });
+                    return Json(new { success = true, message = "Đã rời khỏi nhóm thành công!" });
                 }
                 else
                 {
@@ -1822,6 +1902,158 @@ namespace Webgiasu.Controllers
         public class DeletePostModel
         {
             public int PostId { get; set; }
+        }
+
+
+        /// <summary>
+        /// Xử lý thanh toán cho thành viên nhóm
+        /// </summary>
+        [HttpPost]
+        public IActionResult ProcessGroupPayment(int memberId)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var member = _db.ProblemGroupMembers
+                    .Include(m => m.Group)
+                    .FirstOrDefault(m => m.Id == memberId && m.UserId == userId);
+
+                if (member == null)
+                {
+                    TempData["Error"] = "Không tìm thấy thông tin thành viên!";
+                    return RedirectToAction("MyGroups");
+                }
+
+                var group = _problemGroupService.GetGroupById(member.GroupId);
+                if (group == null)
+                {
+                    TempData["Error"] = "Không tìm thấy nhóm!";
+                    return RedirectToAction("MyGroups");
+                }
+
+                // Tạo hoặc lấy GroupPayment hiện có
+                var groupPayment = _paymentService.GetGroupPaymentByMemberId(memberId);
+                if (groupPayment == null)
+                {
+                    groupPayment = _paymentService.CreateGroupPayment(
+                        group.Id,
+                        memberId,
+                        userId,
+                        group.PricePerMember
+                    );
+
+                    if (groupPayment == null)
+                    {
+                        TempData["Error"] = "Không thể tạo thanh toán!";
+                        return RedirectToAction("GroupDetails", new { id = group.Id });
+                    }
+                }
+
+                return RedirectToAction("GroupPaymentCheckout", new { groupPaymentId = groupPayment.Id });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Lỗi ProcessGroupPayment: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi!";
+                return RedirectToAction("MyGroups");
+            }
+        }
+
+        /// <summary>
+        /// Trang thanh toán nhóm
+        /// </summary>
+        [HttpGet]
+        public IActionResult GroupPaymentCheckout(int groupPaymentId)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var groupPayment = _paymentService.GetGroupPaymentById(groupPaymentId);
+                if (groupPayment == null || groupPayment.UserId != userId)
+                {
+                    TempData["Error"] = "Không tìm thấy giao dịch!";
+                    return RedirectToAction("MyGroups");
+                }
+
+                if (groupPayment.Status != PaymentStatus.Pending)
+                {
+                    TempData["Warning"] = "Giao dịch này đã được xử lý!";
+                    return RedirectToAction("GroupDetails", new { id = groupPayment.GroupId });
+                }
+
+                var successUrl = Url.Action("GroupPaymentResult", "Student",
+                    new { groupPaymentId, status = "success" }, Request.Scheme);
+                var errorUrl = Url.Action("GroupPaymentResult", "Student",
+                    new { groupPaymentId, status = "error" }, Request.Scheme);
+                var cancelUrl = Url.Action("GroupPaymentResult", "Student",
+                    new { groupPaymentId, status = "cancel" }, Request.Scheme);
+
+                // Tạo Payment tạm để tương thích với SePay gateway
+                var tempPayment = new Payment
+                {
+                    Id = groupPayment.Id,
+                    StudentId = groupPayment.UserId,
+                    ProblemId = groupPayment.GroupId,
+                    Amount = groupPayment.Amount
+                };
+
+                var checkout = _sePayGateway.BuildCheckout(tempPayment, successUrl!, errorUrl!, cancelUrl!);
+                ViewBag.GroupPayment = groupPayment;
+                ViewBag.Group = _problemGroupService.GetGroupById(groupPayment.GroupId);
+
+                return View(checkout);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Lỗi GroupPaymentCheckout: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi!";
+                return RedirectToAction("MyGroups");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý kết quả thanh toán nhóm
+        /// </summary>
+        [HttpGet]
+        public IActionResult GroupPaymentResult(int groupPaymentId, string status)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var groupPayment = _paymentService.GetGroupPaymentById(groupPaymentId);
+                if (groupPayment == null || groupPayment.UserId != userId)
+                {
+                    TempData["Error"] = "Không tìm thấy giao dịch!";
+                    return RedirectToAction("MyGroups");
+                }
+
+                if (string.Equals(status, "success", StringComparison.OrdinalIgnoreCase))
+                {
+                    TempData["Success"] = "Thanh toán đang được xác nhận. Vui lòng đợi cập nhật.";
+                }
+                else if (string.Equals(status, "cancel", StringComparison.OrdinalIgnoreCase))
+                {
+                    TempData["Warning"] = "Bạn đã hủy thanh toán.";
+                }
+                else
+                {
+                    TempData["Error"] = "Thanh toán không thành công.";
+                }
+
+                return RedirectToAction("GroupDetails", new { id = groupPayment.GroupId });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Lỗi GroupPaymentResult: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi!";
+                return RedirectToAction("MyGroups");
+            }
         }
     }
 }

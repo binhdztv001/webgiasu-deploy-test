@@ -27,6 +27,8 @@ namespace Webgiasu.Models
         public DbSet<ProblemGroupMember> ProblemGroupMembers { get; set; }
         public DbSet<ProblemGroupInvite> ProblemGroupInvites { get; set; }
 
+        public DbSet<GroupPayment> GroupPayments { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -1,0 +1,92 @@
+﻿@model Webgiasu.Services.SePayCheckout
+@{
+    ViewData["Title"] = "Thanh toán nhóm";
+    Layout = "_StudentLayout";
+    var groupPayment = ViewBag.GroupPayment as Webgiasu.Models.GroupPayment;
+    var group = ViewBag.Group as Webgiasu.Models.ProblemGroup;
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h4 class="mb-0 fw-bold">
+                        <i class="bi bi-credit-card me-2"></i>Thanh toán nhóm học tập
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Thông tin nhóm -->
+                    <div class="mb-4">
+                        <h6 class="text-muted mb-2">Nhóm học tập</h6>
+                        <h5 class="fw-bold">@(group?.GroupName ?? "N/A")</h5>
+                        <p class="text-muted mb-0">
+                            <i class="bi bi-journal-text me-1"></i>@(group?.Problem?.Title ?? "N/A")
+                        </p>
+                    </div>
+
+                    <!-- Chi tiết thanh toán -->
+                    <div class="bg-light rounded p-3 mb-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Mã thanh toán:</span>
+                            <strong>#GP@(groupPayment?.Id ?? 0)</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Số tiền:</span>
+                            <strong class="text-success fs-5">@((groupPayment?.Amount ?? 0).ToString("N0")) đ</strong>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Phần của bạn trong nhóm:</span>
+                            <span class="badge bg-primary">@(group?.Members?.Count ?? 0) thành viên</span>
+                        </div>
+                    </div>
+
+                    <!-- Form thanh toán SePay -->
+                    <form method="post" action="@Model.ActionUrl">
+                        @foreach (var field in Model.Fields)
+                        {
+                            <input type="hidden" name="@field.Key" value="@field.Value" />
+                        }
+
+                        <div class="alert alert-info mb-4">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <small>Bạn sẽ được chuyển đến cổng thanh toán SePay để hoàn tất giao dịch</small>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-shield-check me-2"></i>Thanh toán an toàn với SePay
+                            </button>
+                            <a asp-action="GroupDetails" asp-route-id="@(group?.Id ?? 0)" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-1"></i>Quay lại
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Phương thức thanh toán -->
+            <div class="card border-0 shadow-sm mt-3">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">
+                        <i class="bi bi-credit-card-2-front text-primary me-2"></i>Phương thức thanh toán
+                    </h6>
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <i class="bi bi-bank2 text-primary fs-3 d-block mb-2"></i>
+                            <small>Ngân hàng</small>
+                        </div>
+                        <div class="col-4">
+                            <i class="bi bi-wallet2 text-success fs-3 d-block mb-2"></i>
+                            <small>Ví điện tử</small>
+                        </div>
+                        <div class="col-4">
+                            <i class="bi bi-credit-card text-info fs-3 d-block mb-2"></i>
+                            <small>Thẻ ATM/Visa</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

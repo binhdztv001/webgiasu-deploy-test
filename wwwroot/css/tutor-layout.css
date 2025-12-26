@@ -1,4 +1,4 @@
-/* ===========================
+ï»¿/* ===========================
    TUTOR LAYOUT STYLES
    =========================== */
 
@@ -22,17 +22,17 @@
 }
 
 /* ===========================
-   BODY & HTML - Không scroll body
+   BODY & HTML - KhÃ´ng scroll body
    =========================== */
 
 html, body {
     height: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
-    overflow: hidden !important; /* Body không scroll */
+    overflow: hidden !important; /* Body khÃ´ng scroll */
 }
 
-/* Cho phép scroll khi modal m? */
+/* Cho phÃ©p scroll khi modal m? */
 html.modal-open,
 body.modal-open {
     overflow: hidden !important;
@@ -55,7 +55,7 @@ body.modal-open {
     align-items: center !important;
     padding: 0 !important;
     margin: 0 !important;
-    overflow: visible !important; /* Cho phép dropdown hi?n th? */
+    overflow: visible !important; /* Cho phÃ©p dropdown hi?n th? */
 }
 
 /* Shimmer/Shine Effect for Header */
@@ -800,7 +800,7 @@ body.modal-open {
 }
 
 /* ===========================
-   MAIN CONTENT - Chi?m ph?n còn l?i
+   MAIN CONTENT - Chi?m ph?n cÃ²n l?i
    =========================== */
 
 .main-content {
@@ -816,22 +816,22 @@ body.modal-open {
 }
 
 /* ===========================
-   CONTENT WRAPPER - CH? PH?N NÀY SCROLL (bao g?m footer)
+   CONTENT WRAPPER - CH? PH?N NÃ€Y SCROLL (bao g?m footer)
    =========================== */
 
 .content-wrapper {
     height: 100% !important;
     padding: 1.25rem;
-    padding-bottom: 0 !important; /* kéo footer sát d??i content */
+    padding-bottom: 0 !important; /* kÃ©o footer sÃ¡t d??i content */
     background: linear-gradient(to bottom, #E8F5E9 0%, #C8E6C9 100%) !important;
     overflow-x: hidden !important;
     overflow-y: auto !important;
     display: flex !important;
     flex-direction: column !important;
-    gap: 1rem; /* t?o kho?ng cách gi?a n?i dung và footer */
+    gap: 1rem; /* t?o kho?ng cÃ¡ch gi?a n?i dung vÃ  footer */
 }
 
-/* N?i dung chính - s? d?ng wrapper */
+/* N?i dung chÃ­nh - s? d?ng wrapper */
 .content-wrapper > .dashboard-container,
 .content-wrapper > .page-header:first-child,
 .content-wrapper > div:first-child:not(.alert):not(.content-footer),
@@ -858,7 +858,7 @@ body.modal-open {
 }
 
 /* ===========================
-   CONTENT FOOTER - Luôn ? cu?i, n?n tr?ng ngang h?t
+   CONTENT FOOTER - LuÃ´n ? cu?i, n?n tr?ng ngang h?t
    =========================== */
 
 .content-footer {
@@ -866,14 +866,14 @@ body.modal-open {
     background: white !important;
     border-top: 1px solid #e9ecef;
     margin-top: auto; /* ??y footer xu?ng cu?i */
-    margin-left: -1.25rem;  /* Kéo ra ngoài padding */
-    margin-right: -1.25rem; /* Kéo ra ngoài padding */
+    margin-left: -1.25rem;  /* KÃ©o ra ngoÃ i padding */
+    margin-right: -1.25rem; /* KÃ©o ra ngoÃ i padding */
     padding-left: 1.25rem;
     padding-right: 1.25rem;
     flex-shrink: 0;
 }
 
-/* Kho?ng cách gi?a content và footer ???c ki?m soát b?i gap ? .content-wrapper */
+/* Kho?ng cÃ¡ch gi?a content vÃ  footer ???c ki?m soÃ¡t b?i gap ? .content-wrapper */
 
 /* Alert styling to match green theme */
 .content-wrapper .alert-success {
@@ -1057,7 +1057,7 @@ body.modal-open {
     animation: fadeIn 0.5s ease-out;
     animation-delay: 0.2s;
     animation-fill-mode: both;
-    margin-bottom: 1rem; /* t?o kho?ng cách d??i b?ng */
+    margin-bottom: 1rem; /* t?o kho?ng cÃ¡ch d??i b?ng */
 }
 
 /* Form elements fade */
@@ -1500,7 +1500,7 @@ body.modal-open {
 }
 
 @media (max-width: 992px) {
-    /* Sidebar ?n trên mobile */
+    /* Sidebar ?n trÃªn mobile */
     .sidebar {
         position: fixed;
         left: 0;
@@ -1517,7 +1517,7 @@ body.modal-open {
         box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
     }
 
-    /* Main content chi?m full width trên mobile */
+    /* Main content chi?m full width trÃªn mobile */
     .main-content,
     .main-content.expanded {
         width: 100%;
@@ -1553,7 +1553,7 @@ body.modal-open {
    GLOBAL DROPDOWN FIX - SMOOTH TRANSITIONS
    =========================== */
 
-/* ?? Bootstrap qu?n lý display, ch? thêm animation */
+/* ?? Bootstrap qu?n lÃ½ display, ch? thÃªm animation */
 .dropdown-menu.show {
     display: block !important;
     visibility: visible !important;
@@ -1616,7 +1616,7 @@ body.modal-open {
    PERFORMANCE OPTIMIZATIONS
    =========================== */
 
-/* Modal z-index fix - ??m b?o modal hi?n th? trên t?t c? */
+/* Modal z-index fix - ??m b?o modal hi?n th? trÃªn t?t c? */
 .modal {
     z-index: 2000 !important;
     position: fixed !important;
@@ -1624,16 +1624,16 @@ body.modal-open {
 
 .modal-backdrop {
     position: fixed !important;
-    z-index: 1040 !important; /* th?p h?n modal và header */
-    pointer-events: none !important; /* tránh ch?n click vào modal */
-    background-color: rgba(0, 0, 0, 0.4) !important; /* nh? h?n, không ?nh h??ng dialog */
+    z-index: 1040 !important; /* th?p h?n modal vÃ  header */
+    pointer-events: none !important; /* trÃ¡nh ch?n click vÃ o modal */
+    background-color: rgba(0, 0, 0, 0.4) !important; /* nh? h?n, khÃ´ng ?nh h??ng dialog */
     filter: none !important;
 }
 
 .modal-dialog {
     z-index: 2001 !important;
     pointer-events: auto !important;
-    transform: none !important; /* tránh t?o stacking context khi fade */
+    transform: none !important; /* trÃ¡nh t?o stacking context khi fade */
 }
 
 .modal-content {
@@ -1647,7 +1647,7 @@ body.modal-open {
     transition: none !important;
 }
 
-/* Cho phép t??ng tác v?i modal */
+/* Cho phÃ©p t??ng tÃ¡c v?i modal */
 .modal.show {
     overflow-x: hidden;
     overflow-y: auto;
@@ -1778,7 +1778,7 @@ img {
     border-radius: 12px;
 }
 
-/* Cards trong content - không bay */
+/* Cards trong content - khÃ´ng bay */
 .content-wrapper .card {
     animation: fadeInUp 0.4s ease-out;
     animation-fill-mode: both;
@@ -1849,7 +1849,7 @@ img {
     }
 }
 
-/* Form pages - không hover bay */
+/* Form pages - khÃ´ng hover bay */
 .content-wrapper > .row > .col-lg-8 > .card,
 .content-wrapper > .row > .col-lg-4 > .card {
     transition: box-shadow 0.2s ease;
