@@ -11,6 +11,8 @@
         public UserRole Role { get; set; }
         public bool IsApproved { get; set; } // Dành cho Tutor
         public DateTime RegisteredDate { get; set; }
+        public bool IsPremium { get; set; } = false;
+        public DateTime? PremiumExpiredAt { get; set; }
 
         // Tutor Profile Fields
         public string? Bio { get; set; } // Gi?i thi?u b?n thân

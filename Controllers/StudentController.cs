@@ -39,10 +39,11 @@ namespace Webgiasu.Controllers
         private readonly IHubContext<CommunityHub> _hubContext;
         private readonly IProblemGroupService _problemGroupService;
         private readonly ISePayGateway _sePayGateway;
+        private readonly IPremiumService _premiumService;
 
         public StudentController(AppDbContext db, IProblemService problemService, ISolutionService solutionService, 
             IPaymentService paymentService, IUserService userService, IRatingService ratingService,
-            IFriendshipService friendshipService, IMessageService messageService, 
+            IFriendshipService friendshipService, IMessageService messageService, IPremiumService premiumService,
             ICommunityService communityService, IHubContext<CommunityHub> hubContext, IProblemGroupService problemGroupService, ISePayGateway sePayGateway)
         {
             _db=db;
@@ -54,6 +55,7 @@ namespace Webgiasu.Controllers
             _friendshipService = friendshipService;
             _messageService = messageService;
             _communityService = communityService;
+            _premiumService = premiumService;
             _hubContext = hubContext;
             _problemGroupService = problemGroupService;
             _sePayGateway = sePayGateway;
@@ -151,12 +153,15 @@ namespace Webgiasu.Controllers
 
                 // ✅ Load group info nếu là bài toán nhóm
                 var groupInfo = _problemGroupService.GetGroupByProblemId(problem.Id);
+                bool isPremium = _premiumService.IsPremium(userId);
 
                 var model = new ProblemDetailsViewModel
                 {
                     Problem = problem,
                     Student = _userService.GetUserById(problem.StudentId),
-                    AssignedTutor = problem.AssignedTutorId.HasValue ? _userService.GetUserById(problem.AssignedTutorId.Value) : null,
+                    AssignedTutor = isPremium && problem.AssignedTutorId.HasValue
+                        ? _userService.GetUserById(problem.AssignedTutorId.Value)
+                        : null,
                     Solution = _solutionService.GetSolutionByProblemId(problem.Id),
                     Payment = _paymentService.GetPaymentByProblemId(problem.Id),
                     Group = groupInfo, // ✅ Thêm thông tin nhóm
@@ -165,7 +170,7 @@ namespace Webgiasu.Controllers
 
                 // Check if student has rated this problem
                 ViewBag.HasRated = await _ratingService.HasStudentRatedProblemAsync(id, userId);
-
+                ViewBag.IsPremium = isPremium;
                 return View(model);
             }
             catch (Exception ex)
@@ -2055,5 +2060,43 @@ namespace Webgiasu.Controllers
                 return RedirectToAction("MyGroups");
             }
         }
+        // Premium
+        [HttpGet]
+        public IActionResult Premium()
+        {
+            try
+            {
+                var userId = HttpContext.Session.GetInt32("UserId");
+                if (userId == null)
+                    return RedirectToAction("Login", "Account");
+
+                var user = _premiumService.GetPremiumUser(userId.Value);
+
+                ViewBag.IsPremium = user?.IsPremium ?? false;
+                ViewBag.PremiumExpiredAt = user?.PremiumExpiredAt;
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return RedirectToAction("Error", "Home");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult UpgradePremium()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+                return Unauthorized();
+
+            if (_premiumService.IsPremium(userId.Value))
+                return BadRequest("Already premium");
+
+            _premiumService.UpgradeToPremium(userId.Value);
+            return Ok();
+        }
+
     }
 }

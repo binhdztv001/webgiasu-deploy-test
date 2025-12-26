@@ -47,6 +47,7 @@ builder.Services.AddScoped<IRatingService, RatingService>();
 builder.Services.AddScoped<IFriendshipService, FriendshipService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<ICommunityService, CommunityService>();
+builder.Services.AddScoped<IPremiumService, PremiumService>();
 
 // ✅ ADD: Register Problem Group Service
 builder.Services.AddScoped<IProblemGroupService, ProblemGroupService>();
