@@ -41,7 +41,15 @@ namespace Webgiasu.Services
 
         public List<User> GetAllUsers() => _db.Users.ToList();
 
-        public List<User> GetPendingTutors() => _db.Users.Where(u => u.Role == UserRole.Tutor && !u.IsApproved).ToList();
+        public List<User> GetPendingTutors()
+        {
+            return _db.Users
+                .Where(u => u.Role == UserRole.Tutor && u.IsApproved)
+                .OrderByDescending(u => u.IsPremium) 
+                .ThenByDescending(u => u.ExperienceYears) 
+                .ThenBy(u => u.FullName)
+                .ToList();
+        }
 
         public bool ApproveTutor(int tutorId)
         {

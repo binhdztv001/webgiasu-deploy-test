@@ -43,10 +43,11 @@ namespace Webgiasu.Controllers
         private readonly IMessageService _messageService;
         private readonly ICommunityService _communityService;
         private readonly IHubContext<CommunityHub> _hubContext;
+        private readonly IPremiumService _premiumService;
 
-        public TutorController(IProblemService problemService, ISolutionService solutionService,
-            IFriendshipService friendshipService,
-            IUserService userService, IRatingService ratingService, IMessageService messageService, ICommunityService communityService, IHubContext<CommunityHub> hubContext)
+        public TutorController(IProblemService problemService, ISolutionService solutionService, IFriendshipService friendshipService,
+            IUserService userService, IRatingService ratingService, IMessageService messageService, 
+            ICommunityService communityService, IHubContext<CommunityHub> hubContext, IPremiumService premiumService)
         {
             _problemService = problemService;
             _solutionService = solutionService;
@@ -56,6 +57,7 @@ namespace Webgiasu.Controllers
             _messageService = messageService;
             _communityService = communityService;
             _hubContext = hubContext;
+            _premiumService = premiumService;
         }
 
         private int GetCurrentUserId()
@@ -1070,6 +1072,43 @@ namespace Webgiasu.Controllers
             }
         }
 
+        // Premium
+        [HttpGet]
+        public IActionResult Premium()
+        {
+            try
+            {
+                var userId = HttpContext.Session.GetInt32("UserId");
+                if (userId == null)
+                    return RedirectToAction("Login", "Account");
+
+                var user = _premiumService.GetPremiumUser(userId.Value);
+
+                ViewBag.IsPremium = user?.IsPremium ?? false;
+                ViewBag.PremiumExpiredAt = user?.PremiumExpiredAt;
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return RedirectToAction("Error", "Home");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult UpgradePremium()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+                return Unauthorized();
+
+            if (_premiumService.IsPremium(userId.Value))
+                return BadRequest("Already premium");
+
+            _premiumService.UpgradeToPremium(userId.Value);
+            return Ok();
+        }
 
     }
 }
