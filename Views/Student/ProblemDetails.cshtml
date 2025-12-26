@@ -1,7 +1,28 @@
 ﻿@model Webgiasu.Models.ViewModels.ProblemDetailsViewModel
+@inject Webgiasu.Services.IPaymentService PaymentService
+@inject Webgiasu.Services.IProblemGroupService ProblemGroupService
 @{
     ViewData["Title"] = "Chi tiết bài toán";
     Layout = "_StudentLayout";
+    
+    // Lấy userId hiện tại
+    var userId = Context.Session.GetInt32("UserId") ?? 0;
+    
+    // Kiểm tra xem bài toán này có phải là bài toán nhóm không
+    var group = Model.Group ?? ProblemGroupService.GetGroupByProblemId(Model.Problem.Id);
+    var isGroupProblem = group != null;
+    
+    // Nếu là bài toán nhóm, lấy thông tin member và payment
+    ProblemGroupMember? currentMember = null;
+    GroupPayment? groupPayment = null;
+    if (isGroupProblem && group != null)
+    {
+        currentMember = group.Members.FirstOrDefault(m => m.UserId == userId);
+        if (currentMember != null)
+        {
+            groupPayment = PaymentService.GetGroupPaymentByMemberId(currentMember.Id);
+        }
+    }
 }
 
 <div>
@@ -10,6 +31,12 @@
             <div>
                 <h5 class="fw-bold mb-1 text-dark">
                     <i class="bi bi-file-text text-primary me-2"></i>Chi tiết bài toán #@Model.Problem.Id
+                    @if (isGroupProblem)
+                    {
+                        <span class="badge bg-success ms-2">
+                            <i class="bi bi-people-fill"></i> Nhóm
+                        </span>
+                    }
                 </h5>
                 <p class="text-muted mb-0 small">Xem thông tin và lời giải bài toán</p>
             </div>
@@ -20,6 +47,7 @@
 
         <div class="row">
             <div class="col-lg-8">
+                <!-- Card thông tin bài toán -->
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-primary text-white">
                         <h4 class="mb-0"><i class="bi bi-file-text"></i> Thông tin bài toán</h4>
@@ -68,6 +96,33 @@
                             }
                             <span class="badge bg-info"><i class="bi bi-currency-dollar"></i> @Model.Problem.Price.ToString("N0") đ</span>
                         </div>
+
+                        @* Hiển thị thông tin nhóm nếu là bài toán nhóm *@
+                        @if (isGroupProblem && group != null)
+                        {
+                            <div class="alert alert-info">
+                                <h6 class="mb-2">
+                                    <i class="bi bi-people-fill me-1"></i><strong>Nhóm học tập: @group.GroupName</strong>
+                                </h6>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <small>
+                                            <i class="bi bi-people me-1"></i>Số thành viên: <strong>@group.Members.Count</strong>
+                                        </small>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <small>
+                                            <i class="bi bi-currency-dollar me-1"></i>Phần của bạn: <strong class="text-success">@group.PricePerMember.ToString("N0") đ</strong>
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <a asp-action="GroupDetails" asp-route-id="@group.Id" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye me-1"></i> Xem chi tiết nhóm
+                                    </a>
+                                </div>
+                            </div>
+                        }
 
                         <hr />
 
@@ -212,9 +267,81 @@
                     }
                 }
 
-
-                @if (Model.Payment != null)
+                @* THANH TOÁN - Xử lý cho cả bài toán đơn và nhóm *@
+                @if (isGroupProblem && currentMember != null)
                 {
+                    @* THANH TOÁN NHÓM *@
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0">
+                                <i class="bi bi-credit-card"></i> Thanh toán
+                                <span class="badge bg-success float-end">Nhóm</span>
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center mb-3">
+                                <i class="bi bi-currency-dollar text-primary" style="font-size: 2rem;"></i>
+                                <h4 class="mt-2 mb-0 text-success">@group!.PricePerMember.ToString("N0") đ</h4>
+                                <small class="text-muted">Phần của bạn</small>
+                            </div>
+
+                            <div class="d-flex justify-content-between mb-3">
+                                <span>Trạng thái:</span>
+                                @if (groupPayment != null && groupPayment.Status == PaymentStatus.Completed)
+                                {
+                                    <span class="badge bg-success">Đã thanh toán</span>
+                                }
+                                else if (currentMember.PaymentStatus == GroupPaymentStatus.Paid)
+                                {
+                                    <span class="badge bg-success">Đã thanh toán</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning">Chưa thanh toán</span>
+                                }
+                            </div>
+
+                            @if (groupPayment != null && groupPayment.Status == PaymentStatus.Completed)
+                            {
+                                <div class="alert alert-success mb-0">
+                                    <small>
+                                        <i class="bi bi-check-circle"></i>
+                                        Đã thanh toán lúc: @groupPayment.CompletedDate?.ToString("dd/MM/yyyy HH:mm")
+                                    </small>
+                                    @if (!string.IsNullOrEmpty(groupPayment.TransactionId))
+                                    {
+                                        <div class="mt-1">
+                                            <small>Mã GD: <code>@groupPayment.TransactionId</code></small>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else if (currentMember.PaymentStatus == GroupPaymentStatus.Unpaid)
+                            {
+                                <form asp-controller="Student" asp-action="ProcessGroupPayment" method="post">
+                                    <input type="hidden" name="memberId" value="@currentMember.Id" />
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-success">
+                                            <i class="bi bi-credit-card"></i> Thanh toán ngay
+                                        </button>
+                                    </div>
+                                </form>
+                            }
+                            else
+                            {
+                                <div class="alert alert-info mb-0">
+                                    <small>
+                                        <i class="bi bi-info-circle"></i>
+                                        Bạn đã thanh toán cho nhóm này
+                                    </small>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+                else if (Model.Payment != null)
+                {
+                    @* THANH TOÁN ĐƠN (code cũ) *@
                     <div class="card shadow-sm mb-4">
                         <div class="card-header bg-warning text-dark">
                             <h5 class="mb-0"><i class="bi bi-credit-card"></i> Thanh toán</h5>

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using Webgiasu.Models;
@@ -78,70 +78,117 @@ namespace Webgiasu.Controllers
                 transactionId = codeVal;
             }
 
-            // Attempt to resolve payment id from known fields
+            // Thử resolve individual payment trước
             var paymentId = ResolvePaymentId(payload);
+            
+            // Nếu không có, thử group payment
+            int? groupPaymentId = null;
             if (paymentId == null)
             {
-                paymentId = ResolvePaymentByTransaction(transactionId) ?? ResolvePaymentIdByAmount(payload);
-            }
-            if (paymentId == null)
-            {
-                // Acknowledge to stop retries but note missing mapping
-                var unmappedResponse = new { message = "Unmapped transaction", transactionId };
-                return new JsonResult(unmappedResponse);
+                groupPaymentId = ResolveGroupPaymentId(payload);
             }
 
-            var payment = _db.Payments.FirstOrDefault(p => p.Id == paymentId.Value);
-            if (payment is null) return NotFound();
-
-            // Respond with ordered JSON similar to SePay sample
-            var response = new
+            // Xử lý individual payment
+            if (paymentId != null)
             {
-                id = TryGetInt(payload, "id"),
-                gateway = GetVal(payload, "gateway"),
-                transactionDate = GetVal(payload, "transactionDate"),
-                accountNumber = GetVal(payload, "accountNumber"),
-                code = GetVal(payload, "code"),
-                content = GetVal(payload, "content"),
-                transferType = GetVal(payload, "transferType"),
-                transferAmount = TryGetLong(payload, "transferAmount"),
-                accumulated = TryGetLong(payload, "accumulated"),
-                subAccount = GetVal(payload, "subAccount"),
-                referenceCode = GetVal(payload, "referenceCode"),
-                description = GetVal(payload, "description")
-            };
+                var payment = _db.Payments.FirstOrDefault(p => p.Id == paymentId.Value);
+                if (payment is null) return NotFound();
 
-            // Decide success/failure
-            var status = payload.TryGetValue("payment_status", out var ps) ? ps : null;
-            var transferType = payload.TryGetValue("transferType", out var tt) ? tt : null;
-            var isSuccess = string.Equals(status, "SUCCESS", StringComparison.OrdinalIgnoreCase)
-                            || string.Equals(transferType, "in", StringComparison.OrdinalIgnoreCase);
-            var isFailed = string.Equals(status, "FAILED", StringComparison.OrdinalIgnoreCase);
-
-            if (isSuccess)
-            {
-                payment.Status = PaymentStatus.Completed;
-                payment.CompletedDate = DateTime.Now;
-                payment.TransactionId = transactionId;
-            }
-            else if (isFailed)
-            {
-                payment.Status = PaymentStatus.Failed;
-            }
-
-            // Idempotency: if a completed payment already has this transaction id, skip updates
-            if (!string.IsNullOrEmpty(transactionId))
-            {
-                var dup = _db.Payments.FirstOrDefault(p => p.TransactionId == transactionId);
-                if (dup != null && dup.Status == PaymentStatus.Completed)
+                // Respond with ordered JSON similar to SePay sample
+                var response = new
                 {
-                    return new JsonResult(response);
+                    id = TryGetInt(payload, "id"),
+                    gateway = GetVal(payload, "gateway"),
+                    transactionDate = GetVal(payload, "transactionDate"),
+                    accountNumber = GetVal(payload, "accountNumber"),
+                    code = GetVal(payload, "code"),
+                    content = GetVal(payload, "content"),
+                    transferType = GetVal(payload, "transferType"),
+                    transferAmount = TryGetLong(payload, "transferAmount"),
+                    accumulated = TryGetLong(payload, "accumulated"),
+                    subAccount = GetVal(payload, "subAccount"),
+                    referenceCode = GetVal(payload, "referenceCode"),
+                    description = GetVal(payload, "description")
+                };
+
+                // Decide success/failure
+                var status = payload.TryGetValue("payment_status", out var ps) ? ps : null;
+                var transferType = payload.TryGetValue("transferType", out var tt) ? tt : null;
+                var isSuccess = string.Equals(status, "SUCCESS", StringComparison.OrdinalIgnoreCase)
+                                || string.Equals(transferType, "in", StringComparison.OrdinalIgnoreCase);
+                var isFailed = string.Equals(status, "FAILED", StringComparison.OrdinalIgnoreCase);
+
+                if (isSuccess)
+                {
+                    payment.Status = PaymentStatus.Completed;
+                    payment.CompletedDate = DateTime.Now;
+                    payment.TransactionId = transactionId;
                 }
+                else if (isFailed)
+                {
+                    payment.Status = PaymentStatus.Failed;
+                }
+
+                // Idempotency: if a completed payment already has this transaction id, skip updates
+                if (!string.IsNullOrEmpty(transactionId))
+                {
+                    var dup = _db.Payments.FirstOrDefault(p => p.TransactionId == transactionId);
+                    if (dup != null && dup.Status == PaymentStatus.Completed)
+                    {
+                        return new JsonResult(response);
+                    }
+                }
+
+                _db.SaveChanges();
+
+                return new JsonResult(response);
+            }
+            // Xử lý group payment
+            else if (groupPaymentId != null)
+            {
+                var groupPayment = _db.GroupPayments.FirstOrDefault(gp => gp.Id == groupPaymentId.Value);
+                if (groupPayment == null) return NotFound();
+
+                // Xác định thành công/thất bại
+                var status = payload.TryGetValue("payment_status", out var ps) ? ps : null;
+                var transferType = payload.TryGetValue("transferType", out var tt) ? tt : null;
+                var isSuccess = string.Equals(status, "SUCCESS", StringComparison.OrdinalIgnoreCase)
+                                || string.Equals(transferType, "in", StringComparison.OrdinalIgnoreCase);
+
+                if (isSuccess)
+                {
+                    groupPayment.Status = PaymentStatus.Completed;
+                    groupPayment.CompletedDate = DateTime.Now;
+                    groupPayment.TransactionId = transactionId;
+
+                    // Cập nhật trạng thái member
+                    var member = _db.ProblemGroupMembers.Find(groupPayment.MemberId);
+                    if (member != null)
+                    {
+                        member.PaymentStatus = GroupPaymentStatus.Paid;
+                    }
+                }
+                else if (string.Equals(status, "FAILED", StringComparison.OrdinalIgnoreCase))
+                {
+                    groupPayment.Status = PaymentStatus.Failed;
+                }
+
+                _db.SaveChanges();
+
+                var response = new
+                {
+                    id = TryGetInt(payload, "id"),
+                    gateway = GetVal(payload, "gateway"),
+                    transactionDate = GetVal(payload, "transactionDate"),
+                    code = GetVal(payload, "code"),
+                    content = GetVal(payload, "content"),
+                    transferAmount = TryGetLong(payload, "transferAmount")
+                };
+
+                return new JsonResult(response);
             }
 
-            _db.SaveChanges();
-
-            return new JsonResult(response);
+            return new JsonResult(new { message = "Unmapped transaction" });
         }
 
         private int? ResolvePaymentByTransaction(string? transactionId)
@@ -208,6 +255,31 @@ namespace Webgiasu.Controllers
             var idx = value.IndexOf("LEARNTUTOR-", StringComparison.OrdinalIgnoreCase);
             if (idx < 0) return false;
             var start = idx + 4;
+            var digits = new string(value.Skip(start).TakeWhile(char.IsDigit).ToArray());
+            return int.TryParse(digits, out id);
+        }
+
+        // Thêm phương thức helper
+        private int? ResolveGroupPaymentId(IDictionary<string, string> payload)
+        {
+            var candidates = new[] { "order_invoice_number", "referenceCode", "content", "description", "code" };
+            foreach (var key in candidates)
+            {
+                if (payload.TryGetValue(key, out var value) && TryParseGroupPayId(value, out var gpId))
+                {
+                    return gpId;
+                }
+            }
+            return null;
+        }
+
+        private bool TryParseGroupPayId(string? value, out int id)
+        {
+            id = 0;
+            if (string.IsNullOrWhiteSpace(value)) return false;
+            var idx = value.IndexOf("LEARNTUTOR-GP-", StringComparison.OrdinalIgnoreCase);
+            if (idx < 0) return false;
+            var start = idx + 14;
             var digits = new string(value.Skip(start).TakeWhile(char.IsDigit).ToArray());
             return int.TryParse(digits, out id);
         }
