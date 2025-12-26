@@ -29,7 +29,7 @@ namespace Webgiasu.Controllers
             if (Request.HasFormContentType)
             {
                 var form = Request.Form;
-                payload = form.ToDictionary(k => k.Key, v => v.Value.ToString());
+                payload = form.ToDictionary(k => k.Key, v => v.Value.ToString(), StringComparer.OrdinalIgnoreCase);
             }
             else
             {
@@ -231,12 +231,13 @@ namespace Webgiasu.Controllers
                 }
             }
 
-            return null;
+            // Fallback by amount if invoice markers are missing
+            return ResolvePaymentIdByAmount(payload);
         }
 
         private int? ResolvePaymentIdByAmount(IDictionary<string, string> payload)
         {
-            var amount = TryGetLong(payload, "transferAmount");
+            var amount = TryGetLong(payload, "transferAmount") ?? TryGetLong(payload, "order_amount");
             if (amount == null) return null;
             var targetAmount = (decimal)amount.Value;
 
@@ -252,9 +253,10 @@ namespace Webgiasu.Controllers
         {
             id = 0;
             if (string.IsNullOrWhiteSpace(value)) return false;
-            var idx = value.IndexOf("LEARNTUTOR-", StringComparison.OrdinalIgnoreCase);
+            var prefix = "LEARNTUTOR-";
+            var idx = value.IndexOf(prefix, StringComparison.OrdinalIgnoreCase);
             if (idx < 0) return false;
-            var start = idx + 4;
+            var start = idx + prefix.Length;
             var digits = new string(value.Skip(start).TakeWhile(char.IsDigit).ToArray());
             return int.TryParse(digits, out id);
         }
@@ -277,9 +279,10 @@ namespace Webgiasu.Controllers
         {
             id = 0;
             if (string.IsNullOrWhiteSpace(value)) return false;
-            var idx = value.IndexOf("LEARNTUTOR-GP-", StringComparison.OrdinalIgnoreCase);
+            var prefix = "LEARNTUTOR-";
+            var idx = value.IndexOf(prefix, StringComparison.OrdinalIgnoreCase);
             if (idx < 0) return false;
-            var start = idx + 14;
+            var start = idx + prefix.Length;
             var digits = new string(value.Skip(start).TakeWhile(char.IsDigit).ToArray());
             return int.TryParse(digits, out id);
         }
