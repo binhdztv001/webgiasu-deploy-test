@@ -1,0 +1,204 @@
+﻿@using System.Text.Json
+@model Webgiasu.Models.ViewModels.ProblemDetailsViewModel
+
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class="bi bi-robot"></i> 🤖 AI Gia sư - Gợi ý hướng giải
+        </h5>
+        <button class="btn btn-sm btn-light" onclick="loadProblemContext()" title="Tải lại context bài toán">
+            <i class="bi bi-arrow-clockwise"></i>
+        </button>
+    </div>
+    <div class="card-body p-0">
+        <div id="chatBox" class="p-3" style="height:300px; overflow-y:auto; background-color: #f8f9fa;">
+            <div class="text-muted text-center small">
+                <i class="bi bi-info-circle"></i> AI đã hiểu nội dung bài toán @(string.IsNullOrEmpty(Model?.Problem?.ImageUrl) ? "" : "và hình ảnh"). Hãy hỏi trực tiếp!
+            </div>
+        </div>
+    </div>
+    <div class="card-footer bg-white">
+        <div class="mb-2">
+            <button class="btn btn-sm btn-outline-primary me-2" onclick="askQuickQuestion('Bài này cần dùng kiến thức gì?')">
+                💡 Cần kiến thức gì?
+            </button>
+            <button class="btn btn-sm btn-outline-success me-2" onclick="askQuickQuestion('Gợi ý cách tiếp cận bài này')">
+                🎯 Cách tiếp cận
+            </button>
+            <button class="btn btn-sm btn-outline-warning" onclick="askQuickQuestion('Công thức nào cần dùng?')">
+                📐 Công thức
+            </button>
+            @if (!string.IsNullOrEmpty(Model?.Problem?.ImageUrl))
+            {
+                <button class="btn btn-sm btn-outline-info" onclick="askQuickQuestion('Phân tích hình vẽ trong ảnh')">
+                    📸 Phân tích hình
+                </button>
+            }
+        </div>
+        <div class="input-group">
+            <input id="userMsg" class="form-control" placeholder="Hỏi AI về bài toán này..." />
+            <button class="btn btn-primary" onclick="sendMsg()">
+                <i class="bi bi-send"></i> Gửi
+            </button>
+        </div>
+    </div>
+</div>
+
+@{
+    var contextData = new
+    {
+        Title = Model?.Problem?.Title ?? "",
+        Description = Model?.Problem?.Description ?? "",
+        Type = Model?.Problem?.Type.ToString() ?? "",
+        Difficulty = Model?.Problem?.Difficulty.ToString() ?? "",
+        ImageUrl = Model?.Problem?.ImageUrl ?? ""
+    };
+
+    var contextJson = JsonSerializer.Serialize(contextData);
+}
+
+<input type="hidden" id="problemContext" value='@Html.Raw(contextJson)' />
+
+<script>
+    let problemContext = null;
+
+    window.addEventListener('DOMContentLoaded', function() {
+        loadProblemContext();
+    });
+
+    function loadProblemContext() {
+        const contextData = document.getElementById('problemContext');
+        if (contextData && contextData.value) {
+            try {
+                problemContext = JSON.parse(contextData.value);
+                console.log('✅ Problem context loaded:', problemContext);
+                if (problemContext.ImageUrl) {
+                    console.log('📸 Bài toán có ảnh:', problemContext.ImageUrl);
+                }
+            } catch (e) {
+                console.error('❌ Error parsing problem context:', e);
+            }
+        }
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // ✅ Hàm format markdown từ AI response
+    function formatAiResponse(text) {
+        // Bước 1: Xử lý **text** → <strong>text</strong>
+        text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+        // Bước 2: Xử lý *text* → bullet point
+        // Tìm các dòng bắt đầu bằng "- *" hoặc đơn giản là "*text*"
+        text = text.replace(/^[\s]*-\s*\*(.+?)\*/gm, '• $1');
+        text = text.replace(/(?<!<strong>)\*([^*]+?)\*(?!<\/strong>)/g, '• $1');
+
+        // Bước 3: Chuyển \n thành <br>
+        text = text.replace(/\n/g, '<br>');
+
+        return text;
+    }
+
+    async function askQuickQuestion(question) {
+        document.getElementById("userMsg").value = question;
+        await sendMsg();
+    }
+
+    async function sendMsg() {
+        const msg = document.getElementById("userMsg").value.trim();
+        if (!msg) return;
+
+        const box = document.getElementById("chatBox");
+        box.innerHTML += `<div class="mb-2"><b>Bạn:</b> ${escapeHtml(msg)}</div>`;
+
+        const btnSend = document.querySelector('button[onclick="sendMsg()"]');
+        btnSend.disabled = true;
+        btnSend.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Đang xử lý...';
+
+        box.innerHTML += `<div class="mb-2 text-muted" id="aiLoading">
+            <b>AI:</b> <span class="spinner-border spinner-border-sm"></span> Đang phân tích${problemContext?.ImageUrl ? ' (bao gồm hình ảnh)' : ''}...
+        </div>`;
+        box.scrollTop = box.scrollHeight;
+
+        try {
+            const requestBody = {
+                message: msg,
+                problemContext: problemContext
+            };
+
+            const res = await fetch("/api/ai/ask", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(requestBody)
+            });
+
+            document.getElementById("aiLoading")?.remove();
+
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+                throw new Error(errorData.error || `Lỗi API: ${res.status}`);
+            }
+
+            const data = await res.json();
+
+            // ✅ Format response với markdown support
+            const formattedReply = formatAiResponse(data.reply);
+
+            box.innerHTML += `<div class="mb-2 text-success ai-response">
+                <b>AI:</b> <span>${formattedReply}</span>
+            </div>`;
+
+            box.scrollTop = box.scrollHeight;
+            document.getElementById("userMsg").value = "";
+        } catch (error) {
+            document.getElementById("aiLoading")?.remove();
+            box.innerHTML += `<div class="mb-2 text-danger">
+                <b>Lỗi:</b> ${escapeHtml(error.message)}
+            </div>`;
+            console.error('❌ Error:', error);
+        } finally {
+            btnSend.disabled = false;
+            btnSend.innerHTML = '<i class="bi bi-send"></i> Gửi';
+        }
+    }
+
+    document.getElementById("userMsg")?.addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            sendMsg();
+        }
+    });
+</script>
+
+<style>
+    #chatBox::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #chatBox::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    #chatBox::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 4px;
+    }
+
+        #chatBox::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+    /* ✅ Style cho AI response */
+    .ai-response strong {
+        color: #0d6efd;
+        font-weight: 600;
+    }
+
+    .ai-response {
+        line-height: 1.6;
+    }
+</style>

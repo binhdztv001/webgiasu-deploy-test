@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi;
 using System.Globalization;
 using System.Text;
 using Webgiasu.Models;
@@ -15,6 +16,33 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpClient<GeminiService>();
+builder.Services.AddScoped<GeminiService>();
+
+// ✅ Configure Swagger/OpenAPI
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Gia Sư Online API",
+        Version = "v1",
+        Description = "API cho hệ thống Gia Sư Online - Hỗ trợ quản lý bài tập, gia sư, học sinh và AI",
+        Contact = new OpenApiContact
+        {
+            Name = "Support Team",
+            Email = "support@giasuonline.com"
+        }
+    });
+
+    // ✅ Thêm XML comments (optional - để hiển thị mô tả chi tiết)
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    if (File.Exists(xmlPath))
+    {
+        options.IncludeXmlComments(xmlPath);
+    }
+});
 
 // Configure Request Localization for Vietnamese
 builder.Services.Configure<RequestLocalizationOptions>(options =>
@@ -24,7 +52,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
         new CultureInfo("vi-VN"),
         new CultureInfo("en-US")
     };
-    
+
     options.DefaultRequestCulture = new RequestCulture("vi-VN");
     options.SupportedCultures = supportedCultures;
     options.SupportedUICultures = supportedCultures;
@@ -48,8 +76,6 @@ builder.Services.AddScoped<IFriendshipService, FriendshipService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<ICommunityService, CommunityService>();
 builder.Services.AddScoped<IPremiumService, PremiumService>();
-
-// ✅ ADD: Register Problem Group Service
 builder.Services.AddScoped<IProblemGroupService, ProblemGroupService>();
 
 // Add SignalR
@@ -68,8 +94,24 @@ app.UseRequestLocalization();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+}
+else
+{
+    // ✅ Enable Swagger in Development mode
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Gia Sư Online API v1");
+        options.RoutePrefix = "swagger";
+        options.DocumentTitle = "Gia Sư Online API Documentation";
+
+        options.DefaultModelsExpandDepth(2);
+        options.DefaultModelExpandDepth(2);
+        options.DisplayRequestDuration();
+        options.EnableDeepLinking();
+        options.EnableFilter();
+    });
 }
 
 app.UseHttpsRedirection();
@@ -77,16 +119,16 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// Enable session
 app.UseSession();
 
 app.UseAuthorization();
+
+app.MapControllers();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// Map SignalR Hub
 app.MapHub<Webgiasu.Hubs.ChatHub>("/chatHub");
 app.MapHub<Webgiasu.Hubs.CommunityHub>("/communityHub");
 
