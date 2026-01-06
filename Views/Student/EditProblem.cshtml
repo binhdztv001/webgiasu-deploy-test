@@ -1,0 +1,301 @@
+﻿@model Webgiasu.Models.ViewModels.CreateProblemViewModel
+@{
+    ViewData["Title"] = "Sửa bài toán";
+    Layout = "_StudentLayout";
+    var problemId = ViewBag.ProblemId ?? 0;
+    var currentImageUrl = ViewBag.CurrentImageUrl as string ?? "";
+    var currentAttachmentUrl = ViewBag.CurrentAttachmentUrl as string ?? "";
+    var currentPrice = ViewBag.CurrentPrice as decimal? ?? 0m;
+    // Pre-check group mode if provided
+    var isGroupMode = (ViewBag.IsGroupMode as bool?) ?? false;
+    var currentGroupName = ViewBag.CurrentGroupName as string ?? "";
+}
+
+<div>
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center mb-3">
+        <div>
+            <h5 class="fw-bold mb-1 text-dark">
+                <i class="bi bi-pencil-square text-primary me-2"></i>Sửa bài toán #@problemId
+            </h5>
+            <p class="text-muted mb-0 small">Cập nhật thông tin bài toán</p>
+        </div>
+        <a asp-action="ProblemDetails" asp-route-id="@problemId" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Quay lại
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-3">
+                    <form asp-action="EditProblem" asp-route-id="@problemId" method="post" enctype="multipart/form-data" id="problemForm">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" id="isGroupModeInput" name="IsGroupMode" value="@(isGroupMode ? "true" : "false")" />
+                        <input type="hidden" id="finalPrice" name="CustomPrice" value="@(currentPrice>0 ? currentPrice.ToString() : "")" />
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label fw-semibold">
+                                <i class="bi bi-pencil text-primary me-1"></i> Tiêu đề bài toán <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Title" class="form-control" placeholder="VD: Giải phương trình bậc 2" required />
+                            <small class="text-muted">Tiêu đề ngắn gọn, dễ hiểu</small>
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label fw-semibold">
+                                <i class="bi bi-file-text text-primary me-1"></i> Mô tả chi tiết <span class="text-danger">*</span>
+                            </label>
+                            <textarea asp-for="Description" class="form-control" rows="6" placeholder="Mô tả chi tiết bài toán của bạn..." required></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Type" class="form-label fw-semibold">
+                                    <i class="bi bi-book text-primary me-1"></i> Môn học <span class="text-danger">*</span>
+                                </label>
+                                <select asp-for="Type" class="form-select" required>
+                                    <option value="">-- Chọn môn học --</option>
+                                    <option value="Toan">Toán</option>
+                                    <option value="Ly">Vật lý</option>
+                                    <option value="Hoa">Hóa học</option>
+                                    <option value="Sinh">Sinh học</option>
+                                    <option value="Van">Ngữ văn</option>
+                                    <option value="Anh">Tiếng Anh</option>
+                                    <option value="Su">Lịch sử</option>
+                                    <option value="Dia">Địa lý</option>
+                                </select>
+                                <span asp-validation-for="Type" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Difficulty" class="form-label fw-semibold">
+                                    <i class="bi bi-bar-chart text-primary me-1"></i> Độ khó <span class="text-danger">*</span>
+                                </label>
+                                <select asp-for="Difficulty" id="difficultySelect" class="form-select" required>
+                                    <option value="">-- Chọn độ khó --</option>
+                                    <option value="Easy" data-price="40000">Dễ (40,000 đ)</option>
+                                    <option value="Medium" data-price="60000">Trung bình (60,000 đ)</option>
+                                    <option value="Hard" data-price="90000">Khó (90,000 đ)</option>
+                                    <option value="options" data-price="custom">Tùy chọn giá</option>
+                                </select>
+                                <span asp-validation-for="Difficulty" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div id="customPriceSection" class="mb-3" style="display:none;">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-cash-coin text-success me-1"></i> Nhập giá tùy chọn (VNĐ)
+                            </label>
+                            <div class="input-group">
+                                <input id="customPriceInput" name="CustomPrice" type="number" min="10000" step="1000" class="form-control" placeholder="Ví dụ: 45000" />
+                                <span class="input-group-text">đ</span>
+                            </div>
+                            <small class="text-muted">Giá tối thiểu: 10,000 đ</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Deadline" class="form-label fw-semibold">
+                                <i class="bi bi-calendar text-primary me-1"></i> Deadline <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Deadline" type="datetime-local" class="form-control" required />
+                            <span asp-validation-for="Deadline" class="text-danger"></span>
+                        </div>
+
+                        @* Current image *@
+                        @if (!string.IsNullOrEmpty(currentImageUrl) && currentImageUrl != "/images/default.jpg")
+                        {
+                            <div class="mb-3">
+                                <label class="form-label">Ảnh hiện tại</label>
+                                <div><img src="@currentImageUrl" class="img-thumbnail" style="max-height:180px;" alt="Current image" /></div>
+                                <div class="form-text">Nếu bạn upload ảnh mới, ảnh cũ sẽ được thay thế.</div>
+                            </div>
+                        }
+
+                        <div class="mb-3">
+                            <label asp-for="ImageFile" class="form-label fw-semibold">
+                                <i class="bi bi-image text-primary me-1"></i> Hình ảnh bài toán (nếu có)
+                            </label>
+                            <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" />
+                            <small class="text-muted">Hỗ trợ: JPG, PNG, GIF (Tối đa 5MB)</small>
+                        </div>
+
+                        @* Current attachment *@
+                        @if (!string.IsNullOrEmpty(currentAttachmentUrl))
+                        {
+                            <div class="mb-3">
+                                <label class="form-label">File đính kèm hiện tại</label>
+                                <div>
+                                    <a href="@currentAttachmentUrl" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-file-earmark-pdf"></i> Xem file
+                                    </a>
+                                </div>
+                                <div class="form-text">Nếu upload file mới, file cũ sẽ được thay thế.</div>
+                            </div>
+                        }
+
+                        <div class="mb-3">
+                            <label asp-for="AttachmentFile" class="form-label fw-semibold">
+                                <i class="bi bi-file-earmark-text text-primary me-1"></i> Tài liệu (nếu có)
+                            </label>
+                            <input asp-for="AttachmentFile" type="file" class="form-control" accept=".pdf,.doc,.docx" />
+                            <small class="text-muted">Hỗ trợ: .docx, .pdf (Tối đa 50MB)</small>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle me-1"></i> Cập nhật
+                                </button>
+                                <a asp-action="ProblemDetails" asp-route-id="@problemId" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle me-1"></i> Hủy
+                                </a>
+                                <button type="button" class="btn btn-danger ms-auto" onclick="confirmDelete(@problemId)">
+                                    <i class="bi bi-trash me-1"></i> Xóa bài toán
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm mb-3 text-center">
+                <div class="card-body py-3">
+                    <i class="bi bi-currency-dollar text-primary" style="font-size:2.5rem;"></i>
+                    <h6 class="mt-2 mb-1">Giá hiện tại</h6>
+                    <p id="priceDisplay" class="fs-4 fw-bold text-primary mb-0">@((currentPrice>0) ? currentPrice.ToString("N0") + " đ" : "-- đ")</p>
+                    <small id="priceHint" class="text-muted">@((currentPrice>0) ? "Giá hiện tại" : "Chọn độ khó để xem giá")</small>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0">
+                    <h6 class="mb-0 fw-bold"><i class="bi bi-lightbulb text-warning me-2"></i>Mẹo</h6>
+                </div>
+                <div class="card-body pt-0">
+                    <ul class="list-unstyled mb-0 small">
+                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Tiêu đề rõ ràng</li>
+                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Mô tả đủ chi tiết</li>
+                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Đính kèm ảnh nếu có</li>
+                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Chọn deadline hợp lý</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    <script>
+        // CKEditor
+        CKEDITOR.replace('Description', {
+            height: 300,
+            removePlugins: 'elementspath,save,print,preview,find,flash,forms,iframe,fullscreen,sourcearea,maximize',
+            removeButtons: 'Save,NewPage,ExportPdf,Preview,Print,Templates,SelectAll,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Flash,Iframe,Maximize,Source',
+            toolbar: [
+                { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike'] },
+                { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
+                { name: 'links', items: ['Link', 'Unlink'] },
+                { name: 'insert', items: ['Image', 'Table'] },
+                { name: 'styles', items: ['Format', 'FontSize'] },
+                { name: 'colors', items: ['TextColor', 'BGColor'] }
+            ]
+        });
+        CKEDITOR.config.versionCheck = false;
+
+        // Price & difficulty handling
+        (function () {
+            const difficultySelect = document.getElementById('difficultySelect');
+            const customSection = document.getElementById('customPriceSection');
+            const customInput = document.getElementById('customPriceInput');
+            const priceDisplay = document.getElementById('priceDisplay');
+            const priceHint = document.getElementById('priceHint');
+            const finalPrice = document.getElementById('finalPrice');
+
+            function setPriceFromOption(option) {
+                const priceType = option?.getAttribute('data-price');
+                if (!priceType) {
+                    customSection.style.display = 'none';
+                    priceDisplay.textContent = '-- đ';
+                    priceHint.textContent = 'Chọn độ khó để xem giá';
+                    finalPrice.value = '';
+                    return;
+                }
+                if (priceType === 'custom') {
+                    customSection.style.display = 'block';
+                    finalPrice.value = '';
+                    priceDisplay.textContent = '-- đ';
+                    priceHint.textContent = 'Nhập giá tùy chọn';
+                } else {
+                    customSection.style.display = 'none';
+                    const price = parseInt(priceType);
+                    priceDisplay.textContent = price.toLocaleString('vi-VN') + ' đ';
+                    priceHint.textContent = 'Giá cố định theo độ khó';
+                    finalPrice.value = price;
+                }
+            }
+
+            difficultySelect?.addEventListener('change', function () {
+                setPriceFromOption(this.options[this.selectedIndex]);
+            });
+
+            customInput?.addEventListener('input', function () {
+                const v = parseInt(this.value);
+                if (v && v >= 10000) {
+                    priceDisplay.textContent = v.toLocaleString('vi-VN') + ' đ';
+                    finalPrice.value = v;
+                } else {
+                    priceDisplay.textContent = '-- đ';
+                    finalPrice.value = '';
+                }
+            });
+
+            // Initialize UI based on current model values
+            (function init() {
+                // Select difficulty option if model has value (asp-for binds it)
+                const sel = difficultySelect?.value;
+                if (sel) {
+                    const opt = difficultySelect.options[difficultySelect.selectedIndex];
+                    setPriceFromOption(opt);
+                } else if (@(currentPrice>0 ? "true" : "false")) {
+                    priceDisplay.textContent = parseInt(@currentPrice).toLocaleString('vi-VN') + ' đ';
+                    priceHint.textContent = 'Giá hiện tại';
+                }
+            })();
+        })();
+
+        // Delete confirm (POST JSON)
+        function confirmDelete(id) {
+            if (!confirm('⚠️ Bạn có chắc chắn muốn xóa bài toán này? Hành động không thể hoàn tác.')) return;
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+            fetch(`/Student/DeleteProblem/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    alert('✅ Xóa bài toán thành công.');
+                    window.location.href = '/Student/MyProblems';
+                } else {
+                    alert('❌ Lỗi: ' + (data.message || 'Không thể xóa!'));
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('❌ Đã xảy ra lỗi khi xóa bài toán.');
+            });
+        }
+    </script>
+}

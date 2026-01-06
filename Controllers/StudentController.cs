@@ -2098,5 +2098,207 @@ namespace Webgiasu.Controllers
             return Ok();
         }
 
+
+        // Add these methods inside the StudentController class (near other actions)
+
+        [HttpGet]
+        public IActionResult EditProblem(int id)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var problem = _problemService.GetProblemById(id);
+                if (problem == null)
+                {
+                    TempData["Error"] = "Không tìm thấy bài toán!";
+                    return RedirectToAction("MyProblems");
+                }
+
+                if (problem.StudentId != userId)
+                {
+                    TempData["Error"] = "Bạn không có quyền sửa bài toán này!";
+                    return RedirectToAction("MyProblems");
+                }
+
+                if (problem.Status != ProblemStatus.WaitingForTutor)
+                {
+                    TempData["Error"] = "Không thể sửa bài toán đã có gia sư nhận!";
+                    return RedirectToAction("ProblemDetails", new { id });
+                }
+
+                var model = new CreateProblemViewModel
+                {
+                    Title = problem.Title,
+                    Description = problem.Description,
+                    Type = problem.Type,
+                    Difficulty = problem.Difficulty,
+                    Deadline = problem.Deadline
+                };
+
+                ViewBag.ProblemId = problem.Id;
+                ViewBag.CurrentImageUrl = problem.ImageUrl;
+                ViewBag.CurrentAttachmentUrl = problem.AttachmentFile;
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in EditProblem GET: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi!";
+                return RedirectToAction("MyProblems");
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EditProblem(int id, CreateProblemViewModel model, decimal? CustomPrice)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var problem = _problemService.GetProblemById(id);
+                if (problem == null || problem.StudentId != userId || problem.Status != ProblemStatus.WaitingForTutor)
+                {
+                    TempData["Error"] = "Không thể sửa bài toán này!";
+                    return RedirectToAction("MyProblems");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    ViewBag.ProblemId = id;
+                    ViewBag.CurrentImageUrl = problem.ImageUrl;
+                    ViewBag.CurrentAttachmentUrl = problem.AttachmentFile;
+                    return View(model);
+                }
+
+                // Price calculation (same logic as Create)
+                decimal price;
+                if (model.Difficulty == DifficultyLevel.options && CustomPrice.HasValue)
+                {
+                    price = CustomPrice.Value;
+                    if (price < 10000)
+                    {
+                        TempData["Error"] = "Giá tối thiểu là 10,000 đ!";
+                        ViewBag.ProblemId = id;
+                        return View(model);
+                    }
+                }
+                else
+                {
+                    price = model.Difficulty switch
+                    {
+                        DifficultyLevel.Easy => 40000,
+                        DifficultyLevel.Medium => 60000,
+                        DifficultyLevel.Hard => 90000,
+                        _ => 50000
+                    };
+                }
+
+                // Update fields
+                problem.Title = model.Title;
+                problem.Description = model.Description;
+                problem.Type = model.Type;
+                problem.Difficulty = model.Difficulty;
+                problem.Deadline = model.Deadline;
+                problem.Price = price;
+
+                // Image upload
+                if (model.ImageFile != null && model.ImageFile.Length > 0)
+                {
+                    var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
+                    Directory.CreateDirectory(uploadDir);
+
+                    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(model.ImageFile.FileName)}";
+                    var filePath = Path.Combine(uploadDir, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        model.ImageFile.CopyTo(stream);
+                    }
+
+                    problem.ImageUrl = "/images/" + fileName;
+                }
+
+                // Attachment upload
+                if (model.AttachmentFile != null && model.AttachmentFile.Length > 0)
+                {
+                    var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/files");
+                    Directory.CreateDirectory(uploadDir);
+
+                    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(model.AttachmentFile.FileName)}";
+                    var filePath = Path.Combine(uploadDir, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        model.AttachmentFile.CopyTo(stream);
+                    }
+
+                    problem.AttachmentFile = "/files/" + fileName;
+                }
+
+                if (_problemService.UpdateProblem(problem))
+                {
+                    TempData["Success"] = "Cập nhật bài toán thành công!";
+                    return RedirectToAction("ProblemDetails", new { id });
+                }
+
+                TempData["Error"] = "Không thể cập nhật bài toán!";
+                ViewBag.ProblemId = id;
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in EditProblem POST: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi khi cập nhật bài toán!";
+                return RedirectToAction("MyProblems");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult DeleteProblem(int id)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0)
+                    return Json(new { success = false, message = "Vui lòng đăng nhập!" });
+
+                var problem = _problemService.GetProblemById(id);
+                if (problem == null)
+                    return Json(new { success = false, message = "Không tìm thấy bài toán!" });
+
+                if (problem.StudentId != userId)
+                    return Json(new { success = false, message = "Bạn không có quyền xóa bài toán này!" });
+
+                if (problem.Status != ProblemStatus.WaitingForTutor)
+                    return Json(new { success = false, message = "Không thể xóa bài toán đã có gia sư nhận!" });
+
+                var payment = _paymentService.GetPaymentByProblemId(id);
+                if (payment != null)
+                {
+                    _db.Payments.Remove(payment);
+                }
+
+                // Delete problem via service (service calls SaveChanges)
+                if (_problemService.DeleteProblem(id))
+                {
+                    // ensure any pending removals are saved (in case service didn't)
+                    _db.SaveChanges();
+                    return Json(new { success = true, message = "Xóa bài toán thành công!" });
+                }
+
+                return Json(new { success = false, message = "Không thể xóa bài toán!" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in DeleteProblem: {ex.Message}");
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi xóa bài toán!" });
+            }
+        }
+
     }
 }

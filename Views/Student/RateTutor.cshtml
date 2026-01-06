@@ -128,68 +128,6 @@
     </div>
 </div>
 
-<style>
-    .star-rating-container {
-        padding: 1.5rem;
-        background: linear-gradient(135deg, #fff9e6 0%, #fff3cc 100%);
-        border-radius: 12px;
-        text-align: center;
-    }
-
-    .star {
-        color: #ddd;
-        transition: all 0.25s ease;
-        display: inline-block;
-        margin: 0 0.25rem;
-    }
-
-        .star:hover,
-        .star.active {
-            color: #ffc107;
-            transform: scale(1.25);
-        }
-
-    .star-rating {
-        font-size: 3rem;
-        display: inline-block;
-        cursor: pointer;
-        user-select: none;
-    }
-
-    .star {
-        color: #ddd;
-        transition: all 0.3s ease;
-        display: inline-block;
-        margin: 0 0.2rem;
-    }
-
-    .star:hover,
-    .star.active {
-        color: #ffc107;
-        transform: scale(1.2);
-    }
-
-    .star.active {
-        animation: starPulse 0.5s ease;
-    }
-
-    @@keyframes starPulse {
-        0%, 100% { transform: scale(1.2); }
-        50% { transform: scale(1.4); }
-    }
-
-    #ratingText {
-        font-size: 1.2rem;
-        font-weight: 600;
-        display: block;
-    }
-
-    .rating-excellent { color: #28a745; }
-    .rating-good { color: #17a2b8; }
-    .rating-average { color: #ffc107; }
-    .rating-poor { color: #fd7e14; }
-    .rating-bad { color: #dc3545; }
-</style>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

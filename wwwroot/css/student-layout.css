@@ -1,4 +1,4 @@
-/* ===========================
+ï»¿/* ===========================
    STUDENT LAYOUT STYLES - FULLY OPTIMIZED
    =========================== */
 
@@ -23,17 +23,17 @@
 }
 
 /* ===========================
-   BODY & HTML - Không scroll body
+   BODY & HTML - KhÃ´ng scroll body
    =========================== */
 
 html, body {
     height: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
-    overflow: hidden !important; /* Body không scroll */
+    overflow: hidden !important; /* Body khÃ´ng scroll */
 }
 
-/* Cho phép scroll khi modal m? */
+/* Cho phÃ©p scroll khi modal m? */
 html.modal-open,
 body.modal-open {
     overflow: hidden !important;
@@ -56,7 +56,7 @@ body.modal-open {
     align-items: center !important;
     padding: 0 !important;
     margin: 0 !important;
-    overflow: visible !important; /* Cho phép dropdown hi?n th? */
+    overflow: visible !important; /* Cho phÃ©p dropdown hi?n th? */
 }
 
 /* Shimmer/Shine Effect for Header */
@@ -520,7 +520,7 @@ body.modal-open {
 }
 
 /* ===========================
-   SIDEBAR - Fixed bên trái
+   SIDEBAR - Fixed bÃªn trÃ¡i
    =========================== */
 
 .sidebar {
@@ -538,7 +538,7 @@ body.modal-open {
     scrollbar-color: rgba(255, 255, 255, 0.3) transparent; /* Firefox */
 }
 
-/* Sidebar Scrollbar - gi?ng Tutor và Admin */
+/* Sidebar Scrollbar - gi?ng Tutor vÃ  Admin */
 .sidebar::-webkit-scrollbar {
     width: 6px;
 }
@@ -807,7 +807,7 @@ body.modal-open {
 }
 
 /* ===========================
-   MAIN CONTENT - Chi?m ph?n còn l?i
+   MAIN CONTENT - Chi?m ph?n cÃ²n l?i
    =========================== */
 
 .main-content {
@@ -823,7 +823,7 @@ body.modal-open {
 }
 
 /* ===========================
-   CONTENT WRAPPER - CH? PH?N NÀY SCROLL (bao g?m footer)
+   CONTENT WRAPPER - CH? PH?N NÃ€Y SCROLL (bao g?m footer)
    =========================== */
 
 .content-wrapper {
@@ -837,7 +837,7 @@ body.modal-open {
     flex-direction: column !important;
 }
 
-/* N?i dung chính - s? d?ng wrapper */
+/* N?i dung chÃ­nh - s? d?ng wrapper */
 .content-wrapper > .dashboard-container,
 .content-wrapper > .page-header:first-child,
 .content-wrapper > div:first-child:not(.alert):not(.content-footer),
@@ -864,7 +864,7 @@ body.modal-open {
 }
 
 /* ===========================
-   CONTENT FOOTER - Luôn ? cu?i, n?n tr?ng ngang h?t
+   CONTENT FOOTER - LuÃ´n ? cu?i, n?n tr?ng ngang h?t
    =========================== */
 
 .content-footer {
@@ -872,14 +872,14 @@ body.modal-open {
     background: white !important;
     border-top: 1px solid #e9ecef;
     margin-top: auto; /* ??y footer xu?ng cu?i */
-    margin-left: -1.25rem;  /* Kéo ra ngoài padding */
-    margin-right: -1.25rem; /* Kéo ra ngoài padding */
+    margin-left: -1.25rem;  /* KÃ©o ra ngoÃ i padding */
+    margin-right: -1.25rem; /* KÃ©o ra ngoÃ i padding */
     padding-left: 1.25rem;
     padding-right: 1.25rem;
     flex-shrink: 0;
 }
 
-/* Kho?ng cách t?i thi?u gi?a content và footer */
+/* Kho?ng cÃ¡ch t?i thi?u gi?a content vÃ  footer */
 .content-wrapper > *:not(.content-footer):last-of-type {
     margin-bottom: 1.5rem;
 }
@@ -949,11 +949,11 @@ body.modal-open {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
     border-radius: 12px !important;
     background: white !important;
-    transform: none !important; /* Không bay */
+    transform: none !important; /* KhÃ´ng bay */
 }
 
 .content-wrapper .card:hover {
-    transform: none !important; /* Không bay khi hover */
+    transform: none !important; /* KhÃ´ng bay khi hover */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
 }
 
@@ -1164,7 +1164,7 @@ body.modal-open {
 }
 
 @media (max-width: 992px) {
-    /* Sidebar ?n trên mobile */
+    /* Sidebar ?n trÃªn mobile */
     .sidebar {
         position: fixed;
         left: 0;
@@ -1181,7 +1181,7 @@ body.modal-open {
         box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
     }
 
-    /* Main content chi?m full width trên mobile */
+    /* Main content chi?m full width trÃªn mobile */
     .main-content,
     .main-content.expanded {
         width: 100%;
@@ -1283,7 +1283,7 @@ body.modal-open {
    PERFORMANCE OPTIMIZATIONS
    =========================== */
 
-/* Modal z-index fix - ??m b?o modal hi?n th? trên t?t c? */
+/* Modal z-index fix - ??m b?o modal hi?n th? trÃªn t?t c? */
 .modal {
     z-index: 2000 !important;
     position: fixed !important;
@@ -1291,8 +1291,8 @@ body.modal-open {
 
 .modal-backdrop {
     position: fixed !important;
-    z-index: 1040 !important; /* th?p h?n modal và header */
-    pointer-events: none !important; /* tránh ch?n click vào modal */
+    z-index: 1040 !important; /* th?p h?n modal vÃ  header */
+    pointer-events: none !important; /* trÃ¡nh ch?n click vÃ o modal */
     background-color: rgba(0, 0, 0, 0.4) !important;
     filter: none !important;
 }
@@ -1313,7 +1313,7 @@ body.modal-open {
     transition: none !important;
 }
 
-/* Cho phép t??ng tác v?i modal */
+/* Cho phÃ©p t??ng tÃ¡c v?i modal */
 .modal.show {
     overflow-x: hidden;
     overflow-y: auto;
@@ -1376,14 +1376,14 @@ img {
 
 .page-header h2,
 .page-header h5 {
-    font-size: 1.25rem !important; /* ??ng nh?t kích c? tiêu ?? */
+    font-size: 1.25rem !important; /* ??ng nh?t kÃ­ch c? tiÃªu ?? */
     font-weight: 700 !important;
     color: #212529 !important;
     margin-bottom: 0.25rem !important;
 }
 
 .page-header p {
-    font-size: 0.875rem !important; /* ??ng nh?t kích c? mô t? */
+    font-size: 0.875rem !important; /* ??ng nh?t kÃ­ch c? mÃ´ t? */
     color: #6c757d !important;
     margin-bottom: 0 !important;
 }
@@ -1444,7 +1444,7 @@ img {
     border-radius: 12px;
 }
 
-/* Cards trong content - không bay */
+/* Cards trong content - khÃ´ng bay */
 .content-wrapper .card {
     animation: fadeInUp 0.4s ease-out;
     animation-fill-mode: both;
@@ -1521,7 +1521,7 @@ img {
     }
 }
 
-/* Form pages - không hover bay */
+/* Form pages - khÃ´ng hover bay */
 .content-wrapper > .row > .col-lg-8 > .card,
 .content-wrapper > .row > .col-lg-4 > .card {
     transition: box-shadow 0.2s ease;
@@ -1531,4 +1531,192 @@ img {
 .content-wrapper > .row > .col-lg-4 > .card:hover {
     transform: none;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+
+/* ===========================
+   MESSAGES PAGE SPECIFIC STYLES
+   =========================== */
+
+/* Conversation and Friend Items */
+.conversation-item:hover,
+.friend-item:hover {
+    background-color: #f8f9fa;
+    transition: background-color 0.2s ease;
+}
+
+.conversation-item.active {
+    background-color: #e3f2fd;
+    border-left: 4px solid #2196F3;
+}
+
+.friend-item {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+/* Messages Container Scrollbar */
+#messagesContainer::-webkit-scrollbar,
+#friendsList::-webkit-scrollbar {
+    width: 6px;
+}
+
+#messagesContainer::-webkit-scrollbar-track,
+#friendsList::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#messagesContainer::-webkit-scrollbar-thumb,
+#friendsList::-webkit-scrollbar-thumb {
+    background-color: #cbd5e0;
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+}
+
+    #messagesContainer::-webkit-scrollbar-thumb:hover,
+    #friendsList::-webkit-scrollbar-thumb:hover {
+        background-color: #a0aec0;
+    }
+
+/* Message Item Animation */
+.message-item {
+    animation: messageSlideIn 0.3s ease-out;
+}
+
+@keyframes messageSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* ===========================
+   MY GROUPS PAGE SPECIFIC STYLES
+   =========================== */
+
+/* Hover Card Effect */
+.hover-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+
+/* Success Gradient Background */
+.bg-gradient-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+}
+
+/* Avatar Group */
+.avatar-group {
+    display: flex;
+    align-items: center;
+}
+
+    .avatar-group img,
+    .avatar-group .avatar-more {
+        margin-left: -8px;
+    }
+
+        .avatar-group img:first-child,
+        .avatar-group .avatar-more:first-child {
+            margin-left: 0 !important;
+        }
+
+.avatar-more {
+    width: 32px;
+    height: 32px;
+    font-size: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.border-success.border-2 {
+    border-left: 4px solid #28a745 !important;
+}
+
+/* ===========================
+   RATE TUTOR PAGE SPECIFIC STYLES
+   =========================== */
+
+/* Star Rating Container */
+.star-rating-container {
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #fff9e6 0%, #fff3cc 100%);
+    border-radius: 12px;
+    text-align: center;
+}
+
+/* Star Rating */
+.star-rating {
+    font-size: 3rem;
+    display: inline-block;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Individual Star */
+.star {
+    color: #ddd;
+    transition: all 0.3s ease;
+    display: inline-block;
+    margin: 0 0.2rem;
+}
+
+    .star:hover,
+    .star.active {
+        color: #ffc107;
+        transform: scale(1.2);
+    }
+
+    .star.active {
+        animation: starPulse 0.5s ease;
+    }
+
+/* Star Pulse Animation */
+@keyframes starPulse {
+    0%, 100% {
+        transform: scale(1.2);
+    }
+
+    50% {
+        transform: scale(1.4);
+    }
+}
+
+/* Rating Text */
+#ratingText {
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: block;
+}
+
+/* Rating Text Colors */
+.rating-excellent {
+    color: #28a745;
+}
+
+.rating-good {
+    color: #17a2b8;
+}
+
+.rating-average {
+    color: #ffc107;
+}
+
+.rating-poor {
+    color: #fd7e14;
+}
+
+.rating-bad {
+    color: #dc3545;
 }

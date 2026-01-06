@@ -6,93 +6,95 @@
     var tutors = ViewBag.Tutors as List<User>;
 }
 
-<div class="page-header d-flex flex-wrap justify-content-between align-items-center">
-    <div>
-        <h5 class="fw-bold mb-1 text-dark">
-            <i class="bi bi-star text-warning me-2"></i>Đánh giá gia sư
-        </h5>
-        <p class="text-muted mb-0 small">Đánh giá chất lượng giảng dạy của gia sư</p>
+<div>
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center">
+        <div>
+            <h5 class="fw-bold mb-1 text-dark">
+                <i class="bi bi-star text-warning me-2"></i>Đánh giá gia sư
+            </h5>
+            <p class="text-muted mb-0 small">Đánh giá chất lượng giảng dạy của gia sư</p>
+        </div>
     </div>
-</div>
 
-@if (Model != null && Model.Any())
-{
-    <div class="row">
-        @foreach (var problem in Model)
-        {
-            var tutor = tutors?.FirstOrDefault(t => t.Id == problem.AssignedTutorId);
-            
-            <div class="col-md-6 mb-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <h5 class="fw-bold mb-0">@problem.Title</h5>
-                            <span class="badge bg-success">Hoàn thành</span>
-                        </div>
-                        
-                        <p class="text-muted small mb-3">@Html.Raw(problem.Description != null && problem.Description.Length > 80 ? problem.Description.Substring(0, 80) + "..." : problem.Description)</p>
-                        
-                        @if (tutor != null)
-                        {
-                            <div class="d-flex align-items-center mb-3 p-3 bg-light rounded">
-                                <img src="https://ui-avatars.com/api/?name=@tutor.FullName&size=50&background=667eea&color=fff" 
-                                     class="rounded-circle me-3" width="50" height="50" alt="@tutor.FullName">
-                                <div>
-                                    <h6 class="mb-0 fw-bold">@tutor.FullName</h6>
-                                    <small class="text-muted">Gia sư</small>
-                                </div>
+    @if (Model != null && Model.Any())
+    {
+        <div class="row">
+            @foreach (var problem in Model)
+            {
+                var tutor = tutors?.FirstOrDefault(t => t.Id == problem.AssignedTutorId);
+
+                <div class="col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="fw-bold mb-0">@problem.Title</h5>
+                                <span class="badge bg-success">Hoàn thành</span>
                             </div>
-                        }
-                        
-                        <div class="mb-3">
-                            <span class="badge bg-secondary me-1">@problem.Type</span>
-                            <span class="badge bg-primary">@problem.Price.ToString("N0") đ</span>
+
+                            <p class="text-muted small mb-3">@Html.Raw(problem.Description != null && problem.Description.Length > 80 ? problem.Description.Substring(0, 80) + "..." : problem.Description)</p>
+
+                            @if (tutor != null)
+                            {
+                                <div class="d-flex align-items-center mb-3 p-3 bg-light rounded">
+                                    <img src="https://ui-avatars.com/api/?name=@tutor.FullName&size=50&background=667eea&color=fff"
+                                         class="rounded-circle me-3" width="50" height="50" alt="@tutor.FullName">
+                                    <div>
+                                        <h6 class="mb-0 fw-bold">@tutor.FullName</h6>
+                                        <small class="text-muted">Gia sư</small>
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="mb-3">
+                                <span class="badge bg-secondary me-1">@problem.Type</span>
+                                <span class="badge bg-primary">@problem.Price.ToString("N0") đ</span>
+                            </div>
+
+                            <div class="text-muted small mb-3">
+                                <i class="bi bi-calendar"></i> Hoàn thành: @problem.CreatedDate.ToString("dd/MM/yyyy")
+                            </div>
+
+                            <a asp-action="RateTutor" asp-route-problemId="@problem.Id" class="btn btn-warning btn-sm w-100">
+                                <i class="bi bi-star-fill"></i> Đánh giá ngay
+                            </a>
                         </div>
-                        
-                        <div class="text-muted small mb-3">
-                            <i class="bi bi-calendar"></i> Hoàn thành: @problem.CreatedDate.ToString("dd/MM/yyyy")
-                        </div>
-                        
-                        <a asp-action="RateTutor" asp-route-problemId="@problem.Id" class="btn btn-warning btn-sm w-100">
-                            <i class="bi bi-star-fill"></i> Đánh giá ngay
-                        </a>
                     </div>
                 </div>
-            </div>
-        }
-    </div>
-}
-else
-{
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-center">
-                <div class="card border-0 shadow-sm bg-light w-100" style="max-width:1300px; padding-left:18px; padding-right:18px;">
-                    <div class="card-body text-center py-5">
-                        <i class="bi bi-star display-1 text-secondary d-block mb-3" aria-hidden="true"></i>
-                        <h4 class="mt-3 text-muted">Chưa có bài toán nào để đánh giá</h4>
-                        <p class="text-muted mb-3">Bài toán hoàn thành sẽ xuất hiện ở đây để bạn đánh giá gia sư</p>
-                        <a asp-action="MyProblems" class="btn btn-primary mt-2" role="button" aria-label="Xem bài toán của tôi">
-                            <i class="bi bi-journal-text me-1"></i> Xem bài toán của tôi
-                        </a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-center">
+                    <div class="card border-0 shadow-sm bg-light w-100" style="max-width:1300px; padding-left:18px; padding-right:18px;">
+                        <div class="card-body text-center py-5">
+                            <i class="bi bi-star display-1 text-secondary d-block mb-3" aria-hidden="true"></i>
+                            <h4 class="mt-3 text-muted">Chưa có bài toán nào để đánh giá</h4>
+                            <p class="text-muted mb-3">Bài toán hoàn thành sẽ xuất hiện ở đây để bạn đánh giá gia sư</p>
+                            <a asp-action="MyProblems" class="btn btn-primary mt-2" role="button" aria-label="Xem bài toán của tôi">
+                                <i class="bi bi-journal-text me-1"></i> Xem bài toán của tôi
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-}
+    }
 
-<div class="row mt-4">
-    <div class="col-md-12">
-        <div class="card border-0 shadow-sm bg-light">
-            <div class="card-body">
-                <h6 class="fw-bold mb-3"><i class="bi bi-info-circle text-primary"></i> Lưu ý khi đánh giá</h6>
-                <ul class="mb-0">
-                    <li class="mb-2">Đánh giá trung thực để giúp cải thiện chất lượng dịch vụ</li>
-                    <li class="mb-2">Đánh giá sẽ giúp các học sinh khác có cái nhìn về gia sư</li>
-                    <li class="mb-2">Bạn chỉ có thể đánh giá một lần cho mỗi bài toán</li>
-                    <li>Đánh giá tốt sẽ khuyến khích gia sư cải thiện chất lượng giảng dạy</li>
-                </ul>
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card border-0 shadow-sm bg-light">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3"><i class="bi bi-info-circle text-primary"></i> Lưu ý khi đánh giá</h6>
+                    <ul class="mb-0">
+                        <li class="mb-2">Đánh giá trung thực để giúp cải thiện chất lượng dịch vụ</li>
+                        <li class="mb-2">Đánh giá sẽ giúp các học sinh khác có cái nhìn về gia sư</li>
+                        <li class="mb-2">Bạn chỉ có thể đánh giá một lần cho mỗi bài toán</li>
+                        <li>Đánh giá tốt sẽ khuyến khích gia sư cải thiện chất lượng giảng dạy</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
