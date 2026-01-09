@@ -4,7 +4,7 @@
     var roleText = Model.Role switch
     {
         Webgiasu.Models.UserRole.Student => "Học sinh",
-        Webgiasu.Models.UserRole.Tutor => "Gia sư",
+        Webgiasu.Models.UserRole.Tutor => "Mentor",
         _ => "Người dùng"
     };
     var roleIcon = Model.Role switch
@@ -105,7 +105,7 @@
                         {
                             <div class="alert alert-warning border-0 shadow-sm alert-animated fade-in-up delay-4">
                                 <i class="bi bi-exclamation-triangle-fill me-2 icon-pulse"></i>
-                                <strong>Lưu ý quan trọng:</strong> Tài khoản gia sư cần được quản trị viên phê duyệt trước khi có thể sử dụng. Bạn sẽ nhận được thông báo qua email khi tài khoản được kích hoạt.
+                                <strong>Lưu ý quan trọng:</strong> Tài khoản Mentor cần được quản trị viên phê duyệt trước khi có thể sử dụng. Bạn sẽ nhận được thông báo qua email khi tài khoản được kích hoạt.
                             </div>
                         }
                         else

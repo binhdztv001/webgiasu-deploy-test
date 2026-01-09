@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Hệ thống Gia sư Online</title>
+    <title>@ViewData["Title"] - Learn with Mentor</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -59,7 +59,7 @@
                     </button>
                     <a class="navbar-brand fw-bold text-white d-flex align-items-center" asp-controller="Home" asp-action="Index">
                         <i class="bi bi-mortarboard-fill me-2 fs-4"></i>
-                        <span class="d-none d-md-inline">Gia Sư Online</span>
+                        <span class="d-none d-md-inline">Learn with Mentor</span>
                     </a>
                 </div>
 
@@ -138,6 +138,16 @@
                     <!-- Messages -->
                     @await Component.InvokeAsync("MessageDropdown")
 
+                    <!-- Live Clock -->
+                    <div class="header-clock d-flex align-items-center gap-2 text-white px-3 py-2 rounded" 
+                         style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px);">
+                        <i class="bi bi-clock fs-5"></i>
+                        <div class="d-flex flex-column" style="line-height: 1.2;">
+                            <span class="fw-semibold" id="currentTime" style="font-size: 0.95rem;">--:--:--</span>
+                            <small style="font-size: 0.7rem; opacity: 0.9;" id="currentDate">--, -- -- ----</small>
+                        </div>
+                    </div>
+
                     <!-- Profile -->
                     <div class="dropdown">
                         <button class="btn btn-link text-white d-flex align-items-center gap-2 profile-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -152,7 +162,7 @@
                                     <img src="https://ui-avatars.com/api/?name=@userName&background=667eea&color=fff&size=60" 
                                          class="rounded-circle mb-2 profile-avatar-large" alt="Avatar" width="60" height="60">
                                     <h6 class="mb-0 fw-bold">@userName</h6>
-                                    <small class="text-muted">Gia sư</small>
+                                    <small class="text-muted">Mentor</small>
                                     <div>
                                         @if (isPremium)
                                         {
@@ -166,7 +176,7 @@
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item profile-menu-item" asp-controller="Tutor" asp-action="Profile">
-                                    <i class="bi bi-person me-2"></i> Hồ sơ gia sư
+                                    <i class="bi bi-person me-2"></i> Hồ sơ Mentor
                                 </a>
                             </li>
                             <li>
@@ -275,6 +285,12 @@
                                 <span>Đánh giá của tôi</span>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Tutor" asp-action="Statistics">
+                                <i class="bi bi-bar-chart-line"></i>
+                                <span>Thống kê cá nhân</span>
+                            </a>
+                        </li>
                         <li class="nav-divider"></li>
                         <li class="nav-item">
                             <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#settingsModal">
@@ -296,7 +312,7 @@
                     <div class="card bg-gradient">
                         <div class="card-body text-center py-3">
                             <i class="bi bi-trophy text-warning fs-2 mb-2"></i>
-                            <p class="mb-1 fw-bold small">Gia sư xuất sắc tháng!</p>
+                            <p class="mb-1 fw-bold small">Mentor xuất sắc tháng!</p>
                             <p class="mb-0 text-muted small">Tiếp tục phát huy!</p>
                         </div>
                     </div>
@@ -379,7 +395,7 @@
                 <footer class="content-footer">
                     <div class="d-flex justify-content-between align-items-center">
                         <p class="mb-0 text-muted small">
-                            © 2025 Tutor Portal - Hệ thống Gia sư Online. All rights reserved.
+                            © 2025 Tutor Portal - Learn with Mentor. All rights reserved.
                         </p>
                         <div class="d-flex gap-3">
                             <a href="#" class="text-muted small text-decoration-none">Điều khoản</a>
@@ -708,11 +724,30 @@
                 });
             })();
 
-            // Real-time clock
+            // Real-time clock for header
             function updateClock() {
                 const now = new Date();
-                const time = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-                document.querySelectorAll('.clock').forEach(el => el.textContent = time);
+                
+                // Format time HH:MM:SS
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                const timeString = `${hours}:${minutes}:${seconds}`;
+                
+                // Format date
+                const days = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+                const dayName = days[now.getDay()];
+                const day = String(now.getDate()).padStart(2, '0');
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const year = now.getFullYear();
+                const dateString = `${dayName}, ${day}/${month}/${year}`;
+                
+                // Update DOM
+                const timeElement = document.getElementById('currentTime');
+                const dateElement = document.getElementById('currentDate');
+                
+                if (timeElement) timeElement.textContent = timeString;
+                if (dateElement) dateElement.textContent = dateString;
             }
             updateClock();
             setInterval(updateClock, 1000);

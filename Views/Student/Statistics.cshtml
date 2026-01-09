@@ -1,0 +1,381 @@
+﻿@{
+    ViewData["Title"] = "Thống kê cá nhân";
+    Layout = "~/Views/Shared/_StudentLayout.cshtml";
+}
+
+<div class="dashboard-container">
+    <!-- Page Header -->
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div class="mb-2 mb-md-0">
+            <h5 class="fw-bold mb-1 text-dark">
+                <i class="bi bi-bar-chart-line text-primary me-2"></i>Thống kê cá nhân
+            </h5>
+            <p class="text-muted mb-0 small">Xem chi tiết hoạt động học tập và chi tiêu của bạn</p>
+        </div>
+        <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Quay lại
+        </a>
+    </div>
+
+    <!-- Stats Overview Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+            <div class="card stat-card border-0 shadow-sm h-100">
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small text-uppercase">Tổng bài toán</p>
+                            <h3 class="fw-bold mb-0 text-primary">@ViewBag.TotalProblems</h3>
+                        </div>
+                        <div class="stat-icon bg-primary bg-opacity-10 rounded">
+                            <i class="bi bi-file-text text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card stat-card border-0 shadow-sm h-100">
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small text-uppercase">Đã hoàn thành</p>
+                            <h3 class="fw-bold mb-0 text-success">@ViewBag.SolvedProblems</h3>
+                        </div>
+                        <div class="stat-icon bg-success bg-opacity-10 rounded">
+                            <i class="bi bi-check-circle text-success"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card stat-card border-0 shadow-sm h-100">
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small text-uppercase">Tổng chi tiêu</p>
+                            <h4 class="fw-bold mb-0 text-danger">@ViewBag.TotalSpent.ToString("N0")đ</h4>
+                        </div>
+                        <div class="stat-icon bg-danger bg-opacity-10 rounded">
+                            <i class="bi bi-cash-stack text-danger"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card stat-card border-0 shadow-sm h-100">
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small text-uppercase">Tỷ lệ hoàn thành</p>
+                            <h3 class="fw-bold mb-0 text-info">
+                                @(ViewBag.TotalProblems > 0 ? Math.Round((double)ViewBag.SolvedProblems / ViewBag.TotalProblems * 100, 1) : 0)%
+                            </h3>
+                        </div>
+                        <div class="stat-icon bg-info bg-opacity-10 rounded">
+                            <i class="bi bi-graph-up text-info"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row 1 -->
+    <div class="row g-3 mb-4">
+        <!-- Chart: Bài toán theo trạng thái -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header py-3 bg-white border-bottom">
+                    <h6 class="mb-0 fw-bold text-dark">
+                        <i class="bi bi-pie-chart text-primary me-2"></i>Trạng thái bài toán
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="statusChart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart: Bài toán theo môn học -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header py-3 bg-white border-bottom">
+                    <h6 class="mb-0 fw-bold text-dark">
+                        <i class="bi bi-bar-chart text-success me-2"></i>Bài toán theo môn học
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="typeChart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row 2 -->
+    <div class="row g-3 mb-4">
+        <!-- Chart: Bài toán theo độ khó -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header py-3 bg-white border-bottom">
+                    <h6 class="mb-0 fw-bold text-dark">
+                        <i class="bi bi-speedometer2 text-warning me-2"></i>Phân bố theo độ khó
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="difficultyChart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart: Xu hướng theo tháng -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header py-3 bg-white border-bottom">
+                    <h6 class="mb-0 fw-bold text-dark">
+                        <i class="bi bi-graph-up-arrow text-info me-2"></i>Xu hướng 6 tháng gần đây
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="monthChart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart: Chi tiêu theo tháng -->
+    <div class="row g-3">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header py-3 bg-white border-bottom">
+                    <h6 class="mb-0 fw-bold text-dark">
+                        <i class="bi bi-cash-coin text-danger me-2"></i>Chi tiêu theo tháng
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="spendingChart" style="max-height: 350px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <script>
+        // Chart colors
+        const colors = {
+            primary: '#2196F3',
+            success: '#4CAF50',
+            warning: '#FF9800',
+            danger: '#F44336',
+            info: '#00BCD4',
+            purple: '#9C27B0',
+            pink: '#E91E63',
+            teal: '#009688'
+        };
+
+        // Chart: Trạng thái bài toán
+        const statusCtx = document.getElementById('statusChart').getContext('2d');
+        new Chart(statusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Đã giải', 'Đang giải', 'Chờ gia sư'],
+                datasets: [{
+                    data: [@ViewBag.SolvedProblems, @ViewBag.InProgressProblems, @ViewBag.WaitingProblems],
+                    backgroundColor: [colors.success, colors.info, colors.warning],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                let value = context.parsed || 0;
+                                let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                let percentage = ((value / total) * 100).toFixed(1);
+                                return `${label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Chart: Bài toán theo môn học
+        const typeLabels = [@Html.Raw(string.Join(",", ((IEnumerable<dynamic>)ViewBag.ProblemsByType).Select(x => "'" + x.Type + "'")))];
+        const typeCounts = [@Html.Raw(string.Join(",", ((IEnumerable<dynamic>)ViewBag.ProblemsByType).Select(x => (int)x.Count)))];
+        
+        const typeCtx = document.getElementById('typeChart').getContext('2d');
+        new Chart(typeCtx, {
+            type: 'bar',
+            data: {
+                labels: typeLabels,
+                datasets: [{
+                    label: 'Số bài toán',
+                    data: typeCounts,
+                    backgroundColor: colors.success,
+                    borderColor: colors.success,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Chart: Độ khó
+        const difficultyLabels = [@Html.Raw(string.Join(",", ((IEnumerable<dynamic>)ViewBag.ProblemsByDifficulty).Select(x => "'" + (x.Difficulty == "Easy" ? "Dễ" : x.Difficulty == "Medium" ? "Trung bình" : x.Difficulty == "Hard" ? "Khó" : x.Difficulty) + "'")))];
+        const difficultyCounts = [@Html.Raw(string.Join(",", ((IEnumerable<dynamic>)ViewBag.ProblemsByDifficulty).Select(x => (int)x.Count)))];
+        
+        const difficultyCtx = document.getElementById('difficultyChart').getContext('2d');
+        new Chart(difficultyCtx, {
+            type: 'pie',
+            data: {
+                labels: difficultyLabels,
+                datasets: [{
+                    data: difficultyCounts,
+                    backgroundColor: [colors.success, colors.warning, colors.danger],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Chart: Xu hướng theo tháng
+        const monthLabels = [@Html.Raw(string.Join(",", ((IEnumerable<dynamic>)ViewBag.ProblemsByMonth).Select(x => "'" + x.Month + "'")))];
+        const monthCounts = [@Html.Raw(string.Join(",", ((IEnumerable<dynamic>)ViewBag.ProblemsByMonth).Select(x => (int)x.Count)))];
+        
+        const monthCtx = document.getElementById('monthChart').getContext('2d');
+        new Chart(monthCtx, {
+            type: 'line',
+            data: {
+                labels: monthLabels,
+                datasets: [{
+                    label: 'Số bài toán',
+                    data: monthCounts,
+                    borderColor: colors.info,
+                    backgroundColor: colors.info + '20',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 2,
+                    pointBackgroundColor: colors.info,
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Chart: Chi tiêu theo tháng
+        const spendingLabels = [@Html.Raw(string.Join(",", ((IEnumerable<dynamic>)ViewBag.SpendingByMonth).Select(x => "'" + x.Month + "'")))];
+        const spendingAmounts = [@Html.Raw(string.Join(",", ((IEnumerable<dynamic>)ViewBag.SpendingByMonth).Select(x => (decimal)x.Amount)))];
+        
+        const spendingCtx = document.getElementById('spendingChart').getContext('2d');
+        new Chart(spendingCtx, {
+            type: 'bar',
+            data: {
+                labels: spendingLabels,
+                datasets: [{
+                    label: 'Chi tiêu (VNĐ)',
+                    data: spendingAmounts,
+                    backgroundColor: colors.danger,
+                    borderColor: colors.danger,
+                    borderWidth: 1,
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString('vi-VN') + 'đ';
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Chi tiêu: ' + context.parsed.y.toLocaleString('vi-VN') + 'đ';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}

@@ -1,15 +1,15 @@
 ﻿@model List<Webgiasu.Models.User>
 @{
-    ViewData["Title"] = "Duyệt gia sư";
+    ViewData["Title"] = "Duyệt Mentor";
     Layout = "_AdminLayout";
 }
 
 <div class="row mb-4">
     <div class="col">
         <h2 class="fw-bold">
-            <i class="bi bi-person-check text-danger"></i> Duyệt gia sư
+            <i class="bi bi-person-check text-danger"></i> Duyệt Mentor
         </h2>
-        <p class="text-muted">Xét duyệt tài khoản gia sư mới đăng ký</p>
+        <p class="text-muted">Xét duyệt tài khoản Mentor mới đăng ký</p>
     </div>
 </div>
 
@@ -17,7 +17,7 @@
 {
     <div class="alert alert-warning">
         <i class="bi bi-exclamation-triangle"></i>
-        <strong>Lưu ý:</strong> Có @Model.Count gia sư đang chờ phê duyệt
+        <strong>Lưu ý:</strong> Có @Model.Count Mentor đang chờ phê duyệt
     </div>
 
     <div class="row">
@@ -80,7 +80,7 @@
                     <div class="card-footer">
                         <form asp-action="ApproveTutor" method="post" class="d-grid gap-2">
                             <input type="hidden" name="id" value="@tutor.Id" />
-                            <button type="submit" class="btn btn-success" onclick="return confirm('Xác nhận duyệt gia sư @tutor.FullName?')">
+                            <button type="submit" class="btn btn-success" onclick="return confirm('Xác nhận duyệt Mentor @tutor.FullName?')">
                                 <i class="bi bi-check-circle"></i> Phê duyệt
                             </button>
                         </form>
@@ -95,8 +95,8 @@ else
     <div class="card shadow-sm">
         <div class="card-body text-center py-5">
             <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
-            <h4 class="mt-3 text-success">Không có gia sư chờ duyệt</h4>
-            <p class="text-muted">Tất cả gia sư đã được phê duyệt</p>
+            <h4 class="mt-3 text-success">Không có Mentor chờ duyệt</h4>
+            <p class="text-muted">Tất cả Mentor đã được phê duyệt</p>
             <a asp-action="Dashboard" class="btn btn-primary">
                 <i class="bi bi-arrow-left"></i> Quay lại Dashboard
             </a>
@@ -105,9 +105,9 @@ else
 }
 
 <div class="mt-4">
-    <a asp-action="ManageTutors" class="btn btn-outline-primary">
-        <i class="bi bi-list"></i> Xem tất cả gia sư
-    </a>
+<a asp-action="ManageTutors" class="btn btn-outline-primary">
+    <i class="bi bi-list"></i> Xem tất cả Mentor
+</a>
     <a asp-action="Dashboard" class="btn btn-outline-secondary">
         <i class="bi bi-house"></i> Dashboard
     </a>

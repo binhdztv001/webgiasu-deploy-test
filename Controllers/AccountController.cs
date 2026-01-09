@@ -35,7 +35,7 @@ namespace Webgiasu.Controllers
                 {
                     if (user.Role == UserRole.Tutor && !user.IsApproved)
                     {
-                        TempData["Error"] = "Tài khoản gia sư của bạn chưa được duyệt. Vui lòng chờ admin phê duyệt.";
+                        TempData["Error"] = "Tài khoản Mentor của bạn chưa được duyệt. Vui lòng chờ admin phê duyệt.";
                         return View(model);
                     }
 
@@ -95,9 +95,9 @@ namespace Webgiasu.Controllers
 
                 if (_userService.Register(user))
                 {
-                    if (model.Role == UserRole.Tutor)
-                    {
-                        TempData["Success"] = "Đăng ký thành công! Vui lòng chờ admin duyệt tài khoản gia sư của bạn.";
+                if (model.Role == UserRole.Tutor)
+                {
+                    TempData["Success"] = "Đăng ký thành công! Vui lòng chờ admin duyệt tài khoản Mentor của bạn.";
                     }
                     else
                     {

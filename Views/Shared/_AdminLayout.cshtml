@@ -84,6 +84,16 @@
                         </button>
                     }
 
+                    <!-- Live Clock -->
+                    <div class="header-clock d-flex align-items-center gap-2 text-white px-3 py-2 rounded" 
+                         style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px);">
+                        <i class="bi bi-clock fs-5"></i>
+                        <div class="d-flex flex-column" style="line-height: 1.2;">
+                            <span class="fw-semibold" id="currentTime" style="font-size: 0.95rem;">--:--:--</span>
+                            <small style="font-size: 0.7rem; opacity: 0.9;" id="currentDate">--, -- -- ----</small>
+                        </div>
+                    </div>
+
                     <div class="dropdown">
                         <button class="btn btn-link text-white d-flex align-items-center gap-2 profile-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <img src="https://ui-avatars.com/api/?name=Admin&background=fff&color=DC143C&size=40" 
@@ -270,7 +280,7 @@
                 <footer class="content-footer">
                     <div class="d-flex justify-content-between align-items-center">
                         <p class="mb-0 text-muted small">
-                            © 2025 Admin Panel - Hệ thống Gia sư Online. All rights reserved.
+                            © 2025 Admin Panel - Learn with Mentor. All rights reserved.
                         </p>
                         <div class="d-flex gap-3">
                             <a href="#" class="text-muted small text-decoration-none">Hướng dẫn</a>
@@ -516,6 +526,34 @@
                     }
                 }
             });
+
+            // Real-time clock for header
+            function updateClock() {
+                const now = new Date();
+                
+                // Format time HH:MM:SS
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                const timeString = `${hours}:${minutes}:${seconds}`;
+                
+                // Format date
+                const days = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+                const dayName = days[now.getDay()];
+                const day = String(now.getDate()).padStart(2, '0');
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const year = now.getFullYear();
+                const dateString = `${dayName}, ${day}/${month}/${year}`;
+                
+                // Update DOM
+                const timeElement = document.getElementById('currentTime');
+                const dateElement = document.getElementById('currentDate');
+                
+                if (timeElement) timeElement.textContent = timeString;
+                if (dateElement) dateElement.textContent = dateString;
+            }
+            updateClock();
+            setInterval(updateClock, 1000);
 
             // Auto hide alerts with smooth animation
             (function() {

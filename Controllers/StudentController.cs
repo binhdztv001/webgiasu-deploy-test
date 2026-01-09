@@ -193,14 +193,14 @@ namespace Webgiasu.Controllers
                 var problem = _problemService.GetProblemById(problemId);
                 if (problem == null || problem.StudentId != userId || !problem.AssignedTutorId.HasValue)
                 {
-                    TempData["Error"] = "Không tìm thấy bài toán hoặc chưa có gia sư nhận.";
+                    TempData["Error"] = "Không tìm thấy bài toán hoặc chưa có Mentor nhận.";
                     return RedirectToAction("Dashboard");
                 }
 
             // Check if already rated
                 if (await _ratingService.HasStudentRatedProblemAsync(problemId, userId))
                 {
-                    TempData["Warning"] = "Bạn đã đánh giá gia sư cho bài toán này rồi!";
+                    TempData["Warning"] = "Bạn đã đánh giá Mentor cho bài toán này rồi!";
                     return RedirectToAction("ProblemDetails", new { id = problemId });
                 }
 
@@ -268,7 +268,7 @@ namespace Webgiasu.Controllers
 
                 if (success)
                 {
-                    TempData["Success"] = "Đánh giá gia sư thành công! Cảm ơn phản hồi của bạn.";
+                    TempData["Success"] = "Đánh giá Mentor thành công! Cảm ơn phản hồi của bạn.";
                     return RedirectToAction("ProblemDetails", new { id = model.ProblemId });
                 }
                 else
@@ -494,7 +494,7 @@ namespace Webgiasu.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ Error in BrowseTutors: {ex.Message}");
-                TempData["Error"] = "Đã xảy ra lỗi khi tải danh sách gia sư!";
+                TempData["Error"] = "Đã xảy ra lỗi khi tải danh sách Mentor!";
                 return RedirectToAction("Dashboard");
             }
         }
@@ -686,6 +686,79 @@ namespace Webgiasu.Controllers
             {
                 Console.WriteLine($"❌ Error in RateTutors: {ex.Message}");
                 TempData["Error"] = "Đã xảy ra lỗi!";
+                return RedirectToAction("Dashboard");
+            }
+        }
+
+        // ==================== STATISTICS ====================
+        public IActionResult Statistics()
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var problems = _problemService.GetProblemsByStudentId(userId);
+                var payments = _paymentService.GetPaymentsByStudentId(userId);
+                var groupPayments = _paymentService.GetGroupPaymentsByUserId(userId);
+
+                // Thống kê tổng quan
+                ViewBag.TotalProblems = problems.Count;
+                ViewBag.SolvedProblems = problems.Count(p => p.Status == ProblemStatus.Solved);
+                ViewBag.InProgressProblems = problems.Count(p => p.Status == ProblemStatus.InProgress);
+                ViewBag.WaitingProblems = problems.Count(p => p.Status == ProblemStatus.WaitingForTutor);
+
+                // Thống kê thanh toán
+                ViewBag.TotalSpent = payments.Where(p => p.Status == PaymentStatus.Completed).Sum(p => p.Amount)
+                                   + groupPayments.Where(gp => gp.Status == PaymentStatus.Completed).Sum(gp => gp.Amount);
+                ViewBag.PendingPayments = payments.Count(p => p.Status == PaymentStatus.Pending)
+                                        + groupPayments.Count(gp => gp.Status == PaymentStatus.Pending);
+
+                // Thống kê theo môn học
+                var problemsByType = problems.GroupBy(p => p.Type)
+                    .Select(g => new { Type = g.Key.ToString(), Count = g.Count() })
+                    .ToList();
+                ViewBag.ProblemsByType = (IEnumerable<dynamic>)problemsByType;
+
+                // Thống kê theo độ khó
+                var problemsByDifficulty = problems.GroupBy(p => p.Difficulty)
+                    .Select(g => new { Difficulty = g.Key.ToString(), Count = g.Count() })
+                    .ToList();
+                ViewBag.ProblemsByDifficulty = (IEnumerable<dynamic>)problemsByDifficulty;
+
+                // Thống kê theo thời gian (6 tháng gần nhất)
+                var sixMonthsAgo = DateTime.Now.AddMonths(-6);
+                var problemsByMonth = problems.Where(p => p.CreatedDate >= sixMonthsAgo)
+                    .GroupBy(p => new { p.CreatedDate.Year, p.CreatedDate.Month })
+                    .Select(g => new
+                    {
+                        Month = $"{g.Key.Month}/{g.Key.Year}",
+                        Count = g.Count(),
+                        Order = g.Key.Year * 12 + g.Key.Month
+                    })
+                    .OrderBy(x => x.Order)
+                    .ToList();
+                ViewBag.ProblemsByMonth = (IEnumerable<dynamic>)problemsByMonth;
+
+                // Thống kê chi tiêu theo tháng
+                var spendingByMonth = payments.Where(p => p.Status == PaymentStatus.Completed && p.CompletedDate >= sixMonthsAgo)
+                    .GroupBy(p => new { p.CompletedDate!.Value.Year, p.CompletedDate.Value.Month })
+                    .Select(g => new
+                    {
+                        Month = $"{g.Key.Month}/{g.Key.Year}",
+                        Amount = g.Sum(p => p.Amount),
+                        Order = g.Key.Year * 12 + g.Key.Month
+                    })
+                    .OrderBy(x => x.Order)
+                    .ToList();
+                ViewBag.SpendingByMonth = (IEnumerable<dynamic>)spendingByMonth;
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in Statistics: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi khi tải thống kê!";
                 return RedirectToAction("Dashboard");
             }
         }
@@ -1765,7 +1838,7 @@ namespace Webgiasu.Controllers
                         return Json(new
                         {
                             success = false,
-                            message = "Không thể rời nhóm khi gia sư đã nhận bài! Bạn cần hoàn thành thanh toán phần của mình."
+                            message = "Không thể rời nhóm khi Mentor đã nhận bài! Bạn cần hoàn thành thanh toán phần của mình."
                         });
                     }
 
@@ -1776,7 +1849,7 @@ namespace Webgiasu.Controllers
                         return Json(new
                         {
                             success = false,
-                            message = "Không thể rời nhóm khi gia sư đã gửi lời giải! Bạn đã xem được kết quả và cần hoàn thành thanh toán."
+                            message = "Không thể rời nhóm khi Mentor đã gửi lời giải! Bạn đã xem được kết quả và cần hoàn thành thanh toán."
                         });
                     }
 
@@ -2124,7 +2197,7 @@ namespace Webgiasu.Controllers
 
                 if (problem.Status != ProblemStatus.WaitingForTutor)
                 {
-                    TempData["Error"] = "Không thể sửa bài toán đã có gia sư nhận!";
+                    TempData["Error"] = "Không thể sửa bài toán đã có Mentor nhận!";
                     return RedirectToAction("ProblemDetails", new { id });
                 }
 
@@ -2275,7 +2348,7 @@ namespace Webgiasu.Controllers
                     return Json(new { success = false, message = "Bạn không có quyền xóa bài toán này!" });
 
                 if (problem.Status != ProblemStatus.WaitingForTutor)
-                    return Json(new { success = false, message = "Không thể xóa bài toán đã có gia sư nhận!" });
+                    return Json(new { success = false, message = "Không thể xóa bài toán đã có Mentor nhận!" });
 
                 var payment = _paymentService.GetPaymentByProblemId(id);
                 if (payment != null)
