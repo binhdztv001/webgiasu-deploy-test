@@ -217,6 +217,36 @@ html, body {
     animation: chatBounce 0.5s ease;
 }
 
+/* Header Clock Styling */
+.header-clock {
+    transition: all 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.header-clock:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.header-clock i {
+    transition: transform 0.2s ease;
+}
+
+.header-clock:hover i {
+    transform: scale(1.1);
+}
+
+#currentTime {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.5px;
+}
+
+#currentDate {
+    opacity: 0.9;
+    letter-spacing: 0.3px;
+}
+
 /* Removed badge pulse animation */
 
 /* Dropdown button smooth transition */

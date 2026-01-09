@@ -572,8 +572,7 @@ namespace Webgiasu.Controllers
                     user.ExperienceYears = experienceYears;
                     user.Certificates = certificates;
 
-                    _userService.UpdateUser(user);
-                    TempData["Success"] = "Cập nhật hồ sơ gia sư thành công!";
+                    _userService.UpdateUser(user);  TempData["Success"] = "Cập nhật hồ sơ Mentor thành công!";
                 }
                 return RedirectToAction("Settings");
             }
@@ -1108,6 +1107,81 @@ namespace Webgiasu.Controllers
 
             _premiumService.UpgradeToPremium(userId.Value);
             return Ok();
+        }
+
+        // ==================== STATISTICS ====================
+        public IActionResult Statistics()
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var assignedProblems = _problemService.GetProblemsByTutorId(userId);
+                var solutions = _solutionService.GetSolutionsByTutorId(userId);
+
+                // Thống kê tổng quan
+                ViewBag.TotalProblems = assignedProblems.Count;
+                ViewBag.SolvedProblems = assignedProblems.Count(p => p.Status == ProblemStatus.Solved);
+                ViewBag.InProgressProblems = assignedProblems.Count(p => p.Status == ProblemStatus.InProgress);
+                ViewBag.WaitingProblems = 0; // Tutor không có trạng thái "chờ"
+
+                // Thống kê thu nhập
+                ViewBag.TotalEarnings = assignedProblems
+                    .Where(p => p.Status == ProblemStatus.Solved)
+                    .Sum(p => p.Price);
+                ViewBag.PendingEarnings = assignedProblems
+                    .Where(p => p.Status == ProblemStatus.InProgress)
+                    .Sum(p => p.Price);
+
+                // Thống kê theo môn học
+                var problemsByType = assignedProblems.GroupBy(p => p.Type)
+                    .Select(g => new { Type = g.Key.ToString(), Count = g.Count() })
+                    .ToList();
+                ViewBag.ProblemsByType = (IEnumerable<dynamic>)problemsByType;
+
+                // Thống kê theo độ khó
+                var problemsByDifficulty = assignedProblems.GroupBy(p => p.Difficulty)
+                    .Select(g => new { Difficulty = g.Key.ToString(), Count = g.Count() })
+                    .ToList();
+                ViewBag.ProblemsByDifficulty = (IEnumerable<dynamic>)problemsByDifficulty;
+
+                // Thống kê theo thời gian (6 tháng gần nhất)
+                var sixMonthsAgo = DateTime.Now.AddMonths(-6);
+                var problemsByMonth = assignedProblems.Where(p => p.CreatedDate >= sixMonthsAgo)
+                    .GroupBy(p => new { p.CreatedDate.Year, p.CreatedDate.Month })
+                    .Select(g => new
+                    {
+                        Month = $"{g.Key.Month}/{g.Key.Year}",
+                        Count = g.Count(),
+                        Order = g.Key.Year * 12 + g.Key.Month
+                    })
+                    .OrderBy(x => x.Order)
+                    .ToList();
+                ViewBag.ProblemsByMonth = (IEnumerable<dynamic>)problemsByMonth;
+
+                // Thống kê thu nhập theo tháng
+                var earningsByMonth = assignedProblems
+                    .Where(p => p.Status == ProblemStatus.Solved && p.CreatedDate >= sixMonthsAgo)
+                    .GroupBy(p => new { p.CreatedDate.Year, p.CreatedDate.Month })
+                    .Select(g => new
+                    {
+                        Month = $"{g.Key.Month}/{g.Key.Year}",
+                        Amount = g.Sum(p => p.Price),
+                        Order = g.Key.Year * 12 + g.Key.Month
+                    })
+                    .OrderBy(x => x.Order)
+                    .ToList();
+                ViewBag.EarningsByMonth = (IEnumerable<dynamic>)earningsByMonth;
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in Statistics: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi khi tải thống kê!";
+                return RedirectToAction("Dashboard");
+            }
         }
 
     }
