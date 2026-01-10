@@ -6,6 +6,7 @@
         Webgiasu.Models.UserRole.Student => "Học sinh",
         Webgiasu.Models.UserRole.Tutor => "Mentor",
         Webgiasu.Models.UserRole.Admin => "Quản trị viên",
+        Webgiasu.Models.UserRole.School => "Nhà trường",
         _ => "Người dùng"
     };
     var roleIcon = Model.Role switch
@@ -13,6 +14,7 @@
         Webgiasu.Models.UserRole.Student => "bi-person-circle",
         Webgiasu.Models.UserRole.Tutor => "bi-mortarboard",
         Webgiasu.Models.UserRole.Admin => "bi-shield-check",
+        Webgiasu.Models.UserRole.School => "bi-building",
         _ => "bi-person"
     };
     var roleColor = Model.Role switch
@@ -20,6 +22,7 @@
         Webgiasu.Models.UserRole.Student => "primary",
         Webgiasu.Models.UserRole.Tutor => "success",
         Webgiasu.Models.UserRole.Admin => "danger",
+        Webgiasu.Models.UserRole.School => "warning",
         _ => "secondary"
     };
     var glowClass = Model.Role switch
@@ -27,6 +30,7 @@
         Webgiasu.Models.UserRole.Student => "hover-glow-primary",
         Webgiasu.Models.UserRole.Tutor => "hover-glow-success",
         Webgiasu.Models.UserRole.Admin => "hover-glow-danger",
+        Webgiasu.Models.UserRole.School => "hover-glow-warning",
         _ => "hover-glow-primary"
     };
 }

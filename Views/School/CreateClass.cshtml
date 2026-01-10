@@ -1,0 +1,173 @@
+﻿@{
+    ViewData["Title"] = "Tạo lớp học mới";
+    Layout = "~/Views/Shared/_SchoolLayout.cshtml";
+}
+
+<div class="dashboard-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h2><i class="bi bi-plus-circle me-2 text-warning"></i>Tạo lớp học mới</h2>
+        <p class="text-muted">Thiết lập thông tin lớp học và phân công Mentor</p>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Thông tin lớp học</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-controller="School" asp-action="CreateClass" method="post">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-pencil me-1"></i>Tên lớp học
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control" name="className" required placeholder="VD: Lớp Toán 10A">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-book me-1"></i>Môn học
+                                <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select" name="subject" required>
+                                <option value="">-- Chọn môn học --</option>
+                                <option value="Toán">Toán</option>
+                                <option value="Vật lý">Vật lý</option>
+                                <option value="Hóa học">Hóa học</option>
+                                <option value="Sinh học">Sinh học</option>
+                                <option value="Tiếng Anh">Tiếng Anh</option>
+                                <option value="Văn học">Văn học</option>
+                                <option value="Lịch sử">Lịch sử</option>
+                                <option value="Địa lý">Địa lý</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-text-paragraph me-1"></i>Mô tả
+                            </label>
+                            <textarea class="form-control" name="description" rows="4" placeholder="Mô tả chi tiết về lớp học..."></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">
+                                    <i class="bi bi-calendar-event me-1"></i>Ngày bắt đầu
+                                </label>
+                                <input type="date" class="form-control" name="startDate">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">
+                                    <i class="bi bi-calendar-check me-1"></i>Ngày kết thúc (dự kiến)
+                                </label>
+                                <input type="date" class="form-control" name="endDate">
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <h6 class="fw-bold mb-3"><i class="bi bi-person-badge me-2"></i>Phân công Mentor</h6>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                Chọn Mentor
+                                <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select" name="tutorId" required>
+                                <option value="">-- Chọn Mentor --</option>
+                                @foreach (var tutor in ViewBag.Tutors)
+                                {
+                                    <option value="@tutor.Id">@tutor.FullName - @tutor.Email</option>
+                                }
+                            </select>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <h6 class="fw-bold mb-3"><i class="bi bi-people me-2"></i>Thêm học sinh</h6>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                Chọn học sinh
+                                <span class="text-danger">*</span>
+                            </label>
+                            <div class="border rounded p-3" style="max-height: 300px; overflow-y: auto;">
+                                @foreach (var student in ViewBag.Students)
+                                {
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" name="studentIds" value="@student.Id" id="student_@student.Id">
+                                        <label class="form-check-label" for="student_@student.Id">
+                                            @student.FullName - @student.Email
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle me-1"></i>Chọn ít nhất 1 học sinh
+                            </small>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-warning px-4">
+                                <i class="bi bi-check-circle me-2"></i>Tạo lớp học
+                            </button>
+                            <a asp-controller="School" asp-action="ManageClasses" class="btn btn-secondary px-4">
+                                <i class="bi bi-x-circle me-2"></i>Hủy
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card mb-3">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0"><i class="bi bi-lightbulb me-2"></i>Hướng dẫn</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6 class="fw-semibold">1. Thông tin cơ bản</h6>
+                        <small class="text-muted">Nhập tên lớp, môn học và mô tả chi tiết</small>
+                    </div>
+                    <div class="mb-3">
+                        <h6 class="fw-semibold">2. Thời gian</h6>
+                        <small class="text-muted">Chọn ngày bắt đầu và kết thúc dự kiến</small>
+                    </div>
+                    <div class="mb-3">
+                        <h6 class="fw-semibold">3. Phân công</h6>
+                        <small class="text-muted">Chọn Mentor phù hợp với môn học</small>
+                    </div>
+                    <div>
+                        <h6 class="fw-semibold">4. Thêm học sinh</h6>
+                        <small class="text-muted">Chọn học sinh tham gia lớp học</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-star me-2"></i>Lưu ý</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        <li class="mb-2">
+                            <small>Đảm bảo Mentor có chuyên môn phù hợp</small>
+                        </li>
+                        <li class="mb-2">
+                            <small>Kiểm tra lịch trình của Mentor</small>
+                        </li>
+                        <li class="mb-2">
+                            <small>Số lượng học sinh phù hợp: 5-15 người</small>
+                        </li>
+                        <li>
+                            <small>Có thể thêm học sinh sau khi tạo lớp</small>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

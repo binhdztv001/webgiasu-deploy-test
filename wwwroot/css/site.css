@@ -282,7 +282,50 @@ body {
 
 .btn-warning {
   background: linear-gradient(135deg, #ffa751 0%, #ffe259 100%);
-  color: #333;
+  color: #ffffff !important;
+  border: none;
+}
+
+.btn-warning i {
+  color: #ffffff !important;
+}
+
+.btn-warning:hover {
+  color: #ffffff !important;
+}
+
+.btn-warning:active,
+.btn-warning:focus {
+  color: #ffffff !important;
+}
+
+/* Outline Warning Button - White background with yellow text */
+.btn-outline-warning {
+  background-color: #ffffff !important;
+  color: #ffc107 !important;
+  border-color: #ffc107 !important;
+  border-width: 2px !important;
+}
+
+.btn-outline-warning i {
+  color: #ffc107 !important;
+}
+
+.btn-outline-warning:hover {
+  background: linear-gradient(135deg, #ffa751 0%, #ffe259 100%) !important;
+  color: #ffffff !important;
+  border-color: #ffc107 !important;
+}
+
+.btn-outline-warning:hover i {
+  color: #ffffff !important;
+}
+
+.btn-outline-warning:active,
+.btn-outline-warning:focus {
+  background: linear-gradient(135deg, #ffa751 0%, #ffe259 100%) !important;
+  color: #ffffff !important;
+  border-color: #ffc107 !important;
 }
 
 .btn-info {

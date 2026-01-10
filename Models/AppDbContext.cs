@@ -29,6 +29,9 @@ namespace Webgiasu.Models
 
         public DbSet<GroupPayment> GroupPayments { get; set; }
 
+        public DbSet<SchoolClass> SchoolClasses { get; set; }
+        public DbSet<ClassStudent> ClassStudents { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -189,6 +192,36 @@ namespace Webgiasu.Models
             modelBuilder.Entity<ProblemGroupInvite>()
                 .HasIndex(pgi => new { pgi.GroupId, pgi.InvitedUserId });
         
+            // SchoolClass relationships
+            modelBuilder.Entity<SchoolClass>()
+                .HasOne(sc => sc.School)
+                .WithMany()
+                .HasForeignKey(sc => sc.SchoolId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<SchoolClass>()
+                .HasOne(sc => sc.Tutor)
+                .WithMany()
+                .HasForeignKey(sc => sc.TutorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // ClassStudent relationships
+            modelBuilder.Entity<ClassStudent>()
+                .HasOne(cs => cs.Class)
+                .WithMany(sc => sc.Students)
+                .HasForeignKey(cs => cs.ClassId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ClassStudent>()
+                .HasOne(cs => cs.Student)
+                .WithMany()
+                .HasForeignKey(cs => cs.StudentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Index for better performance
+            modelBuilder.Entity<ClassStudent>()
+                .HasIndex(cs => new { cs.ClassId, cs.StudentId })
+                .IsUnique();
 
 
     }

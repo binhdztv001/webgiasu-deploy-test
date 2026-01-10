@@ -1,4 +1,70 @@
-/* Additional Home Page Styles */
+﻿/* Additional Home Page Styles */
+
+/* ===========================
+   HERO TITLE STYLING
+   =========================== */
+
+.hero-title {
+    font-size: 2.5rem;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    background: linear-gradient(90deg, #00c853, #00bcd4, #00c853, #00bcd4);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientWave 8s ease-in-out infinite;
+    font-weight: 700;
+}
+
+@keyframes gradientWave {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.text-student {
+    color: #17a2b8;
+    font-weight: 700;
+}
+
+.text-mentor {
+    color: #ff9800;
+    font-weight: 700;
+}
+
+/* Responsive font sizes */
+@media (max-width: 1200px) {
+    .hero-title {
+        font-size: 2.2rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .hero-title {
+        font-size: 2rem;
+        white-space: normal;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 1.5rem;
+    }
+}
 
 /* ===========================
    HOVER CARD WITH GLOW EFFECT
@@ -62,7 +128,6 @@
 
 /* Admin Card - Red Glow (third card) */
 .row.g-4 > .col-md-4:nth-child(3) .hover-card:hover,
-.row.g-4 > .col-md-4:last-child .hover-card:hover,
 .row.g-4 > div:nth-child(3) .hover-card:hover {
     box-shadow: 
         0 0 20px rgba(220, 20, 60, 0.5),
@@ -70,6 +135,18 @@
         0 0 60px rgba(220, 20, 60, 0.3),
         0 0 80px rgba(220, 20, 60, 0.2),
         0 25px 50px rgba(220, 20, 60, 0.3) !important;
+}
+
+/* School Card - Yellow Glow (fourth card) */
+.row.g-4 > .col-md-6:nth-child(4) .hover-card:hover,
+.row.g-4 > .col-lg-3:nth-child(4) .hover-card:hover,
+.row.g-4 > div:nth-child(4) .hover-card:hover {
+    box-shadow: 
+        0 0 20px rgba(255, 193, 7, 0.6),
+        0 0 40px rgba(255, 193, 7, 0.5),
+        0 0 60px rgba(255, 193, 7, 0.4),
+        0 0 80px rgba(255, 193, 7, 0.3),
+        0 25px 50px rgba(255, 193, 7, 0.4) !important;
 }
 
 /* Icon container glow on hover */
@@ -101,12 +178,21 @@
 
 /* Admin icon glow */
 .row.g-4 > .col-md-4:nth-child(3) .hover-card:hover .rounded-circle,
-.row.g-4 > .col-md-4:last-child .hover-card:hover .rounded-circle,
 .row.g-4 > div:nth-child(3) .hover-card:hover .rounded-circle {
     box-shadow: 
         0 0 20px rgba(220, 20, 60, 0.6),
         0 0 40px rgba(220, 20, 60, 0.4),
         0 0 60px rgba(220, 20, 60, 0.2);
+}
+
+/* School icon glow */
+.row.g-4 > .col-md-6:nth-child(4) .hover-card:hover .rounded-circle,
+.row.g-4 > .col-lg-3:nth-child(4) .hover-card:hover .rounded-circle,
+.row.g-4 > div:nth-child(4) .hover-card:hover .rounded-circle {
+    box-shadow: 
+        0 0 20px rgba(255, 193, 7, 0.7),
+        0 0 40px rgba(255, 193, 7, 0.5),
+        0 0 60px rgba(255, 193, 7, 0.3);
 }
 
 /* Pulse animation for icons on hover */
@@ -135,9 +221,15 @@
 }
 
 .row.g-4 > .col-md-4:nth-child(3) .hover-card:hover .btn-danger,
-.row.g-4 > .col-md-4:last-child .hover-card:hover .btn-danger,
 .row.g-4 > div:nth-child(3) .hover-card:hover .btn-danger {
     box-shadow: 0 0 25px rgba(220, 20, 60, 0.6);
+}
+
+/* School button glow */
+.row.g-4 > .col-md-6:nth-child(4) .hover-card:hover .btn-warning,
+.row.g-4 > .col-lg-3:nth-child(4) .hover-card:hover .btn-warning,
+.row.g-4 > div:nth-child(4) .hover-card:hover .btn-warning {
+    box-shadow: 0 0 25px rgba(255, 193, 7, 0.7);
 }
 
 /* Outline button glow */
@@ -149,6 +241,12 @@
 .row.g-4 > .col-md-4:nth-child(2) .hover-card:hover .btn-outline-success,
 .row.g-4 > div:nth-child(2) .hover-card:hover .btn-outline-success {
     box-shadow: 0 0 15px rgba(76, 175, 80, 0.4);
+}
+
+.row.g-4 > .col-md-6:nth-child(4) .hover-card:hover .school-register-btn,
+.row.g-4 > .col-lg-3:nth-child(4) .hover-card:hover .school-register-btn,
+.row.g-4 > div:nth-child(4) .hover-card:hover .school-register-btn {
+    box-shadow: 0 0 15px rgba(255, 193, 7, 0.5);
 }
 
 /* ===========================
@@ -279,4 +377,495 @@
 .btn-pill:hover {
     transform: translateY(-2px);
 }
+
+/* ===========================
+   SCHOOL CARD BUTTON STYLES
+   =========================== */
+
+/* School Login Button - Yellow background, white text */
+.row.g-4 > .col-md-6:nth-child(4) .btn-warning,
+.row.g-4 > .col-lg-3:nth-child(4) .btn-warning,
+.row.g-4 > div:nth-child(4) .btn-warning {
+    color: #ffffff !important;
+}
+
+.row.g-4 > .col-md-6:nth-child(4) .btn-warning i,
+.row.g-4 > .col-lg-3:nth-child(4) .btn-warning i,
+.row.g-4 > div:nth-child(4) .btn-warning i {
+    color: #ffffff !important;
+}
+
+/* ===========================
+   3D CAROUSEL STYLES
+   =========================== */
+
+.carousel-3d-container {
+    position: relative;
+    width: 100%;
+    height: 650px;
+    margin: 60px auto;
+    perspective: 1500px;
+    overflow: visible;
+}
+
+.carousel-3d-scene {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+}
+
+.carousel-card {
+    position: absolute;
+    width: 400px;
+    max-width: 90%;
+    left: 50%;
+    top: 50%;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translate(-50%, -50%) translateZ(-400px) scale(0.6);
+}
+
+.carousel-card .card {
+    transition: box-shadow 0.3s ease, border 0.3s ease, transform 0.3s ease;
+}
+
+/* Active card (center) */
+.carousel-card.active {
+    transform: translate(-50%, -50%) translateZ(0) scale(1);
+    opacity: 1;
+    visibility: visible;
+    z-index: 10;
+    pointer-events: all;
+}
+
+.carousel-card.active .card {
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.2),
+        0 0 40px rgba(33, 150, 243, 0.3);
+}
+
+/* Previous card (left) */
+.carousel-card.prev {
+    transform: translate(-150%, -50%) translateZ(-300px) rotateY(25deg) scale(0.8);
+    opacity: 0.6;
+    visibility: visible;
+    z-index: 5;
+    pointer-events: all;
+}
+
+.carousel-card.prev .card {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Next card (right) */
+.carousel-card.next {
+    transform: translate(50%, -50%) translateZ(-300px) rotateY(-25deg) scale(0.8);
+    opacity: 0.6;
+    visibility: visible;
+    z-index: 5;
+    pointer-events: all;
+}
+
+.carousel-card.next .card {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Card hover effects in carousel */
+.carousel-card.active .card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 
+        0 25px 70px rgba(0, 0, 0, 0.25),
+        0 0 50px rgba(33, 150, 243, 0.4);
+}
+
+/* Student card glow */
+.carousel-card[data-index="0"].active .card:hover {
+    box-shadow: 
+        0 0 25px rgba(33, 150, 243, 0.5),
+        0 0 50px rgba(33, 150, 243, 0.4),
+        0 25px 70px rgba(33, 150, 243, 0.3);
+}
+
+/* Mentor card glow */
+.carousel-card[data-index="1"].active .card:hover {
+    box-shadow: 
+        0 0 25px rgba(76, 175, 80, 0.5),
+        0 0 50px rgba(76, 175, 80, 0.4),
+        0 25px 70px rgba(76, 175, 80, 0.3);
+}
+
+/* School card glow */
+.carousel-card[data-index="2"].active .card:hover {
+    box-shadow: 
+        0 0 25px rgba(255, 193, 7, 0.6),
+        0 0 50px rgba(255, 193, 7, 0.5),
+        0 25px 70px rgba(255, 193, 7, 0.4);
+}
+
+/* ===== ACTIVE CARD GLOW EFFECTS (Always visible) ===== */
+
+/* Student card glow - Blue (index 0) */
+.carousel-card[data-index="0"].active .card {
+    border: 3px solid rgba(33, 150, 243, 0.6) !important;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.2),
+        0 0 20px rgba(33, 150, 243, 0.6),
+        0 0 40px rgba(33, 150, 243, 0.4),
+        0 0 60px rgba(33, 150, 243, 0.3);
+}
+
+/* Mentor card glow - Green (index 1) */
+.carousel-card[data-index="1"].active .card {
+    border: 3px solid rgba(76, 175, 80, 0.6) !important;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.2),
+        0 0 20px rgba(76, 175, 80, 0.6),
+        0 0 40px rgba(76, 175, 80, 0.4),
+        0 0 60px rgba(76, 175, 80, 0.3);
+}
+
+/* Admin card glow - Red (index 2) */
+.carousel-card[data-index="2"].active .card {
+    border: 3px solid rgba(220, 53, 69, 0.6) !important;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.2),
+        0 0 20px rgba(220, 53, 69, 0.6),
+        0 0 40px rgba(220, 53, 69, 0.4),
+        0 0 60px rgba(220, 53, 69, 0.3);
+}
+
+/* School card glow - Yellow (index 3) */
+.carousel-card[data-index="3"].active .card {
+    border: 3px solid rgba(255, 193, 7, 0.7) !important;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.2),
+        0 0 20px rgba(255, 193, 7, 0.7),
+        0 0 40px rgba(255, 193, 7, 0.5),
+        0 0 60px rgba(255, 193, 7, 0.4);
+}
+
+/* Navigation buttons */
+.carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid #D6C2A1;
+    color: #8B7355;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-nav:hover {
+    background: #D6C2A1;
+    color: white;
+    border-color: #D6C2A1;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 6px 20px rgba(214, 194, 161, 0.5);
+}
+
+.carousel-nav-left {
+    left: 10%;
+}
+
+.carousel-nav-right {
+    right: 10%;
+}
+
+/* Indicators */
+.carousel-indicators-3d {
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 100;
+}
+
+.indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ddd;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.indicator:hover {
+    background: #999;
+    transform: scale(1.2);
+}
+
+/* Indicator colors based on data-slide */
+.indicator[data-slide="0"].active {
+    background: #2196F3;
+    border-color: #2196F3;
+    transform: scale(1.3);
+    box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
+}
+
+.indicator[data-slide="1"].active {
+    background: #4CAF50;
+    border-color: #4CAF50;
+    transform: scale(1.3);
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+.indicator[data-slide="2"].active {
+    background: #DC3545;
+    border-color: #DC3545;
+    transform: scale(1.3);
+    box-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
+}
+
+.indicator[data-slide="3"].active {
+    background: #FFC107;
+    border-color: #FFC107;
+    transform: scale(1.3);
+    box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .carousel-nav-left {
+        left: 5%;
+    }
+    
+    .carousel-nav-right {
+        right: 5%;
+    }
+}
+
+@media (max-width: 768px) {
+    .carousel-3d-container {
+        height: 700px;
+        perspective: 1000px;
+    }
+    
+    .carousel-card {
+        width: 350px;
+    }
+    
+    .carousel-card.prev {
+        transform: translate(-130%, -50%) translateZ(-200px) rotateY(20deg) scale(0.7);
+        opacity: 0.3;
+    }
+    
+    .carousel-card.next {
+        transform: translate(30%, -50%) translateZ(-200px) rotateY(-20deg) scale(0.7);
+        opacity: 0.3;
+    }
+    
+    .carousel-nav {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+    
+    .carousel-nav-left {
+        left: 2%;
+    }
+    
+    .carousel-nav-right {
+        right: 2%;
+    }
+}
+
+@media (max-width: 480px) {
+    .carousel-3d-container {
+        height: 750px;
+    }
+    
+    .carousel-card {
+        width: 320px;
+    }
+    
+    .carousel-card.prev,
+    .carousel-card.next {
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+
+/* School Register Button - White background, yellow text */
+.school-register-btn {
+    background-color: #ffffff !important;
+    color: #ffc107 !important;
+    border-color: #ffc107 !important;
+    border-width: 2px !important;
+}
+
+.school-register-btn i {
+    color: #ffc107 !important;
+}
+
+.school-register-btn:hover {
+    background: linear-gradient(135deg, #ffa751 0%, #ffe259 100%) !important;
+    color: #ffffff !important;
+    border-color: #ffc107 !important;
+    transform: translateY(-2px);
+}
+
+.school-register-btn:hover i {
+    color: #ffffff !important;
+}
+
+.school-register-btn:active {
+    background-color: #ffffff !important;
+    color: #ffc107 !important;
+}
+
+/* ===========================
+   CTA GRADIENT BACKGROUND
+   =========================== */
+
+/* CTA Gradient Background - Same as Hero Title */
+.cta-gradient-bg {
+    background: linear-gradient(90deg, #00c853, #00bcd4, #00c853, #00bcd4);
+    background-size: 300% 100%;
+    animation: gradientWave 8s ease-in-out infinite;
+}
+
+/* CTA Button hover effects */
+.cta-btn-student,
+.cta-btn-mentor {
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-btn-student::before,
+.cta-btn-mentor::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.cta-btn-student:hover::before,
+.cta-btn-mentor:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.cta-btn-student:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0, 188, 212, 0.5) !important;
+}
+
+.cta-btn-mentor:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0, 200, 83, 0.5) !important;
+}
+
+.cta-btn-student:active,
+.cta-btn-mentor:active {
+    transform: translateY(-1px);
+}
+
+/* ===== 4 STEPS CARDS GLOW EFFECTS ===== */
+/* Targeting first .row.mt-5.mb-5 section */
+
+/* Step 1 - Purple/Violet Glow */
+.row.mt-5.mb-5:first-of-type .row.g-4 > .col-lg-3:nth-child(1) .hover-card:hover {
+    box-shadow: 
+        0 0 20px rgba(102, 126, 234, 0.6),
+        0 0 40px rgba(102, 126, 234, 0.5),
+        0 0 60px rgba(102, 126, 234, 0.4),
+        0 25px 50px rgba(102, 126, 234, 0.3) !important;
+}
+
+/* Step 2 - Green Glow */
+.row.mt-5.mb-5:first-of-type .row.g-4 > .col-lg-3:nth-child(2) .hover-card:hover {
+    box-shadow: 
+        0 0 20px rgba(17, 153, 142, 0.6),
+        0 0 40px rgba(17, 153, 142, 0.5),
+        0 0 60px rgba(17, 153, 142, 0.4),
+        0 25px 50px rgba(17, 153, 142, 0.3) !important;
+}
+
+/* Step 3 - Orange/Yellow Glow */
+.row.mt-5.mb-5:first-of-type .row.g-4 > .col-lg-3:nth-child(3) .hover-card:hover {
+    box-shadow: 
+        0 0 20px rgba(255, 167, 81, 0.7),
+        0 0 40px rgba(255, 167, 81, 0.6),
+        0 0 60px rgba(255, 167, 81, 0.5),
+        0 25px 50px rgba(255, 167, 81, 0.4) !important;
+}
+
+/* Step 4 - Cyan/Blue Glow */
+.row.mt-5.mb-5:first-of-type .row.g-4 > .col-lg-3:nth-child(4) .hover-card:hover {
+    box-shadow: 
+        0 0 20px rgba(32, 156, 255, 0.6),
+        0 0 40px rgba(32, 156, 255, 0.5),
+        0 0 60px rgba(32, 156, 255, 0.4),
+        0 25px 50px rgba(32, 156, 255, 0.3) !important;
+}
+
+/* ===== STATS CARDS GLOW EFFECTS ===== */
+/* Targeting last .row.mt-5.mb-5 section with .text-center */
+
+/* Stats 1 - Blue Glow (Học sinh) */
+.row.mt-5.mb-5:last-of-type .row.g-4.text-center > .col-lg-3:nth-child(1) .hover-card:hover {
+    box-shadow: 
+        0 0 20px rgba(33, 150, 243, 0.5),
+        0 0 40px rgba(33, 150, 243, 0.4),
+        0 0 60px rgba(33, 150, 243, 0.3),
+        0 0 80px rgba(33, 150, 243, 0.2),
+        0 25px 50px rgba(33, 150, 243, 0.3) !important;
+}
+
+/* Stats 2 - Green Glow (Mentor) */
+.row.mt-5.mb-5:last-of-type .row.g-4.text-center > .col-lg-3:nth-child(2) .hover-card:hover {
+    box-shadow: 
+        0 0 20px rgba(76, 175, 80, 0.5),
+        0 0 40px rgba(76, 175, 80, 0.4),
+        0 0 60px rgba(76, 175, 80, 0.3),
+        0 0 80px rgba(76, 175, 80, 0.2),
+        0 25px 50px rgba(76, 175, 80, 0.3) !important;
+}
+
+/* Stats 3 - Orange/Yellow Glow (Bài toán đã giải) */
+.row.mt-5.mb-5:last-of-type .row.g-4.text-center > .col-lg-3:nth-child(3) .hover-card:hover {
+    box-shadow: 
+        0 0 20px rgba(255, 167, 81, 0.7),
+        0 0 40px rgba(255, 167, 81, 0.6),
+        0 0 60px rgba(255, 167, 81, 0.5),
+        0 0 80px rgba(255, 167, 81, 0.4),
+        0 25px 50px rgba(255, 167, 81, 0.4) !important;
+}
+
+/* Stats 4 - RED Glow (Đánh giá trung bình) - Changed from Cyan to Red */
+.row.mt-5.mb-5:last-of-type .row.g-4.text-center > .col-lg-3:nth-child(4) .hover-card:hover {
+    box-shadow: 
+        0 0 20px rgba(220, 53, 69, 0.6),
+        0 0 40px rgba(220, 53, 69, 0.5),
+        0 0 60px rgba(220, 53, 69, 0.4),
+        0 0 80px rgba(220, 53, 69, 0.3),
+        0 25px 50px rgba(220, 53, 69, 0.4) !important;
+}
+
+
 
