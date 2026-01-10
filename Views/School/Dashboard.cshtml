@@ -1,0 +1,232 @@
+﻿@{
+    ViewData["Title"] = "Trang chủ - Nhà trường";
+    Layout = "~/Views/Shared/_SchoolLayout.cshtml";
+}
+
+<div class="dashboard-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h2><i class="bi bi-house-door me-2 text-warning"></i>Trang chủ - Nhà trường</h2>
+        <p class="text-muted">Xem tổng quan và quản lý hệ thống lớp học</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-6 col-lg-3">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-muted small mb-1">Tổng số lớp học</div>
+                            <h3 class="mb-0 fw-bold">@ViewBag.TotalClasses</h3>
+                            <small class="text-success">
+                                <i class="bi bi-arrow-up"></i> Hoạt động
+                            </small>
+                        </div>
+                        <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                            <i class="bi bi-collection"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-muted small mb-1">Học sinh</div>
+                            <h3 class="mb-0 fw-bold">@ViewBag.TotalStudents</h3>
+                            <small class="text-info">
+                                <i class="bi bi-people"></i> Tham gia
+                            </small>
+                        </div>
+                        <div class="stat-icon bg-info bg-opacity-10 text-info">
+                            <i class="bi bi-mortarboard"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-muted small mb-1">Mentor</div>
+                            <h3 class="mb-0 fw-bold">@ViewBag.TotalTutors</h3>
+                            <small class="text-success">
+                                <i class="bi bi-person-check"></i> Sẵn sàng
+                            </small>
+                        </div>
+                        <div class="stat-icon bg-success bg-opacity-10 text-success">
+                            <i class="bi bi-person-badge"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-muted small mb-1">Lớp đang diễn ra</div>
+                            <h3 class="mb-0 fw-bold">@ViewBag.ActiveClasses</h3>
+                            <small class="text-warning">
+                                <i class="bi bi-arrow-repeat"></i> Đang học
+                            </small>
+                        </div>
+                        <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                            <i class="bi bi-clock-history"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row g-3 mb-4">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-lightning me-2"></i>Thao tác nhanh</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <a asp-controller="School" asp-action="CreateClass" class="text-decoration-none">
+                                <div class="d-flex align-items-center p-3 bg-warning bg-opacity-10 rounded">
+                                    <div class="me-3">
+                                        <div class="rounded-circle bg-warning text-white p-3">
+                                            <i class="bi bi-plus-circle fs-4"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1 fw-bold text-warning">Tạo lớp học mới</h6>
+                                        <small class="text-muted">Thêm lớp học và phân công Mentor</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a asp-controller="School" asp-action="ManageClasses" class="text-decoration-none">
+                                <div class="d-flex align-items-center p-3 bg-info bg-opacity-10 rounded">
+                                    <div class="me-3">
+                                        <div class="rounded-circle bg-info text-white p-3">
+                                            <i class="bi bi-people fs-4"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1 fw-bold text-info">Quản lý lớp học</h6>
+                                        <small class="text-muted">Xem và chỉnh sửa thông tin lớp</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a asp-controller="School" asp-action="Statistics" class="text-decoration-none">
+                                <div class="d-flex align-items-center p-3 bg-success bg-opacity-10 rounded">
+                                    <div class="me-3">
+                                        <div class="rounded-circle bg-success text-white p-3">
+                                            <i class="bi bi-bar-chart fs-4"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1 fw-bold text-success">Thống kê chi tiết</h6>
+                                        <small class="text-muted">Xem báo cáo và phân tích</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a asp-controller="School" asp-action="Settings" class="text-decoration-none">
+                                <div class="d-flex align-items-center p-3 bg-secondary bg-opacity-10 rounded">
+                                    <div class="me-3">
+                                        <div class="rounded-circle bg-secondary text-white p-3">
+                                            <i class="bi bi-gear fs-4"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1 fw-bold text-secondary">Cài đặt</h6>
+                                        <small class="text-muted">Quản lý thông tin nhà trường</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Hướng dẫn</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex align-items-start">
+                            <span class="badge bg-warning rounded-circle p-2 me-2">1</span>
+                            <div>
+                                <h6 class="fw-semibold mb-1">Tạo lớp học</h6>
+                                <small class="text-muted">Thiết lập thông tin lớp và thêm học sinh</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex align-items-start">
+                            <span class="badge bg-warning rounded-circle p-2 me-2">2</span>
+                            <div>
+                                <h6 class="fw-semibold mb-1">Phân công Mentor</h6>
+                                <small class="text-muted">Gán Mentor phù hợp cho lớp học</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex align-items-start">
+                            <span class="badge bg-warning rounded-circle p-2 me-2">3</span>
+                            <div>
+                                <h6 class="fw-semibold mb-1">Theo dõi tiến độ</h6>
+                                <small class="text-muted">Xem báo cáo và thống kê học tập</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-start">
+                            <span class="badge bg-warning rounded-circle p-2 me-2">4</span>
+                            <div>
+                                <h6 class="fw-semibold mb-1">Quản lý hiệu quả</h6>
+                                <small class="text-muted">Đánh giá và cải thiện chất lượng</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>Hoạt động gần đây</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center text-muted py-5">
+                        <i class="bi bi-inbox fs-1 mb-3 d-block"></i>
+                        <p>Chưa có hoạt động nào</p>
+                        <a asp-controller="School" asp-action="CreateClass" class="btn btn-warning">
+                            <i class="bi bi-plus-circle me-2"></i>Tạo lớp học đầu tiên
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

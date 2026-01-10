@@ -1,9 +1,10 @@
-namespace Webgiasu.Models
+﻿namespace Webgiasu.Models
 {
     public enum UserRole
     {
         Student,
         Tutor,
-        Admin
+        Admin,
+        School
     }
 }

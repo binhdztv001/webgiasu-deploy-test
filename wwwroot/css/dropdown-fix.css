@@ -1,4 +1,4 @@
-/* ============================================
+ï»¿/* ============================================
    Dropdown Fix - Comprehensive Solution
    ============================================ */
 
@@ -386,7 +386,7 @@ body[data-theme="tutor"] .profile-dropdown .profile-menu-item:hover i {
     z-index: 1060 !important;
 }
 
-/* ========== MODAL FIX - ??m b?o modal hi?n th? ?úng ========== */
+/* ========== MODAL FIX - ??m b?o modal hi?n th? ?Ãºng ========== */
 
 /* Reset body overflow khi modal m? */
 body.modal-open {
@@ -415,7 +415,7 @@ body.modal-open {
     margin: 1.75rem auto !important;
 }
 
-/* ??m b?o modal content hi?n th? ?úng */
+/* ??m b?o modal content hi?n th? ?Ãºng */
 .modal-content {
     position: relative !important;
     background: #fff !important;
@@ -473,19 +473,19 @@ body.modal-open {
     font-weight: 600 !important;
 }
 
-/* Fix cho layout có overflow hidden - CH? khi modal KHÔNG m? */
+/* Fix cho layout cÃ³ overflow hidden - CH? khi modal KHÃ”NG m? */
 html:not(.modal-open),
 body:not(.modal-open) {
     /* Gi? overflow nh? c? */
 }
 
-/* Khi modal m?, cho phép hi?n th? */
+/* Khi modal m?, cho phÃ©p hi?n th? */
 html.modal-open .layout-container,
 body.modal-open .layout-container {
     overflow: visible !important;
 }
 
-/* ??m b?o modal hi?n th? khi có fixed layout */
+/* ??m b?o modal hi?n th? khi cÃ³ fixed layout */
 .modal.show {
     display: block !important;
 }

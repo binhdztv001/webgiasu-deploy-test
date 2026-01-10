@@ -1,0 +1,159 @@
+﻿@model Webgiasu.Models.ViewModels.EditClassViewModel
+
+@{
+    ViewData["Title"] = "Chỉnh sửa lớp học";
+    Layout = "~/Views/Shared/_SchoolLayout.cshtml";
+}
+
+<div class="dashboard-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h2><i class="bi bi-pencil me-2 text-warning"></i>Chỉnh sửa lớp học</h2>
+        <p class="text-muted">Cập nhật thông tin lớp học</p>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Thông tin lớp học</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-controller="School" asp-action="EditClass" method="post">
+                        <input type="hidden" name="classId" value="@Model.Id" />
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-pencil me-1"></i>Tên lớp học
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control" name="className" value="@Model.ClassName" required placeholder="VD: Lớp Toán 10A">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-book me-1"></i>Môn học
+                                <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select" name="subject" required>
+                                <option value="">-- Chọn môn học --</option>
+                                <option value="Toán" selected="@(Model.Subject == "Toán")">Toán</option>
+                                <option value="Vật lý" selected="@(Model.Subject == "Vật lý")">Vật lý</option>
+                                <option value="Hóa học" selected="@(Model.Subject == "Hóa học")">Hóa học</option>
+                                <option value="Sinh học" selected="@(Model.Subject == "Sinh học")">Sinh học</option>
+                                <option value="Tiếng Anh" selected="@(Model.Subject == "Tiếng Anh")">Tiếng Anh</option>
+                                <option value="Văn học" selected="@(Model.Subject == "Văn học")">Văn học</option>
+                                <option value="Lịch sử" selected="@(Model.Subject == "Lịch sử")">Lịch sử</option>
+                                <option value="Địa lý" selected="@(Model.Subject == "Địa lý")">Địa lý</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-text-paragraph me-1"></i>Mô tả
+                            </label>
+                            <textarea class="form-control" name="description" rows="4" placeholder="Mô tả chi tiết về lớp học...">@Model.Description</textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">
+                                    <i class="bi bi-calendar-event me-1"></i>Ngày bắt đầu
+                                </label>
+                                <input type="date" class="form-control" name="startDate" value="@Model.StartDateValue">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">
+                                    <i class="bi bi-calendar-check me-1"></i>Ngày kết thúc (dự kiến)
+                                </label>
+                                <input type="date" class="form-control" name="endDate" value="@Model.EndDateValue">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-activity me-1"></i>Trạng thái
+                            </label>
+                            <select class="form-select" name="status">
+                                <option value="0" selected="@(Model.Status == ClassStatus.Active)">Đang hoạt động</option>
+                                <option value="1" selected="@(Model.Status == ClassStatus.Completed)">Đã hoàn thành</option>
+                                <option value="2" selected="@(Model.Status == ClassStatus.Upcoming)">Sắp bắt đầu</option>
+                                <option value="3" selected="@(Model.Status == ClassStatus.Cancelled)">Đã hủy</option>
+                            </select>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <h6 class="fw-bold mb-3"><i class="bi bi-person-badge me-2"></i>Phân công Mentor</h6>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                Chọn Mentor
+                                <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select" name="tutorId" required>
+                                <option value="">-- Chọn Mentor --</option>
+                                @foreach (var tutor in ViewBag.Tutors)
+                                {
+                                    <option value="@tutor.Id" selected="@(tutor.Id == Model.TutorId)">
+                                        @tutor.FullName - @tutor.Email
+                                    </option>
+                                }
+                            </select>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-warning px-4">
+                                <i class="bi bi-check-circle me-2"></i>Lưu thay đổi
+                            </button>
+                            <a asp-controller="School" asp-action="ClassDetails" asp-route-id="@Model.Id" class="btn btn-secondary px-4">
+                                <i class="bi bi-x-circle me-2"></i>Hủy
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card mb-3">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-lightbulb me-2"></i>Lưu ý</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        <li class="mb-2">
+                            <small>Thay đổi thông tin sẽ ảnh hưởng đến toàn bộ lớp học</small>
+                        </li>
+                        <li class="mb-2">
+                            <small>Không thể thay đổi danh sách học sinh sau khi tạo</small>
+                        </li>
+                        <li class="mb-2">
+                            <small>Mentor cần được thông báo khi có thay đổi</small>
+                        </li>
+                        <li>
+                            <small>Cân nhắc kỹ trước khi đổi trạng thái lớp</small>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Thông tin</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <small class="text-muted">Ngày tạo</small>
+                        <div class="fw-semibold">@Model.CreatedDate</div>
+                    </div>
+                    <div>
+                        <small class="text-muted">Số học sinh</small>
+                        <div class="fw-semibold">@Model.StudentCount người</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

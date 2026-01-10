@@ -12,8 +12,8 @@
     <link rel="stylesheet" href="~/Webgiasu.styles.css" asp-append-version="true" />
     <style>
         .navbar {
-            /* Brown -> beige gradient to match beige theme */
-            background: linear-gradient(135deg, #8B5E3C 0%, #D6C2A1 100%) !important;
+            /* Solid beige color */
+            background: #D6C2A1 !important;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
         }
 
@@ -72,8 +72,8 @@
         }
 
         .foooter {
-            /* Match footer to navbar (brown -> beige) */
-            background: linear-gradient(135deg, #8B5E3C 0%, #D6C2A1 100%);
+            /* Solid beige color to match navbar */
+            background: #D6C2A1;
             color: #2b2b2b;
             margin-top: auto;
             width: 100%;
@@ -108,21 +108,9 @@
         .navbar.fixed-top {
             z-index: 1030; /* ensure it sits above page content */
         }
-        /* Center language dropdown under its toggle icon */
-        .lang-dropdown { position: relative; }
-        .lang-dropdown .dropdown-menu {
-            position: absolute !important;
-            left: 50% !important;
-            transform: translateX(-50%) !important;
-            top: calc(100% + 6px) !important;
-            right: auto !important;
-            z-index: 2000 !important;
-            margin: 0 !important;
-            min-width: 8rem;
-        }
         /* Make navbar dropdowns visually consistent with navbar theme */
         .navbar .dropdown-menu {
-            background: linear-gradient(135deg, #8B5E3C 0%, #D6C2A1 100%);
+            background: #D6C2A1;
             border: none;
             color: #2b2b2b;
             padding: .25rem 0;
@@ -250,15 +238,6 @@
                         }
                         
                         <ul class="navbar-nav ms-auto">
-                            <li class="nav-item dropdown me-2 lang-dropdown">
-                                <a class="nav-link dropdown-toggle lang-toggle" href="#" id="langDropdown" role="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
-                                    <span class="me-1">🌐</span>
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="langDropdown">
-                                    <li><a class="dropdown-item" href="#" data-lang="vi">Tiếng Việt</a></li>
-                                    <li><a class="dropdown-item" href="#" data-lang="en">Tiếng Anh</a></li>
-                                </ul>
-                            </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="bi bi-person-circle me-1"></i> @userName
@@ -281,20 +260,6 @@
                                     }
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" asp-controller="Account" asp-action="Logout"><i class="bi bi-box-arrow-right me-2"></i> Đăng xuất</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    }
-                    else
-                    {
-                        <ul class="navbar-nav ms-auto align-items-center">
-                            <li class="nav-item dropdown me-2 lang-dropdown">
-                                <a class="nav-link dropdown-toggle lang-toggle" href="#" id="langDropdownGuest" role="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
-                                    <span class="me-1">🌐</span>
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="langDropdown">
-                                    <li><a class="dropdown-item" href="#" data-lang="vi">Tiếng Việt</a></li>
-                                    <li><a class="dropdown-item" href="#" data-lang="en">Tiếng Anh</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -421,28 +386,6 @@
         document.querySelectorAll('.card, .row > div').forEach(el => {
             observer.observe(el);
         });
-
-        // Language selector: store selection in cookie and reload
-        (function() {
-            function getCookie(name) {
-                const v = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-                return v ? v.pop() : null;
-            }
-
-            const current = getCookie('lang') || 'vi';
-            document.querySelectorAll('.lang-toggle').forEach(t => {
-                t.innerHTML = '<span class="me-1">🌐</span> ' + (current === 'en' ? 'Tiếng Anh' : 'Tiếng Việt');
-            });
-
-            document.querySelectorAll('[data-lang]').forEach(item => {
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const lang = this.getAttribute('data-lang');
-                    document.cookie = 'lang=' + lang + ';path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
-                    location.reload();
-                });
-            });
-        })();
     </script>
     
     @await RenderSectionAsync("Scripts", required: false)

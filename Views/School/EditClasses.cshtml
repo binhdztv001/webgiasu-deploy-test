@@ -1,0 +1,324 @@
+﻿@model List<Webgiasu.Models.ViewModels.ClassViewModel>
+@using Webgiasu.Models
+
+@{
+    ViewData["Title"] = "Chỉnh sửa lớp học";
+    Layout = "~/Views/Shared/_SchoolLayout.cshtml";
+}
+
+<div class="dashboard-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2><i class="bi bi-pencil-square me-2 text-warning"></i>Chỉnh sửa lớp học</h2>
+                <p class="text-muted mb-0">Quản lý và chỉnh sửa thông tin các lớp học</p>
+            </div>
+            <div>
+                <a asp-controller="School" asp-action="CreateClass" class="btn btn-warning">
+                    <i class="bi bi-plus-circle me-2"></i>Tạo lớp mới
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search & Filter -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" class="form-control" id="searchInput" placeholder="Tìm kiếm tên lớp, môn học...">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="filterSubject">
+                        <option value="">Tất cả môn học</option>
+                        <option value="Toán">Toán</option>
+                        <option value="Vật lý">Vật lý</option>
+                        <option value="Hóa học">Hóa học</option>
+                        <option value="Sinh học">Sinh học</option>
+                        <option value="Tiếng Anh">Tiếng Anh</option>
+                        <option value="Văn học">Văn học</option>
+                        <option value="Lịch sử">Lịch sử</option>
+                        <option value="Địa lý">Địa lý</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="filterStatus">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="0">Đang hoạt động</option>
+                        <option value="1">Đã hoàn thành</option>
+                        <option value="2">Sắp bắt đầu</option>
+                        <option value="3">Đã hủy</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-outline-warning w-100" onclick="resetFilters()">
+                        <i class="bi bi-arrow-clockwise me-2"></i>Đặt lại
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Classes List -->
+    @if (Model == null || !Model.Any())
+    {
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-inbox fs-1 text-muted mb-3 d-block"></i>
+                <h5 class="text-muted mb-3">Chưa có lớp học nào</h5>
+                <p class="text-muted mb-4">Hãy tạo lớp học đầu tiên để bắt đầu quản lý</p>
+                <a asp-controller="School" asp-action="CreateClass" class="btn btn-warning">
+                    <i class="bi bi-plus-circle me-2"></i>Tạo lớp học mới
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card">
+            <div class="card-header bg-warning text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-table me-2"></i>Danh sách lớp học (@Model.Count lớp)
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0" id="classesTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="5%">STT</th>
+                                <th width="25%">Tên lớp học</th>
+                                <th width="12%">Môn học</th>
+                                <th width="18%">Mentor</th>
+                                <th width="10%" class="text-center">Học sinh</th>
+                                <th width="12%">Ngày bắt đầu</th>
+                                <th width="13%">Trạng thái</th>
+                                <th width="5%" class="text-center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var (classItem, index) in Model.Select((c, i) => (c, i)))
+                            {
+                                <tr class="class-row" 
+                                    data-subject="@classItem.Subject" 
+                                    data-status="@((int)classItem.Status)"
+                                    data-search="@classItem.ClassName @classItem.Subject @classItem.TutorName">
+                                    <td class="fw-semibold">@(index + 1)</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-circle bg-warning text-white me-2">
+                                                <i class="bi bi-book"></i>
+                                            </div>
+                                            <div>
+                                                <div class="fw-semibold">@classItem.ClassName</div>
+                                                @if (!string.IsNullOrEmpty(classItem.Description))
+                                                {
+                                                    <small class="text-muted">@classItem.Description.Substring(0, Math.Min(50, classItem.Description.Length))...</small>
+                                                }
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">
+                                            <i class="bi bi-book-half me-1"></i>@classItem.Subject
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="https://ui-avatars.com/api/?name=@Uri.EscapeDataString(classItem.TutorName)&background=4CAF50&color=fff&size=32" 
+                                                 class="rounded-circle me-2" alt="Avatar" width="32" height="32">
+                                            <span class="small">@classItem.TutorName</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-secondary">
+                                            <i class="bi bi-people me-1"></i>@classItem.StudentCount
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <small>
+                                            <i class="bi bi-calendar-event me-1"></i>@classItem.StartDate
+                                        </small>
+                                    </td>
+                                    <td>
+                                        @if (classItem.Status == ClassStatus.Active)
+                                        {
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-check-circle me-1"></i>Đang hoạt động
+                                            </span>
+                                        }
+                                        else if (classItem.Status == ClassStatus.Completed)
+                                        {
+                                            <span class="badge bg-secondary">
+                                                <i class="bi bi-check-all me-1"></i>Đã hoàn thành
+                                            </span>
+                                        }
+                                        else if (classItem.Status == ClassStatus.Upcoming)
+                                        {
+                                            <span class="badge bg-info">
+                                                <i class="bi bi-clock me-1"></i>Sắp bắt đầu
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">
+                                                <i class="bi bi-x-circle me-1"></i>Đã hủy
+                                            </span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <a asp-controller="School" asp-action="EditClass" asp-route-id="@classItem.Id" 
+                                           class="btn btn-sm btn-warning" title="Chỉnh sửa">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-check-circle fs-1 me-3"></i>
+                            <div>
+                                <h3 class="mb-0">@Model.Count(c => c.Status == ClassStatus.Active)</h3>
+                                <small>Đang hoạt động</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-clock fs-1 me-3"></i>
+                            <div>
+                                <h3 class="mb-0">@Model.Count(c => c.Status == ClassStatus.Upcoming)</h3>
+                                <small>Sắp bắt đầu</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-secondary text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-check-all fs-1 me-3"></i>
+                            <div>
+                                <h3 class="mb-0">@Model.Count(c => c.Status == ClassStatus.Completed)</h3>
+                                <small>Đã hoàn thành</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-danger text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-x-circle fs-1 me-3"></i>
+                            <div>
+                                <h3 class="mb-0">@Model.Count(c => c.Status == ClassStatus.Cancelled)</h3>
+                                <small>Đã hủy</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .avatar-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(255, 193, 7, 0.1);
+        cursor: pointer;
+    }
+    
+    .class-row {
+        transition: all 0.3s ease;
+    }
+    
+    .class-row:hover {
+        transform: translateX(5px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+</style>
+
+@section Scripts {
+    <script>
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function() {
+            filterTable();
+        });
+        
+        document.getElementById('filterSubject').addEventListener('change', function() {
+            filterTable();
+        });
+        
+        document.getElementById('filterStatus').addEventListener('change', function() {
+            filterTable();
+        });
+        
+        function filterTable() {
+            const searchValue = document.getElementById('searchInput').value.toLowerCase();
+            const subjectFilter = document.getElementById('filterSubject').value;
+            const statusFilter = document.getElementById('filterStatus').value;
+            
+            const rows = document.querySelectorAll('.class-row');
+            let visibleCount = 0;
+            
+            rows.forEach(row => {
+                const searchText = row.getAttribute('data-search').toLowerCase();
+                const subject = row.getAttribute('data-subject');
+                const status = row.getAttribute('data-status');
+                
+                const matchSearch = searchText.includes(searchValue);
+                const matchSubject = !subjectFilter || subject === subjectFilter;
+                const matchStatus = !statusFilter || status === statusFilter;
+                
+                if (matchSearch && matchSubject && matchStatus) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            // Update visible count
+            console.log(`Showing ${visibleCount} of ${rows.length} classes`);
+        }
+        
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('filterSubject').value = '';
+            document.getElementById('filterStatus').value = '';
+            filterTable();
+        }
+    </script>
+}

@@ -2,16 +2,16 @@
     ViewData["Title"] = "Trang chủ";
 }
 
-<link rel="stylesheet" href="~/css/home.css" />
+<link rel="stylesheet" href="~/css/home.css?v=5" />
 
 <div class="row mt-5 mb-5 fade-in">
-    <div class="col-lg-8 mx-auto text-center">
-        <h1 class="display-3 fw-bold mb-4" style="color: #000">
-            <i class="bi bi-mortarboard-fill icon-bounce"></i> Learn with Mentor
-        </h1>
-        <p class="lead mb-5 text-muted">
-            Nền tảng kết nối học sinh và Mentor - Giải đáp bài tập nhanh chóng, chất lượng cao
-        </p>
+<div class="col-lg-8 mx-auto text-center">
+    <h1 class="hero-title fw-bold mb-4">
+        Nền tảng kết nối Học sinh và Mentor
+    </h1>
+    <p class="lead mb-4 text-muted">
+        Giải đáp bài tập nhanh chóng, chất lượng cao với đội ngũ chuyên gia hàng đầu. Nâng tầm kiến thức của bạn ngay hôm nay.
+    </p>
         <div class="d-flex justify-content-center gap-3 flex-wrap">
             <div class="badge bg-primary badge-pill px-4 py-2">
                 <i class="bi bi-check-circle me-1"></i> Đáng tin cậy
@@ -29,153 +29,238 @@
     </div>
 </div>
 
-<div class="row g-4 mt-4 mb-5">
-    <div class="col-md-4">
-        <div class="card h-100 hover-card shadow-soft border-0">
-            <div class="card-body text-center p-5">
-                <div class="mb-4">
-                    <div class="rounded-circle d-inline-flex align-items-center justify-content-center bg-primary bg-gradient text-white" style="width: 100px; height: 100px;">
-                        <i class="bi bi-person-circle" style="font-size: 3.5rem;"></i>
+<!-- Carousel 3D Container -->
+<div class="carousel-3d-container">
+    <div class="carousel-3d-scene" id="carousel3d">
+        <!-- Card 1: Học sinh -->
+        <div class="carousel-card" data-index="0">
+            <div class="card h-100 shadow-soft border-0">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center bg-primary bg-gradient text-white" style="width: 100px; height: 100px;">
+                            <i class="bi bi-person-circle" style="font-size: 3.5rem;"></i>
+                        </div>
+                    </div>
+                    <h3 class="card-title mb-3 fw-bold">Học sinh</h3>
+                    <p class="card-text text-muted mb-4">
+                        Đăng bài toán, nhận lời giải chi tiết từ các Mentor giỏi
+                    </p>
+                    <div class="list-group list-group-flush mb-4 text-start">
+                        <div class="list-group-item border-0 ps-0">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i> Đăng bài dễ dàng
+                        </div>
+                        <div class="list-group-item border-0 ps-0">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i> Lời giải chi tiết
+                        </div>
+                        <div class="list-group-item border-0 ps-0">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i> Giá cả hợp lý
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Account" asp-action="Login" asp-route-role="Student" class="btn btn-primary btn-lg btn-pill">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
+                        </a>
+                        <a asp-controller="Account" asp-action="Register" asp-route-role="Student" class="btn btn-outline-primary btn-pill">
+                            <i class="bi bi-person-plus me-1"></i> Đăng ký
+                        </a>
                     </div>
                 </div>
-                <h3 class="card-title mb-3 fw-bold">Học sinh</h3>
-                <p class="card-text text-muted mb-4">
-                    Đăng bài toán, nhận lời giải chi tiết từ các Mentor giỏi
-                </p>
-                <div class="list-group list-group-flush mb-4 text-start">
-                    <div class="list-group-item border-0 ps-0">
-                        <i class="bi bi-check-circle-fill text-success me-2"></i> Đăng bài dễ dàng
+            </div>
+        </div>
+
+        <!-- Card 2: Mentor -->
+        <div class="carousel-card" data-index="1">
+            <div class="card h-100 shadow-soft border-0">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center bg-success bg-gradient text-white" style="width: 100px; height: 100px;">
+                            <i class="bi bi-mortarboard" style="font-size: 3.5rem;"></i>
+                        </div>
                     </div>
-                    <div class="list-group-item border-0 ps-0">
-                        <i class="bi bi-check-circle-fill text-success me-2"></i> Lời giải chi tiết
+                    <h3 class="card-title mb-3 fw-bold">Mentor</h3>
+                    <p class="card-text text-muted mb-4">
+                        Giải bài toán, kiếm thu nhập từ kiến thức của bạn
+                    </p>
+                    <div class="list-group list-group-flush mb-4 text-start">
+                        <div class="list-group-item border-0 ps-0">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i> Làm việc linh hoạt
+                        </div>
+                        <div class="list-group-item border-0 ps-0">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i> Thu nhập hấp dẫn
+                        </div>
+                        <div class="list-group-item border-0 ps-0">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i> Phát triển kỹ năng
+                        </div>
                     </div>
-                    <div class="list-group-item border-0 ps-0">
-                        <i class="bi bi-check-circle-fill text-success me-2"></i> Giá cả hợp lý
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Account" asp-action="Login" asp-route-role="Tutor" class="btn btn-success btn-lg btn-pill">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
+                        </a>
+                        <a asp-controller="Account" asp-action="Register" asp-route-role="Tutor" class="btn btn-outline-success btn-pill">
+                            <i class="bi bi-person-plus me-1"></i> Đăng ký
+                        </a>
                     </div>
                 </div>
-                <div class="d-grid gap-2">
-                    <a asp-controller="Account" asp-action="Login" asp-route-role="Student" class="btn btn-primary btn-lg btn-pill">
-                        <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
-                    </a>
-                    <a asp-controller="Account" asp-action="Register" asp-route-role="Student" class="btn btn-outline-primary btn-pill">
-                        <i class="bi bi-person-plus me-1"></i> Đăng ký
-                    </a>
+            </div>
+        </div>
+
+        <!-- Card 3: Quản trị -->
+        <div class="carousel-card" data-index="2">
+            <div class="card h-100 shadow-soft border-0">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center bg-danger bg-gradient text-white" style="width: 100px; height: 100px;">
+                            <i class="bi bi-shield-check" style="font-size: 3.5rem;"></i>
+                        </div>
+                    </div>
+                    <h3 class="card-title mb-3 fw-bold">Quản trị</h3>
+                    <p class="card-text text-muted mb-4">
+                        Quản lý hệ thống, duyệt Mentor, theo dõi hoạt động
+                    </p>
+                    <div class="list-group list-group-flush mb-4 text-start">
+                        <div class="list-group-item border-0 ps-0">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i> Quản lý toàn diện
+                        </div>
+                        <div class="list-group-item border-0 ps-0">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i> Thống kê chi tiết
+                        </div>
+                        <div class="list-group-item border-0 ps-0">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i> Kiểm soát chất lượng
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Account" asp-action="Login" asp-route-role="Admin" class="btn btn-danger btn-lg btn-pill">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: Nhà trường -->
+        <div class="carousel-card" data-index="3">
+            <div class="card h-100 shadow-soft border-0">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center bg-warning bg-gradient text-white" style="width: 100px; height: 100px;">
+                            <i class="bi bi-building" style="font-size: 3.5rem;"></i>
+                        </div>
+                    </div>
+                    <h3 class="card-title mb-3 fw-bold">Nhà trường</h3>
+                    <p class="card-text text-muted mb-4">
+                        Quản lý học sinh, theo dõi tiến trình học tập
+                    </p>
+                    <div class="list-group list-group-flush mb-4 text-start">
+                        <div class="list-group-item border-0 ps-0">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i> Quản lý học sinh
+                        </div>
+                        <div class="list-group-item border-0 ps-0">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i> Theo dõi học tập
+                        </div>
+                        <div class="list-group-item border-0 ps-0">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i> Báo cáo chi tiết
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Account" asp-action="Login" asp-route-role="School" class="btn btn-warning btn-lg btn-pill">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
+                        </a>
+                        <a asp-controller="Account" asp-action="Register" asp-route-role="School" class="btn btn-outline-warning btn-pill school-register-btn">
+                            <i class="bi bi-person-plus me-1"></i> Đăng ký
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="col-md-4">
-        <div class="card h-100 hover-card shadow-soft border-0">
-            <div class="card-body text-center p-5">
-                <div class="mb-4">
-                    <div class="rounded-circle d-inline-flex align-items-center justify-content-center bg-success bg-gradient text-white" style="width: 100px; height: 100px;">
-                        <i class="bi bi-mortarboard" style="font-size: 3.5rem;"></i>
-                    </div>
-                </div>
-                <h3 class="card-title mb-3 fw-bold">Mentor</h3>
-                <p class="card-text text-muted mb-4">
-                    Giải bài toán, kiếm thu nhập từ kiến thức của bạn
-                </p>
-                <div class="list-group list-group-flush mb-4 text-start">
-                    <div class="list-group-item border-0 ps-0">
-                        <i class="bi bi-check-circle-fill text-success me-2"></i> Làm việc linh hoạt
-                    </div>
-                    <div class="list-group-item border-0 ps-0">
-                        <i class="bi bi-check-circle-fill text-success me-2"></i> Thu nhập hấp dẫn
-                    </div>
-                    <div class="list-group-item border-0 ps-0">
-                        <i class="bi bi-check-circle-fill text-success me-2"></i> Phát triển kỹ năng
-                    </div>
-                </div>
-                <div class="d-grid gap-2">
-                    <a asp-controller="Account" asp-action="Login" asp-route-role="Tutor" class="btn btn-success btn-lg btn-pill">
-                        <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
-                    </a>
-                    <a asp-controller="Account" asp-action="Register" asp-route-role="Tutor" class="btn btn-outline-success btn-pill">
-                        <i class="bi bi-person-plus me-1"></i> Đăng ký
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Navigation Buttons -->
+    <button class="carousel-nav carousel-nav-left" id="prevBtn">
+        <i class="bi bi-chevron-left"></i>
+    </button>
+    <button class="carousel-nav carousel-nav-right" id="nextBtn">
+        <i class="bi bi-chevron-right"></i>
+    </button>
 
-    <div class="col-md-4">
-        <div class="card h-100 hover-card shadow-soft border-0">
-            <div class="card-body text-center p-5">
-                <div class="mb-4">
-                    <div class="rounded-circle d-inline-flex align-items-center justify-content-center bg-danger bg-gradient text-white" style="width: 100px; height: 100px;">
-                        <i class="bi bi-shield-check" style="font-size: 3.5rem;"></i>
-                    </div>
-                </div>
-                <h3 class="card-title mb-3 fw-bold">Quản trị</h3>
-                <p class="card-text text-muted mb-4">
-                    Quản lý hệ thống, duyệt Mentor, theo dõi hoạt động
-                </p>
-                <div class="list-group list-group-flush mb-4 text-start">
-                    <div class="list-group-item border-0 ps-0">
-                        <i class="bi bi-check-circle-fill text-success me-2"></i> Quản lý toàn diện
-                    </div>
-                    <div class="list-group-item border-0 ps-0">
-                        <i class="bi bi-check-circle-fill text-success me-2"></i> Thống kê chi tiết
-                    </div>
-                    <div class="list-group-item border-0 ps-0">
-                        <i class="bi bi-check-circle-fill text-success me-2"></i> Kiểm soát chất lượng
-                    </div>
-                </div>
-                <div class="d-grid gap-2">
-                    <a asp-controller="Account" asp-action="Login" asp-route-role="Admin" class="btn btn-danger btn-lg btn-pill">
-                        <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
-                    </a>
-                </div>
-            </div>
-        </div>
+    <!-- Indicators -->
+    <div class="carousel-indicators-3d">
+        <span class="indicator active" data-slide="0"></span>
+        <span class="indicator" data-slide="1"></span>
+        <span class="indicator" data-slide="2"></span>
+        <span class="indicator" data-slide="3"></span>
     </div>
 </div>
 
 <div class="row mt-5 mb-5">
     <div class="col-lg-10 mx-auto">
-        <div class="card shadow-soft border-0 card-glass">
-            <div class="card-body p-5">
-                <h2 class="text-center mb-5 fw-bold">
-                    <i class="bi bi-info-circle text-primary me-2"></i> Hướng dẫn sử dụng
-                </h2>
-                <div class="row g-4">
-                    <div class="col-md-6 col-lg-3">
-                        <div class="text-center hover-lift p-3">
-                            <div class="rounded-circle bg-primary bg-gradient text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px;">
-                                <h3 class="mb-0">1</h3>
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-3" style="font-size: 2.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                <i class="bi bi-rocket-takeoff me-2"></i> Bắt đầu chỉ với 4 bước đơn giản
+            </h2>
+            <p class="lead text-muted">Trải nghiệm dịch vụ học tập thông minh và hiệu quả</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 shadow-lg hover-card h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px;">
+                    <div class="card-body text-center p-4 text-white">
+                        <div class="position-relative mb-4">
+                            <div class="rounded-circle bg-white d-inline-flex align-items-center justify-content-center mb-3 shadow-lg" style="width: 80px; height: 80px;">
+                                <h2 class="mb-0 fw-bold" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">1</h2>
                             </div>
-                            <h5 class="fw-bold mb-2">Đăng ký tài khoản</h5>
-                            <p class="text-muted small">Chọn vai trò phù hợp và điền thông tin đăng ký</p>
+                            <div class="position-absolute top-0 end-0">
+                                <i class="bi bi-person-plus-fill" style="font-size: 2rem; opacity: 0.2;"></i>
+                            </div>
                         </div>
+                        <h5 class="fw-bold mb-3">Đăng ký tài khoản</h5>
+                        <p class="small mb-0 opacity-90">Tạo tài khoản miễn phí chỉ trong 30 giây với email hoặc số điện thoại</p>
                     </div>
-                    <div class="col-md-6 col-lg-3">
-                        <div class="text-center hover-lift p-3">
-                            <div class="rounded-circle bg-success bg-gradient text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px;">
-                                <h3 class="mb-0">2</h3>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 shadow-lg hover-card h-100" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 20px;">
+                    <div class="card-body text-center p-4 text-white">
+                        <div class="position-relative mb-4">
+                            <div class="rounded-circle bg-white d-inline-flex align-items-center justify-content-center mb-3 shadow-lg" style="width: 80px; height: 80px;">
+                                <h2 class="mb-0 fw-bold" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">2</h2>
                             </div>
-                            <h5 class="fw-bold mb-2">Đăng bài / Nhận bài</h5>
-                            <p class="text-muted small">Học sinh đăng bài, Mentor chọn bài phù hợp</p>
+                            <div class="position-absolute top-0 end-0">
+                                <i class="bi bi-cloud-upload-fill" style="font-size: 2rem; opacity: 0.2;"></i>
+                            </div>
                         </div>
+                        <h5 class="fw-bold mb-3">Đăng bài / Tìm bài</h5>
+                        <p class="small mb-0 opacity-90">Học sinh đăng bài toán, Mentor tìm bài phù hợp với chuyên môn của mình</p>
                     </div>
-                    <div class="col-md-6 col-lg-3">
-                        <div class="text-center hover-lift p-3">
-                            <div class="rounded-circle bg-warning bg-gradient text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px;">
-                                <h3 class="mb-0">3</h3>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 shadow-lg hover-card h-100" style="background: linear-gradient(135deg, #ffa751 0%, #ffe259 100%); border-radius: 20px;">
+                    <div class="card-body text-center p-4 text-white">
+                        <div class="position-relative mb-4">
+                            <div class="rounded-circle bg-white d-inline-flex align-items-center justify-content-center mb-3 shadow-lg" style="width: 80px; height: 80px;">
+                                <h2 class="mb-0 fw-bold" style="background: linear-gradient(135deg, #ffa751 0%, #ffe259 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">3</h2>
                             </div>
-                            <h5 class="fw-bold mb-2">Gửi lời giải</h5>
-                            <p class="text-muted small">Mentor gửi lời giải chi tiết cho học sinh</p>
+                            <div class="position-absolute top-0 end-0">
+                                <i class="bi bi-chat-dots-fill" style="font-size: 2rem; opacity: 0.2;"></i>
+                            </div>
                         </div>
+                        <h5 class="fw-bold mb-3">Nhận lời giải</h5>
+                        <p class="small mb-0 opacity-90">Mentor gửi lời giải chi tiết với hình ảnh, video và giải thích rõ ràng</p>
                     </div>
-                    <div class="col-md-6 col-lg-3">
-                        <div class="text-center hover-lift p-3">
-                            <div class="rounded-circle bg-info bg-gradient text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px;">
-                                <h3 class="mb-0">4</h3>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 shadow-lg hover-card h-100" style="background: linear-gradient(135deg, #209cff 0%, #68e0cf 100%); border-radius: 20px;">
+                    <div class="card-body text-center p-4 text-white">
+                        <div class="position-relative mb-4">
+                            <div class="rounded-circle bg-white d-inline-flex align-items-center justify-content-center mb-3 shadow-lg" style="width: 80px; height: 80px;">
+                                <h2 class="mb-0 fw-bold" style="background: linear-gradient(135deg, #209cff 0%, #68e0cf 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">4</h2>
                             </div>
-                            <h5 class="fw-bold mb-2">Thanh toán & Đánh giá</h5>
-                            <p class="text-muted small">Học sinh thanh toán và đánh giá chất lượng</p>
+                            <div class="position-absolute top-0 end-0">
+                                <i class="bi bi-star-fill" style="font-size: 2rem; opacity: 0.2;"></i>
+                            </div>
                         </div>
+                        <h5 class="fw-bold mb-3">Đánh giá & Hoàn tất</h5>
+                        <p class="small mb-0 opacity-90">Thanh toán an toàn và đánh giá để giúp cộng đồng ngày càng tốt hơn</p>
                     </div>
                 </div>
             </div>
@@ -184,46 +269,217 @@
 </div>
 
 <!-- Thống kê hệ thống - Section cuối cùng trước footer -->
-<div class="row mt-5" style="margin-bottom: 5rem;">
+<div class="row mt-5 mb-5">
     <div class="col-lg-10 mx-auto">
-        <div class="card shadow-lg border-0 overflow-hidden">
-            <div class="card-header text-center py-4" style="background: linear-gradient(135deg, #8B5E3C 0%, #D6C2A1 100%);">
-                <h3 class="mb-0 fw-bold text-contrast">
-                    <i class="bi bi-graph-up me-2"></i> Thống kê hệ thống
-                </h3>
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-3" style="font-size: 2.5rem;">
+                <i class="bi bi-graph-up-arrow me-2" style="background: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                <span style="background: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Con số ấn tượng</span>
+            </h2>
+            <p class="lead text-muted">Những thành tựu chúng tôi đạt được cùng cộng đồng</p>
+        </div>
+        
+        <div class="row g-4 text-center">
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 shadow-lg hover-card h-100" style="background: linear-gradient(135deg, rgba(33, 150, 243, 0.1) 0%, rgba(3, 169, 244, 0.1) 100%); backdrop-filter: blur(10px); border-radius: 20px; border: 2px solid rgba(33, 150, 243, 0.2);">
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <i class="bi bi-people-fill icon-pulse" style="font-size: 4rem; background: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                        </div>
+                        <h2 class="fw-bold mb-2" style="font-size: 3rem; color: #2196F3;">1,000+</h2>
+                        <h5 class="fw-bold text-primary mb-2">Học sinh</h5>
+                        <p class="text-muted small mb-0">Đang học tập và phát triển</p>
+                    </div>
+                </div>
             </div>
-            <div class="card-body p-5">
-                <div class="row text-center g-4">
-                    <div class="col-md-3">
-                        <div class="hover-scale">
-                            <i class="bi bi-people-fill text-primary icon-pulse" style="font-size: 3rem;"></i>
-                            <h2 class="fw-bold mt-3 mb-1">1,000+</h2>
-                            <p class="text-muted mb-0">Học sinh</p>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 shadow-lg hover-card h-100" style="background: linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(56, 239, 125, 0.1) 100%); backdrop-filter: blur(10px); border-radius: 20px; border: 2px solid rgba(76, 175, 80, 0.2);">
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <i class="bi bi-mortarboard-fill icon-pulse" style="font-size: 4rem; background: linear-gradient(135deg, #4CAF50 0%, #38ef7d 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
                         </div>
+                        <h2 class="fw-bold mb-2" style="font-size: 3rem; color: #4CAF50;">500+</h2>
+                        <h5 class="fw-bold text-success mb-2">Mentor chuyên nghiệp</h5>
+                        <p class="text-muted small mb-0">Giàu kinh nghiệm và tâm huyết</p>
                     </div>
-                    <div class="col-md-3">
-                        <div class="hover-scale">
-                            <i class="bi bi-mortarboard-fill text-success icon-pulse" style="font-size: 3rem;"></i>
-                            <h2 class="fw-bold mt-3 mb-1">500+</h2>
-                            <p class="text-muted mb-0">Mentor</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 shadow-lg hover-card h-100" style="background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 226, 89, 0.1) 100%); backdrop-filter: blur(10px); border-radius: 20px; border: 2px solid rgba(255, 193, 7, 0.2);">
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <i class="bi bi-journal-check icon-pulse" style="font-size: 4rem; background: linear-gradient(135deg, #FFC107 0%, #ffe259 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
                         </div>
+                        <h2 class="fw-bold mb-2" style="font-size: 3rem; color: #FFC107;">5,000+</h2>
+                        <h5 class="fw-bold text-warning mb-2">Bài toán đã giải</h5>
+                        <p class="text-muted small mb-0">Được giải quyết thành công</p>
                     </div>
-                    <div class="col-md-3">
-                        <div class="hover-scale">
-                            <i class="bi bi-journal-check text-warning icon-pulse" style="font-size: 3rem;"></i>
-                            <h2 class="fw-bold mt-3 mb-1">5,000+</h2>
-                            <p class="text-muted mb-0">Bài toán đã giải</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 shadow-lg hover-card h-100" style="background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(245, 92, 67, 0.1) 100%); backdrop-filter: blur(10px); border-radius: 20px; border: 2px solid rgba(220, 53, 69, 0.2);">
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <i class="bi bi-star-fill icon-pulse" style="font-size: 4rem; background: linear-gradient(135deg, #DC3545 0%, #f45c43 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
                         </div>
+                        <h2 class="fw-bold mb-2" style="font-size: 3rem; color: #DC3545;">4.8/5</h2>
+                        <h5 class="fw-bold text-danger mb-2">Đánh giá trung bình</h5>
+                        <p class="text-muted small mb-0">Từ người dùng thực tế</p>
                     </div>
-                    <div class="col-md-3">
-                        <div class="hover-scale">
-                            <i class="bi bi-star-fill text-danger icon-pulse" style="font-size: 3rem;"></i>
-                            <h2 class="fw-bold mt-3 mb-1">4.8/5</h2>
-                            <p class="text-muted mb-0">Đánh giá trung bình</p>
-                        </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CTA Section -->
+        <div class="text-center mt-5">
+            <div class="card border-0 shadow-lg position-relative overflow-hidden" style="border-radius: 20px;">
+                <!-- Animated gradient background matching hero title -->
+                <div class="position-absolute w-100 h-100 cta-gradient-bg" style="top: 0; left: 0; z-index: 0;"></div>
+                
+                <div class="card-body p-5 position-relative" style="z-index: 1;">
+                    <h3 class="fw-bold mb-3 text-white" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">Sẵn sàng bắt đầu hành trình học tập của bạn?</h3>
+                    <p class="lead mb-4 text-white" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">Tham gia cộng đồng hơn 1,500 học sinh và Mentor ngay hôm nay</p>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="/Account/Register?role=Student" class="btn btn-lg px-5 py-3 cta-btn-student position-relative overflow-hidden" style="border-radius: 50px; font-weight: 600; background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%); color: white; border: none; box-shadow: 0 8px 20px rgba(0, 188, 212, 0.4); transition: all 0.3s ease;">
+                            <i class="bi bi-person-plus me-2"></i>Đăng ký làm Học sinh
+                        </a>
+                        <a href="/Account/Register?role=Tutor" class="btn btn-lg px-5 py-3 cta-btn-mentor position-relative overflow-hidden" style="border-radius: 50px; font-weight: 600; background: linear-gradient(135deg, #00c853 0%, #00a843 100%); color: white; border: none; box-shadow: 0 8px 20px rgba(0, 200, 83, 0.4); transition: all 0.3s ease;">
+                            <i class="bi bi-briefcase me-2"></i>Trở thành Mentor
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script>
+// Carousel 3D JavaScript
+(function() {
+    const carousel = document.getElementById('carousel3d');
+    const cards = document.querySelectorAll('.carousel-card');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const indicators = document.querySelectorAll('.indicator');
+    
+    let currentIndex = 0;
+    const totalCards = cards.length;
+    let startX = 0;
+    let isDragging = false;
+    let isAnimating = false;
+    
+    function updateCarousel() {
+        cards.forEach((card, index) => {
+            card.classList.remove('active', 'prev', 'next');
+            
+            if (index === currentIndex) {
+                card.classList.add('active');
+            } else if (index === (currentIndex - 1 + totalCards) % totalCards) {
+                card.classList.add('prev');
+            } else if (index === (currentIndex + 1) % totalCards) {
+                card.classList.add('next');
+            }
+        });
+        
+        indicators.forEach((indicator, index) => {
+            indicator.classList.toggle('active', index === currentIndex);
+        });
+    }
+    
+    function nextSlide() {
+        if (isAnimating) return;
+        isAnimating = true;
+        
+        currentIndex = (currentIndex + 1) % totalCards;
+        updateCarousel();
+        
+        setTimeout(() => {
+            isAnimating = false;
+        }, 600);
+    }
+    
+    function prevSlide() {
+        if (isAnimating) return;
+        isAnimating = true;
+        
+        currentIndex = (currentIndex - 1 + totalCards) % totalCards;
+        updateCarousel();
+        
+        setTimeout(() => {
+            isAnimating = false;
+        }, 600);
+    }
+    
+    function goToSlide(index) {
+        if (isAnimating || index === currentIndex) return;
+        isAnimating = true;
+        
+        currentIndex = index;
+        updateCarousel();
+        
+        setTimeout(() => {
+            isAnimating = false;
+        }, 600);
+    }
+    
+    // Event listeners for buttons
+    prevBtn.addEventListener('click', prevSlide);
+    nextBtn.addEventListener('click', nextSlide);
+    
+    // Event listeners for indicators
+    indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', () => goToSlide(index));
+    });
+    
+    // Touch/Mouse swipe functionality
+    carousel.addEventListener('mousedown', handleStart);
+    carousel.addEventListener('touchstart', handleStart);
+    
+    carousel.addEventListener('mousemove', handleMove);
+    carousel.addEventListener('touchmove', handleMove);
+    
+    carousel.addEventListener('mouseup', handleEnd);
+    carousel.addEventListener('touchend', handleEnd);
+    carousel.addEventListener('mouseleave', handleEnd);
+    
+    function handleStart(e) {
+        if (isAnimating) return;
+        isDragging = true;
+        startX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+    }
+    
+    function handleMove(e) {
+        if (!isDragging) return;
+        e.preventDefault();
+    }
+    
+    function handleEnd(e) {
+        if (!isDragging) return;
+        isDragging = false;
+        
+        const endX = e.type.includes('mouse') ? e.pageX : e.changedTouches[0].pageX;
+        const diff = startX - endX;
+        
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) {
+                nextSlide();
+            } else {
+                prevSlide();
+            }
+        }
+    }
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') prevSlide();
+        if (e.key === 'ArrowRight') nextSlide();
+    });
+    
+    // Initialize
+    updateCarousel();
+})();
+</script>
+
+

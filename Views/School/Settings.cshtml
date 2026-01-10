@@ -1,0 +1,132 @@
+﻿@model Webgiasu.Models.User
+
+@{
+    ViewData["Title"] = "Cài đặt - Nhà trường";
+    Layout = "~/Views/Shared/_SchoolLayout.cshtml";
+}
+
+<div class="dashboard-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h2><i class="bi bi-gear me-2 text-warning"></i>Cài đặt tài khoản</h2>
+        <p class="text-muted">Quản lý thông tin nhà trường</p>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Profile Information -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-person-circle me-2"></i>Thông tin cơ bản</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-controller="School" asp-action="UpdateProfile" method="post">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-building me-1"></i>Tên nhà trường
+                            </label>
+                            <input type="text" class="form-control" name="fullName" value="@Model.FullName" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-envelope me-1"></i>Email
+                            </label>
+                            <input type="email" class="form-control" name="email" value="@Model.Email" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-telephone me-1"></i>Số điện thoại
+                            </label>
+                            <input type="tel" class="form-control" name="phoneNumber" value="@Model.PhoneNumber">
+                        </div>
+
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-check-circle me-2"></i>Cập nhật thông tin
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Change Password -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-shield-lock me-2"></i>Đổi mật khẩu</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-controller="School" asp-action="ChangePassword" method="post">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Mật khẩu hiện tại</label>
+                            <input type="password" class="form-control" name="currentPassword" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Mật khẩu mới</label>
+                            <input type="password" class="form-control" name="newPassword" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Xác nhận mật khẩu mới</label>
+                            <input type="password" class="form-control" name="confirmPassword" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-shield-check me-2"></i>Đổi mật khẩu
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Account Info -->
+            <div class="card mb-3">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Thông tin tài khoản</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <small class="text-muted">Tên đăng nhập</small>
+                        <div class="fw-semibold">@Model.Username</div>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted">Vai trò</small>
+                        <div><span class="badge bg-warning">Nhà trường</span></div>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted">Ngày đăng ký</small>
+                        <div class="fw-semibold">01/01/2025</div>
+                    </div>
+                    <div>
+                        <small class="text-muted">Trạng thái</small>
+                        <div><span class="badge bg-success">Đang hoạt động</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Tips -->
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-shield-check me-2"></i>Bảo mật</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        <li class="mb-2">
+                            <small>Sử dụng mật khẩu mạnh ít nhất 8 ký tự</small>
+                        </li>
+                        <li class="mb-2">
+                            <small>Không chia sẻ mật khẩu với người khác</small>
+                        </li>
+                        <li class="mb-2">
+                            <small>Đổi mật khẩu định kỳ</small>
+                        </li>
+                        <li>
+                            <small>Đăng xuất sau khi sử dụng</small>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
