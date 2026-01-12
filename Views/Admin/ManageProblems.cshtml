@@ -5,146 +5,291 @@
     Layout = "_AdminLayout";
 }
 
-<div class="row mb-4">
-    <div class="col">
-        <h2 class="fw-bold">
-            <i class="bi bi-card-list text-danger"></i> Quản lý bài toán
-        </h2>
-        <p class="text-muted">Theo dõi tất cả bài toán trong hệ thống</p>
+<div>
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="fw-bold">
+                <i class="bi bi-card-list text-danger"></i> Quản lý bài toán
+            </h2>
+            <p class="text-muted">Theo dõi tất cả bài toán trong hệ thống</p>
+        </div>
     </div>
-</div>
 
-<div class="row g-3 mb-4">
-    <div class="col-md-3">
-        <div class="card text-center shadow-sm card-hover">
-            <div class="card-body">
-                <h3 class="mb-0">@Model.Count(p => p.Status == Webgiasu.Models.ProblemStatus.WaitingForTutor)</h3>
-                <p class="text-muted mb-0">Chờ gia sư</p>
+    <!-- Statistics Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm card-hover">
+                <div class="card-body">
+                    <div class="mb-2">
+                        <i class="bi bi-hourglass-split text-warning" style="font-size: 2rem;"></i>
+                    </div>
+                    <h3 class="mb-0 fw-bold text-warning">@Model.Count(p => p.Status == Webgiasu.Models.ProblemStatus.WaitingForTutor)</h3>
+                    <p class="text-muted mb-0 small">Chờ Mentor</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm card-hover">
+                <div class="card-body">
+                    <div class="mb-2">
+                        <i class="bi bi-gear-fill text-info" style="font-size: 2rem;"></i>
+                    </div>
+                    <h3 class="mb-0 fw-bold text-info">@Model.Count(p => p.Status == Webgiasu.Models.ProblemStatus.InProgress)</h3>
+                    <p class="text-muted mb-0 small">Đang giải</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm card-hover">
+                <div class="card-body">
+                    <div class="mb-2">
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 2rem;"></i>
+                    </div>
+                    <h3 class="mb-0 fw-bold text-success">@Model.Count(p => p.Status == Webgiasu.Models.ProblemStatus.Solved)</h3>
+                    <p class="text-muted mb-0 small">Đã giải</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm card-hover">
+                <div class="card-body">
+                    <div class="mb-2">
+                        <i class="bi bi-list-check text-primary" style="font-size: 2rem;"></i>
+                    </div>
+                    <h3 class="mb-0 fw-bold text-primary">@Model.Count</h3>
+                    <p class="text-muted mb-0 small">Tổng số</p>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card text-center shadow-sm card-hover">
-            <div class="card-body">
-                <h3 class="mb-0">@Model.Count(p => p.Status == Webgiasu.Models.ProblemStatus.InProgress)</h3>
-                <p class="text-muted mb-0">Đang giải</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center shadow-sm card-hover">
-            <div class="card-body">
-                <h3 class="mb-0">@Model.Count(p => p.Status == Webgiasu.Models.ProblemStatus.Solved)</h3>
-                <p class="text-muted mb-0">Đã giải</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center shadow-sm card-hover">
-            <div class="card-body">
-                <h3 class="mb-0">@Model.Count</h3>
-                <p class="text-muted mb-0">Tổng số</p>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="card shadow-sm">
-    <div class="card-header bg-warning text-dark">
-        <h5 class="mb-0"><i class="bi bi-list-ul"></i> Danh sách bài toán</h5>
+    <!-- Education Level Statistics -->
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0"><i class="bi bi-mortarboard me-2"></i>Thống kê theo cấp học</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center g-3">
+                        <div class="col-md-3">
+                            <div class="border rounded p-3">
+                                <i class="bi bi-1-circle text-primary" style="font-size: 2rem;"></i>
+                                <h4 class="mt-2 mb-1 fw-bold">@Model.Count(p => p.Difficulty == Webgiasu.Models.DifficultyLevel.TieuHoc)</h4>
+                                <p class="text-muted mb-0 small">Tiểu học</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="border rounded p-3">
+                                <i class="bi bi-2-circle text-info" style="font-size: 2rem;"></i>
+                                <h4 class="mt-2 mb-1 fw-bold">@Model.Count(p => p.Difficulty == Webgiasu.Models.DifficultyLevel.THCS)</h4>
+                                <p class="text-muted mb-0 small">THCS</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="border rounded p-3">
+                                <i class="bi bi-3-circle text-warning" style="font-size: 2rem;"></i>
+                                <h4 class="mt-2 mb-1 fw-bold">@Model.Count(p => p.Difficulty == Webgiasu.Models.DifficultyLevel.THPT)</h4>
+                                <p class="text-muted mb-0 small">THPT</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="border rounded p-3">
+                                <i class="bi bi-4-circle text-success" style="font-size: 2rem;"></i>
+                                <h4 class="mt-2 mb-1 fw-bold">@Model.Count(p => p.Difficulty == Webgiasu.Models.DifficultyLevel.DaiHoc)</h4>
+                                <p class="text-muted mb-0 small">Đại học</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Tiêu đề</th>
-                        <th>Học sinh</th>
-                        <th>Gia sư</th>
-                        <th>Môn học</th>
-                        <th>Độ khó</th>
-                        <th>Ngày đăng</th>
-                        <th>Deadline</th>
-                        <th>Trạng thái</th>
-                        <th>Giá</th>
-                        <th>Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var problem in Model)
-                    {
-                        var student = UserService.GetUserById(problem.StudentId);
-                        var tutor = problem.AssignedTutorId.HasValue ? UserService.GetUserById(problem.AssignedTutorId.Value) : null;
-                        var statusClass = problem.Status switch
-                        {
-                            Webgiasu.Models.ProblemStatus.WaitingForTutor => "warning",
-                            Webgiasu.Models.ProblemStatus.InProgress => "info",
-                            Webgiasu.Models.ProblemStatus.Solved => "success",
-                            _ => "secondary"
-                        };
-                        var statusText = problem.Status switch
-                        {
-                            Webgiasu.Models.ProblemStatus.WaitingForTutor => "Chờ gia sư",
-                            Webgiasu.Models.ProblemStatus.InProgress => "Đang giải",
-                            Webgiasu.Models.ProblemStatus.Solved => "Đã giải",
-                            _ => "Khác"
-                        };
+
+    <!-- Filter Section -->
+    <div class="card shadow-sm mb-3">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold">Lọc theo trạng thái</label>
+                    <select class="form-select form-select-sm" id="filterStatus">
+                        <option value="">Tất cả</option>
+                        <option value="WaitingForTutor">Chờ Mentor</option>
+                        <option value="InProgress">Đang giải</option>
+                        <option value="Solved">Đã giải</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold">Lọc theo cấp học</label>
+                    <select class="form-select form-select-sm" id="filterLevel">
+                        <option value="">Tất cả</option>
+                        <option value="TieuHoc">Tiểu học</option>
+                        <option value="THCS">THCS</option>
+                        <option value="THPT">THPT</option>
+                        <option value="DaiHoc">Đại học</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold">Lọc theo môn học</label>
+                    <select class="form-select form-select-sm" id="filterSubject">
+                        <option value="">Tất cả</option>
+                        <option value="Toan">Toán</option>
+                        <option value="Ly">Vật lý</option>
+                        <option value="Hoa">Hóa học</option>
+                        <option value="Sinh">Sinh học</option>
+                        <option value="Van">Ngữ văn</option>
+                        <option value="Anh">Tiếng Anh</option>
+                        <option value="Su">Lịch sử</option>
+                        <option value="Dia">Địa lý</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold">Tìm kiếm</label>
+                    <input type="text" class="form-select form-select-sm" id="searchInput" placeholder="Tìm theo tiêu đề...">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Problems Table -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-warning text-dark">
+            <h5 class="mb-0"><i class="bi bi-list-ul me-2"></i>Danh sách bài toán (@Model.Count)</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="problemsTable">
+                    <thead class="table-light">
                         <tr>
-                            <td class="fw-bold">#@problem.Id</td>
-                            <td>@problem.Title</td>
-                            <td>@student?.FullName</td>
-                            <td>
-                                @if (tutor != null)
-                                {
-                                    <span>@tutor.FullName</span>
-                                }
-                                else
-                                {
-                                    <span class="text-muted">-</span>
-                                }
-                            </td>
-                            <td><span class="badge bg-secondary">@problem.Type</span></td>
-                            <td>
-                                @if (problem.Difficulty == Webgiasu.Models.DifficultyLevel.Easy)
-                                {
-                                    <span class="badge bg-success">Dễ</span>
-                                }
-                                else if (problem.Difficulty == Webgiasu.Models.DifficultyLevel.Medium)
-                                {
-                                    <span class="badge bg-warning">TB</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-danger">Khó</span>
-                                }
-                            </td>
-                            <td>@problem.CreatedDate.ToString("dd/MM/yyyy")</td>
-                            <td>@problem.Deadline.ToString("dd/MM/yyyy")</td>
-                            <td><span class="badge bg-@statusClass">@statusText</span></td>
-                            <td class="fw-bold text-success">@problem.Price.ToString("N0") đ</td>
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <a asp-action="ProblemDetails" asp-route-id="@problem.Id" class="btn btn-sm btn-outline-primary" title="Xem chi tiết">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteProblem(@problem.Id)" title="Xóa">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
+                            <th>ID</th>
+                            <th>Tiêu đề</th>
+                            <th>Học sinh</th>
+                            <th>Mentor</th>
+                            <th>Môn học</th>
+                            <th>Cấp học</th>
+                            <th>Ngày đăng</th>
+                            <th>Deadline</th>
+                            <th>Trạng thái</th>
+                            <th>Giá</th>
+                            <th>Hành động</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var problem in Model.OrderByDescending(p => p.CreatedDate))
+                        {
+                            var student = UserService.GetUserById(problem.StudentId);
+                            var tutor = problem.AssignedTutorId.HasValue ? UserService.GetUserById(problem.AssignedTutorId.Value) : null;
+                            
+                            var statusClass = problem.Status switch
+                            {
+                                Webgiasu.Models.ProblemStatus.WaitingForTutor => "warning",
+                                Webgiasu.Models.ProblemStatus.InProgress => "info",
+                                Webgiasu.Models.ProblemStatus.Solved => "success",
+                                _ => "secondary"
+                            };
+                            
+                            var statusText = problem.Status switch
+                            {
+                                Webgiasu.Models.ProblemStatus.WaitingForTutor => "Chờ Mentor",
+                                Webgiasu.Models.ProblemStatus.InProgress => "Đang giải",
+                                Webgiasu.Models.ProblemStatus.Solved => "Đã giải",
+                                _ => "Khác"
+                            };
+
+                            // ✅ EDUCATION LEVEL DISPLAY
+                            var levelBadgeClass = problem.Difficulty switch
+                            {
+                                Webgiasu.Models.DifficultyLevel.TieuHoc => "primary",
+                                Webgiasu.Models.DifficultyLevel.THCS => "info",
+                                Webgiasu.Models.DifficultyLevel.THPT => "warning",
+                                Webgiasu.Models.DifficultyLevel.DaiHoc => "success",
+                                _ => "secondary"
+                            };
+
+                            var levelText = problem.Difficulty switch
+                            {
+                                Webgiasu.Models.DifficultyLevel.TieuHoc => "Tiểu học",
+                                Webgiasu.Models.DifficultyLevel.THCS => "THCS",
+                                Webgiasu.Models.DifficultyLevel.THPT => "THPT",
+                                Webgiasu.Models.DifficultyLevel.DaiHoc => "Đại học",
+                                _ => "N/A"
+                            };
+
+                            <tr data-status="@problem.Status" data-level="@problem.Difficulty" data-subject="@problem.Type" data-title="@problem.Title.ToLower()">
+                                <td class="fw-bold text-primary">#@problem.Id</td>
+                                <td>
+                                    <div class="text-truncate" style="max-width: 200px;" title="@problem.Title">
+                                        @problem.Title
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-person-circle text-primary me-1"></i>
+                                        <span class="small">@student?.FullName</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    @if (tutor != null)
+                                    {
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-mortarboard text-success me-1"></i>
+                                            <span class="small">@tutor.FullName</span>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">Chưa có</span>
+                                    }
+                                </td>
+                                <td><span class="badge bg-secondary">@problem.Type</span></td>
+                                <td><span class="badge bg-@levelBadgeClass">@levelText</span></td>
+                                <td class="small">@problem.CreatedDate.ToString("dd/MM/yyyy")</td>
+                                <td class="small">
+                                    @problem.Deadline.ToString("dd/MM/yyyy")
+                                    @if (problem.Deadline < DateTime.Now && problem.Status != Webgiasu.Models.ProblemStatus.Solved)
+                                    {
+                                        <i class="bi bi-exclamation-triangle text-danger ms-1" title="Quá hạn"></i>
+                                    }
+                                </td>
+                                <td><span class="badge bg-@statusClass">@statusText</span></td>
+                                <td class="fw-bold text-success">@problem.Price.ToString("N0") đ</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="ProblemDetails" asp-route-id="@problem.Id" 
+                                           class="btn btn-sm btn-outline-primary" 
+                                           title="Xem chi tiết">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <button type="button" 
+                                                class="btn btn-sm btn-outline-danger" 
+                                                onclick="deleteProblem(@problem.Id)" 
+                                                title="Xóa">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
+            <h5 class="mt-3 text-muted">Chưa có bài toán nào</h5>
+        </div>
+    }
 </div>
 
 @section Scripts {
     <script>
+        // ✅ DELETE PROBLEM
         function deleteProblem(id) {
-            if (confirm('Bạn chắc chắn muốn xóa bài toán này?')) {
+            if (confirm('⚠️ Bạn chắc chắn muốn xóa bài toán #' + id + '?\nHành động này không thể hoàn tác!')) {
                 var form = document.createElement('form');
                 form.method = 'POST';
                 form.action = '@Url.Action("DeleteProblem", "Admin")';
@@ -155,9 +300,114 @@
                 input.value = id;
                 form.appendChild(input);
                 
+                // Add anti-forgery token if needed
+                var token = document.querySelector('input[name="__RequestVerificationToken"]');
+                if (token) {
+                    var tokenInput = document.createElement('input');
+                    tokenInput.type = 'hidden';
+                    tokenInput.name = '__RequestVerificationToken';
+                    tokenInput.value = token.value;
+                    form.appendChild(tokenInput);
+                }
+                
                 document.body.appendChild(form);
                 form.submit();
             }
         }
+
+        // ✅ FILTER & SEARCH FUNCTIONALITY
+        (function() {
+            const filterStatus = document.getElementById('filterStatus');
+            const filterLevel = document.getElementById('filterLevel');
+            const filterSubject = document.getElementById('filterSubject');
+            const searchInput = document.getElementById('searchInput');
+            const tableRows = document.querySelectorAll('#problemsTable tbody tr');
+
+            function applyFilters() {
+                const statusValue = filterStatus.value;
+                const levelValue = filterLevel.value;
+                const subjectValue = filterSubject.value;
+                const searchValue = searchInput.value.toLowerCase().trim();
+
+                let visibleCount = 0;
+
+                tableRows.forEach(row => {
+                    const rowStatus = row.getAttribute('data-status');
+                    const rowLevel = row.getAttribute('data-level');
+                    const rowSubject = row.getAttribute('data-subject');
+                    const rowTitle = row.getAttribute('data-title');
+
+                    let show = true;
+
+                    // Filter by status
+                    if (statusValue && rowStatus !== statusValue) {
+                        show = false;
+                    }
+
+                    // Filter by level
+                    if (levelValue && rowLevel !== levelValue) {
+                        show = false;
+                    }
+
+                    // Filter by subject
+                    if (subjectValue && rowSubject !== subjectValue) {
+                        show = false;
+                    }
+
+                    // Filter by search
+                    if (searchValue && !rowTitle.includes(searchValue)) {
+                        show = false;
+                    }
+
+                    row.style.display = show ? '' : 'none';
+                    if (show) visibleCount++;
+                });
+
+                // Update count display
+                console.log(`Hiển thị ${visibleCount}/${tableRows.length} bài toán`);
+            }
+
+            // Event listeners
+            filterStatus?.addEventListener('change', applyFilters);
+            filterLevel?.addEventListener('change', applyFilters);
+            filterSubject?.addEventListener('change', applyFilters);
+            searchInput?.addEventListener('input', applyFilters);
+        })();
+
+        // ✅ HOVER EFFECTS
+        document.querySelectorAll('.card-hover').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.transition = 'all 0.3s ease';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
     </script>
+
+    <style>
+        .card-hover {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .table-responsive {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .table thead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: #f8f9fa;
+        }
+
+        .text-truncate {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
 }

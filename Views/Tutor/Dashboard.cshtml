@@ -13,6 +13,30 @@ Layout = "~/Views/Shared/_TutorLayout.cshtml";
     {
         return Regex.Replace(input ?? "", "<.*?>", string.Empty);
     }
+
+    string GetGradeLevelText(Webgiasu.Models.DifficultyLevel level)
+    {
+        return level switch
+        {
+            Webgiasu.Models.DifficultyLevel.TieuHoc => "Tiểu học",
+            Webgiasu.Models.DifficultyLevel.THCS => "THCS",
+            Webgiasu.Models.DifficultyLevel.THPT => "THPT",
+            Webgiasu.Models.DifficultyLevel.DaiHoc => "Đại học",
+            _ => "N/A"
+        };
+    }
+
+    string GetGradeLevelBadgeClass(Webgiasu.Models.DifficultyLevel level)
+    {
+        return level switch
+        {
+            Webgiasu.Models.DifficultyLevel.TieuHoc => "primary",
+            Webgiasu.Models.DifficultyLevel.THCS => "info",
+            Webgiasu.Models.DifficultyLevel.THPT => "warning",
+            Webgiasu.Models.DifficultyLevel.DaiHoc => "success",
+            _ => "secondary"
+        };
+    }
 }
 
 
@@ -217,18 +241,7 @@ Layout = "~/Views/Shared/_TutorLayout.cshtml";
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <span class="badge bg-secondary me-1">@problem.Type</span>
-                                        @if (problem.Difficulty == Webgiasu.Models.DifficultyLevel.Easy)
-                                        {
-                                            <span class="badge bg-success">Dễ</span>
-                                        }
-                                        else if (problem.Difficulty == Webgiasu.Models.DifficultyLevel.Medium)
-                                        {
-                                            <span class="badge bg-warning text-dark">Trung bình</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge bg-danger">Khó</span>
-                                        }
+                                        <span class="badge bg-@GetGradeLevelBadgeClass(problem.Difficulty)">@GetGradeLevelText(problem.Difficulty)</span>
                                     </div>
                                     <a asp-action="ProblemDetails" asp-route-id="@problem.Id" class="btn btn-sm btn-outline-success">
                                         <i class="bi bi-eye"></i> Xem chi tiết

@@ -5,6 +5,32 @@
     Layout = "_TutorLayout";
 }
 
+@functions {
+    string GetGradeLevelText(Webgiasu.Models.DifficultyLevel level)
+    {
+        return level switch
+        {
+            Webgiasu.Models.DifficultyLevel.TieuHoc => "Tiểu học",
+            Webgiasu.Models.DifficultyLevel.THCS => "THCS",
+            Webgiasu.Models.DifficultyLevel.THPT => "THPT",
+            Webgiasu.Models.DifficultyLevel.DaiHoc => "Đại học",
+            _ => "N/A"
+        };
+    }
+
+    string GetGradeLevelBadgeClass(Webgiasu.Models.DifficultyLevel level)
+    {
+        return level switch
+        {
+            Webgiasu.Models.DifficultyLevel.TieuHoc => "primary",
+            Webgiasu.Models.DifficultyLevel.THCS => "info",
+            Webgiasu.Models.DifficultyLevel.THPT => "warning",
+            Webgiasu.Models.DifficultyLevel.DaiHoc => "success",
+            _ => "secondary"
+        };
+    }
+}
+
 <div>
     <div class="row mb-4">
         <div class="col">
@@ -79,18 +105,9 @@
                                 @if (problem != null)
                                 {
                                     <span class="badge bg-secondary me-1">@problem.Type</span>
-                                    @if (problem.Difficulty == Webgiasu.Models.DifficultyLevel.Easy)
-                                    {
-                                        <span class="badge bg-success me-1">Dễ</span>
-                                    }
-                                    else if (problem.Difficulty == Webgiasu.Models.DifficultyLevel.Medium)
-                                    {
-                                        <span class="badge bg-warning me-1">TB</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-danger me-1">Khó</span>
-                                    }
+                                    <span class="badge bg-@GetGradeLevelBadgeClass(problem.Difficulty) me-1">
+                                        @GetGradeLevelText(problem.Difficulty)
+                                    </span>
                                     <span class="badge bg-info">@problem.Price.ToString("N0") đ</span>
                                 }
                             </div>

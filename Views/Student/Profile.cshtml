@@ -83,6 +83,38 @@
                             </div>
 
                             <div class="border-start border-primary border-4 ps-3 mb-4">
+                                <label class="text-muted small mb-1">Cấp học</label>
+                                <h6 class="fw-bold mb-0">
+                                    <i class="bi bi-book text-primary me-1"></i> 
+                                    @if (Model.Level.HasValue)
+                                    {
+                                        switch (Model.Level.Value)
+                                        {
+                                            case Webgiasu.Models.EducationLevel.TieuHoc:
+                                                <text>Tiểu học</text>
+                                                break;
+                                            case Webgiasu.Models.EducationLevel.THCS:
+                                                <text>THCS</text>
+                                                break;
+                                            case Webgiasu.Models.EducationLevel.THPT:
+                                                <text>THPT</text>
+                                                break;
+                                            case Webgiasu.Models.EducationLevel.DaiHoc:
+                                                <text>Đại học</text>
+                                                break;
+                                            default:
+                                                <text>Chưa cập nhật</text>
+                                                break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <text>Chưa cập nhật</text>
+                                    }
+                                </h6>
+                            </div>
+
+                            <div class="border-start border-primary border-4 ps-3 mb-4">
                                 <label class="text-muted small mb-1">Vai trò</label>
                                 <h6 class="fw-bold mb-0">
                                     <span class="badge bg-primary">Học sinh</span>
@@ -138,6 +170,19 @@
                                 <i class="bi bi-phone text-primary me-1"></i> Số điện thoại
                             </label>
                             <input type="tel" name="PhoneNumber" class="form-control" value="@Model.PhoneNumber" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-book text-primary me-1"></i> Cấp học
+                            </label>
+                            <select name="Level" class="form-select">
+                                <option value="">-- Chọn cấp học --</option>
+                                <option value="1" selected="@(Model.Level.HasValue && Model.Level.Value == Webgiasu.Models.EducationLevel.TieuHoc)">Tiểu học</option>
+                                <option value="2" selected="@(Model.Level.HasValue && Model.Level.Value == Webgiasu.Models.EducationLevel.THCS)">THCS</option>
+                                <option value="3" selected="@(Model.Level.HasValue && Model.Level.Value == Webgiasu.Models.EducationLevel.THPT)">THPT</option>
+                                <option value="4" selected="@(Model.Level.HasValue && Model.Level.Value == Webgiasu.Models.EducationLevel.DaiHoc)">Đại học</option>
+                            </select>
+                            <div class="form-text">Chọn cấp học bạn đang theo học</div>
                         </div>
                     </div>
                     <div class="modal-footer">

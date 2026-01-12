@@ -1,137 +1,167 @@
-﻿using Webgiasu.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Webgiasu.Models;
 
 namespace Webgiasu.Services
 {
     public class SchoolClassService : ISchoolClassService
     {
-        private static List<SchoolClass> _classes = new List<SchoolClass>();
-        private static List<ClassStudent> _classStudents = new List<ClassStudent>();
-        private static int _nextClassId = 1;
-        private static int _nextClassStudentId = 1;
+        private readonly AppDbContext _db;
 
-        public SchoolClassService()
+        public SchoolClassService(AppDbContext db)
         {
-            // Initialize with some demo data if needed
-            if (_classes.Count == 0)
-            {
-                InitializeDemoData();
-            }
-        }
-
-        private void InitializeDemoData()
-        {
-            // Add demo class
-            var demoClass = new SchoolClass
-            {
-                Id = _nextClassId++,
-                SchoolId = 1, // Assuming school with ID 1
-                ClassName = "Lớp Toán 10A",
-                Subject = "Toán",
-                Description = "Lớp học Toán nâng cao cho học sinh lớp 10",
-                TutorId = 1, // Tutor1
-                StartDate = DateTime.Now.AddDays(-7),
-                EndDate = DateTime.Now.AddMonths(3),
-                CreatedDate = DateTime.Now.AddDays(-10),
-                Status = ClassStatus.Active
-            };
-            _classes.Add(demoClass);
-
-            // Add demo students
-            _classStudents.Add(new ClassStudent
-            {
-                Id = _nextClassStudentId++,
-                ClassId = demoClass.Id,
-                StudentId = 1, // Student1
-                JoinedDate = DateTime.Now.AddDays(-7)
-            });
-
-            _classStudents.Add(new ClassStudent
-            {
-                Id = _nextClassStudentId++,
-                ClassId = demoClass.Id,
-                StudentId = 2, // Student2
-                JoinedDate = DateTime.Now.AddDays(-7)
-            });
+            _db = db;
         }
 
         public List<SchoolClass> GetClassesBySchoolId(int schoolId)
         {
-            return _classes.Where(c => c.SchoolId == schoolId).ToList();
+            try
+            {
+                return _db.SchoolClasses
+                    .Include(sc => sc.Tutor)
+                    .Include(sc => sc.School)
+                    .Include(sc => sc.Students)
+                    .Where(c => c.SchoolId == schoolId)
+                    .OrderByDescending(c => c.CreatedDate)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in GetClassesBySchoolId: {ex.Message}");
+                return new List<SchoolClass>();
+            }
         }
 
         public SchoolClass? GetClassById(int classId)
         {
-            return _classes.FirstOrDefault(c => c.Id == classId);
+            try
+            {
+                return _db.SchoolClasses
+                    .Include(sc => sc.Tutor)
+                    .Include(sc => sc.School)
+                    .Include(sc => sc.Students)
+                    .FirstOrDefault(c => c.Id == classId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in GetClassById: {ex.Message}");
+                return null;
+            }
         }
 
         public bool CreateClass(SchoolClass schoolClass, List<int> studentIds)
         {
             try
             {
-                schoolClass.Id = _nextClassId++;
-                schoolClass.CreatedDate = DateTime.Now;
-                schoolClass.Status = ClassStatus.Active;
+                // Đảm bảo có CreatedDate
+                if (schoolClass.CreatedDate == default)
+                {
+                    schoolClass.CreatedDate = DateTime.Now;
+                }
 
-                _classes.Add(schoolClass);
+                // Thêm class vào database
+                _db.SchoolClasses.Add(schoolClass);
+                _db.SaveChanges();
 
-                // Add students to class
+                // Thêm students vào class
                 if (studentIds != null && studentIds.Any())
                 {
                     foreach (var studentId in studentIds)
                     {
-                        _classStudents.Add(new ClassStudent
+                        var classStudent = new ClassStudent
                         {
-                            Id = _nextClassStudentId++,
                             ClassId = schoolClass.Id,
                             StudentId = studentId,
                             JoinedDate = DateTime.Now
-                        });
+                        };
+                        _db.ClassStudents.Add(classStudent);
                     }
+                    _db.SaveChanges();
                 }
 
+                Console.WriteLine($"✅ Created class '{schoolClass.ClassName}' with ID {schoolClass.Id}");
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine($"❌ Error in CreateClass: {ex.Message}");
+                Console.WriteLine($"   Stack trace: {ex.StackTrace}");
                 return false;
             }
         }
 
         public bool UpdateClass(SchoolClass schoolClass)
         {
-            var existingClass = _classes.FirstOrDefault(c => c.Id == schoolClass.Id);
-            if (existingClass == null) return false;
+            try
+            {
+                var existingClass = _db.SchoolClasses.Find(schoolClass.Id);
+                if (existingClass == null)
+                {
+                    Console.WriteLine($"❌ Class with ID {schoolClass.Id} not found");
+                    return false;
+                }
 
-            existingClass.ClassName = schoolClass.ClassName;
-            existingClass.Subject = schoolClass.Subject;
-            existingClass.Description = schoolClass.Description;
-            existingClass.TutorId = schoolClass.TutorId;
-            existingClass.StartDate = schoolClass.StartDate;
-            existingClass.EndDate = schoolClass.EndDate;
-            existingClass.Status = schoolClass.Status;
+                existingClass.ClassName = schoolClass.ClassName;
+                existingClass.Subject = schoolClass.Subject;
+                existingClass.Description = schoolClass.Description;
+                existingClass.TutorId = schoolClass.TutorId;
+                existingClass.StartDate = schoolClass.StartDate;
+                existingClass.EndDate = schoolClass.EndDate;
+                existingClass.Status = schoolClass.Status;
 
-            return true;
+                _db.SaveChanges();
+
+                Console.WriteLine($"✅ Updated class '{existingClass.ClassName}'");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in UpdateClass: {ex.Message}");
+                return false;
+            }
         }
 
         public bool DeleteClass(int classId)
         {
-            var classToRemove = _classes.FirstOrDefault(c => c.Id == classId);
-            if (classToRemove == null) return false;
+            try
+            {
+                var classToRemove = _db.SchoolClasses
+                    .Include(sc => sc.Students)
+                    .FirstOrDefault(c => c.Id == classId);
 
-            _classes.Remove(classToRemove);
+                if (classToRemove == null)
+                {
+                    Console.WriteLine($"❌ Class with ID {classId} not found");
+                    return false;
+                }
 
-            // Remove all students from this class
-            _classStudents.RemoveAll(cs => cs.ClassId == classId);
+                // Xóa tất cả students trong class (cascade sẽ tự động xóa nếu đã config trong AppDbContext)
+                _db.SchoolClasses.Remove(classToRemove);
+                _db.SaveChanges();
 
-            return true;
+                Console.WriteLine($"✅ Deleted class '{classToRemove.ClassName}'");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in DeleteClass: {ex.Message}");
+                return false;
+            }
         }
 
         public List<int> GetClassStudentIds(int classId)
         {
-            return _classStudents
-                .Where(cs => cs.ClassId == classId)
-                .Select(cs => cs.StudentId)
-                .ToList();
+            try
+            {
+                return _db.ClassStudents
+                    .Where(cs => cs.ClassId == classId)
+                    .Select(cs => cs.StudentId)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in GetClassStudentIds: {ex.Message}");
+                return new List<int>();
+            }
         }
     }
 }

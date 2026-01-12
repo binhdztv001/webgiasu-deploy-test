@@ -4,6 +4,32 @@
     Layout = "_TutorLayout";
 }
 
+@functions {
+    string GetGradeLevelText(Webgiasu.Models.DifficultyLevel level)
+    {
+        return level switch
+        {
+            Webgiasu.Models.DifficultyLevel.TieuHoc => "Tiểu học",
+            Webgiasu.Models.DifficultyLevel.THCS => "THCS",
+            Webgiasu.Models.DifficultyLevel.THPT => "THPT",
+            Webgiasu.Models.DifficultyLevel.DaiHoc => "Đại học",
+            _ => "N/A"
+        };
+    }
+
+    string GetGradeLevelBadgeClass(Webgiasu.Models.DifficultyLevel level)
+    {
+        return level switch
+        {
+            Webgiasu.Models.DifficultyLevel.TieuHoc => "primary",
+            Webgiasu.Models.DifficultyLevel.THCS => "info",
+            Webgiasu.Models.DifficultyLevel.THPT => "warning",
+            Webgiasu.Models.DifficultyLevel.DaiHoc => "success",
+            _ => "secondary"
+        };
+    }
+}
+
 <div>
     <div class="row mb-4">
         <div class="col">
@@ -58,7 +84,7 @@
                                 <th>ID</th>
                                 <th>Tiêu đề</th>
                                 <th>Môn học</th>
-                                <th>Độ khó</th>
+                                <th>Cấp học</th>
                                 <th>Deadline</th>
                                 <th>Trạng thái</th>
                                 <th>Giá</th>
@@ -74,18 +100,9 @@
                                     <td>@problem.Title</td>
                                     <td><span class="badge bg-secondary">@problem.Type</span></td>
                                     <td>
-                                        @if (problem.Difficulty == Webgiasu.Models.DifficultyLevel.Easy)
-                                        {
-                                            <span class="badge bg-success">Dễ</span>
-                                        }
-                                        else if (problem.Difficulty == Webgiasu.Models.DifficultyLevel.Medium)
-                                        {
-                                            <span class="badge bg-warning">TB</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge bg-danger">Khó</span>
-                                        }
+                                        <span class="badge bg-@GetGradeLevelBadgeClass(problem.Difficulty)">
+                                            @GetGradeLevelText(problem.Difficulty)
+                                        </span>
                                     </td>
                                     <td>
                                         <span class="@(isNearDeadline ? "text-danger fw-bold" : "")">

@@ -65,6 +65,35 @@
                             <div class="form-text">Chỉ sử dụng chữ cái, số và dấu gạch dưới (_)</div>
                         </div>
 
+                        @* ✅ Thêm dropdown Level cho Student và Tutor *@
+                        @if (Model.Role == Webgiasu.Models.UserRole.Student || Model.Role == Webgiasu.Models.UserRole.Tutor)
+                        {
+                            <div class="mb-4 fade-in-up delay-2">
+                                <label asp-for="Level" class="form-label fw-bold">
+                                    <i class="bi bi-mortarboard-fill text-@roleColor me-1"></i> 
+                                    @(Model.Role == Webgiasu.Models.UserRole.Student ? "Cấp học" : "Giảng dạy cấp")
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select asp-for="Level" class="form-select form-select-lg form-control-animated" required>
+                                    <option value="">-- Chọn cấp học --</option>
+                                    <option value="@((int)Webgiasu.Models.EducationLevel.TieuHoc)">Tiểu học</option>
+                                    <option value="@((int)Webgiasu.Models.EducationLevel.THCS)">Trung học cơ sở (THCS)</option>
+                                    <option value="@((int)Webgiasu.Models.EducationLevel.THPT)">Trung học phổ thông (THPT)</option>
+                                    <option value="@((int)Webgiasu.Models.EducationLevel.DaiHoc)">Đại học</option>
+                                </select>
+                                <div class="form-text">
+                                    @if (Model.Role == Webgiasu.Models.UserRole.Student)
+                                    {
+                                        <text>Chọn cấp học bạn đang theo học</text>
+                                    }
+                                    else
+                                    {
+                                        <text>Chọn cấp học bạn có thể giảng dạy</text>
+                                    }
+                                </div>
+                            </div>
+                        }
+
                         <div class="row">
                             <div class="col-md-6 mb-4 fade-in-up delay-3">
                                 <label asp-for="Email" class="form-label fw-bold">
@@ -138,7 +167,7 @@
                 </div>
 
                 <div class="card-footer bg-light text-center py-3 fade-in-up delay-5">
-                    <a asp-controller="Home" asp-action="Index" asp-route-role="@Model.Role.ToString()" class="btn btn-outline-@roleColor btn-pill btn-animated px-5">
+                    <a asp-controller="Home" asp-action="Index" asp-route-role="@Model.Role.ToString()" class="btn btn-outline-@roleColor @(Model.Role == Webgiasu.Models.UserRole.School ? "btn-no-border-hover" : "btn-pill") btn-animated px-5">
                         <i class="bi bi-arrow-left me-1"></i> Quay lại trang chủ
                     </a>
                 </div>
@@ -146,121 +175,6 @@
         </div>
     </div>
 </div>
-
-<style>
-    .register-card {
-        border-radius: 20px;
-        overflow: hidden;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .register-card:hover {
-        transform: translateY(-10px);
-    }
-    
-    .register-header {
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .register-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-        animation: shimmer 3s infinite;
-    }
-    
-    @@keyframes shimmer {
-        0% { left: -100%; }
-        100% { left: 100%; }
-    }
-    
-    .icon-container {
-        display: inline-block;
-    }
-    
-    .form-control-animated {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border: 2px solid #e9ecef;
-        border-radius: 12px;
-    }
-    
-    .form-control-animated:focus {
-        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
-        transform: translateY(-2px);
-    }
-    
-    .btn-animated {
-        position: relative;
-        overflow: hidden;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .btn-animated::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0;
-        height: 0;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.3);
-        transform: translate(-50%, -50%);
-        transition: width 0.6s, height 0.6s;
-    }
-    
-    .btn-animated:hover::before {
-        width: 400px;
-        height: 400px;
-    }
-    
-    .btn-animated:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    }
-    
-    .btn-pill {
-        border-radius: 50px;
-    }
-    
-    .alert-animated {
-        border-radius: 12px;
-        transition: all 0.3s ease;
-    }
-    
-    .alert-animated:hover {
-        transform: translateX(5px);
-    }
-    
-    .input-group .btn {
-        border-radius: 0 12px 12px 0;
-        border-color: #e9ecef;
-    }
-    
-    .input-group .form-control {
-        border-radius: 12px 0 0 12px;
-    }
-    
-    /* Floating animation for card on load */
-    @@keyframes floatIn {
-        0% {
-            opacity: 0;
-            transform: translateY(50px) scale(0.95);
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-    }
-    
-    .register-card {
-        animation: floatIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    }
-</style>
 
 @section Scripts {
     <script>

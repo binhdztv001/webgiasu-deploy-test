@@ -4,6 +4,32 @@
     Layout = "_TutorLayout";
 }
 
+@functions {
+    string GetGradeLevelText(Webgiasu.Models.DifficultyLevel level)
+    {
+        return level switch
+        {
+            Webgiasu.Models.DifficultyLevel.TieuHoc => "Tiểu học",
+            Webgiasu.Models.DifficultyLevel.THCS => "THCS",
+            Webgiasu.Models.DifficultyLevel.THPT => "THPT",
+            Webgiasu.Models.DifficultyLevel.DaiHoc => "Đại học",
+            _ => "N/A"
+        };
+    }
+
+    string GetGradeLevelBadgeClass(Webgiasu.Models.DifficultyLevel level)
+    {
+        return level switch
+        {
+            Webgiasu.Models.DifficultyLevel.TieuHoc => "primary",
+            Webgiasu.Models.DifficultyLevel.THCS => "info",
+            Webgiasu.Models.DifficultyLevel.THPT => "warning",
+            Webgiasu.Models.DifficultyLevel.DaiHoc => "success",
+            _ => "secondary"
+        };
+    }
+}
+
 <div class="row">
     <div class="col-lg-8">
         <div class="card shadow-sm mb-4">
@@ -40,18 +66,9 @@
                 
                 <div class="mb-3">
                     <span class="badge bg-secondary me-2"><i class="bi bi-book"></i> @Model.Problem.Type</span>
-                    @if (Model.Problem.Difficulty == Webgiasu.Models.DifficultyLevel.Easy)
-                    {
-                        <span class="badge bg-success me-2"><i class="bi bi-bar-chart"></i> Dễ</span>
-                    }
-                    else if (Model.Problem.Difficulty == Webgiasu.Models.DifficultyLevel.Medium)
-                    {
-                        <span class="badge bg-warning me-2"><i class="bi bi-bar-chart"></i> Trung bình</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-danger me-2"><i class="bi bi-bar-chart"></i> Khó</span>
-                    }
+                    <span class="badge bg-@GetGradeLevelBadgeClass(Model.Problem.Difficulty) me-2">
+                        <i class="bi bi-mortarboard"></i> @GetGradeLevelText(Model.Problem.Difficulty)
+                    </span>
                     <span class="badge bg-success fs-6"><i class="bi bi-currency-dollar"></i> @Model.Problem.Price.ToString("N0") đ</span>
                 </div>
 

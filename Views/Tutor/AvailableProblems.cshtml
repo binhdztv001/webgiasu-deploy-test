@@ -4,89 +4,243 @@
     Layout = "~/Views/Shared/_TutorLayout.cshtml";
 }
 
+@functions {
+    string GetGradeLevelText(Webgiasu.Models.DifficultyLevel level)
+    {
+        return level switch
+        {
+            Webgiasu.Models.DifficultyLevel.TieuHoc => "Tiểu học",
+            Webgiasu.Models.DifficultyLevel.THCS => "THCS",
+            Webgiasu.Models.DifficultyLevel.THPT => "THPT",
+            Webgiasu.Models.DifficultyLevel.DaiHoc => "Đại học",
+            _ => "N/A"
+        };
+    }
+
+    string GetGradeLevelBadgeClass(Webgiasu.Models.DifficultyLevel level)
+    {
+        return level switch
+        {
+            Webgiasu.Models.DifficultyLevel.TieuHoc => "primary",
+            Webgiasu.Models.DifficultyLevel.THCS => "info",
+            Webgiasu.Models.DifficultyLevel.THPT => "warning",
+            Webgiasu.Models.DifficultyLevel.DaiHoc => "success",
+            _ => "secondary"
+        };
+    }
+
+    string GetGradeLevelIcon(Webgiasu.Models.DifficultyLevel level)
+    {
+        return level switch
+        {
+            Webgiasu.Models.DifficultyLevel.TieuHoc => "1-circle",
+            Webgiasu.Models.DifficultyLevel.THCS => "2-circle",
+            Webgiasu.Models.DifficultyLevel.THPT => "3-circle",
+            Webgiasu.Models.DifficultyLevel.DaiHoc => "mortarboard",
+            _ => "question-circle"
+        };
+    }
+}
+
 <div>
-    <div class="row mb-4">
-        <div class="col">
-            <h2 class="fw-bold">
-                <i class="bi bi-list-task text-success"></i> Bài toán chờ giải
-            </h2>
-            <p class="text-muted">Chọn bài toán phù hợp với bạn</p>
+    <!-- Page Header -->
+    <div class="page-header mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <div>
+                <h2 class="fw-bold">
+                    <i class="bi bi-list-task text-success me-2"></i>Bài toán chờ giải
+                </h2>
+                <p class="text-muted mb-0">Chọn bài toán phù hợp với bạn và bắt đầu kiếm thu nhập</p>
+            </div>
+            <div>
+                <span class="badge bg-success fs-5">
+                    <i class="bi bi-card-list me-1"></i>@Model.Count bài
+                </span>
+            </div>
         </div>
     </div>
 
+    <!-- Statistics Cards -->
     @if (Model.Any())
     {
-        <div class="row">
-            @foreach (var problem in Model)
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-md-3">
+                <div class="card border-0 shadow-sm text-center">
+                    <div class="card-body p-3">
+                        <i class="bi bi-1-circle text-primary fs-2 mb-2"></i>
+                        <h4 class="fw-bold mb-1">@Model.Count(p => p.Difficulty == Webgiasu.Models.DifficultyLevel.TieuHoc)</h4>
+                        <p class="text-muted mb-0 small">Tiểu học</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card border-0 shadow-sm text-center">
+                    <div class="card-body p-3">
+                        <i class="bi bi-2-circle text-info fs-2 mb-2"></i>
+                        <h4 class="fw-bold mb-1">@Model.Count(p => p.Difficulty == Webgiasu.Models.DifficultyLevel.THCS)</h4>
+                        <p class="text-muted mb-0 small">THCS</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card border-0 shadow-sm text-center">
+                    <div class="card-body p-3">
+                        <i class="bi bi-3-circle text-warning fs-2 mb-2"></i>
+                        <h4 class="fw-bold mb-1">@Model.Count(p => p.Difficulty == Webgiasu.Models.DifficultyLevel.THPT)</h4>
+                        <p class="text-muted mb-0 small">THPT</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card border-0 shadow-sm text-center">
+                    <div class="card-body p-3">
+                        <i class="bi bi-mortarboard text-success fs-2 mb-2"></i>
+                        <h4 class="fw-bold mb-1">@Model.Count(p => p.Difficulty == Webgiasu.Models.DifficultyLevel.DaiHoc)</h4>
+                        <p class="text-muted mb-0 small">Đại học</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Lọc theo cấp học</label>
+                        <select class="form-select form-select-sm" id="filterLevel">
+                            <option value="">Tất cả</option>
+                            <option value="TieuHoc">Tiểu học</option>
+                            <option value="THCS">THCS</option>
+                            <option value="THPT">THPT</option>
+                            <option value="DaiHoc">Đại học</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Lọc theo môn học</label>
+                        <select class="form-select form-select-sm" id="filterSubject">
+                            <option value="">Tất cả</option>
+                            <option value="Toan">Toán</option>
+                            <option value="Ly">Vật lý</option>
+                            <option value="Hoa">Hóa học</option>
+                            <option value="Sinh">Sinh học</option>
+                            <option value="Van">Ngữ văn</option>
+                            <option value="Anh">Tiếng Anh</option>
+                            <option value="Su">Lịch sử</option>
+                            <option value="Dia">Địa lý</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold">Tìm kiếm</label>
+                        <input type="text" class="form-control form-control-sm" id="searchInput" placeholder="Tìm theo tiêu đề...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Problems Grid -->
+        <div class="row" id="problemsGrid">
+            @foreach (var problem in Model.OrderByDescending(p => p.CreatedDate))
             {
-                <div class="col-lg-6 mb-4">
-                    <div class="card shadow-sm h-100 hover-card">
+                var levelBadgeClass = GetGradeLevelBadgeClass(problem.Difficulty);
+                var levelText = GetGradeLevelText(problem.Difficulty);
+                var levelIcon = GetGradeLevelIcon(problem.Difficulty);
+
+                var timeLeft = problem.Deadline - DateTime.Now;
+                var isUrgent = timeLeft.TotalHours < 24 && timeLeft.TotalHours > 0;
+                var isOverdue = timeLeft.TotalHours < 0;
+
+                <div class="col-lg-6 col-xl-4 mb-4 problem-card"
+                     data-level="@problem.Difficulty"
+                     data-subject="@problem.Type"
+                     data-title="@problem.Title.ToLower()">
+                    <div class="card shadow-sm h-100 hover-card @(isUrgent ? "border-warning border-2" : "")">
                         <div class="card-body">
+                            <!-- Header with Price -->
                             <div class="d-flex justify-content-between align-items-start mb-3">
-                                <h5 class="card-title mb-0">@problem.Title</h5>
-                                <span class="badge bg-success fs-6">@problem.Price.ToString("N0") đ</span>
+                                <h5 class="card-title mb-0 flex-grow-1 text-truncate" title="@problem.Title">
+                                    @problem.Title
+                                </h5>
+                                <span class="badge bg-success fs-6 ms-2">
+                                    <i class="bi bi-currency-dollar"></i>@problem.Price.ToString("N0")đ
+                                </span>
                             </div>
 
-                            <p class="card-text text-muted">
-                                @Html.Raw(problem.Description.Length > 150
-                                                        ? problem.Description.Substring(0, 150) + "..."
-                                                        : problem.Description)
+                            <!-- Description -->
+                            <p class="card-text text-muted small mb-3" style="height: 60px; overflow: hidden;">
+                                @{
+                                    var plainText = System.Text.RegularExpressions.Regex.Replace(problem.Description ?? "", "<.*?>", string.Empty);
+                                    var truncatedText = plainText.Length > 120 ? plainText.Substring(0, 120) + "..." : plainText;
+                                }
+                                @truncatedText
                             </p>
 
+                            <!-- Badges -->
                             <div class="mb-3">
                                 <span class="badge bg-secondary me-1">
-                                    <i class="bi bi-book"></i> @problem.Type
+                                    <i class="bi bi-book me-1"></i>@problem.Type
                                 </span>
-                        @if (problem.Difficulty == Webgiasu.Models.DifficultyLevel.Easy)
+                                <span class="badge bg-@levelBadgeClass me-1">
+                                    <i class="bi bi-@levelIcon me-1"></i>@levelText
+                                </span>
+                                @if (isUrgent)
                                 {
-                                    <span class="badge bg-success me-1">
-                                        <i class="bi bi-bar-chart"></i> Dễ
-                                    </span>
-                                }
-                                else if (problem.Difficulty == Webgiasu.Models.DifficultyLevel.Medium)
-                                {
-                                    <span class="badge bg-warning me-1">
-                                        <i class="bi bi-bar-chart"></i> Trung bình
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-danger me-1">
-                                        <i class="bi bi-bar-chart"></i> Khó
+                                    <span class="badge bg-danger">
+                                        <i class="bi bi-exclamation-triangle me-1"></i>Gấp!
                                     </span>
                                 }
                             </div>
 
+                            <!-- Dates -->
                             <div class="mb-3">
-                                <small class="text-muted">
-                                    <i class="bi bi-calendar-plus"></i> Đăng: @problem.CreatedDate.ToString("dd/MM/yyyy")<br />
-                                    <i class="bi bi-calendar-event"></i> Deadline: <span class="text-danger fw-bold">@problem.Deadline.ToString("dd/MM/yyyy HH:mm")</span>
+                                <small class="text-muted d-block">
+                                    <i class="bi bi-calendar-plus me-1"></i>Đăng: @problem.CreatedDate.ToString("dd/MM/yyyy")
+                                </small>
+                                <small class="@(isUrgent || isOverdue ? "text-danger" : "text-muted") d-block">
+                                    <i class="bi bi-calendar-event me-1"></i>Deadline:
+                                    <strong>@problem.Deadline.ToString("dd/MM/yyyy HH:mm")</strong>
                                 </small>
                             </div>
 
+                            <!-- Image Preview -->
                             @if (!string.IsNullOrEmpty(problem.ImageUrl) && problem.ImageUrl != "/images/default.jpg")
                             {
-                                <div class="mb-3">
-                                    <img src="@problem.ImageUrl" alt="Problem" class="img-fluid rounded" style="max-height: 150px;" />
+                                <div class="mb-3 text-center">
+                                    <img src="@problem.ImageUrl" alt="Problem" class="img-fluid rounded" style="max-height: 120px; object-fit: cover;" />
                                 </div>
                             }
 
+                            <!-- Action Buttons -->
                             <div class="d-flex gap-2">
-                                <a asp-action="ProblemDetails" asp-route-id="@problem.Id" class="btn btn-outline-primary flex-fill">
-                                    <i class="bi bi-eye"></i> Xem chi tiết
+                                <a asp-action="ProblemDetails" asp-route-id="@problem.Id" class="btn btn-sm btn-outline-primary flex-fill">
+                                    <i class="bi bi-eye me-1"></i>Xem
                                 </a>
                                 <form asp-action="AcceptProblem" method="post" class="flex-fill">
+                                    @Html.AntiForgeryToken()
                                     <input type="hidden" name="id" value="@problem.Id" />
-                                    <button type="submit" class="btn btn-success w-100" onclick="return confirm('Bạn chắc chắn muốn nhận bài này?')">
-                                        <i class="bi bi-check-circle"></i> Nhận bài
+                                    <button type="submit" class="btn btn-sm btn-success w-100" onclick="return confirm('✅ Bạn chắc chắn muốn nhận bài này?\n\nLưu ý: Bạn sẽ cần hoàn thành bài trước deadline.')">
+                                        <i class="bi bi-check-circle me-1"></i>Nhận bài
                                     </button>
                                 </form>
                             </div>
                         </div>
-                        <div class="card-footer bg-light">
-                            <small class="text-muted">
-                                <i class="bi bi-clock"></i>
-                                Còn @((problem.Deadline - DateTime.Now).Days) ngày
+
+                        <!-- Footer -->
+                        <div class="card-footer @(isUrgent ? "bg-warning bg-opacity-10" : isOverdue ? "bg-danger bg-opacity-10" : "bg-light")">
+                            <small class="@(isUrgent || isOverdue ? "text-danger fw-bold" : "text-muted")">
+                                <i class="bi bi-clock me-1"></i>
+                                @if (isOverdue)
+                                {
+                                    <text>Đã quá hạn</text>
+                                }
+                                else if (timeLeft.TotalHours < 24)
+                                {
+                                    <text>Còn @((int)timeLeft.TotalHours) giờ</text>
+                                }
+                                else
+                                {
+                                    <text>Còn @((int)timeLeft.TotalDays) ngày</text>
+                                }
                             </small>
                         </div>
                     </div>
@@ -96,16 +250,122 @@
     }
     else
     {
+        <!-- Empty State -->
         <div class="card shadow-sm">
             <div class="card-body text-center py-5">
-                <i class="bi bi-inbox text-muted" style="font-size: 5rem;"></i>
+                <i class="bi bi-inbox text-muted" style="font-size: 5rem; opacity: 0.3;"></i>
                 <h4 class="mt-3 text-muted">Hiện không có bài toán nào</h4>
-                <p class="text-muted">Vui lòng quay lại sau</p>
-                <a asp-action="Dashboard" class="btn btn-primary">
-                    <i class="bi bi-arrow-left"></i> Quay lại Dashboard
+                <p class="text-muted mb-4">Tất cả bài toán đã được nhận hoặc chưa có bài mới</p>
+                <a asp-action="Dashboard" class="btn btn-success">
+                    <i class="bi bi-arrow-left me-1"></i>Quay lại Dashboard
                 </a>
             </div>
         </div>
     }
 </div>
 
+@section Scripts {
+    <script>
+        // ✅ FILTER & SEARCH FUNCTIONALITY
+        (function() {
+            const filterLevel = document.getElementById('filterLevel');
+            const filterSubject = document.getElementById('filterSubject');
+            const searchInput = document.getElementById('searchInput');
+            const problemCards = document.querySelectorAll('.problem-card');
+
+            function applyFilters() {
+                const levelValue = filterLevel?.value;
+                const subjectValue = filterSubject?.value;
+                const searchValue = searchInput?.value.toLowerCase().trim();
+
+                let visibleCount = 0;
+
+                problemCards.forEach(card => {
+                    const cardLevel = card.getAttribute('data-level');
+                    const cardSubject = card.getAttribute('data-subject');
+                    const cardTitle = card.getAttribute('data-title');
+
+                    let show = true;
+
+                    // Filter by level
+                    if (levelValue && cardLevel !== levelValue) {
+                        show = false;
+                    }
+
+                    // Filter by subject
+                    if (subjectValue && cardSubject !== subjectValue) {
+                        show = false;
+                    }
+
+                    // Filter by search
+                    if (searchValue && !cardTitle.includes(searchValue)) {
+                        show = false;
+                    }
+
+                    card.style.display = show ? '' : 'none';
+                    if (show) visibleCount++;
+                });
+
+                console.log(`Hiển thị ${visibleCount}/${problemCards.length} bài toán`);
+            }
+
+            // Event listeners
+            filterLevel?.addEventListener('change', applyFilters);
+            filterSubject?.addEventListener('change', applyFilters);
+            searchInput?.addEventListener('input', applyFilters);
+        })();
+
+        // ✅ HOVER EFFECTS
+        document.querySelectorAll('.hover-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.transition = 'all 0.3s ease';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // ✅ AUTO REFRESH EVERY 2 MINUTES (OPTIONAL)
+        // setInterval(() => {
+        //     location.reload();
+        // }, 120000);
+    </script>
+}
+
+<style>
+    .hover-card {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+        .hover-card:hover {
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+            transform: translateY(-5px);
+        }
+
+    .problem-card {
+        transition: all 0.3s ease;
+    }
+
+    .text-truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.35em 0.65em;
+    }
+
+    @@media (max-width: 768px) {
+        .col-xl-4
+
+    {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    }
+</style>
