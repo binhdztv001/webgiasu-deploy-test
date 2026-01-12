@@ -10,5 +10,7 @@ namespace Webgiasu.Services
         bool UpdateClass(SchoolClass schoolClass);
         bool DeleteClass(int classId);
         List<int> GetClassStudentIds(int classId);
+
+
     }
 }

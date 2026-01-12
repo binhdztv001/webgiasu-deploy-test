@@ -388,7 +388,7 @@ namespace Webgiasu.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdateProfile(string fullName, string email, string phoneNumber)
+        public IActionResult UpdateProfile(string fullName, string email, string phoneNumber, int? level)
         {
             try
             {
@@ -401,6 +401,16 @@ namespace Webgiasu.Controllers
                     user.FullName = fullName;
                     user.Email = email;
                     user.PhoneNumber = phoneNumber;
+
+                    // Update Level
+                    if (level.HasValue && Enum.IsDefined(typeof(EducationLevel), level.Value))
+                    {
+                        user.Level = (EducationLevel)level.Value;
+                    }
+                    else
+                    {
+                        user.Level = null;
+                    }
 
                     _userService.UpdateUser(user);
                     HttpContext.Session.SetString("UserName", user.FullName);
@@ -1488,7 +1498,7 @@ namespace Webgiasu.Controllers
 
         // ✅ UPDATE CreateProblem POST method
         [HttpPost]
-        public IActionResult CreateProblem(CreateProblemViewModel model, decimal? CustomPrice, bool IsGroupMode, string? GroupName)
+        public IActionResult CreateProblem(CreateProblemViewModel model, decimal? CustomPrice)
         {
             try
             {
@@ -1497,30 +1507,27 @@ namespace Webgiasu.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    // Calculate price
+                    // ✅ TÍNH GIÁ THEO CẤP HỌC
                     decimal price;
 
-                    if (model.Difficulty == DifficultyLevel.options && CustomPrice.HasValue)
+                    if (CustomPrice.HasValue && CustomPrice.Value >= 10000)
                     {
+                        // Sử dụng giá tùy chỉnh
                         price = CustomPrice.Value;
-
-                        if (price < 10000)
-                        {
-                            TempData["Error"] = "Giá tối thiểu là 10,000 đ!";
-                            return View(model);
-                        }
                     }
                     else
                     {
+                        // Sử dụng giá mặc định theo cấp học
                         price = model.Difficulty switch
                         {
-                            DifficultyLevel.Easy => 40000,
-                            DifficultyLevel.Medium => 60000,
-                            DifficultyLevel.Hard => 90000,
+                            DifficultyLevel.TieuHoc => 30000,
+                            DifficultyLevel.THCS => 50000,
+                            DifficultyLevel.THPT => 70000,
+                            DifficultyLevel.DaiHoc => 100000,
                             _ => 50000
                         };
                     }
-                    
+
                     string? attachmentUrl = null;
 
                     if (model.AttachmentFile != null && model.AttachmentFile.Length > 0)
@@ -1528,10 +1535,10 @@ namespace Webgiasu.Controllers
                         var allowedExtensions = new[] { ".pdf", ".doc", ".docx" };
                         var allowedMimeTypes = new[]
                         {
-                            "application/pdf",
-                            "application/msword",
-                            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                        };
+                    "application/pdf",
+                    "application/msword",
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                };
 
                         var ext = Path.GetExtension(model.AttachmentFile.FileName).ToLowerInvariant();
 
@@ -1573,7 +1580,7 @@ namespace Webgiasu.Controllers
                         Title = model.Title,
                         Description = model.Description,
                         Type = model.Type,
-                        Difficulty = model.Difficulty,
+                        Difficulty = model.Difficulty,  // Giờ là cấp học
                         ImageUrl = model.ImageFile != null ? $"/images/{model.ImageFile.FileName}" : "/images/default.jpg",
                         AttachmentFile = attachmentUrl,
                         Deadline = model.Deadline,
@@ -1584,40 +1591,16 @@ namespace Webgiasu.Controllers
 
                     if (_problemService.CreateProblem(problem))
                     {
-                        // ✅ If Group Mode, create Problem Group
-                        if (IsGroupMode)
+                        // Tạo payment
+                        var payment = new Payment
                         {
-                            var group = _problemGroupService.CreateProblemGroup(
-                                problemId: problem.Id,
-                                createdByUserId: userId,
-                                groupName: GroupName,
-                                totalPrice: price
-                            );
+                            StudentId = userId,
+                            ProblemId = problem.Id,
+                            Amount = price
+                        };
+                        _paymentService.CreatePayment(payment);
 
-                            if (group != null)
-                            {
-                                TempData["Success"] = "Tạo nhóm và đăng bài toán thành công! Bạn có thể mời bạn bè tham gia.";
-                                return RedirectToAction("GroupDetails", new { id = group.Id });
-                            }
-                            else
-                            {
-                                TempData["Warning"] = "Đăng bài toán thành công nhưng không thể tạo nhóm!";
-                            }
-                        }
-                        else
-                        {
-                            // Individual mode - create payment as before
-                            var payment = new Payment
-                            {
-                                StudentId = userId,
-                                ProblemId = problem.Id,
-                                Amount = price
-                            };
-                            _paymentService.CreatePayment(payment);
-
-                            TempData["Success"] = "Đăng bài toán thành công!";
-                        }
-
+                        TempData["Success"] = "Đăng bài toán thành công!";
                         return RedirectToAction("Dashboard");
                     }
                 }
@@ -2213,6 +2196,7 @@ namespace Webgiasu.Controllers
                 ViewBag.ProblemId = problem.Id;
                 ViewBag.CurrentImageUrl = problem.ImageUrl;
                 ViewBag.CurrentAttachmentUrl = problem.AttachmentFile;
+                ViewBag.CurrentPrice = problem.Price;
 
                 return View(model);
             }
@@ -2245,33 +2229,32 @@ namespace Webgiasu.Controllers
                     ViewBag.ProblemId = id;
                     ViewBag.CurrentImageUrl = problem.ImageUrl;
                     ViewBag.CurrentAttachmentUrl = problem.AttachmentFile;
+                    ViewBag.CurrentPrice = problem.Price;
                     return View(model);
                 }
 
-                // Price calculation (same logic as Create)
+                // ✅ TÍNH GIÁ THEO CẤP HỌC (GIỐNG CREATEPROBLEM)
                 decimal price;
-                if (model.Difficulty == DifficultyLevel.options && CustomPrice.HasValue)
+
+                if (CustomPrice.HasValue && CustomPrice.Value >= 10000)
                 {
+                    // Sử dụng giá tùy chỉnh
                     price = CustomPrice.Value;
-                    if (price < 10000)
-                    {
-                        TempData["Error"] = "Giá tối thiểu là 10,000 đ!";
-                        ViewBag.ProblemId = id;
-                        return View(model);
-                    }
                 }
                 else
                 {
+                    // Sử dụng giá mặc định theo cấp học
                     price = model.Difficulty switch
                     {
-                        DifficultyLevel.Easy => 40000,
-                        DifficultyLevel.Medium => 60000,
-                        DifficultyLevel.Hard => 90000,
+                        DifficultyLevel.TieuHoc => 30000,
+                        DifficultyLevel.THCS => 50000,
+                        DifficultyLevel.THPT => 70000,
+                        DifficultyLevel.DaiHoc => 100000,
                         _ => 50000
                     };
                 }
 
-                // Update fields
+                // ✅ UPDATE PROBLEM FIELDS
                 problem.Title = model.Title;
                 problem.Description = model.Description;
                 problem.Type = model.Type;
@@ -2279,7 +2262,7 @@ namespace Webgiasu.Controllers
                 problem.Deadline = model.Deadline;
                 problem.Price = price;
 
-                // Image upload
+                // ✅ HANDLE IMAGE UPLOAD
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
                 {
                     var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
@@ -2296,13 +2279,36 @@ namespace Webgiasu.Controllers
                     problem.ImageUrl = "/images/" + fileName;
                 }
 
-                // Attachment upload
+                // ✅ HANDLE ATTACHMENT UPLOAD
                 if (model.AttachmentFile != null && model.AttachmentFile.Length > 0)
                 {
+                    var allowedExtensions = new[] { ".pdf", ".doc", ".docx" };
+                    var ext = Path.GetExtension(model.AttachmentFile.FileName).ToLowerInvariant();
+
+                    if (!allowedExtensions.Contains(ext))
+                    {
+                        ModelState.AddModelError("AttachmentFile", "Chỉ cho phép file PDF, DOC, DOCX.");
+                        ViewBag.ProblemId = id;
+                        ViewBag.CurrentImageUrl = problem.ImageUrl;
+                        ViewBag.CurrentAttachmentUrl = problem.AttachmentFile;
+                        ViewBag.CurrentPrice = problem.Price;
+                        return View(model);
+                    }
+
+                    if (model.AttachmentFile.Length > 10 * 1024 * 1024)
+                    {
+                        ModelState.AddModelError("AttachmentFile", "File tối đa 10MB.");
+                        ViewBag.ProblemId = id;
+                        ViewBag.CurrentImageUrl = problem.ImageUrl;
+                        ViewBag.CurrentAttachmentUrl = problem.AttachmentFile;
+                        ViewBag.CurrentPrice = problem.Price;
+                        return View(model);
+                    }
+
                     var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/files");
                     Directory.CreateDirectory(uploadDir);
 
-                    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(model.AttachmentFile.FileName)}";
+                    var fileName = $"{Guid.NewGuid()}{ext}";
                     var filePath = Path.Combine(uploadDir, fileName);
 
                     using (var stream = new FileStream(filePath, FileMode.Create))
@@ -2313,8 +2319,17 @@ namespace Webgiasu.Controllers
                     problem.AttachmentFile = "/files/" + fileName;
                 }
 
+                // ✅ UPDATE DATABASE
                 if (_problemService.UpdateProblem(problem))
                 {
+                    // ✅ UPDATE PAYMENT AMOUNT
+                    var payment = _paymentService.GetPaymentByProblemId(problem.Id);
+                    if (payment != null && payment.Status == PaymentStatus.Pending)
+                    {
+                        payment.Amount = price;
+                        _db.SaveChanges();
+                    }
+
                     TempData["Success"] = "Cập nhật bài toán thành công!";
                     return RedirectToAction("ProblemDetails", new { id });
                 }

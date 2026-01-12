@@ -131,12 +131,31 @@ namespace Webgiasu.Controllers
                 var userId = GetCurrentUserId();
                 if (userId == 0) return RedirectToAction("Login", "Account");
 
-                // Load available students and tutors
-                var students = _userService.GetUsersByRole(UserRole.Student);
-                var tutors = _userService.GetUsersByRole(UserRole.Tutor);
+                // ✅ CHỈ LẤY HỌC SINH VÀ MENTOR CẤP ĐẠI HỌC
+                var allStudents = _userService.GetUsersByRole(UserRole.Student);
+                var allTutors = _userService.GetUsersByRole(UserRole.Tutor);
 
-                ViewBag.Students = students;
-                ViewBag.Tutors = tutors;
+                // Lọc chỉ lấy những người cấp Đại học
+                var universityStudents = allStudents
+                    .Where(s => s.Level.HasValue && s.Level.Value == EducationLevel.DaiHoc)
+                    .ToList();
+
+                var universityTutors = allTutors
+                    .Where(t => t.Level.HasValue && t.Level.Value == EducationLevel.DaiHoc && t.IsApproved)
+                    .ToList();
+
+                ViewBag.Students = universityStudents;
+                ViewBag.Tutors = universityTutors;
+
+                // Thông báo nếu không có mentor/học sinh phù hợp
+                if (!universityTutors.Any())
+                {
+                    TempData["Warning"] = "Hiện không có Mentor cấp Đại học trong hệ thống!";
+                }
+                if (!universityStudents.Any())
+                {
+                    TempData["Warning"] = "Hiện không có Học sinh cấp Đại học trong hệ thống!";
+                }
 
                 return View();
             }
@@ -149,21 +168,21 @@ namespace Webgiasu.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateClass(string className, string subject, string description, int tutorId, List<int> studentIds, DateTime? startDate, DateTime? endDate)
+        public IActionResult CreateClass(string className, string subject, string description, int? tutorId, List<int> studentIds, DateTime? startDate, DateTime? endDate)
         {
             try
             {
                 var userId = GetCurrentUserId();
                 if (userId == 0) return RedirectToAction("Login", "Account");
 
-                // Validate
+                // Validate cơ bản
                 if (string.IsNullOrWhiteSpace(className) || string.IsNullOrWhiteSpace(subject))
                 {
                     TempData["Error"] = "Vui lòng nhập đầy đủ thông tin!";
                     return RedirectToAction("CreateClass");
                 }
 
-                if (tutorId == 0)
+                if (!tutorId.HasValue || tutorId.Value == 0)
                 {
                     TempData["Error"] = "Vui lòng chọn Mentor!";
                     return RedirectToAction("CreateClass");
@@ -175,22 +194,65 @@ namespace Webgiasu.Controllers
                     return RedirectToAction("CreateClass");
                 }
 
-                // Create class
+                // ✅ KIỂM TRA MENTOR CẤP ĐẠI HỌC
+                var selectedTutor = _userService.GetUserById(tutorId.Value);
+                if (selectedTutor == null || selectedTutor.Role != UserRole.Tutor)
+                {
+                    TempData["Error"] = "Mentor không hợp lệ!";
+                    return RedirectToAction("CreateClass");
+                }
+
+                if (!selectedTutor.Level.HasValue || selectedTutor.Level.Value != EducationLevel.DaiHoc)
+                {
+                    TempData["Error"] = "Chỉ Mentor cấp Đại học mới được phép giảng dạy!";
+                    return RedirectToAction("CreateClass");
+                }
+
+                if (!selectedTutor.IsApproved)
+                {
+                    TempData["Error"] = "Mentor chưa được phê duyệt!";
+                    return RedirectToAction("CreateClass");
+                }
+
+                // ✅ KIỂM TRA TẤT CẢ HỌC SINH ĐỀU CẤP ĐẠI HỌC
+                var selectedStudents = _userService.GetUsersByRole(UserRole.Student)
+                    .Where(s => studentIds.Contains(s.Id))
+                    .ToList();
+
+                if (selectedStudents.Count != studentIds.Count)
+                {
+                    TempData["Error"] = "Một số học sinh không hợp lệ!";
+                    return RedirectToAction("CreateClass");
+                }
+
+                var nonUniversityStudents = selectedStudents
+                    .Where(s => !s.Level.HasValue || s.Level.Value != EducationLevel.DaiHoc)
+                    .ToList();
+
+                if (nonUniversityStudents.Any())
+                {
+                    var studentNames = string.Join(", ", nonUniversityStudents.Select(s => s.FullName));
+                    TempData["Error"] = $"Chỉ học sinh cấp Đại học mới được phép tham gia! Học sinh không đủ điều kiện: {studentNames}";
+                    return RedirectToAction("CreateClass");
+                }
+
+                // ✅ TẤT CẢ ĐIỀU KIỆN ĐÃ ĐẠT - TẠO LỚP HỌC
                 var newClass = new SchoolClass
                 {
                     SchoolId = userId,
                     ClassName = className,
                     Subject = subject,
                     Description = description,
-                    TutorId = tutorId,
+                    TutorId = tutorId.Value,
                     StartDate = startDate,
                     EndDate = endDate,
-                    Status = ClassStatus.Active
+                    Status = ClassStatus.Active,
+                    CreatedDate = DateTime.Now
                 };
 
                 if (_classService.CreateClass(newClass, studentIds))
                 {
-                    TempData["Success"] = "Tạo lớp học thành công!";
+                    TempData["Success"] = "Tạo lớp học thành công với Mentor và Học sinh cấp Đại học!";
                     return RedirectToAction("ManageClasses");
                 }
                 else
@@ -202,7 +264,8 @@ namespace Webgiasu.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ Error in CreateClass POST: {ex.Message}");
-                TempData["Error"] = "Đã xảy ra lỗi khi tạo lớp học!";
+                Console.WriteLine($"   Stack trace: {ex.StackTrace}");
+                TempData["Error"] = $"Đã xảy ra lỗi khi tạo lớp học: {ex.Message}";
                 return RedirectToAction("CreateClass");
             }
         }
@@ -367,9 +430,13 @@ namespace Webgiasu.Controllers
                     return RedirectToAction("ManageClasses");
                 }
 
-                // Load tutors
-                var tutors = _userService.GetUsersByRole(UserRole.Tutor);
-                ViewBag.Tutors = tutors;
+                // ✅ CHỈ LẤY MENTOR CẤP ĐẠI HỌC ĐÃ ĐƯỢC DUYỆT
+                var allTutors = _userService.GetUsersByRole(UserRole.Tutor);
+                var universityTutors = allTutors
+                    .Where(t => t.Level.HasValue && t.Level.Value == EducationLevel.DaiHoc && t.IsApproved)
+                    .ToList();
+
+                ViewBag.Tutors = universityTutors;
 
                 var viewModel = new Models.ViewModels.EditClassViewModel
                 {
@@ -421,6 +488,26 @@ namespace Webgiasu.Controllers
                 if (tutorId == 0)
                 {
                     TempData["Error"] = "Vui lòng chọn Mentor!";
+                    return RedirectToAction("EditClass", new { id = classId });
+                }
+
+                // ✅ KIỂM TRA MENTOR CẤP ĐẠI HỌC
+                var selectedTutor = _userService.GetUserById(tutorId);
+                if (selectedTutor == null || selectedTutor.Role != UserRole.Tutor)
+                {
+                    TempData["Error"] = "Mentor không hợp lệ!";
+                    return RedirectToAction("EditClass", new { id = classId });
+                }
+
+                if (!selectedTutor.Level.HasValue || selectedTutor.Level.Value != EducationLevel.DaiHoc)
+                {
+                    TempData["Error"] = "Chỉ Mentor cấp Đại học mới được phép giảng dạy!";
+                    return RedirectToAction("EditClass", new { id = classId });
+                }
+
+                if (!selectedTutor.IsApproved)
+                {
+                    TempData["Error"] = "Mentor chưa được phê duyệt!";
                     return RedirectToAction("EditClass", new { id = classId });
                 }
 

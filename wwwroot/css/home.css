@@ -764,11 +764,11 @@
     transition: width 0.6s, height 0.6s;
 }
 
-.cta-btn-student:hover::before,
-.cta-btn-mentor:hover::before {
-    width: 300px;
-    height: 300px;
-}
+    .cta-btn-student:hover::before,
+    .cta-btn-mentor:hover::before {
+        width: 400px !important;
+        height: 300px !important;
+    }
 
 .cta-btn-student:hover {
     transform: translateY(-3px);
@@ -786,42 +786,30 @@
 }
 
 /* ===== 4 STEPS CARDS GLOW EFFECTS ===== */
-/* Targeting first .row.mt-5.mb-5 section */
+/* Targeting section with class four-steps-section */
 
 /* Step 1 - Purple/Violet Glow */
-.row.mt-5.mb-5:first-of-type .row.g-4 > .col-lg-3:nth-child(1) .hover-card:hover {
-    box-shadow: 
-        0 0 20px rgba(102, 126, 234, 0.6),
-        0 0 40px rgba(102, 126, 234, 0.5),
-        0 0 60px rgba(102, 126, 234, 0.4),
-        0 25px 50px rgba(102, 126, 234, 0.3) !important;
+.four-steps-section .row.g-4 > .col-md-6:nth-child(1) .hover-card:hover,
+.four-steps-section .row.g-4 > .col-lg-3:nth-child(1) .hover-card:hover {
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.6), 0 0 40px rgba(102, 126, 234, 0.5), 0 0 60px rgba(102, 126, 234, 0.4), 0 25px 50px rgba(102, 126, 234, 0.3) !important;
 }
 
 /* Step 2 - Green Glow */
-.row.mt-5.mb-5:first-of-type .row.g-4 > .col-lg-3:nth-child(2) .hover-card:hover {
-    box-shadow: 
-        0 0 20px rgba(17, 153, 142, 0.6),
-        0 0 40px rgba(17, 153, 142, 0.5),
-        0 0 60px rgba(17, 153, 142, 0.4),
-        0 25px 50px rgba(17, 153, 142, 0.3) !important;
+.four-steps-section .row.g-4 > .col-md-6:nth-child(2) .hover-card:hover,
+.four-steps-section .row.g-4 > .col-lg-3:nth-child(2) .hover-card:hover {
+    box-shadow: 0 0 20px rgba(17, 153, 142, 0.6), 0 0 40px rgba(17, 153, 142, 0.5), 0 0 60px rgba(17, 153, 142, 0.4), 0 25px 50px rgba(17, 153, 142, 0.3) !important;
 }
 
 /* Step 3 - Orange/Yellow Glow */
-.row.mt-5.mb-5:first-of-type .row.g-4 > .col-lg-3:nth-child(3) .hover-card:hover {
-    box-shadow: 
-        0 0 20px rgba(255, 167, 81, 0.7),
-        0 0 40px rgba(255, 167, 81, 0.6),
-        0 0 60px rgba(255, 167, 81, 0.5),
-        0 25px 50px rgba(255, 167, 81, 0.4) !important;
+.four-steps-section .row.g-4 > .col-md-6:nth-child(3) .hover-card:hover,
+.four-steps-section .row.g-4 > .col-lg-3:nth-child(3) .hover-card:hover {
+    box-shadow: 0 0 20px rgba(255, 167, 81, 0.7), 0 0 40px rgba(255, 167, 81, 0.6), 0 0 60px rgba(255, 167, 81, 0.5), 0 25px 50px rgba(255, 167, 81, 0.4) !important;
 }
 
 /* Step 4 - Cyan/Blue Glow */
-.row.mt-5.mb-5:first-of-type .row.g-4 > .col-lg-3:nth-child(4) .hover-card:hover {
-    box-shadow: 
-        0 0 20px rgba(32, 156, 255, 0.6),
-        0 0 40px rgba(32, 156, 255, 0.5),
-        0 0 60px rgba(32, 156, 255, 0.4),
-        0 25px 50px rgba(32, 156, 255, 0.3) !important;
+.four-steps-section .row.g-4 > .col-md-6:nth-child(4) .hover-card:hover,
+.four-steps-section .row.g-4 > .col-lg-3:nth-child(4) .hover-card:hover {
+    box-shadow: 0 0 20px rgba(32, 156, 255, 0.6), 0 0 40px rgba(32, 156, 255, 0.5), 0 0 60px rgba(32, 156, 255, 0.4), 0 25px 50px rgba(32, 156, 255, 0.3) !important;
 }
 
 /* ===== STATS CARDS GLOW EFFECTS ===== */
@@ -865,6 +853,12 @@
         0 0 60px rgba(220, 53, 69, 0.4),
         0 0 80px rgba(220, 53, 69, 0.3),
         0 25px 50px rgba(220, 53, 69, 0.4) !important;
+}
+
+/* Fix for text clipping issue */
+.four-steps-section h2 {
+    line-height: 1.4 !important;
+    padding-bottom: 0.25rem !important;
 }
 
 

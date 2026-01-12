@@ -1,4 +1,4 @@
-namespace Webgiasu.Models.ViewModels
+﻿namespace Webgiasu.Models.ViewModels
 {
     public class LoginViewModel
     {
@@ -16,5 +16,6 @@ namespace Webgiasu.Models.ViewModels
         public string Email { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
         public UserRole Role { get; set; }
+        public EducationLevel? Level { get; set; } // Dành cho Student và Tutor
     }
 }

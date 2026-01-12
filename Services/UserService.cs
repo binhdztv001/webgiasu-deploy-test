@@ -11,18 +11,34 @@ namespace Webgiasu.Services
         public UserService(AppDbContext db) => _db = db;
 
         public User? Login(string username, string password, UserRole role)
-            => _db.Users.FirstOrDefault(u => u.Username == username && u.Password == password && u.Role == role);
+        {
+            try
+            {
+                return _db.Users.FirstOrDefault(u => u.Username == username && u.Password == password && u.Role == role);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
         public bool Register(User user)
         {
-            if (_db.Users.Any(u => u.Username == user.Username))
-                return false;
+            try
+            {
+                if (_db.Users.Any(u => u.Username == user.Username))
+                    return false;
 
-            user.RegisteredDate = DateTime.Now;
-            user.IsApproved = user.Role == UserRole.Student;
-            _db.Users.Add(user);
-            _db.SaveChanges();
-            return true;
+                user.RegisteredDate = DateTime.Now;
+                user.IsApproved = user.Role == UserRole.Student;
+                _db.Users.Add(user);
+                _db.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         //maaux
@@ -33,54 +49,100 @@ namespace Webgiasu.Services
                 return _db.Users.Find(id);
             }
 
-            catch
+            catch (Exception ex)
             {
                 return new User();
             }
         }
 
-        public List<User> GetAllUsers() => _db.Users.ToList();
+        public List<User> GetAllUsers()
+        {
+            try
+            {
+                return _db.Users.ToList();
+            }
+            catch (Exception ex)
+            {
+                return new List<User>();
+            }
+        }
 
         public List<User> GetPendingTutors()
         {
-            return _db.Users
-                .Where(u => u.Role == UserRole.Tutor && u.IsApproved)
-                .OrderByDescending(u => u.IsPremium) 
-                .ThenByDescending(u => u.ExperienceYears) 
-                .ThenBy(u => u.FullName)
-                .ToList();
+            try
+            {
+                return _db.Users
+                    .Where(u => u.Role == UserRole.Tutor && u.IsApproved)
+                    .OrderByDescending(u => u.IsPremium)
+                    .ThenByDescending(u => u.ExperienceYears)
+                    .ThenBy(u => u.FullName)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                return new List<User>();
+            }
         }
 
         public bool ApproveTutor(int tutorId)
         {
-            var tutor = _db.Users.FirstOrDefault(u => u.Id == tutorId && u.Role == UserRole.Tutor);
-            if (tutor == null) return false;
-            tutor.IsApproved = true;
-            _db.SaveChanges();
-            return true;
+            try
+            {
+                var tutor = _db.Users.FirstOrDefault(u => u.Id == tutorId && u.Role == UserRole.Tutor);
+                if (tutor == null) return false;
+                tutor.IsApproved = true;
+                _db.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
-        public List<User> GetUsersByRole(UserRole role) => _db.Users.Where(u => u.Role == role).ToList();
+        public List<User> GetUsersByRole(UserRole role)
+        {
+            try
+            {
+                return _db.Users.Where(u => u.Role == role).ToList();
+            }
+            catch (Exception ex)
+            {
+                return new List<User>();
+            }
+        }
 
         public bool UpdateUser(User user)
         {
-            var existing = _db.Users.Find(user.Id);
-            if (existing == null) return false;
+            try
+            {
+                var existing = _db.Users.Find(user.Id);
+                if (existing == null) return false;
 
-            existing.FullName = user.FullName;
-            existing.Email = user.Email;
-            existing.PhoneNumber = user.PhoneNumber;
-            existing.Password = user.Password;
-            existing.IsApproved = user.IsApproved;
+                existing.FullName = user.FullName;
+                existing.Email = user.Email;
+                existing.PhoneNumber = user.PhoneNumber;
+                existing.Password = user.Password;
+                existing.IsApproved = user.IsApproved;
 
-            existing.Bio = user.Bio;
-            existing.Subjects = user.Subjects;
-            existing.Education = user.Education;
-            existing.ExperienceYears = user.ExperienceYears;
-            existing.Certificates = user.Certificates;
+                // ✅ UPDATE LEVEL
+                existing.Level = user.Level;
 
-            _db.SaveChanges();
-            return true;
+                // Tutor profile fields
+                existing.Bio = user.Bio;
+                existing.Subjects = user.Subjects;
+                existing.Education = user.Education;
+                existing.ExperienceYears = user.ExperienceYears;
+                existing.Certificates = user.Certificates;
+
+                _db.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error updating user: {ex.Message}");
+                return false;
+            }
         }
     }
 }

@@ -329,7 +329,7 @@ namespace Webgiasu.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdateProfile(string fullName, string email, string phoneNumber)
+        public IActionResult UpdateProfile(string fullName, string email, string phoneNumber, int? level)
         {
             try
             {
@@ -342,6 +342,16 @@ namespace Webgiasu.Controllers
                     user.FullName = fullName;
                     user.Email = email;
                     user.PhoneNumber = phoneNumber;
+
+                    // Update Level
+                    if (level.HasValue && Enum.IsDefined(typeof(EducationLevel), level.Value))
+                    {
+                        user.Level = (EducationLevel)level.Value;
+                    }
+                    else
+                    {
+                        user.Level = null;
+                    }
 
                     _userService.UpdateUser(user);
                     HttpContext.Session.SetString("UserName", user.FullName);
