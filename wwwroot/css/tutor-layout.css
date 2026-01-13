@@ -449,7 +449,7 @@ html, body {
 
     .profile-menu-item:hover {
         background: linear-gradient(90deg, rgba(76, 175, 80, 0.08) 0%, transparent 100%);
-        color: #4CAF50;
+        color: var(--tutor-gradient);
         padding-left: 1.75rem;
     }
 
@@ -463,23 +463,34 @@ html, body {
         transform: translateX(3px);
     }
 
+/* ===== Logout item: tách khỏi profile-menu hover ===== */
 .logout-item {
     color: #f44336 !important;
     font-weight: 600;
+    border-left: 3px solid transparent;
 }
 
+    .logout-item:hover {
+        background: transparent;
+        color: #f44336 !important;
+        padding-left: 1.5rem;
+    }
+
     .logout-item::before {
-        background: #f44336;
+        display: none !important;
     }
 
     .logout-item:hover {
-        background: linear-gradient(90deg, rgba(244, 67, 54, 0.08) 0%, transparent 100%);
-        color: #f44336 !important;
+        background: linear-gradient( 90deg, rgba(244, 67, 54, 0.08) 0%, transparent 100% );
     }
 
-        .logout-item:hover i {
-            transform: translateX(3px) rotate(-10deg);
-        }
+    .logout-item i {
+        transition: transform 0.15s ease;
+    }
+
+    .logout-item:hover i {
+        transform: translateX(3px) rotate(-10deg);
+    }
 
 .giasu-item {
     color: #198754 !important;

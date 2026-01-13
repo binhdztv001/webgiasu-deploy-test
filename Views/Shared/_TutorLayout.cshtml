@@ -1,5 +1,8 @@
 ﻿@using Webgiasu.Services
 @inject IPremiumService PremiumService
+@{
+    ViewBag.Theme = "tutor";
+}
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -36,7 +39,7 @@
         }
     </style>
 </head>
-<body>
+<body data-theme="@ViewBag.Theme">
     @{
         var userName = Context.Session.GetString("UserName");
         var userId = Context.Session.GetInt32("UserId");
@@ -202,11 +205,50 @@
 
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <a class="dropdown-item profile-menu-item logout-item" asp-controller="Account" asp-action="Logout">
+                                <a class="dropdown-item profile-menu-item logout-item"
+                                   href="#"
+                                   data-bs-toggle="modal"
+                                   data-bs-target="#logoutConfirmModal">
                                     <i class="bi bi-box-arrow-right me-2"></i> Đăng xuất
                                 </a>
                             </li>
                         </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Logout Confirm Modal -->
+            <div class="modal fade" id="logoutConfirmModal" tabindex="-1" data-bs-backdrop="false">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header"
+                             style="background: linear-gradient(135deg, #f44336 0%, #e57373 100%);">
+                            <h5 class="modal-title text-white">
+                                <i class="bi bi-box-arrow-right me-2"></i>Xác nhận đăng xuất
+                            </h5>
+                            <button type="button"
+                                    class="btn-close btn-close-white"
+                                    data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body text-center p-4">
+                            <i class="bi bi-exclamation-triangle text-danger fs-1 mb-3"></i>
+                            <p class="fw-bold mb-1">Bạn có chắc chắn muốn đăng xuất?</p>
+                            <p class="text-muted mb-0">Phiên làm việc hiện tại sẽ kết thúc.</p>
+                        </div>
+
+                        <div class="modal-footer d-flex justify-content-between">
+                            <button type="button"
+                                    class="btn btn-secondary"
+                                    data-bs-dismiss="modal">
+                                <i class="bi bi-x-circle me-1"></i> Hủy
+                            </button>
+
+                            <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-box-arrow-right me-1"></i> Đăng xuất
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
