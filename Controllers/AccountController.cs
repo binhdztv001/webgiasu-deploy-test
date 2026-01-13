@@ -76,42 +76,50 @@ namespace Webgiasu.Controllers
         [HttpPost]
         public IActionResult Register(RegisterViewModel model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                if (model.Password != model.ConfirmPassword)
+                if (!ModelState.IsValid)
                 {
-                    TempData["Error"] = "Mật khẩu xác nhận không khớp!";
+                    TempData["Error"] = "Vui lòng nhập đầy đủ thông tin!";
+                    return View(model);
+                }
+
+                // Validate Level for Student and Tutor
+                if ((model.Role == UserRole.Student || model.Role == UserRole.Tutor) && !model.Level.HasValue)
+                {
+                    TempData["Error"] = "Vui lòng chọn cấp học!";
                     return View(model);
                 }
 
                 var user = new User
                 {
                     Username = model.Username,
-                    Password = model.Password,
+                    Password = model.Password, // TODO: Hash password
                     FullName = model.FullName,
                     Email = model.Email,
                     PhoneNumber = model.PhoneNumber,
-                    Role = model.Role
+                    Role = model.Role,
+                    Level = model.Level, // ✅ Lưu Level
+                    RegisteredDate = DateTime.Now,
+                    IsApproved = model.Role == UserRole.Student
                 };
 
                 if (_userService.Register(user))
                 {
-                if (model.Role == UserRole.Tutor)
-                {
-                    TempData["Success"] = "Đăng ký thành công! Vui lòng chờ admin duyệt tài khoản Mentor của bạn.";
-                    }
-                    else
-                    {
-                        TempData["Success"] = "Đăng ký thành công! Bạn có thể đăng nhập ngay.";
-                    }
-                    return RedirectToAction("Login", new { role = model.Role.ToString() });
+                    TempData["Success"] = "Đăng ký thành công!";
+                    return RedirectToAction("Login", new { role = model.Role });
                 }
                 else
                 {
                     TempData["Error"] = "Tên đăng nhập đã tồn tại!";
+                    return View(model);
                 }
             }
-            return View(model);
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Đã xảy ra lỗi: {ex.Message}";
+                return View(model);
+            }
         }
 
         public IActionResult Logout()

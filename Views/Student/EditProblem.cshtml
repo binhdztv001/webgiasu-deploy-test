@@ -6,9 +6,6 @@
     var currentImageUrl = ViewBag.CurrentImageUrl as string ?? "";
     var currentAttachmentUrl = ViewBag.CurrentAttachmentUrl as string ?? "";
     var currentPrice = ViewBag.CurrentPrice as decimal? ?? 0m;
-    // Pre-check group mode if provided
-    var isGroupMode = (ViewBag.IsGroupMode as bool?) ?? false;
-    var currentGroupName = ViewBag.CurrentGroupName as string ?? "";
 }
 
 <div>
@@ -30,8 +27,6 @@
                 <div class="card-body p-3">
                     <form asp-action="EditProblem" asp-route-id="@problemId" method="post" enctype="multipart/form-data" id="problemForm">
                         @Html.AntiForgeryToken()
-                        <input type="hidden" id="isGroupModeInput" name="IsGroupMode" value="@(isGroupMode ? "true" : "false")" />
-                        <input type="hidden" id="finalPrice" name="CustomPrice" value="@(currentPrice>0 ? currentPrice.ToString() : "")" />
 
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
@@ -73,28 +68,34 @@
 
                             <div class="col-md-6">
                                 <label asp-for="Difficulty" class="form-label fw-semibold">
-                                    <i class="bi bi-bar-chart text-primary me-1"></i> Độ khó <span class="text-danger">*</span>
+                                    <i class="bi bi-mortarboard text-primary me-1"></i> Cấp học <span class="text-danger">*</span>
                                 </label>
-                                <select asp-for="Difficulty" id="difficultySelect" class="form-select" required>
-                                    <option value="">-- Chọn độ khó --</option>
-                                    <option value="Easy" data-price="40000">Dễ (40,000 đ)</option>
-                                    <option value="Medium" data-price="60000">Trung bình (60,000 đ)</option>
-                                    <option value="Hard" data-price="90000">Khó (90,000 đ)</option>
-                                    <option value="options" data-price="custom">Tùy chọn giá</option>
+                                <select asp-for="Difficulty" id="educationLevelSelect" class="form-select" required>
+                                    <option value="">-- Chọn cấp học --</option>
+                                    <option value="0" data-price="30000">Tiểu học (30,000 đ)</option>
+                                    <option value="1" data-price="50000">THCS (50,000 đ)</option>
+                                    <option value="2" data-price="70000">THPT (70,000 đ)</option>
+                                    <option value="3" data-price="100000">Đại học (100,000 đ)</option>
                                 </select>
+                                <small class="text-muted">Chọn cấp học phù hợp với bài toán</small>
                                 <span asp-validation-for="Difficulty" class="text-danger"></span>
                             </div>
                         </div>
 
-                        <div id="customPriceSection" class="mb-3" style="display:none;">
+                        <div class="mb-3">
                             <label class="form-label fw-semibold">
-                                <i class="bi bi-cash-coin text-success me-1"></i> Nhập giá tùy chọn (VNĐ)
+                                <i class="bi bi-cash-coin text-success me-1"></i> Giá tiền (tùy chọn)
                             </label>
                             <div class="input-group">
-                                <input id="customPriceInput" name="CustomPrice" type="number" min="10000" step="1000" class="form-control" placeholder="Ví dụ: 45000" />
+                                <input type="number" id="customPriceInput" name="CustomPrice" class="form-control"
+                                       placeholder="Nhập số tiền tùy chỉnh (VNĐ)" min="10000" step="1000"
+                                       value="@(currentPrice > 0 ? currentPrice.ToString("0") : "")" />
                                 <span class="input-group-text">đ</span>
                             </div>
-                            <small class="text-muted">Giá tối thiểu: 10,000 đ</small>
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Để trống để sử dụng giá mặc định theo cấp học. Giá tối thiểu: 10,000 đ
+                            </small>
                         </div>
 
                         <div class="mb-3">
@@ -139,10 +140,10 @@
 
                         <div class="mb-3">
                             <label asp-for="AttachmentFile" class="form-label fw-semibold">
-                                <i class="bi bi-file-earmark-text text-primary me-1"></i> Tài liệu (nếu có)
+                                <i class="bi bi-paperclip text-primary me-1"></i> Tài liệu (nếu có)
                             </label>
                             <input asp-for="AttachmentFile" type="file" class="form-control" accept=".pdf,.doc,.docx" />
-                            <small class="text-muted">Hỗ trợ: .docx, .pdf (Tối đa 50MB)</small>
+                            <small class="text-muted">Hỗ trợ: .pdf, .doc, .docx (Tối đa 10MB)</small>
                         </div>
 
                         <div class="d-grid gap-2 mt-4">
@@ -164,15 +165,56 @@
         </div>
 
         <div class="col-lg-4">
-            <div class="card border-0 shadow-sm mb-3 text-center">
-                <div class="card-body py-3">
-                    <i class="bi bi-currency-dollar text-primary" style="font-size:2.5rem;"></i>
+            <!-- Price Card -->
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body text-center">
+                    <i class="bi bi-currency-dollar text-primary" style="font-size: 2.5rem;"></i>
                     <h6 class="mt-2 mb-1">Giá hiện tại</h6>
-                    <p id="priceDisplay" class="fs-4 fw-bold text-primary mb-0">@((currentPrice>0) ? currentPrice.ToString("N0") + " đ" : "-- đ")</p>
-                    <small id="priceHint" class="text-muted">@((currentPrice>0) ? "Giá hiện tại" : "Chọn độ khó để xem giá")</small>
+                    <p class="fs-4 fw-bold text-primary mb-0" id="priceDisplay">@((currentPrice>0) ? currentPrice.ToString("N0") + " đ" : "-- đ")</p>
+                    <small class="text-muted" id="priceHint">@((currentPrice>0) ? "Giá hiện tại" : "Chọn cấp học để xem giá")</small>
                 </div>
             </div>
 
+            <!-- Education Level Info Card -->
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-header bg-white border-0">
+                    <h6 class="mb-0 fw-bold"><i class="bi bi-info-circle text-info me-2"></i>Bảng giá theo cấp</h6>
+                </div>
+                <div class="card-body pt-2">
+                    <div class="row g-2 text-center">
+                        <div class="col-6">
+                            <div class="border rounded p-2">
+                                <div class="text-primary fw-bold">Tiểu học</div>
+                                <div class="small text-muted">30,000 đ</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-2">
+                                <div class="text-info fw-bold">THCS</div>
+                                <div class="small text-muted">50,000 đ</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-2">
+                                <div class="text-warning fw-bold">THPT</div>
+                                <div class="small text-muted">70,000 đ</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-2">
+                                <div class="text-success fw-bold">Đại học</div>
+                                <div class="small text-muted">100,000 đ</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-info mt-3 mb-0 small">
+                        <i class="bi bi-lightbulb me-1"></i>
+                        Bạn có thể tùy chỉnh giá nếu muốn
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tips Card -->
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white border-0">
                     <h6 class="mb-0 fw-bold"><i class="bi bi-lightbulb text-warning me-2"></i>Mẹo</h6>
@@ -183,6 +225,8 @@
                         <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Mô tả đủ chi tiết</li>
                         <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Đính kèm ảnh nếu có</li>
                         <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Chọn deadline hợp lý</li>
+                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Chọn cấp học chính xác</li>
+                        <li><i class="bi bi-check-circle text-success me-2"></i>Tùy chỉnh giá nếu cần</li>
                     </ul>
                 </div>
             </div>
@@ -211,71 +255,89 @@
         });
         CKEDITOR.config.versionCheck = false;
 
-        // Price & difficulty handling
+        // ✅ PRICE & EDUCATION LEVEL HANDLING
         (function () {
-            const difficultySelect = document.getElementById('difficultySelect');
-            const customSection = document.getElementById('customPriceSection');
-            const customInput = document.getElementById('customPriceInput');
+            const educationLevelSelect = document.getElementById('educationLevelSelect');
+            const customPriceInput = document.getElementById('customPriceInput');
             const priceDisplay = document.getElementById('priceDisplay');
             const priceHint = document.getElementById('priceHint');
-            const finalPrice = document.getElementById('finalPrice');
 
-            function setPriceFromOption(option) {
-                const priceType = option?.getAttribute('data-price');
-                if (!priceType) {
-                    customSection.style.display = 'none';
-                    priceDisplay.textContent = '-- đ';
-                    priceHint.textContent = 'Chọn độ khó để xem giá';
-                    finalPrice.value = '';
-                    return;
-                }
-                if (priceType === 'custom') {
-                    customSection.style.display = 'block';
-                    finalPrice.value = '';
-                    priceDisplay.textContent = '-- đ';
-                    priceHint.textContent = 'Nhập giá tùy chọn';
+            // Handle education level change
+            educationLevelSelect?.addEventListener('change', function () {
+                const selectedOption = this.options[this.selectedIndex];
+                const defaultPrice = selectedOption?.getAttribute('data-price');
+
+                if (defaultPrice) {
+                    const price = parseInt(defaultPrice);
+                    
+                    // Only update if custom price is not entered
+                    if (!customPriceInput.value) {
+                        priceDisplay.textContent = price.toLocaleString('vi-VN') + ' đ';
+                        priceHint.textContent = 'Giá mặc định theo cấp học';
+                    }
                 } else {
-                    customSection.style.display = 'none';
-                    const price = parseInt(priceType);
-                    priceDisplay.textContent = price.toLocaleString('vi-VN') + ' đ';
-                    priceHint.textContent = 'Giá cố định theo độ khó';
-                    finalPrice.value = price;
-                }
-            }
-
-            difficultySelect?.addEventListener('change', function () {
-                setPriceFromOption(this.options[this.selectedIndex]);
-            });
-
-            customInput?.addEventListener('input', function () {
-                const v = parseInt(this.value);
-                if (v && v >= 10000) {
-                    priceDisplay.textContent = v.toLocaleString('vi-VN') + ' đ';
-                    finalPrice.value = v;
-                } else {
-                    priceDisplay.textContent = '-- đ';
-                    finalPrice.value = '';
+                    if (!customPriceInput.value) {
+                        priceDisplay.textContent = '-- đ';
+                        priceHint.textContent = 'Chọn cấp học để xem giá';
+                    }
                 }
             });
 
-            // Initialize UI based on current model values
+            // Handle custom price input
+            customPriceInput?.addEventListener('input', function () {
+                const customPrice = parseInt(this.value);
+                
+                if (customPrice && customPrice >= 10000) {
+                    priceDisplay.textContent = customPrice.toLocaleString('vi-VN') + ' đ';
+                    priceHint.textContent = 'Giá tùy chỉnh';
+                } else if (this.value === '') {
+                    // Revert to default price if custom price is cleared
+                    const selectedOption = educationLevelSelect.options[educationLevelSelect.selectedIndex];
+                    const defaultPrice = selectedOption?.getAttribute('data-price');
+                    
+                    if (defaultPrice) {
+                        const price = parseInt(defaultPrice);
+                        priceDisplay.textContent = price.toLocaleString('vi-VN') + ' đ';
+                        priceHint.textContent = 'Giá mặc định theo cấp học';
+                    } else {
+                        priceDisplay.textContent = '-- đ';
+                        priceHint.textContent = 'Chọn cấp học để xem giá';
+                    }
+                } else {
+                    priceDisplay.textContent = '-- đ';
+                    priceHint.textContent = 'Giá không hợp lệ (tối thiểu 10,000 đ)';
+                }
+            });
+
+            // Initialize display on page load
             (function init() {
-                // Select difficulty option if model has value (asp-for binds it)
-                const sel = difficultySelect?.value;
-                if (sel) {
-                    const opt = difficultySelect.options[difficultySelect.selectedIndex];
-                    setPriceFromOption(opt);
-                } else if (@(currentPrice>0 ? "true" : "false")) {
+                if (educationLevelSelect?.value) {
+                    const selectedOption = educationLevelSelect.options[educationLevelSelect.selectedIndex];
+                    const defaultPrice = selectedOption?.getAttribute('data-price');
+                    
+                    // If custom price is already set, show it
+                    const currentCustomPrice = parseInt(customPriceInput.value);
+                    if (currentCustomPrice && currentCustomPrice >= 10000) {
+                        priceDisplay.textContent = currentCustomPrice.toLocaleString('vi-VN') + ' đ';
+                        priceHint.textContent = 'Giá tùy chỉnh';
+                    } else if (defaultPrice) {
+                        const price = parseInt(defaultPrice);
+                        priceDisplay.textContent = price.toLocaleString('vi-VN') + ' đ';
+                        priceHint.textContent = 'Giá mặc định theo cấp học';
+                    }
+                } else if (@(currentPrice > 0 ? "true" : "false")) {
                     priceDisplay.textContent = parseInt(@currentPrice).toLocaleString('vi-VN') + ' đ';
                     priceHint.textContent = 'Giá hiện tại';
                 }
             })();
         })();
 
-        // Delete confirm (POST JSON)
+        // ✅ DELETE CONFIRMATION
         function confirmDelete(id) {
             if (!confirm('⚠️ Bạn có chắc chắn muốn xóa bài toán này? Hành động không thể hoàn tác.')) return;
+            
             const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+            
             fetch(`/Student/DeleteProblem/${id}`, {
                 method: 'POST',
                 headers: {

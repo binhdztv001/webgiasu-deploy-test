@@ -69,6 +69,35 @@
                             <div class="form-text">Chỉ sử dụng chữ cái, số và dấu gạch dưới (_)</div>
                         </div>
 
+                        @* ✅ Thêm dropdown Level cho Student và Tutor *@
+                        @if (Model.Role == Webgiasu.Models.UserRole.Student || Model.Role == Webgiasu.Models.UserRole.Tutor)
+                        {
+                            <div class="mb-4 fade-in-up delay-2">
+                                <label asp-for="Level" class="form-label fw-bold">
+                                    <i class="bi bi-mortarboard-fill text-@roleColor me-1"></i> 
+                                    @(Model.Role == Webgiasu.Models.UserRole.Student ? "Cấp học" : "Giảng dạy cấp")
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select asp-for="Level" class="form-select form-select-lg form-control-animated" required>
+                                    <option value="">-- Chọn cấp học --</option>
+                                    <option value="@((int)Webgiasu.Models.EducationLevel.TieuHoc)">Tiểu học</option>
+                                    <option value="@((int)Webgiasu.Models.EducationLevel.THCS)">Trung học cơ sở (THCS)</option>
+                                    <option value="@((int)Webgiasu.Models.EducationLevel.THPT)">Trung học phổ thông (THPT)</option>
+                                    <option value="@((int)Webgiasu.Models.EducationLevel.DaiHoc)">Đại học</option>
+                                </select>
+                                <div class="form-text">
+                                    @if (Model.Role == Webgiasu.Models.UserRole.Student)
+                                    {
+                                        <text>Chọn cấp học bạn đang theo học</text>
+                                    }
+                                    else
+                                    {
+                                        <text>Chọn cấp học bạn có thể giảng dạy</text>
+                                    }
+                                </div>
+                            </div>
+                        }
+
                         <div class="row">
                             <div class="col-md-6 mb-4 fade-in-up delay-3">
                                 <label asp-for="Email" class="form-label fw-bold">
@@ -142,7 +171,7 @@
                 </div>
 
                 <div class="card-footer bg-light text-center py-3 fade-in-up delay-5">
-                    <a asp-controller="Home" asp-action="Index" asp-route-role="@Model.Role.ToString()" class="btn btn-outline-@roleColor btn-pill btn-animated px-5">
+                    <a asp-controller="Home" asp-action="Index" asp-route-role="@Model.Role.ToString()" class="btn btn-outline-@roleColor @(Model.Role == Webgiasu.Models.UserRole.School ? "btn-no-border-hover" : "btn-pill") btn-animated px-5">
                         <i class="bi bi-arrow-left me-1"></i> Quay lại trang chủ
                     </a>
                 </div>

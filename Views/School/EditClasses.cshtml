@@ -81,6 +81,61 @@
     }
     else
     {
+        <!-- Quick Stats -->
+        <div class="row mt-4" style="margin : 20px">
+            <div class="col-md-3">
+                <div class="card bg-success text-black">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-check-circle fs-1 me-3"></i>
+                            <div>
+                                <h3 class="mb-0">@Model.Count(c => c.Status == ClassStatus.Active)</h3>
+                                <small>Đang hoạt động</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-black">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-clock fs-1 me-3"></i>
+                            <div>
+                                <h3 class="mb-0">@Model.Count(c => c.Status == ClassStatus.Upcoming)</h3>
+                                <small>Sắp bắt đầu</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-secondary text-black">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-check-all fs-1 me-3"></i>
+                            <div>
+                                <h3 class="mb-0">@Model.Count(c => c.Status == ClassStatus.Completed)</h3>
+                                <small>Đã hoàn thành</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-danger text-black">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-x-circle fs-1 me-3"></i>
+                            <div>
+                                <h3 class="mb-0">@Model.Count(c => c.Status == ClassStatus.Cancelled)</h3>
+                                <small>Đã hủy</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="card">
             <div class="card-header bg-warning text-white">
                 <h5 class="mb-0">
@@ -186,61 +241,7 @@
             </div>
         </div>
 
-        <!-- Quick Stats -->
-        <div class="row mt-4">
-            <div class="col-md-3">
-                <div class="card bg-success text-white">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <i class="bi bi-check-circle fs-1 me-3"></i>
-                            <div>
-                                <h3 class="mb-0">@Model.Count(c => c.Status == ClassStatus.Active)</h3>
-                                <small>Đang hoạt động</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card bg-info text-white">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <i class="bi bi-clock fs-1 me-3"></i>
-                            <div>
-                                <h3 class="mb-0">@Model.Count(c => c.Status == ClassStatus.Upcoming)</h3>
-                                <small>Sắp bắt đầu</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card bg-secondary text-white">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <i class="bi bi-check-all fs-1 me-3"></i>
-                            <div>
-                                <h3 class="mb-0">@Model.Count(c => c.Status == ClassStatus.Completed)</h3>
-                                <small>Đã hoàn thành</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card bg-danger text-white">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <i class="bi bi-x-circle fs-1 me-3"></i>
-                            <div>
-                                <h3 class="mb-0">@Model.Count(c => c.Status == ClassStatus.Cancelled)</h3>
-                                <small>Đã hủy</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+       
     }
 </div>
 

@@ -11,51 +11,11 @@
             <h5 class="fw-bold mb-1 text-dark">
                 <i class="bi bi-plus-circle text-primary me-2"></i>Đăng bài toán mới
             </h5>
-            <p class="text-muted mb-0 small">Điền thông tin bài toán để nhận hỗ trợ từ gia sư</p>
+            <p class="text-muted mb-0 small">Điền thông tin bài toán để nhận hỗ trợ từ Mentor</p>
         </div>
         <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-arrow-left me-1"></i> Quay lại
         </a>
-    </div>
-
-    <!-- Problem Type Selection (Individual or Group) -->
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body p-3">
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <div class="form-check form-check-card h-100">
-                        <input class="form-check-input" type="radio" name="problemMode" id="modeIndividual" value="individual" checked>
-                        <label class="form-check-label d-flex align-items-center p-3 border rounded cursor-pointer hover-card" for="modeIndividual" style="cursor: pointer;">
-                            <div class="me-3">
-                                <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                    <i class="bi bi-person-fill text-primary fs-4"></i>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1 fw-bold">Cá nhân</h6>
-                                <small class="text-muted">Đăng bài toán cho riêng bạn</small>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-check form-check-card h-100">
-                        <input class="form-check-input" type="radio" name="problemMode" id="modeGroup" value="group">
-                        <label class="form-check-label d-flex align-items-center p-3 border rounded cursor-pointer hover-card" for="modeGroup" style="cursor: pointer;">
-                            <div class="me-3">
-                                <div class="rounded-circle bg-success bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                    <i class="bi bi-people-fill text-success fs-4"></i>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1 fw-bold">Tạo nhóm</h6>
-                                <small class="text-muted">Đăng bài toán cho nhóm học tập</small>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div class="row">
@@ -63,8 +23,6 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-4">
                     <form asp-action="CreateProblem" method="post" enctype="multipart/form-data" id="problemForm">
-                        <!-- ✅ ADD: Hidden fields for group mode -->
-                        <input type="hidden" name="IsGroupMode" id="isGroupModeInput" value="false" />
                         
                         <div class="mb-3">
                             <label asp-for="Title" class="form-label fw-semibold">
@@ -79,15 +37,6 @@
                                 <i class="bi bi-file-text text-primary me-1"></i> Mô tả chi tiết <span class="text-danger">*</span>
                             </label>
                             <textarea asp-for="Description" class="form-control" rows="5" placeholder="Mô tả chi tiết bài toán của bạn..." required></textarea>
-                        </div>
-
-                        <!-- ✅ ADD: Group Name Field (Hidden by default) -->
-                        <div class="mb-3" id="groupNameSection" style="display: none;">
-                            <label class="form-label fw-semibold">
-                                <i class="bi bi-people text-success me-1"></i> Tên nhóm <span class="text-danger">*</span>
-                            </label>
-                            <input type="text" name="GroupName" id="groupNameInput" class="form-control" placeholder="VD: Nhóm học toán lớp 12A1" maxlength="255" />
-                            <small class="text-muted">Đặt tên cho nhóm học tập của bạn</small>
                         </div>
 
                         <div class="row g-3">
@@ -105,40 +54,42 @@
                                     <option value="Anh">Tiếng Anh</option>
                                     <option value="Su">Lịch sử</option>
                                     <option value="Dia">Địa lý</option>
+                                    <option value="Khac">Khác</option>
                                 </select>
                             </div>
 
                             <div class="col-md-6">
                                 <label asp-for="Difficulty" class="form-label fw-semibold">
-                                    <i class="bi bi-bar-chart text-primary me-1"></i> Độ khó <span class="text-danger">*</span>
+                                    <i class="bi bi-mortarboard text-primary me-1"></i> Cấp học <span class="text-danger">*</span>
                                 </label>
-                                <select asp-for="Difficulty" class="form-select" id="difficultySelect" required>
-                                    <option value="">-- Chọn độ khó --</option>
-                                    <option value="Easy" data-price="40000">Dễ (40,000 đ)</option>
-                                    <option value="Medium" data-price="60000">Trung bình (60,000 đ)</option>
-                                    <option value="Hard" data-price="90000">Khó (90,000 đ)</option>
-                                    <option value="options" data-price="custom">Tùy chọn giá</option>
+                                <select asp-for="Difficulty" class="form-select" id="educationLevelSelect" required>
+                                    <option value="">-- Chọn cấp học --</option>
+                                    <option value="0" data-price="30000">Tiểu học (30,000 đ)</option>
+                                    <option value="1" data-price="50000">THCS (50,000 đ)</option>
+                                    <option value="2" data-price="70000">THPT (70,000 đ)</option>
+                                    <option value="3" data-price="100000">Đại học (100,000 đ)</option>
                                 </select>
+                                <small class="text-muted">Chọn cấp học phù hợp với bài toán</small>
                             </div>
                         </div>
 
-                        <!-- Custom Price Input (Hidden by default) -->
-                        <div class="mb-3 mt-3" id="customPriceSection" style="display: none;">
+                        <!-- Custom Price Input -->
+                        <div class="mb-3 mt-3">
                             <label class="form-label fw-semibold">
-                                <i class="bi bi-cash-coin text-success me-1"></i> Nhập giá tùy chọn <span class="text-danger">*</span>
+                                <i class="bi bi-cash-coin text-success me-1"></i> Giá tiền (tùy chọn)
                             </label>
                             <div class="input-group">
-                                <input type="number" id="customPriceInput" class="form-control"
-                                       placeholder="Nhập số tiền (VNĐ)" min="10000" step="1000" />
+                                <input type="number" id="customPriceInput" name="CustomPrice" class="form-control"
+                                       placeholder="Nhập số tiền tùy chỉnh (VNĐ)" min="10000" step="1000" />
                                 <span class="input-group-text">đ</span>
                             </div>
-                            <small class="text-muted">Giá tối thiểu: 10,000 đ</small>
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Để trống để sử dụng giá mặc định theo cấp học. Giá tối thiểu: 10,000 đ
+                            </small>
                         </div>
 
-                        <!-- Hidden field to store final price -->
-                        <input type="hidden" id="finalPrice" name="CustomPrice" value="" />
-
-                        <div class="mb-3 mt-3">
+                        <div class="mb-3">
                             <label asp-for="Deadline" class="form-label fw-semibold">
                                 <i class="bi bi-calendar text-primary me-1"></i> Deadline <span class="text-danger">*</span>
                             </label>
@@ -156,18 +107,18 @@
 
                         <div class="mb-3">
                             <label asp-for="AttachmentFile" class="form-label fw-semibold">
-                                <i class="bi bi-image text-primary me-1"></i> Tài liệu bài toán (nếu có)
+                                <i class="bi bi-paperclip text-primary me-1"></i> Tài liệu bài toán (nếu có)
                             </label>
                             <input asp-for="AttachmentFile"
                                    type="file"
                                    class="form-control"
                                    accept=".pdf,.doc,.docx" />
-                            <small class="text-muted">Hỗ trợ: .docx, .xlsx, .pdf(Tối đa 50MB)</small>
+                            <small class="text-muted">Hỗ trợ: .pdf, .doc, .docx (Tối đa 10MB)</small>
                         </div>
 
                         <div class="d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-primary" id="submitBtn">
-                                <i class="bi bi-send me-1"></i> <span id="submitBtnText">Đăng bài toán</span>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-send me-1"></i> Đăng bài toán
                             </button>
                         </div>
                     </form>
@@ -176,34 +127,51 @@
         </div>
 
         <div class="col-lg-4">
-            <!-- Mode Indicator Card -->
-            <div class="card border-0 shadow-sm mb-3" id="modeIndicatorCard">
-                <div class="card-body text-center py-3">
-                    <div id="individualModeIndicator">
-                        <i class="bi bi-person-fill text-primary fs-2"></i>
-                        <h6 class="mt-2 mb-0 fw-bold">Chế độ: Cá nhân</h6>
-                        <small class="text-muted">Bạn sẽ trả toàn bộ chi phí</small>
-                    </div>
-                    <div id="groupModeIndicator" style="display: none;">
-                        <i class="bi bi-people-fill text-success fs-2"></i>
-                        <h6 class="mt-2 mb-0 fw-bold">Chế độ: Nhóm</h6>
-                        <small class="text-muted">Chi phí sẽ được chia cho các thành viên</small>
-                    </div>
-                </div>
-            </div>
-
             <!-- Price Card -->
             <div class="card border-0 shadow-sm mb-3">
                 <div class="card-body text-center">
                     <i class="bi bi-currency-dollar text-primary" style="font-size: 2.5rem;"></i>
                     <h6 class="mt-2 mb-1">Giá dự kiến</h6>
                     <p class="fs-4 fw-bold text-primary mb-0" id="priceDisplay">-- đ</p>
-                    <small class="text-muted" id="priceHint">Chọn độ khó để xem giá</small>
-                    <div id="groupPriceNote" style="display: none;" class="mt-2 pt-2 border-top">
-                        <small class="text-success fw-semibold">
-                            <i class="bi bi-info-circle me-1"></i>
-                            Giá sẽ được chia đều cho các thành viên
-                        </small>
+                    <small class="text-muted" id="priceHint">Chọn cấp học để xem giá</small>
+                </div>
+            </div>
+
+            <!-- Education Level Info Card -->
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-header bg-white border-0">
+                    <h6 class="mb-0 fw-bold"><i class="bi bi-info-circle text-info me-2"></i>Bảng giá theo cấp</h6>
+                </div>
+                <div class="card-body pt-2">
+                    <div class="row g-2 text-center">
+                        <div class="col-6">
+                            <div class="border rounded p-2">
+                                <div class="text-primary fw-bold">Tiểu học</div>
+                                <div class="small text-muted">30,000 đ</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-2">
+                                <div class="text-info fw-bold">THCS</div>
+                                <div class="small text-muted">50,000 đ</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-2">
+                                <div class="text-warning fw-bold">THPT</div>
+                                <div class="small text-muted">70,000 đ</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-2">
+                                <div class="text-success fw-bold">Đại học</div>
+                                <div class="small text-muted">100,000 đ</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-info mt-3 mb-0 small">
+                        <i class="bi bi-lightbulb me-1"></i>
+                        Bạn có thể tùy chỉnh giá nếu muốn
                     </div>
                 </div>
             </div>
@@ -214,13 +182,13 @@
                     <h6 class="mb-0 fw-bold"><i class="bi bi-lightbulb text-warning me-2"></i>Mẹo hay</h6>
                 </div>
                 <div class="card-body pt-0">
-                    <ul class="list-unstyled mb-0 small" id="tipsList">
+                    <ul class="list-unstyled mb-0 small">
                         <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Viết tiêu đề rõ ràng</li>
                         <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Mô tả chi tiết yêu cầu</li>
                         <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Đính kèm hình ảnh nếu cần</li>
                         <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Chọn deadline hợp lý</li>
-                        <li class="mb-2 group-tip" style="display: none;"><i class="bi bi-check-circle text-success me-2"></i>Đặt tên nhóm dễ nhớ</li>
-                        <li class="group-tip" style="display: none;"><i class="bi bi-check-circle text-success me-2"></i>Mời bạn bè sau khi tạo</li>
+                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Chọn cấp học chính xác</li>
+                        <li><i class="bi bi-check-circle text-success me-2"></i>Tùy chỉnh giá nếu cần</li>
                     </ul>
                 </div>
             </div>
@@ -230,133 +198,78 @@
 
 @section Scripts {
     <script>
-        // ✅ Elements
-        const modeIndividual = document.getElementById('modeIndividual');
-        const modeGroup = document.getElementById('modeGroup');
-        const isGroupModeInput = document.getElementById('isGroupModeInput');
-        const groupNameSection = document.getElementById('groupNameSection');
-        const groupNameInput = document.getElementById('groupNameInput');
-        const individualModeIndicator = document.getElementById('individualModeIndicator');
-        const groupModeIndicator = document.getElementById('groupModeIndicator');
-        const groupPriceNote = document.getElementById('groupPriceNote');
-        const submitBtnText = document.getElementById('submitBtnText');
-        const groupTips = document.querySelectorAll('.group-tip');
-
-        const difficultySelect = document.getElementById('difficultySelect');
-        const customPriceSection = document.getElementById('customPriceSection');
+        const educationLevelSelect = document.getElementById('educationLevelSelect');
         const customPriceInput = document.getElementById('customPriceInput');
         const priceDisplay = document.getElementById('priceDisplay');
         const priceHint = document.getElementById('priceHint');
-        const finalPriceInput = document.getElementById('finalPrice');
         const deadlineInput = document.querySelector('input[type="datetime-local"]');
 
-        // ✅ Handle mode selection
-        function updateModeDisplay() {
-            if (modeGroup.checked) {
-                // Group mode
-                isGroupModeInput.value = 'true';
-                groupNameSection.style.display = 'block';
-                groupNameInput.required = true;
-                individualModeIndicator.style.display = 'none';
-                groupModeIndicator.style.display = 'block';
-                groupPriceNote.style.display = 'block';
-                submitBtnText.textContent = 'Tạo nhóm và đăng bài';
-                groupTips.forEach(tip => tip.style.display = 'block');
-
-                // Update label styles
-                document.querySelector('label[for="modeGroup"]').classList.add('border-success', 'bg-success', 'bg-opacity-10');
-                document.querySelector('label[for="modeGroup"]').classList.remove('border-primary', 'bg-primary');
-                document.querySelector('label[for="modeIndividual"]').classList.remove('border-primary', 'bg-primary', 'bg-opacity-10');
-                document.querySelector('label[for="modeIndividual"]').style.borderWidth = '1px';
-                document.querySelector('label[for="modeGroup"]').style.borderWidth = '2px';
-            } else {
-                // Individual mode
-                isGroupModeInput.value = 'false';
-                groupNameSection.style.display = 'none';
-                groupNameInput.required = false;
-                individualModeIndicator.style.display = 'block';
-                groupModeIndicator.style.display = 'none';
-                groupPriceNote.style.display = 'none';
-                submitBtnText.textContent = 'Đăng bài toán';
-                groupTips.forEach(tip => tip.style.display = 'none');
-
-                // Update label styles
-                document.querySelector('label[for="modeIndividual"]').classList.add('border-primary', 'bg-primary', 'bg-opacity-10');
-                document.querySelector('label[for="modeGroup"]').classList.remove('border-success', 'bg-success', 'bg-opacity-10');
-                document.querySelector('label[for="modeIndividual"]').style.borderWidth = '2px';
-                document.querySelector('label[for="modeGroup"]').style.borderWidth = '1px';
-            }
-        }
-
-        modeIndividual.addEventListener('change', updateModeDisplay);
-        modeGroup.addEventListener('change', updateModeDisplay);
-
-        // Initialize
-        updateModeDisplay();
-
-        // Handle difficulty change
-        difficultySelect.addEventListener('change', function() {
+        // Handle education level change
+        educationLevelSelect.addEventListener('change', function() {
             const selectedOption = this.options[this.selectedIndex];
-            const priceType = selectedOption.getAttribute('data-price');
+            const defaultPrice = selectedOption.getAttribute('data-price');
 
-            if (priceType === 'custom') {
-                customPriceSection.style.display = 'block';
-                customPriceInput.required = true;
-                priceDisplay.textContent = '-- đ';
-                priceHint.textContent = 'Nhập giá tùy chọn bên dưới';
-                finalPriceInput.value = '';
-            } else if (priceType) {
-                customPriceSection.style.display = 'none';
-                customPriceInput.required = false;
-                const price = parseInt(priceType);
-                priceDisplay.textContent = price.toLocaleString('vi-VN') + ' đ';
-                priceHint.textContent = 'Giá cố định theo độ khó';
-                finalPriceInput.value = price;
+            if (defaultPrice) {
+                const price = parseInt(defaultPrice);
+                
+                // Only update if custom price is not entered
+                if (!customPriceInput.value) {
+                    priceDisplay.textContent = price.toLocaleString('vi-VN') + ' đ';
+                    priceHint.textContent = 'Giá mặc định theo cấp học';
+                }
             } else {
-                customPriceSection.style.display = 'none';
-                customPriceInput.required = false;
-                priceDisplay.textContent = '-- đ';
-                priceHint.textContent = 'Chọn độ khó để xem giá';
-                finalPriceInput.value = '';
+                if (!customPriceInput.value) {
+                    priceDisplay.textContent = '-- đ';
+                    priceHint.textContent = 'Chọn cấp học để xem giá';
+                }
             }
         });
 
         // Handle custom price input
         customPriceInput.addEventListener('input', function() {
-            const price = parseInt(this.value);
-            if (price && price >= 10000) {
-                priceDisplay.textContent = price.toLocaleString('vi-VN') + ' đ';
-                finalPriceInput.value = price;
+            const customPrice = parseInt(this.value);
+            
+            if (customPrice && customPrice >= 10000) {
+                priceDisplay.textContent = customPrice.toLocaleString('vi-VN') + ' đ';
+                priceHint.textContent = 'Giá tùy chỉnh';
             } else {
-                priceDisplay.textContent = '-- đ';
-                finalPriceInput.value = '';
+                // Revert to default price if custom price is cleared
+                const selectedOption = educationLevelSelect.options[educationLevelSelect.selectedIndex];
+                const defaultPrice = selectedOption.getAttribute('data-price');
+                
+                if (defaultPrice) {
+                    const price = parseInt(defaultPrice);
+                    priceDisplay.textContent = price.toLocaleString('vi-VN') + ' đ';
+                    priceHint.textContent = 'Giá mặc định theo cấp học';
+                } else {
+                    priceDisplay.textContent = '-- đ';
+                    priceHint.textContent = 'Chọn cấp học để xem giá';
+                }
             }
         });
 
         // Form validation
         document.querySelector('form').addEventListener('submit', function(e) {
-            const difficulty = difficultySelect.value;
+            const educationLevel = educationLevelSelect.value;
+            const customPrice = parseInt(customPriceInput.value);
 
-            if (difficulty === 'options') {
-                const customPrice = parseInt(customPriceInput.value);
-                if (!customPrice || customPrice < 10000) {
-                    e.preventDefault();
-                    alert('Vui lòng nhập giá tối thiểu 10,000 đ!');
-                    customPriceInput.focus();
-                    return false;
-                }
+            if (!educationLevel) {
+                e.preventDefault();
+                alert('Vui lòng chọn cấp học!');
+                educationLevelSelect.focus();
+                return false;
             }
 
-            // Validate group name if in group mode
-            if (modeGroup.checked && !groupNameInput.value.trim()) {
+            // Validate custom price if entered
+            if (customPriceInput.value && customPrice < 10000) {
                 e.preventDefault();
-                alert('Vui lòng nhập tên nhóm!');
-                groupNameInput.focus();
+                alert('Giá tối thiểu là 10,000 đ!');
+                customPriceInput.focus();
                 return false;
             }
         });
 
-        // Set default deadline
+        // Set default deadline (minimum is now)
         const today = new Date();
         today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
         const todayString = today.toISOString().slice(0, 16);
@@ -368,13 +281,10 @@
     <script>
         CKEDITOR.replace('Description', {
             height: 300,
-
             removePlugins: 'elementspath,save,print,preview,find,flash,forms,iframe,fullscreen,sourcearea,maximize',
-
             removeButtons: 'Save,NewPage,ExportPdf,Preview,Print,Templates,SelectAll,' +
                            'Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,' +
                            'Flash,Iframe,Maximize,Source',
-
             toolbar: [
                 { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike'] },
                 { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
@@ -386,8 +296,7 @@
         });
         CKEDITOR.config.versionCheck = false;
     </script>
-
-    }
+}
 
     <style>
         .hover-card {

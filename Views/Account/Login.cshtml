@@ -140,7 +140,7 @@
                 </div>
 
                 <div class="card-footer bg-light text-center py-3 fade-in-up delay-5">
-                    <a asp-controller="Home" asp-action="Index" asp-route-role="@Model.Role.ToString()" class="btn btn-outline-@roleColor btn-pill btn-animated px-5">
+                    <a asp-controller="Home" asp-action="Index" asp-route-role="@Model.Role.ToString()" class="btn btn-outline-@roleColor @(Model.Role == Webgiasu.Models.UserRole.School ? "btn-no-border-hover" : "btn-pill") btn-animated px-5">
                         <i class="bi bi-arrow-left me-1"></i> Quay lại trang chủ
                     </a>
                 </div>

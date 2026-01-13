@@ -9,15 +9,16 @@
         Van,
         Anh,
         Su,
-        Dia
+        Dia,
+        Khac 
     }
 
     public enum DifficultyLevel
     {
-        Easy,
-        Medium,
-        Hard,
-        options
+        TieuHoc = 0,      // Tiểu học
+        THCS = 1,         // Trung học cơ sở
+        THPT = 2,         // Trung học phổ thông
+        DaiHoc = 3        // Đại học
     }
 
     public enum ProblemStatus

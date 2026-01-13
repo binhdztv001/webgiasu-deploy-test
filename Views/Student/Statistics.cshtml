@@ -116,12 +116,12 @@
 
     <!-- Charts Row 2 -->
     <div class="row g-3 mb-4">
-        <!-- Chart: Bài toán theo độ khó -->
+        <!-- Chart: Bài toán theo cấp học -->
         <div class="col-lg-6">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-header py-3 bg-white border-bottom">
                     <h6 class="mb-0 fw-bold text-dark">
-                        <i class="bi bi-speedometer2 text-warning me-2"></i>Phân bố theo độ khó
+                        <i class="bi bi-mortarboard text-warning me-2"></i>Phân bố theo cấp học
                     </h6>
                 </div>
                 <div class="card-body">
@@ -256,8 +256,14 @@
             }
         });
 
-        // Chart: Độ khó
-        const difficultyLabels = [@Html.Raw(string.Join(",", ((IEnumerable<dynamic>)ViewBag.ProblemsByDifficulty).Select(x => "'" + (x.Difficulty == "Easy" ? "Dễ" : x.Difficulty == "Medium" ? "Trung bình" : x.Difficulty == "Hard" ? "Khó" : x.Difficulty) + "'")))];
+        // Chart: Cấp học - Updated to show grade levels
+        const difficultyLabels = [@Html.Raw(string.Join(",", ((IEnumerable<dynamic>)ViewBag.ProblemsByDifficulty).Select(x => {
+            var label = x.Difficulty == "TieuHoc" ? "Tiểu học" : 
+                       x.Difficulty == "THCS" ? "THCS" : 
+                       x.Difficulty == "THPT" ? "THPT" : 
+                       x.Difficulty == "DaiHoc" ? "Đại học" : x.Difficulty;
+            return "'" + label + "'";
+        })))];
         const difficultyCounts = [@Html.Raw(string.Join(",", ((IEnumerable<dynamic>)ViewBag.ProblemsByDifficulty).Select(x => (int)x.Count)))];
         
         const difficultyCtx = document.getElementById('difficultyChart').getContext('2d');
@@ -267,7 +273,7 @@
                 labels: difficultyLabels,
                 datasets: [{
                     data: difficultyCounts,
-                    backgroundColor: [colors.success, colors.warning, colors.danger],
+                    backgroundColor: [colors.primary, colors.info, colors.warning, colors.success],
                     borderWidth: 2,
                     borderColor: '#fff'
                 }]
