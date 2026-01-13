@@ -50,13 +50,15 @@
     border-radius: 16px !important;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18) !important;
     overflow: hidden !important;
-    background: #fff !important;
+    background: #fff;
+    --menu-color: #2196F3;
+    --menu-color-rgb: 33,150,243;
 }
 
 /* Profile Dropdown Header */
 .profile-dropdown .dropdown-header {
     padding: 0 !important;
-    background: transparent !important;
+    background: transparent;
 }
 
 .profile-dropdown .dropdown-header > div {
@@ -94,50 +96,94 @@
 
 /* Profile Menu Items */
 .profile-dropdown .profile-menu-item {
-    display: flex !important;
-    align-items: center !important;
+    position: relative;
+    display: flex;
+    align-items: center;
     padding: 0.85rem 1.25rem !important;
-    font-size: 0.9rem !important;
-    font-weight: 500 !important;
-    color: #495057 !important;
-    transition: all 0.2s ease !important;
-    border-left: 3px solid transparent !important;
-    background: transparent !important;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #495057;
+    background: transparent;
+    transition: all 0.2s ease;
+    overflow: hidden;
 }
 
-.profile-dropdown .profile-menu-item i {
-    font-size: 1.1rem !important;
-    width: 24px !important;
-    margin-right: 0.75rem !important;
-    color: #6c757d !important;
-    transition: all 0.2s ease !important;
+    .profile-dropdown .profile-menu-item::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 6px;
+        height: 100%;
+        background: transparent;
+        transition: background 0.2s ease;
+    }
+
+    .profile-dropdown .profile-menu-item i {
+        font-size: 1.1rem;
+        width: 24px;
+        margin-right: 0.75rem;
+        color: #6c757d;
+        transition: all 0.2s ease;
+    }
+
+    .profile-dropdown .profile-menu-item:hover {
+        background: linear-gradient( 90deg, rgba(var(--menu-color-rgb), 0.08) 0%, transparent 100% ) !important;
+        color: var(--menu-color);
+    }
+
+        .profile-dropdown .profile-menu-item:hover::before {
+            background: var(--menu-color);
+        }
+
+        .profile-dropdown .profile-menu-item:hover i {
+            color: var(--menu-color) ;
+        }
+
+/* Admin */
+body[data-theme="admin"] .profile-dropdown {
+    --menu-color: #263238 !important;
+    --menu-color-rgb: 255, 255, 255 !important;
 }
 
-.profile-dropdown .profile-menu-item:hover {
-    background: linear-gradient(90deg, rgba(33, 150, 243, 0.08) 0%, transparent 100%) !important;
-    color: #2196F3 !important;
-    border-left-color: #2196F3 !important;
-    transform: none !important;
-    padding-left: 1.5rem !important;
+/* Tutor */
+body[data-theme="tutor"] .profile-dropdown {
+    --menu-color: #4CAF50 !important;
+    --menu-color-rgb: 76,175,80 !important;
 }
 
-.profile-dropdown .profile-menu-item:hover i {
-    color: #2196F3 !important;
-    transform: translateX(2px) !important;
+/* School */
+body[data-theme="school"] .profile-dropdown {
+    --menu-color: #FF9800 !important;
+    --menu-color-rgb: 255,152,0 !important;
 }
 
-/* Tutor Theme - Green hover */
-.tutor-theme .profile-dropdown .profile-menu-item:hover,
-body[data-theme="tutor"] .profile-dropdown .profile-menu-item:hover {
-    background: linear-gradient(90deg, rgba(76, 175, 80, 0.08) 0%, transparent 100%) !important;
-    color: #4CAF50 !important;
-    border-left-color: #4CAF50 !important;
+/* ===== Override Bootstrap dropdown-item states ===== */
+.profile-dropdown .dropdown-item,
+.profile-dropdown .dropdown-item:focus,
+.profile-dropdown .dropdown-item:active,
+.profile-dropdown .dropdown-item.active {
+    background-color: transparent !important;
+    color: inherit !important;
 }
 
-.tutor-theme .profile-dropdown .profile-menu-item:hover i,
-body[data-theme="tutor"] .profile-dropdown .profile-menu-item:hover i {
-    color: #4CAF50 !important;
+.profile-dropdown .profile-menu-item:hover,
+.profile-dropdown .profile-menu-item:active,
+.profile-dropdown .profile-menu-item.active {
+    color: var(--menu-color) !important;
 }
+
+    .profile-dropdown .profile-menu-item:hover::before,
+    .profile-dropdown .profile-menu-item:active::before,
+    .profile-dropdown .profile-menu-item.active::before {
+        background: var(--menu-color) !important;
+    }
+
+    .profile-dropdown .profile-menu-item:hover i,
+    .profile-dropdown .profile-menu-item:active i,
+    .profile-dropdown .profile-menu-item.active i {
+        color: var(--menu-color) !important;
+    }
 
 /* Logout Item */
 .profile-dropdown .logout-item {

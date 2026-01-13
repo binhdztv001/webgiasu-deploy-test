@@ -36,7 +36,11 @@
 <div class="container mt-5 mb-5">
     <div class="row justify-content-center">
         <div class="col-lg-6 col-md-8">
-            <div class="card shadow-lg border-0 register-card @glowClass fade-in">
+            <div class="card shadow-lg border-0 register-card @glowClass fade-in"
+                style="
+                --role-color: var(--bs-@roleColor);
+                --role-color-rgb: var(--bs-@roleColor-rgb);
+            ">
                 <div class="card-header bg-@roleColor bg-gradient text-white text-center py-4 register-header">
                     <div class="mb-2 icon-container">
                         <i class="@roleIcon icon-bounce" style="font-size: 3rem;"></i>
@@ -152,6 +156,8 @@
         border-radius: 20px;
         overflow: hidden;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        --role-color: var(--bs-primary);
+        --role-color-rgb: var(--bs-primary-rgb);
     }
     
     .register-card:hover {
@@ -188,9 +194,10 @@
         border: 2px solid #e9ecef;
         border-radius: 12px;
     }
-    
+
     .form-control-animated:focus {
-        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+        box-shadow: 0 0 0 4px rgba(var(--role-color-rgb), 0.25);
+        border-color: var(--role-color);
         transform: translateY(-2px);
     }
     
