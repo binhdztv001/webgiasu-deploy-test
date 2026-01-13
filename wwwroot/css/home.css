@@ -18,6 +18,11 @@
     font-weight: 700;
 }
 
+.hero-title i {
+    -webkit-text-fill-color: inherit;
+    background: inherit;
+}
+
 @keyframes gradientWave {
     0% {
         background-position: 0% 50%;
@@ -64,6 +69,15 @@
     .hero-title {
         font-size: 1.5rem;
     }
+}
+
+/* ===========================
+   SOLID GREEN BADGE
+   =========================== */
+
+.badge-solid-green {
+    color: #fff;
+    background: #19d27c;
 }
 
 /* ===========================
@@ -860,6 +874,172 @@
     line-height: 1.4 !important;
     padding-bottom: 0.25rem !important;
 }
+
+/* ===========================
+   4 STEPS SECTION - ENHANCED STYLING
+   =========================== */
+
+/* Badge animation */
+.four-steps-section .badge {
+    animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Step badge styling */
+.four-steps-section .badge.rounded-pill {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+/* Enhanced hover effect for step cards */
+.four-steps-section .hover-card {
+    transform-style: preserve-3d;
+}
+
+.four-steps-section .hover-card:hover {
+    transform: translateY(-15px) scale(1.03) rotateX(2deg);
+}
+
+/* Step number badge animation on hover */
+.four-steps-section .hover-card:hover .badge.rounded-pill {
+    transform: rotate(360deg) scale(1.1);
+    transition: transform 0.6s ease;
+}
+
+/* Icon animation on hover */
+.four-steps-section .hover-card:hover .bi {
+    animation: iconRotate 0.6s ease;
+}
+
+@keyframes iconRotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Decorative circle animation */
+.four-steps-section .position-absolute[style*="border-radius: 50%"] {
+    animation: circleFloat 3s ease-in-out infinite;
+}
+
+@keyframes circleFloat {
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+    50% {
+        transform: translate(-5px, -5px);
+    }
+}
+
+/* Process flow connector styling */
+.four-steps-section .text-center.mt-4 {
+    position: relative;
+    padding: 1rem;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+    border-radius: 10px;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.four-steps-section .text-center.mt-4:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.5), transparent);
+    animation: scanLine 2s linear infinite;
+}
+
+@keyframes scanLine {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Responsive adjustments for 4 steps section */
+@media (max-width: 768px) {
+    .four-steps-section h2 {
+        font-size: 2rem !important;
+    }
+    
+    .four-steps-section .lead {
+        font-size: 1rem !important;
+    }
+}
+
+/* ===========================
+   FEATURE CARDS - EQUAL HEIGHT
+   =========================== */
+
+/* Target the 4 feature cards (AI, QR, Kết bạn, Diễn đàn) */
+.row.g-4.mt-4.justify-content-center > .col-md-6,
+.row.g-4.mt-4.justify-content-center > .col-lg-3 {
+    display: flex;
+}
+
+.row.g-4.mt-4.justify-content-center .text-center.p-4 {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 260px;
+}
+
+/* Icon container */
+.row.g-4.mt-4.justify-content-center .mb-3 {
+    flex-shrink: 0;
+}
+
+/* Title */
+.row.g-4.mt-4.justify-content-center .fw-bold.mb-2 {
+    flex-shrink: 0;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Description text */
+.row.g-4.mt-4.justify-content-center .text-muted.small.mb-0 {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Responsive adjustments for feature cards */
+@media (max-width: 992px) {
+    .row.g-4.mt-4.justify-content-center .text-center.p-4 {
+        min-height: 240px;
+    }
+}
+
+@media (max-width: 768px) {
+    .row.g-4.mt-4.justify-content-center .text-center.p-4 {
+        min-height: auto;
+    }
+    
+    .row.g-4.mt-4.justify-content-center .fw-bold.mb-2 {
+        min-height: auto;
+    }
+}
+
 
 
 

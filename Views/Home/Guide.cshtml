@@ -1,0 +1,591 @@
+﻿@{
+    ViewData["Title"] = "Hướng dẫn sử dụng";
+}
+
+<style>
+.guide-header {
+    background: linear-gradient(90deg, #00c853, #00bcd4, #00c853, #00bcd4);
+    background-size: 300% 100%;
+    animation: gradientWave 8s ease-in-out infinite;
+    color: white;
+    padding: 5rem 0;
+    margin-bottom: 3rem;
+    border-radius: 25px;
+    position: relative;
+    overflow: hidden;
+}
+    
+.guide-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
+}
+    
+@@keyframes gradientWave {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+    
+@@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+    
+.guide-header .container {
+    position: relative;
+    z-index: 1;
+}
+    
+.guide-header h1 {
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+    animation: fadeInDown 0.8s ease-out;
+}
+    
+.guide-header p {
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+    animation: fadeInUp 0.8s ease-out 0.2s backwards;
+}
+    
+@@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+    
+@@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+    
+    .guide-section {
+        margin-bottom: 4rem;
+    }
+    
+    .guide-card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .guide-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .step-number {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+        color: white;
+        margin-right: 1rem;
+        flex-shrink: 0;
+    }
+    
+    .accordion-button:not(.collapsed) {
+        background-color: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+    }
+    
+    .accordion-button:focus {
+        box-shadow: none;
+        border-color: rgba(102, 126, 234, 0.25);
+    }
+    
+    /* Custom tab colors */
+    #student-tab {
+        background: linear-gradient(135deg, #0d6efd 0%, #084298 100%);
+        color: white !important;
+        border: none;
+        margin-right: 0.5rem;
+    }
+    
+    #student-tab:hover,
+    #student-tab.active {
+        background: linear-gradient(135deg, #084298 0%, #0d6efd 100%);
+        color: white !important;
+    }
+    
+    #mentor-tab {
+        background: linear-gradient(135deg, #198754 0%, #0d4a2a 100%);
+        color: white !important;
+        border: none;
+        margin-right: 0.5rem;
+    }
+    
+    #mentor-tab:hover,
+    #mentor-tab.active {
+        background: linear-gradient(135deg, #0d4a2a 0%, #198754 100%);
+        color: white !important;
+    }
+    
+    #school-tab {
+        background: linear-gradient(135deg, #ffc107 0%, #cc9a06 100%);
+        color: white !important;
+        border: none;
+    }
+    
+    #school-tab:hover,
+    #school-tab.active {
+        background: linear-gradient(135deg, #cc9a06 0%, #ffc107 100%);
+        color: white !important;
+    }
+</style>
+
+<div class="guide-header text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3">
+            <i class="bi bi-book-fill me-3"></i>Hướng dẫn sử dụng
+        </h1>
+        <p class="lead mb-0">Tìm hiểu cách sử dụng nền tảng Learn with Mentor một cách dễ dàng</p>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Tabs cho các role -->
+    <ul class="nav nav-pills mb-5 justify-content-center" id="guideTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="student-tab" data-bs-toggle="pill" data-bs-target="#student" type="button" role="tab">
+                <i class="bi bi-person-circle me-2"></i>Học sinh
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="mentor-tab" data-bs-toggle="pill" data-bs-target="#mentor" type="button" role="tab">
+                <i class="bi bi-mortarboard me-2"></i>Mentor
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="school-tab" data-bs-toggle="pill" data-bs-target="#school" type="button" role="tab">
+                <i class="bi bi-building me-2"></i>Nhà trường
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="guideTabContent">
+        <!-- Hướng dẫn Học sinh -->
+        <div class="tab-pane fade show active" id="student" role="tabpanel">
+            <div class="row mb-4">
+                <div class="col-lg-10 mx-auto">
+                    <div class="card guide-card shadow-lg">
+                        <div class="card-body p-5">
+                            <h2 class="fw-bold mb-4 text-primary">
+                                <i class="bi bi-person-circle me-2"></i>Hướng dẫn cho Học sinh
+                            </h2>
+                            
+                            <!-- Bước 1 -->
+                            <div class="d-flex mb-4">
+                                <div class="step-number" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">1</div>
+                                <div>
+                                    <h4 class="fw-bold mb-2">Đăng ký tài khoản</h4>
+                                    <p class="text-muted mb-2">
+                                        - Truy cập trang chủ và nhấn nút <strong>"Đăng ký làm Học sinh"</strong><br/>
+                                        - Điền thông tin: Họ tên, Email, Số điện thoại, Mật khẩu<br/>
+                                        - Chọn cấp học của bạn (Tiểu học, THCS, THPT, Đại học)<br/>
+                                        - Xác nhận qua email và đăng nhập
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Bước 2 -->
+                            <div class="d-flex mb-4">
+                                <div class="step-number" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">2</div>
+                                <div>
+                                    <h4 class="fw-bold mb-2">Đăng bài toán</h4>
+                                    <p class="text-muted mb-2">
+                                        - Vào <strong>"Dashboard"</strong> → chọn <strong>"Đăng bài toán"</strong><br/>
+                                        - Nhập tiêu đề, mô tả chi tiết bài toán<br/>
+                                        - Chọn môn học, cấp độ, thời hạn cần giải<br/>
+                                        - Tải lên hình ảnh đề bài (nếu có)<br/>
+                                        - Đặt mức phí bạn sẵn sàng trả<br/>
+                                        - Nhấn <strong>"Đăng bài"</strong> và chờ mentor nhận giải
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Bước 3 -->
+                            <div class="d-flex mb-4">
+                                <div class="step-number" style="background: linear-gradient(135deg, #ffa751 0%, #ffe259 100%);">3</div>
+                                <div>
+                                    <h4 class="fw-bold mb-2">Nhận lời giải và đánh giá</h4>
+                                    <p class="text-muted mb-2">
+                                        - Nhận thông báo khi mentor gửi lời giải<br/>
+                                        - Xem lời giải chi tiết kèm hình ảnh và giải thích<br/>
+                                        - Hỏi thêm nếu chưa hiểu (miễn phí)<br/>
+                                        - Thanh toán qua QR code khi hài lòng<br/>
+                                        - Đánh giá mentor để giúp cộng đồng
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Chức năng bổ sung -->
+                            <div class="mt-5">
+                                <h4 class="fw-bold mb-3">Các chức năng khác:</h4>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded">
+                                            <i class="bi bi-robot text-primary me-2"></i>
+                                            <strong>AI gợi ý:</strong> Nhận gợi ý bài giải tự động từ AI
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded">
+                                            <i class="bi bi-clock-history text-success me-2"></i>
+                                            <strong>Lịch sử:</strong> Xem lại các bài đã đăng và đã giải
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded">
+                                            <i class="bi bi-credit-card text-warning me-2"></i>
+                                            <strong>Thanh toán:</strong> Quản lý các giao dịch, nạp tiền
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded">
+                                            <i class="bi bi-person text-info me-2"></i>
+                                            <strong>Hồ sơ:</strong> Cập nhật thông tin cá nhân
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hướng dẫn Mentor -->
+        <div class="tab-pane fade" id="mentor" role="tabpanel">
+            <div class="row mb-4">
+                <div class="col-lg-10 mx-auto">
+                    <div class="card guide-card shadow-lg">
+                        <div class="card-body p-5">
+                            <h2 class="fw-bold mb-4 text-success">
+                                <i class="bi bi-mortarboard me-2"></i>Hướng dẫn cho Mentor
+                            </h2>
+                            
+                            <!-- Bước 1 -->
+                            <div class="d-flex mb-4">
+                                <div class="step-number" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">1</div>
+                                <div>
+                                    <h4 class="fw-bold mb-2">Đăng ký và xác thực</h4>
+                                    <p class="text-muted mb-2">
+                                        - Đăng ký tài khoản với vai trò <strong>"Mentor"</strong><br/>
+                                        - Điền đầy đủ thông tin: Giới thiệu bản thân, Môn học chuyên dạy<br/>
+                                        - Upload chứng chỉ, bằng cấp (nếu có)<br/>
+                                        - Đợi admin duyệt hồ sơ (thường 24-48h)<br/>
+                                        - Nhận thông báo khi được phê duyệt
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Bước 2 -->
+                            <div class="d-flex mb-4">
+                                <div class="step-number" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">2</div>
+                                <div>
+                                    <h4 class="fw-bold mb-2">Tìm và nhận bài toán</h4>
+                                    <p class="text-muted mb-2">
+                                        - Vào <strong>"Bài toán chờ giải"</strong> để xem danh sách<br/>
+                                        - Lọc theo môn học, cấp độ, mức phí<br/>
+                                        - Xem chi tiết đề bài và yêu cầu<br/>
+                                        - Nhấn <strong>"Nhận giải bài"</strong> nếu phù hợp<br/>
+                                        - AI sẽ gợi ý cách giải để bạn tham khảo
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Bước 3 -->
+                            <div class="d-flex mb-4">
+                                <div class="step-number" style="background: linear-gradient(135deg, #ffa751 0%, #ffe259 100%);">3</div>
+                                <div>
+                                    <h4 class="fw-bold mb-2">Giải bài và gửi lời giải</h4>
+                                    <p class="text-muted mb-2">
+                                        - Soạn lời giải từng bước, rõ ràng, dễ hiểu<br/>
+                                        - Chụp ảnh hoặc viết chi tiết giải thích<br/>
+                                        - Upload hình ảnh lời giải<br/>
+                                        - Kiểm tra kỹ trước khi gửi<br/>
+                                        - Nhấn <strong>"Gửi lời giải"</strong> và chờ học sinh xác nhận
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Bước 4 -->
+                            <div class="d-flex mb-4">
+                                <div class="step-number" style="background: linear-gradient(135deg, #209cff 0%, #68e0cf 100%);">4</div>
+                                <div>
+                                    <h4 class="fw-bold mb-2">Nhận thanh toán và đánh giá</h4>
+                                    <p class="text-muted mb-2">
+                                        - Học sinh xác nhận và thanh toán<br/>
+                                        - Tiền được chuyển vào tài khoản của bạn<br/>
+                                        - Nhận đánh giá từ học sinh<br/>
+                                        - Rút tiền về tài khoản ngân hàng<br/>
+                                        - Đánh giá tích cực giúp nhận nhiều bài hơn
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Chức năng bổ sung -->
+                            <div class="mt-5">
+                                <h4 class="fw-bold mb-3">Các chức năng khác:</h4>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded">
+                                            <i class="bi bi-briefcase text-primary me-2"></i>
+                                            <strong>Bài của tôi:</strong> Quản lý bài đang giải
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded">
+                                            <i class="bi bi-check-circle text-success me-2"></i>
+                                            <strong>Lời giải đã gửi:</strong> Xem lại các bài đã giải
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded">
+                                            <i class="bi bi-star text-warning me-2"></i>
+                                            <strong>Đánh giá:</strong> Xem đánh giá từ học sinh
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded">
+                                            <i class="bi bi-person text-info me-2"></i>
+                                            <strong>Hồ sơ:</strong> Cập nhật thông tin, chứng chỉ
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hướng dẫn Nhà trường -->
+        <div class="tab-pane fade" id="school" role="tabpanel">
+            <div class="row mb-4">
+                <div class="col-lg-10 mx-auto">
+                    <div class="card guide-card shadow-lg">
+                        <div class="card-body p-5">
+                            <h2 class="fw-bold mb-4 text-warning">
+                                <i class="bi bi-building me-2"></i>Hướng dẫn cho Nhà trường
+                            </h2>
+                            
+                            <!-- Bước 1 -->
+                            <div class="d-flex mb-4">
+                                <div class="step-number" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">1</div>
+                                <div>
+                                    <h4 class="fw-bold mb-2">Đăng ký tài khoản nhà trường</h4>
+                                    <p class="text-muted mb-2">
+                                        - Đăng ký với vai trò <strong>"Nhà trường"</strong><br/>
+                                        - Cung cấp thông tin trường: Tên trường, Địa chỉ, Mã số<br/>
+                                        - Upload giấy phép hoạt động<br/>
+                                        - Đợi admin xác thực<br/>
+                                        - Đăng nhập sau khi được duyệt
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Bước 2 -->
+                            <div class="d-flex mb-4">
+                                <div class="step-number" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">2</div>
+                                <div>
+                                    <h4 class="fw-bold mb-2">Quản lý học sinh</h4>
+                                    <p class="text-muted mb-2">
+                                        - Thêm danh sách học sinh vào hệ thống<br/>
+                                        - Import file Excel hoặc thêm thủ công<br/>
+                                        - Phân quyền cho từng học sinh<br/>
+                                        - Xem danh sách học sinh đã đăng ký<br/>
+                                        - Theo dõi hoạt động của học sinh
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Bước 3 -->
+                            <div class="d-flex mb-4">
+                                <div class="step-number" style="background: linear-gradient(135deg, #ffa751 0%, #ffe259 100%);">3</div>
+                                <div>
+                                    <h4 class="fw-bold mb-2">Theo dõi tiến trình học tập</h4>
+                                    <p class="text-muted mb-2">
+                                        - Xem báo cáo chi tiết từng học sinh<br/>
+                                        - Thống kê số bài đã đăng, đã giải<br/>
+                                        - Đánh giá mức độ tương tác<br/>
+                                        - Xem lịch sử học tập<br/>
+                                        - Nhận cảnh báo khi học sinh gặp khó khăn
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Bước 4 -->
+                            <div class="d-flex mb-4">
+                                <div class="step-number" style="background: linear-gradient(135deg, #209cff 0%, #68e0cf 100%);">4</div>
+                                <div>
+                                    <h4 class="fw-bold mb-2">Báo cáo và thống kê</h4>
+                                    <p class="text-muted mb-2">
+                                        - Xuất báo cáo theo tháng, học kỳ<br/>
+                                        - Thống kê môn học được quan tâm nhất<br/>
+                                        - So sánh hiệu quả học tập giữa các lớp<br/>
+                                        - Đánh giá chất lượng mentor<br/>
+                                        - Gửi báo cáo cho phụ huynh
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Chức năng bổ sung -->
+                            <div class="mt-5">
+                                <h4 class="fw-bold mb-3">Các chức năng khác:</h4>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded">
+                                            <i class="bi bi-people text-primary me-2"></i>
+                                            <strong>Quản lý học sinh:</strong> Thêm, sửa, xóa học sinh
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded">
+                                            <i class="bi bi-graph-up text-success me-2"></i>
+                                            <strong>Thống kê:</strong> Biểu đồ, báo cáo chi tiết
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded">
+                                            <i class="bi bi-file-earmark-text text-warning me-2"></i>
+                                            <strong>Báo cáo:</strong> Xuất file PDF, Excel
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded">
+                                            <i class="bi bi-gear text-info me-2"></i>
+                                            <strong>Cài đặt:</strong> Tùy chỉnh thông tin trường
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="row mt-5 mb-5">
+        <div class="col-lg-10 mx-auto">
+            <h2 class="fw-bold text-center mb-5">
+                <i class="bi bi-question-circle me-2"></i>Câu hỏi thường gặp
+            </h2>
+            
+            <div class="accordion" id="faqAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                            Làm sao để đăng ký tài khoản?
+                        </button>
+                    </h2>
+                    <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Bạn chỉ cần nhấn vào nút "Đăng ký" ở trang chủ, chọn vai trò (Học sinh/Mentor/Nhà trường), 
+                            điền đầy đủ thông tin và xác nhận qua email. Quá trình đăng ký chỉ mất 30 giây.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                            Chi phí sử dụng dịch vụ như thế nào?
+                        </button>
+                    </h2>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Học sinh tự đặt mức phí cho mỗi bài toán. Mentor nhận 80% phí, 20% là phí hệ thống. 
+                            Không có phí đăng ký hay phí ẩn. Tất cả đều minh bạch và công khai.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                            Làm thế nào để trở thành Mentor?
+                        </button>
+                    </h2>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Đăng ký tài khoản Mentor, điền đầy đủ thông tin, upload chứng chỉ (nếu có). 
+                            Đội ngũ admin sẽ kiểm tra và phê duyệt trong vòng 24-48 giờ. 
+                            Sau khi được duyệt, bạn có thể bắt đầu nhận và giải bài ngay.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                            Thanh toán như thế nào?
+                        </button>
+                    </h2>
+                    <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Chúng tôi hỗ trợ thanh toán qua mã QR với các ví điện tử: MoMo, ZaloPay, VNPay. 
+                            Giao dịch được mã hóa và bảo mật cao nhất. Bạn cũng có thể thanh toán qua thẻ ngân hàng.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                            AI gợi ý bài giải hoạt động như thế nào?
+                        </button>
+                    </h2>
+                    <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Hệ thống AI sử dụng công nghệ machine learning để phân tích đề bài và đưa ra gợi ý giải pháp. 
+                            Học sinh có thể tham khảo gợi ý này trước khi nhận lời giải từ mentor. 
+                            Mentor cũng có thể sử dụng AI để hỗ trợ trong quá trình giải bài.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Support -->
+    <div class="text-center mb-5">
+        <div class="card border-0 shadow-lg" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 20px;">
+            <div class="card-body p-5">
+                <h3 class="fw-bold text-white mb-3">Cần hỗ trợ thêm?</h3>
+                <p class="text-white mb-4">Đội ngũ hỗ trợ của chúng tôi luôn sẵn sàng giúp đỡ bạn 24/7</p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="mailto:support@giasu.com" class="btn btn-light btn-lg px-5" style="border-radius: 50px;">
+                        <i class="bi bi-envelope me-2"></i>Email hỗ trợ
+                    </a>
+                    <a href="tel:1900xxxx" class="btn btn-outline-light btn-lg px-5" style="border-radius: 50px;">
+                        <i class="bi bi-telephone me-2"></i>Hotline: 1900 xxxx
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

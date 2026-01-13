@@ -134,9 +134,11 @@
     var path = Context.Request.Path.ToString();
     var roleQuery = Context.Request.Query["role"].ToString();
     var isHome = path == "/" || path == "/Home" || path == "/Home/Index";
+    var isAbout = path == "/Home/About";
+    var isGuide = path == "/Home/Guide";
     var isLoginWithRole = path == "/Account/Login" && (roleQuery == "Student" || roleQuery == "Tutor" || roleQuery == "Admin");
     var isRegisterWithRole = path == "/Account/Register" && (roleQuery == "Student" || roleQuery == "Tutor" || roleQuery == "Admin");
-    var bodyClass = (isHome || isLoginWithRole || isRegisterWithRole) ? "home-background" : string.Empty;
+    var bodyClass = (isHome || isAbout || isGuide || isLoginWithRole || isRegisterWithRole) ? "home-background" : string.Empty;
 }
 <body class="@bodyClass">
     <header>
@@ -238,6 +240,18 @@
                         }
                         
                         <ul class="navbar-nav ms-auto">
+                            <!-- Public navigation links on the right -->
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="About">
+                                    <i class="bi bi-info-circle"></i> Giới thiệu
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="Guide">
+                                    <i class="bi bi-book"></i> Hướng dẫn
+                                </a>
+                            </li>
+                            
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="bi bi-person-circle me-1"></i> @userName
@@ -261,6 +275,22 @@
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" asp-controller="Account" asp-action="Logout"><i class="bi bi-box-arrow-right me-2"></i> Đăng xuất</a></li>
                                 </ul>
+                            </li>
+                        </ul>
+                    }
+                    else
+                    {
+                        <!-- Public navigation links when not logged in -->
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="About">
+                                    <i class="bi bi-info-circle"></i> Giới thiệu
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="Guide">
+                                    <i class="bi bi-book"></i> Hướng dẫn
+                                </a>
                             </li>
                         </ul>
                     }
