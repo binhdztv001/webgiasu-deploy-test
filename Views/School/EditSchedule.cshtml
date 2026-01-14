@@ -51,17 +51,19 @@
                                 <span asp-validation-for="ScheduleDate" class="text-danger"></span>
                             </div>
                             <div class="col-md-4">
-                                <label asp-for="StartTime" class="form-label fw-semibold">
+                                <label class="form-label fw-semibold">
                                     <i class="bi bi-clock text-warning"></i> Giờ bắt đầu <span class="text-danger">*</span>
                                 </label>
-                                <input asp-for="StartTime" type="time" class="form-control" required />
+                                <input name="StartTime" type="time" class="form-control" 
+                                       value="@Model.StartTime.ToString(@"hh\:mm")" required />
                                 <span asp-validation-for="StartTime" class="text-danger"></span>
                             </div>
                             <div class="col-md-4">
-                                <label asp-for="EndTime" class="form-label fw-semibold">
+                                <label class="form-label fw-semibold">
                                     <i class="bi bi-clock-fill text-warning"></i> Giờ kết thúc <span class="text-danger">*</span>
                                 </label>
-                                <input asp-for="EndTime" type="time" class="form-control" required />
+                                <input name="EndTime" type="time" class="form-control" 
+                                       value="@Model.EndTime.ToString(@"hh\:mm")" required />
                                 <span asp-validation-for="EndTime" class="text-danger"></span>
                             </div>
                         </div>

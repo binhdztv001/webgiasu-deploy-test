@@ -213,6 +213,7 @@ namespace Webgiasu.Controllers
                 if (userId == 0) return RedirectToAction("Login", "Account");
 
                 var schedule = _db.ClassSchedules
+                    .Include(s => s.Class)
                     .Where(s => s.Id == id && s.Class!.SchoolId == userId)
                     .FirstOrDefault();
 
@@ -243,19 +244,31 @@ namespace Webgiasu.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ Error in EditSchedule GET: {ex.Message}");
-                TempData["Error"] = "Đã xảy ra lỗi!";
+                Console.WriteLine($"   Stack trace: {ex.StackTrace}");
+                TempData["Error"] = "Đã xảy ra lỗi khi tải trang chỉnh sửa!";
                 return RedirectToAction("ManageSchedules");
             }
         }
 
         // Chỉnh sửa lịch trao đổi - POST
         [HttpPost]
-        public IActionResult EditSchedule(Models.ViewModels.EditScheduleViewModel model)
+        public IActionResult EditSchedule(Models.ViewModels.EditScheduleViewModel model, string StartTime, string EndTime)
         {
             try
             {
                 var userId = GetCurrentUserId();
                 if (userId == 0) return RedirectToAction("Login", "Account");
+
+                // Parse TimeSpan from string inputs
+                if (!string.IsNullOrEmpty(StartTime) && TimeSpan.TryParse(StartTime, out var parsedStartTime))
+                {
+                    model.StartTime = parsedStartTime;
+                }
+
+                if (!string.IsNullOrEmpty(EndTime) && TimeSpan.TryParse(EndTime, out var parsedEndTime))
+                {
+                    model.EndTime = parsedEndTime;
+                }
 
                 if (!ModelState.IsValid)
                 {
@@ -263,6 +276,7 @@ namespace Webgiasu.Controllers
                 }
 
                 var schedule = _db.ClassSchedules
+                    .Include(s => s.Class)
                     .Where(s => s.Id == model.Id && s.Class!.SchoolId == userId)
                     .FirstOrDefault();
 
@@ -276,6 +290,7 @@ namespace Webgiasu.Controllers
                 if (model.StartTime >= model.EndTime)
                 {
                     TempData["Error"] = "Giờ kết thúc phải sau giờ bắt đầu!";
+                    model.ClassName = schedule.Class!.ClassName;
                     return View(model);
                 }
 
@@ -299,7 +314,8 @@ namespace Webgiasu.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ Error in EditSchedule POST: {ex.Message}");
-                TempData["Error"] = "Đã xảy ra lỗi!";
+                Console.WriteLine($"   Stack trace: {ex.StackTrace}");
+                TempData["Error"] = "Đã xảy ra lỗi khi cập nhật lịch trao đổi!";
                 return RedirectToAction("EditSchedule", new { id = model.Id });
             }
         }
@@ -830,6 +846,25 @@ namespace Webgiasu.Controllers
                     duration = $"{days} ngày";
                 }
 
+                // Get class schedules
+                var schedules = _db.ClassSchedules
+                    .Where(s => s.ClassId == id)
+                    .OrderByDescending(s => s.ScheduleDate)
+                    .Select(s => new
+                    {
+                        s.Id,
+                        s.Title,
+                        s.ScheduleDate,
+                        s.StartTime,
+                        s.EndTime,
+                        s.MeetingType,
+                        s.Location,
+                        s.Status
+                    })
+                    .ToList();
+
+                ViewBag.Schedules = schedules;
+
                 var viewModel = new Models.ViewModels.ClassDetailsViewModel
                 {
                     Id = classInfo.Id,
@@ -880,6 +915,18 @@ namespace Webgiasu.Controllers
 
                 ViewBag.Tutors = universityTutors;
 
+                // ✅ LẤY DANH SÁCH HỌC SINH CẤP ĐẠI HỌC
+                var allStudents = _userService.GetUsersByRole(UserRole.Student);
+                var universityStudents = allStudents
+                    .Where(s => s.Level.HasValue && s.Level.Value == EducationLevel.DaiHoc)
+                    .ToList();
+
+                ViewBag.AllStudents = universityStudents;
+
+                // ✅ LẤY DANH SÁCH HỌC SINH HIỆN TẠI CỦA LỚP
+                var currentStudentIds = _classService.GetClassStudentIds(id);
+                ViewBag.CurrentStudentIds = currentStudentIds;
+
                 var viewModel = new Models.ViewModels.EditClassViewModel
                 {
                     Id = classInfo.Id,
@@ -891,7 +938,7 @@ namespace Webgiasu.Controllers
                     EndDateValue = classInfo.EndDate?.ToString("yyyy-MM-dd") ?? "",
                     Status = classInfo.Status,
                     CreatedDate = classInfo.CreatedDate.ToString("dd/MM/yyyy"),
-                    StudentCount = _classService.GetClassStudentIds(id).Count
+                    StudentCount = currentStudentIds.Count
                 };
 
                 return View(viewModel);
@@ -906,7 +953,7 @@ namespace Webgiasu.Controllers
 
         // Edit Class - POST
         [HttpPost]
-        public IActionResult EditClass(int classId, string className, string subject, string description, int tutorId, DateTime? startDate, DateTime? endDate, int status)
+        public IActionResult EditClass(int classId, string className, string subject, string description, int tutorId, List<int>? studentIds, DateTime? startDate, DateTime? endDate, int status)
         {
             try
             {
@@ -933,6 +980,13 @@ namespace Webgiasu.Controllers
                     return RedirectToAction("EditClass", new { id = classId });
                 }
 
+                // ✅ KIỂM TRA DANH SÁCH HỌC SINH
+                if (studentIds == null || !studentIds.Any())
+                {
+                    TempData["Error"] = "Vui lòng chọn ít nhất 1 học sinh!";
+                    return RedirectToAction("EditClass", new { id = classId });
+                }
+
                 // ✅ KIỂM TRA MENTOR CẤP ĐẠI HỌC
                 var selectedTutor = _userService.GetUserById(tutorId);
                 if (selectedTutor == null || selectedTutor.Role != UserRole.Tutor)
@@ -953,6 +1007,28 @@ namespace Webgiasu.Controllers
                     return RedirectToAction("EditClass", new { id = classId });
                 }
 
+                // ✅ KIỂM TRA HỌC SINH CẤP ĐẠI HỌC
+                var selectedStudents = _userService.GetUsersByRole(UserRole.Student)
+                    .Where(s => studentIds.Contains(s.Id))
+                    .ToList();
+
+                if (selectedStudents.Count != studentIds.Count)
+                {
+                    TempData["Error"] = "Một số học sinh không hợp lệ!";
+                    return RedirectToAction("EditClass", new { id = classId });
+                }
+
+                var nonUniversityStudents = selectedStudents
+                    .Where(s => !s.Level.HasValue || s.Level.Value != EducationLevel.DaiHoc)
+                    .ToList();
+
+                if (nonUniversityStudents.Any())
+                {
+                    var studentNames = string.Join(", ", nonUniversityStudents.Select(s => s.FullName));
+                    TempData["Error"] = $"Chỉ học sinh cấp Đại học mới được phép tham gia! Học sinh không đủ điều kiện: {studentNames}";
+                    return RedirectToAction("EditClass", new { id = classId });
+                }
+
                 // Update class
                 classInfo.ClassName = className;
                 classInfo.Subject = subject;
@@ -964,7 +1040,25 @@ namespace Webgiasu.Controllers
 
                 if (_classService.UpdateClass(classInfo))
                 {
-                    TempData["Success"] = "Cập nhật lớp học thành công!";
+                    // ✅ CẬP NHẬT DANH SÁCH HỌC SINH
+                    // Xóa tất cả học sinh hiện tại
+                    var currentStudents = _db.ClassStudents.Where(cs => cs.ClassId == classId).ToList();
+                    _db.ClassStudents.RemoveRange(currentStudents);
+
+                    // Thêm danh sách học sinh mới
+                    foreach (var studentId in studentIds)
+                    {
+                        _db.ClassStudents.Add(new ClassStudent
+                        {
+                            ClassId = classId,
+                            StudentId = studentId,
+                            JoinedDate = DateTime.Now
+                        });
+                    }
+
+                    _db.SaveChanges();
+
+                    TempData["Success"] = "Cập nhật lớp học và danh sách học sinh thành công!";
                     return RedirectToAction("ClassDetails", new { id = classId });
                 }
                 else
@@ -976,7 +1070,8 @@ namespace Webgiasu.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ Error in EditClass POST: {ex.Message}");
-                TempData["Error"] = "Đã xảy ra lỗi!";
+                Console.WriteLine($"   Stack trace: {ex.StackTrace}");
+                TempData["Error"] = "Đã xảy ra lỗi khi cập nhật lớp học!";
                 return RedirectToAction("EditClass", new { id = classId });
             }
         }

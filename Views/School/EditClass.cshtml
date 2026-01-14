@@ -103,6 +103,34 @@
 
                         <hr class="my-4">
 
+                        <h6 class="fw-bold mb-3"><i class="bi bi-people me-2"></i>Quản lý học sinh</h6>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                Chọn học sinh
+                                <span class="text-danger">*</span>
+                            </label>
+                            <div class="border rounded p-3" style="max-height: 300px; overflow-y: auto;">
+                                @if (ViewBag.AllStudents != null)
+                                {
+                                    @foreach (var student in ViewBag.AllStudents)
+                                    {
+                                        bool isSelected = ViewBag.CurrentStudentIds != null && ((List<int>)ViewBag.CurrentStudentIds).Contains(student.Id);
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" name="studentIds" value="@student.Id" id="student_@student.Id" checked="@isSelected">
+                                            <label class="form-check-label" for="student_@student.Id">
+                                                @student.FullName - @student.Email
+                                            </label>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle me-1"></i>Chọn ít nhất 1 học sinh. Bỏ chọn để xóa học sinh khỏi lớp.
+                            </small>
+                        </div>
+
+                        <hr class="my-4"  />
+
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-warning px-4">
                                 <i class="bi bi-check-circle me-2"></i>Lưu thay đổi
@@ -127,7 +155,7 @@
                             <small>Thay đổi thông tin sẽ ảnh hưởng đến toàn bộ lớp học</small>
                         </li>
                         <li class="mb-2">
-                            <small>Không thể thay đổi danh sách học sinh sau khi tạo</small>
+                            <small>Có thể thêm hoặc xóa học sinh khỏi lớp</small>
                         </li>
                         <li class="mb-2">
                             <small>Mentor cần được thông báo khi có thay đổi</small>
