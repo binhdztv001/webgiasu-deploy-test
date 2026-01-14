@@ -1149,53 +1149,6 @@ namespace Webgiasu.Controllers
             }
         }
 
-        // Xóa tài khoản Mentor - POST
-        [HttpPost]
-        public IActionResult DeleteMentor(int id)
-        {
-            try
-            {
-                var userId = GetCurrentUserId();
-                if (userId == 0)
-                {
-                    return Json(new { success = false, message = "Chưa đăng nhập!" });
-                }
-
-                var mentor = _userService.GetUserById(id);
-                if (mentor == null || mentor.Role != UserRole.Tutor)
-                {
-                    return Json(new { success = false, message = "Không tìm thấy Mentor!" });
-                }
-
-                // Kiểm tra xem Mentor có đang dạy lớp nào không
-                var classes = _classService.GetClassesBySchoolId(userId);
-                var teachingClasses = classes.Where(c => c.TutorId == id && c.Status == ClassStatus.Active).ToList();
-                
-                if (teachingClasses.Any())
-                {
-                    return Json(new { success = false, message = "Không thể xóa Mentor đang giảng dạy!" });
-                }
-
-                // Xóa mentor khỏi database
-                var mentorToDelete = _db.Users.Find(id);
-                if (mentorToDelete != null)
-                {
-                    _db.Users.Remove(mentorToDelete);
-                    _db.SaveChanges();
-                    return Json(new { success = true, message = "Xóa tài khoản Mentor thành công!" });
-                }
-                else
-                {
-                    return Json(new { success = false, message = "Không thể xóa Mentor!" });
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Error in DeleteMentor: {ex.Message}");
-                return Json(new { success = false, message = "Đã xảy ra lỗi!" });
-            }
-        }
-
         // ============================================================
         // END MENTOR MANAGEMENT ACTIONS
         // ============================================================

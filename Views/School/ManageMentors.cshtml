@@ -87,7 +87,6 @@
                                 <th>Kinh nghiệm</th>
                                 <th>Ngày tạo</th>
                                 <th>Trạng thái</th>
-                                <th>Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -150,14 +149,6 @@
                                             </span>
                                         }
                                     </td>
-                                    <td>
-                                        <div class="btn-group" role="group">
-                                            <button type="button" class="btn btn-sm btn-outline-danger" 
-                                                    onclick="deleteMentor(@mentor.Id, '@mentor.FullName')">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
                                 </tr>
                             }
                         </tbody>
@@ -178,28 +169,3 @@
     </div>
 </div>
 
-<script>
-function deleteMentor(id, name) {
-    if (confirm(`Bạn có chắc chắn muốn xóa tài khoản Mentor "${name}"?\n\nLưu ý: Chỉ có thể xóa Mentor không đang giảng dạy lớp nào.`)) {
-        fetch(`/School/DeleteMentor/${id}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert(data.message);
-                location.reload();
-            } else {
-                alert(data.message);
-            }
-        })
-        .catch(error => {
-            alert('Đã xảy ra lỗi khi xóa Mentor!');
-            console.error('Error:', error);
-        });
-    }
-}
-</script>
