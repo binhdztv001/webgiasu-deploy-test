@@ -36,6 +36,9 @@ namespace Webgiasu.Models
 
         public ClassStatus Status { get; set; } = ClassStatus.Active;
 
+        [MaxLength(50)]
+        public string? MeetingType { get; set; } = "Online"; // Online hoặc Offline
+
         // Navigation property
         public ICollection<ClassStudent>? Students { get; set; }
     }

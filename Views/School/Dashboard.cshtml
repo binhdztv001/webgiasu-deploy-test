@@ -99,6 +99,21 @@
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-6">
+                            <a asp-controller="School" asp-action="CreateMentor" class="text-decoration-none">
+                                <div class="d-flex align-items-center p-3 bg-primary bg-opacity-10 rounded">
+                                    <div class="me-3">
+                                        <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                            <i class="bi bi-person-plus fs-4"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1 fw-bold text-primary">Tạo Mentor</h6>
+                                        <small class="text-muted">Tạo tài khoản Mentor mới</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
                             <a asp-controller="School" asp-action="CreateClass" class="text-decoration-none">
                                 <div class="d-flex align-items-center p-3 bg-warning bg-opacity-10 rounded">
                                     <div class="me-3">
@@ -107,38 +122,23 @@
                                         </div>
                                     </div>
                                     <div>
-                                        <h6 class="mb-1 fw-bold text-warning">Tạo lớp học mới</h6>
+                                        <h6 class="mb-1 fw-bold text-warning">Tạo lớp học</h6>
                                         <small class="text-muted">Thêm lớp học và phân công Mentor</small>
                                     </div>
                                 </div>
                             </a>
                         </div>
                         <div class="col-md-6">
-                            <a asp-controller="School" asp-action="ManageClasses" class="text-decoration-none">
+                            <a asp-controller="School" asp-action="CreateSchedule" class="text-decoration-none">
                                 <div class="d-flex align-items-center p-3 bg-info bg-opacity-10 rounded">
                                     <div class="me-3">
                                         <div class="rounded-circle bg-info text-white d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                            <i class="bi bi-people fs-4"></i>
+                                            <i class="bi bi-calendar-plus fs-4"></i>
                                         </div>
                                     </div>
                                     <div>
-                                        <h6 class="mb-1 fw-bold text-info">Quản lý lớp học</h6>
-                                        <small class="text-muted">Xem và chỉnh sửa thông tin lớp</small>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-6">
-                            <a asp-controller="School" asp-action="ManageMentors" class="text-decoration-none">
-                                <div class="d-flex align-items-center p-3 bg-primary bg-opacity-10 rounded">
-                                    <div class="me-3">
-                                        <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                            <i class="bi bi-person-badge fs-4"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h6 class="mb-1 fw-bold text-primary">Quản lý Mentor</h6>
-                                        <small class="text-muted">Tạo và quản lý tài khoản Mentor</small>
+                                        <h6 class="mb-1 fw-bold text-info">Tạo lịch học</h6>
+                                        <small class="text-muted">Tạo lịch trao đổi mới</small>
                                     </div>
                                 </div>
                             </a>
@@ -154,21 +154,6 @@
                                     <div>
                                         <h6 class="mb-1 fw-bold text-success">Thống kê chi tiết</h6>
                                         <small class="text-muted">Xem báo cáo và phân tích</small>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-6">
-                            <a asp-controller="School" asp-action="Settings" class="text-decoration-none">
-                                <div class="d-flex align-items-center p-3 bg-secondary bg-opacity-10 rounded">
-                                    <div class="me-3">
-                                        <div class="rounded-circle bg-secondary text-white d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                            <i class="bi bi-gear fs-4"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h6 class="mb-1 fw-bold text-secondary">Cài đặt</h6>
-                                        <small class="text-muted">Quản lý thông tin nhà trường</small>
                                     </div>
                                 </div>
                             </a>

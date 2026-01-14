@@ -527,7 +527,7 @@ namespace Webgiasu.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateClass(string className, string subject, string description, int? tutorId, List<int> studentIds, DateTime? startDate, DateTime? endDate)
+        public IActionResult CreateClass(string className, string subject, string description, int? tutorId, List<int> studentIds, DateTime? startDate, DateTime? endDate, string meetingType)
         {
             try
             {
@@ -605,6 +605,7 @@ namespace Webgiasu.Controllers
                     TutorId = tutorId.Value,
                     StartDate = startDate,
                     EndDate = endDate,
+                    MeetingType = string.IsNullOrEmpty(meetingType) ? "Online" : meetingType,
                     Status = ClassStatus.Active,
                     CreatedDate = DateTime.Now
                 };
@@ -865,6 +866,9 @@ namespace Webgiasu.Controllers
 
                 ViewBag.Schedules = schedules;
 
+                // ✅ TRUYỀN MEETING TYPE CỦA LỚP HỌC
+                ViewBag.MeetingType = classInfo.MeetingType ?? "Online";
+
                 var viewModel = new Models.ViewModels.ClassDetailsViewModel
                 {
                     Id = classInfo.Id,
@@ -927,6 +931,9 @@ namespace Webgiasu.Controllers
                 var currentStudentIds = _classService.GetClassStudentIds(id);
                 ViewBag.CurrentStudentIds = currentStudentIds;
 
+                // ✅ TRUYỀN MEETING TYPE
+                ViewBag.MeetingType = classInfo.MeetingType ?? "Online";
+
                 var viewModel = new Models.ViewModels.EditClassViewModel
                 {
                     Id = classInfo.Id,
@@ -953,7 +960,7 @@ namespace Webgiasu.Controllers
 
         // Edit Class - POST
         [HttpPost]
-        public IActionResult EditClass(int classId, string className, string subject, string description, int tutorId, List<int>? studentIds, DateTime? startDate, DateTime? endDate, int status)
+        public IActionResult EditClass(int classId, string className, string subject, string description, int tutorId, List<int>? studentIds, DateTime? startDate, DateTime? endDate, int status, string meetingType)
         {
             try
             {
@@ -1036,6 +1043,7 @@ namespace Webgiasu.Controllers
                 classInfo.TutorId = tutorId;
                 classInfo.StartDate = startDate;
                 classInfo.EndDate = endDate;
+                classInfo.MeetingType = string.IsNullOrEmpty(meetingType) ? "Online" : meetingType;
                 classInfo.Status = (ClassStatus)status;
 
                 if (_classService.UpdateClass(classInfo))

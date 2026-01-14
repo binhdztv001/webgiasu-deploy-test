@@ -56,33 +56,52 @@
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="text-muted small">Trạng thái</label>
-                        <div>
-                            @if (Model.Status == ClassStatus.Active)
-                            {
-                                <span class="badge bg-success">
-                                    <i class="bi bi-check-circle me-1"></i>Đang hoạt động
-                                </span>
-                            }
-                            else if (Model.Status == ClassStatus.Completed)
-                            {
-                                <span class="badge bg-secondary">
-                                    <i class="bi bi-check-all me-1"></i>Đã hoàn thành
-                                </span>
-                            }
-                            else if (Model.Status == ClassStatus.Upcoming)
-                            {
-                                <span class="badge bg-info">
-                                    <i class="bi bi-clock me-1"></i>Sắp bắt đầu
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-danger">
-                                    <i class="bi bi-x-circle me-1"></i>Đã hủy
-                                </span>
-                            }
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="text-muted small">Hình thức học</label>
+                            <div>
+                                @if (ViewBag.MeetingType == "Online")
+                                {
+                                    <span class="badge bg-info">
+                                        <i class="bi bi-camera-video me-1"></i>Online
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-geo-alt me-1"></i>Offline
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small">Trạng thái</label>
+                            <div>
+                                @if (Model.Status == ClassStatus.Active)
+                                {
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle me-1"></i>Đang hoạt động
+                                    </span>
+                                }
+                                else if (Model.Status == ClassStatus.Completed)
+                                {
+                                    <span class="badge bg-secondary">
+                                        <i class="bi bi-check-all me-1"></i>Đã hoàn thành
+                                    </span>
+                                }
+                                else if (Model.Status == ClassStatus.Upcoming)
+                                {
+                                    <span class="badge bg-info">
+                                        <i class="bi bi-clock me-1"></i>Sắp bắt đầu
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">
+                                        <i class="bi bi-x-circle me-1"></i>Đã hủy
+                                    </span>
+                                }
+                            </div>
                         </div>
                     </div>
 
@@ -103,67 +122,12 @@
                 </div>
             </div>
 
-            <!-- Students List -->
-            <div class="card mb-4">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">
-                        <i class="bi bi-people me-2"></i>Danh sách học sinh (@Model.Students.Count người)
-                    </h5>
-                </div>
-                <div class="card-body">
-                    @if (Model.Students.Any())
-                    {
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>STT</th>
-                                        <th>Họ tên</th>
-                                        <th>Email</th>
-                                        <th>Số điện thoại</th>
-                                        <th>Ngày tham gia</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var (student, index) in Model.Students.Select((s, i) => (s, i)))
-                                    {
-                                        <tr>
-                                            <td>@(index + 1)</td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <img src="https://ui-avatars.com/api/?name=@Uri.EscapeDataString(student.FullName)&background=17a2b8&color=fff&size=32" 
-                                                         class="rounded-circle me-2" alt="Avatar" width="32" height="32">
-                                                    <strong>@student.FullName</strong>
-                                                </div>
-                                            </td>
-                                            <td>@student.Email</td>
-                                            <td>@student.PhoneNumber</td>
-                                            <td>@student.JoinedDate</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="text-center py-4 text-muted">
-                            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                            <p>Chưa có học sinh nào trong lớp</p>
-                        </div>
-                    }
-                </div>
-            </div>
-
             <!-- Class Schedules -->
-            <div class="card">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">
                         <i class="bi bi-calendar-event me-2"></i>Lịch trao đổi (@(ViewBag.Schedules != null ? ((IEnumerable<dynamic>)ViewBag.Schedules).Count() : 0) lịch)
                     </h5>
-                    <a asp-controller="School" asp-action="CreateSchedule" asp-route-classId="@Model.Id" class="btn btn-light btn-sm">
-                        <i class="bi bi-plus-circle me-1"></i>Tạo mới
-                    </a>
                 </div>
                 <div class="card-body">
                     @if (ViewBag.Schedules != null && ((IEnumerable<dynamic>)ViewBag.Schedules).Any())
@@ -266,6 +230,58 @@
                             <a asp-controller="School" asp-action="CreateSchedule" asp-route-classId="@Model.Id" class="btn btn-primary">
                                 <i class="bi bi-calendar-plus me-2"></i>Tạo lịch trao đổi đầu tiên
                             </a>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Students List -->
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-people me-2"></i>Danh sách học sinh (@Model.Students.Count người)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Students.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Họ tên</th>
+                                        <th>Email</th>
+                                        <th>Số điện thoại</th>
+                                        <th>Ngày tham gia</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var (student, index) in Model.Students.Select((s, i) => (s, i)))
+                                    {
+                                        <tr>
+                                            <td>@(index + 1)</td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="https://ui-avatars.com/api/?name=@Uri.EscapeDataString(student.FullName)&background=17a2b8&color=fff&size=32" 
+                                                         class="rounded-circle me-2" alt="Avatar" width="32" height="32">
+                                                    <strong>@student.FullName</strong>
+                                                </div>
+                                            </td>
+                                            <td>@student.Email</td>
+                                            <td>@student.PhoneNumber</td>
+                                            <td>@student.JoinedDate</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4 text-muted">
+                            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                            <p>Chưa có học sinh nào trong lớp</p>
                         </div>
                     }
                 </div>
