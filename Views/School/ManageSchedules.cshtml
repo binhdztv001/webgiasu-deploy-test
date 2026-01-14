@@ -1,0 +1,172 @@
+﻿@model List<Webgiasu.Models.ViewModels.ScheduleListViewModel>
+
+@{
+    ViewData["Title"] = "Quản lý lịch trao đổi";
+    Layout = "~/Views/Shared/_SchoolLayout.cshtml";
+}
+
+<div class="dashboard-container">
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center">
+        <div>
+            <h2><i class="bi bi-calendar-event me-2 text-warning"></i>Quản lý lịch trao đổi</h2>
+            <p class="text-muted mb-0">Xem và quản lý các buổi trao đổi với lớp học</p>
+        </div>
+        <div>
+            <a asp-controller="School" asp-action="CreateSchedule" class="btn btn-warning">
+                <i class="bi bi-plus-circle me-2"></i>Tạo lịch mới
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Lọc theo trạng thái</label>
+                    <select class="form-select" id="filterStatus">
+                        <option value="">Tất cả</option>
+                        <option value="0">Sắp tới</option>
+                        <option value="1">Đang diễn ra</option>
+                        <option value="2">Đã hoàn thành</option>
+                        <option value="3">Đã hủy</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Tìm kiếm</label>
+                    <input type="text" class="form-control" id="searchInput" placeholder="Tìm theo tiêu đề, lớp học...">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Sắp xếp</label>
+                    <select class="form-select" id="sortOrder">
+                        <option value="date-desc">Ngày mới nhất</option>
+                        <option value="date-asc">Ngày cũ nhất</option>
+                        <option value="name">Theo tên</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedules List -->
+    @if (Model == null || !Model.Any())
+    {
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-calendar-x fs-1 text-muted mb-3 d-block"></i>
+                <h5 class="text-muted mb-3">Chưa có lịch trao đổi nào</h5>
+                <p class="text-muted mb-4">Hãy tạo lịch trao đổi đầu tiên để bắt đầu</p>
+                <a asp-controller="School" asp-action="CreateSchedule" class="btn btn-warning">
+                    <i class="bi bi-plus-circle me-2"></i>Tạo lịch mới
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row g-3" id="schedulesList">
+            @foreach (var schedule in Model)
+            {
+                <div class="col-md-6 col-lg-4 schedule-item" data-status="@((int)schedule.Status)">
+                    <div class="card h-100 hover-card">
+                        <div class="card-header bg-warning text-white d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0"><i class="bi bi-calendar-event me-1"></i>@schedule.ScheduleDateTimeDisplay</h6>
+                            <span class="badge @schedule.StatusBadgeClass">@schedule.StatusDisplay</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold mb-3">@schedule.Title</h5>
+                            
+                            <div class="mb-2">
+                                <small class="text-muted">
+                                    <i class="bi bi-book me-1"></i>Lớp học:
+                                </small>
+                                <strong>@schedule.ClassName</strong>
+                            </div>
+
+                            <div class="mb-2">
+                                <small class="text-muted">
+                                    <i class="bi bi-bookmark me-1"></i>Môn học:
+                                </small>
+                                <span class="badge bg-info">@schedule.Subject</span>
+                            </div>
+
+                            <div class="mb-2">
+                                <small class="text-muted">
+                                    <i class="bi bi-clock me-1"></i>Thời gian:
+                                </small>
+                                <strong>@schedule.StartTime.ToString(@"hh\:mm") - @schedule.EndTime.ToString(@"hh\:mm")</strong>
+                            </div>
+
+                            <div class="mb-2">
+                                <small class="text-muted">
+                                    <i class="bi bi-geo-alt me-1"></i>Hình thức:
+                                </small>
+                                @if (schedule.MeetingType == "Online")
+                                {
+                                    <span class="badge bg-primary"><i class="bi bi-camera-video me-1"></i>Online</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success"><i class="bi bi-person-workspace me-1"></i>Offline</span>
+                                }
+                            </div>
+
+                            <div class="mb-2">
+                                <small class="text-muted">
+                                    <i class="bi bi-people me-1"></i>Số học sinh:
+                                </small>
+                                <strong>@schedule.TotalStudents học sinh</strong>
+                            </div>
+
+                            <hr>
+
+                            <div class="d-flex gap-2">
+                                <a asp-controller="School" asp-action="ScheduleDetails" asp-route-id="@schedule.Id" 
+                                   class="btn btn-sm btn-warning flex-fill">
+                                    <i class="bi bi-eye me-1"></i>Chi tiết
+                                </a>
+                                <a asp-controller="School" asp-action="EditSchedule" asp-route-id="@schedule.Id" 
+                                   class="btn btn-sm btn-outline-warning">
+                                    <i class="bi bi-pencil me-1"></i>Sửa
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // Filter and search functionality
+        const filterStatus = document.getElementById('filterStatus');
+        const searchInput = document.getElementById('searchInput');
+        const sortOrder = document.getElementById('sortOrder');
+        const scheduleItems = document.querySelectorAll('.schedule-item');
+
+        function applyFilters() {
+            const statusValue = filterStatus.value;
+            const searchValue = searchInput.value.toLowerCase();
+
+            scheduleItems.forEach(item => {
+                const status = item.getAttribute('data-status');
+                const text = item.textContent.toLowerCase();
+                
+                const statusMatch = !statusValue || status === statusValue;
+                const searchMatch = !searchValue || text.includes(searchValue);
+                
+                if (statusMatch && searchMatch) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        filterStatus.addEventListener('change', applyFilters);
+        searchInput.addEventListener('input', applyFilters);
+    </script>
+}

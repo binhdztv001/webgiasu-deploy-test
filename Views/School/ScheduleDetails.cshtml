@@ -1,0 +1,244 @@
+﻿@model Webgiasu.Models.ViewModels.ScheduleDetailsViewModel
+
+@{
+    ViewData["Title"] = "Chi tiết lịch trao đổi";
+    Layout = "~/Views/Shared/_SchoolLayout.cshtml";
+}
+
+<div class="dashboard-container">
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center">
+        <div>
+            <h2><i class="bi bi-calendar-event me-2 text-warning"></i>Chi tiết lịch trao đổi</h2>
+            <p class="text-muted mb-0">@Model.Title</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-controller="School" asp-action="EditSchedule" asp-route-id="@Model.Id" class="btn btn-warning">
+                <i class="bi bi-pencil me-2"></i>Chỉnh sửa
+            </a>
+            <a asp-controller="School" asp-action="ManageSchedules" class="btn btn-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Quay lại
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Left Column - Schedule Info -->
+        <div class="col-lg-8">
+            <!-- Basic Info Card -->
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Thông tin lịch trao đổi</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="text-muted small">Tiêu đề</label>
+                            <div class="fw-semibold fs-5">@Model.Title</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small">Trạng thái</label>
+                            <div>
+                                @if (Model.Status == ScheduleStatus.Upcoming)
+                                {
+                                    <span class="badge bg-info fs-6"><i class="bi bi-clock me-1"></i>Sắp tới</span>
+                                }
+                                else if (Model.Status == ScheduleStatus.InProgress)
+                                {
+                                    <span class="badge bg-warning fs-6"><i class="bi bi-play-circle me-1"></i>Đang diễn ra</span>
+                                }
+                                else if (Model.Status == ScheduleStatus.Completed)
+                                {
+                                    <span class="badge bg-success fs-6"><i class="bi bi-check-circle me-1"></i>Đã hoàn thành</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger fs-6"><i class="bi bi-x-circle me-1"></i>Đã hủy</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="text-muted small">Ngày trao đổi</label>
+                            <div class="fw-semibold"><i class="bi bi-calendar3 me-1 text-warning"></i>@Model.ScheduleDate.ToString("dd/MM/yyyy")</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="text-muted small">Giờ bắt đầu</label>
+                            <div class="fw-semibold"><i class="bi bi-clock me-1 text-warning"></i>@Model.StartTime.ToString(@"hh\:mm")</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="text-muted small">Giờ kết thúc</label>
+                            <div class="fw-semibold"><i class="bi bi-clock-fill me-1 text-warning"></i>@Model.EndTime.ToString(@"hh\:mm")</div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="text-muted small">Thời lượng</label>
+                            <div class="fw-semibold"><i class="bi bi-hourglass-split me-1 text-warning"></i>@Model.Duration</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small">Hình thức</label>
+                            <div>
+                                @if (Model.MeetingType == "Online")
+                                {
+                                    <span class="badge bg-primary"><i class="bi bi-camera-video me-1"></i>Online</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success"><i class="bi bi-person-workspace me-1"></i>Offline</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Location))
+                    {
+                        <div class="mb-3">
+                            <label class="text-muted small">
+                                @(Model.MeetingType == "Online" ? "Link meeting" : "Địa điểm")
+                            </label>
+                            <div class="p-3 bg-light rounded">
+                                @if (Model.MeetingType == "Online")
+                                {
+                                    <a href="@Model.Location" target="_blank" class="text-decoration-none">
+                                        <i class="bi bi-link-45deg me-1"></i>@Model.Location
+                                    </a>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-geo-alt me-1"></i>@Model.Location
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.Content))
+                    {
+                        <div class="mb-3">
+                            <label class="text-muted small">Nội dung trao đổi</label>
+                            <div class="p-3 bg-light rounded">@Model.Content</div>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.Notes))
+                    {
+                        <div class="mb-3">
+                            <label class="text-muted small">Ghi chú</label>
+                            <div class="p-3 bg-light rounded">@Model.Notes</div>
+                        </div>
+                    }
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="text-muted small">Người tạo</label>
+                            <div class="fw-semibold">@Model.CreatorName</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small">Ngày tạo</label>
+                            <div class="fw-semibold">@Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column - Sidebar -->
+        <div class="col-lg-4">
+            <!-- Class Info -->
+            <div class="card mb-3">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0"><i class="bi bi-book me-2"></i>Thông tin lớp học</h6>
+                </div>
+                <div class="card-body">
+                    <h5 class="fw-bold mb-2">@Model.ClassName</h5>
+                    <p class="mb-2">
+                        <span class="badge bg-info">@Model.Subject</span>
+                    </p>
+                    <div class="mb-2">
+                        <small class="text-muted">Mentor:</small>
+                        <strong class="d-block">@(Model.TutorName ?? "Chưa có")</strong>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.TutorEmail))
+                    {
+                        <div class="mb-2">
+                            <small class="text-muted">Email:</small>
+                            <div><a href="mailto:@Model.TutorEmail">@Model.TutorEmail</a></div>
+                        </div>
+                    }
+                    <hr>
+                    <a asp-controller="School" asp-action="ClassDetails" asp-route-id="@Model.ClassId" class="btn btn-sm btn-primary w-100">
+                        <i class="bi bi-eye me-1"></i>Xem lớp học
+                    </a>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="card mb-3">
+                <div class="card-header bg-success text-white">
+                    <h6 class="mb-0"><i class="bi bi-graph-up me-2"></i>Thông tin lớp học</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tổng học sinh:</span>
+                        <strong class="text-primary">@Model.TotalStudents</strong>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Trạng thái lịch:</span>
+                        <strong class="text-success">@Model.Status</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="card">
+                <div class="card-header bg-warning text-white">
+                    <h6 class="mb-0"><i class="bi bi-lightning me-2"></i>Thao tác</h6>
+                </div>
+                <div class="card-body">
+                    <a asp-controller="School" asp-action="EditSchedule" asp-route-id="@Model.Id" class="btn btn-warning w-100 mb-2">
+                        <i class="bi bi-pencil me-2"></i>Chỉnh sửa lịch
+                    </a>
+                    <button class="btn btn-danger w-100" onclick="deleteSchedule(@Model.Id)">
+                        <i class="bi bi-trash me-2"></i>Xóa lịch trao đổi
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        function deleteSchedule(scheduleId) {
+            if (!confirm('Bạn có chắc chắn muốn xóa lịch trao đổi này?\n\nThao tác này không thể hoàn tác!')) {
+                return;
+            }
+
+            fetch(`/School/DeleteSchedule/${scheduleId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Xóa lịch trao đổi thành công!');
+                    window.location.href = '/School/ManageSchedules';
+                } else {
+                    alert('Không thể xóa: ' + (data.message || 'Lỗi không xác định'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Đã xảy ra lỗi khi xóa lịch trao đổi!');
+            });
+        }
+    </script>
+}
+

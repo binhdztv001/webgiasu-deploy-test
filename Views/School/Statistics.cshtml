@@ -7,18 +7,21 @@
     <!-- Page Header -->
     <div class="page-header">
         <h2><i class="bi bi-bar-chart-line me-2 text-warning"></i>Thống kê nhà trường</h2>
-        <p class="text-muted">Xem báo cáo và phân tích chi tiết</p>
+        <p class="text-muted mb-0">Xem báo cáo và phân tích chi tiết về hoạt động của trường</p>
     </div>
 
     <!-- Overview Stats -->
     <div class="row g-3 mb-4">
         <div class="col-md-6 col-lg-3">
-            <div class="card stat-card border-start border-5 border-warning">
+            <div class="card stat-card border-start border-5 border-warning h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <div class="text-muted small text-uppercase mb-1">Tổng số lớp</div>
                             <h3 class="mb-0 fw-bold text-warning">@ViewBag.TotalClasses</h3>
+                            <small class="text-success">
+                                <i class="bi bi-arrow-up"></i> @ViewBag.ActiveClasses đang hoạt động
+                            </small>
                         </div>
                         <div class="stat-icon bg-warning bg-opacity-10 text-warning">
                             <i class="bi bi-collection"></i>
@@ -29,15 +32,18 @@
         </div>
 
         <div class="col-md-6 col-lg-3">
-            <div class="card stat-card border-start border-5 border-info">
+            <div class="card stat-card border-start border-5 border-info h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <div class="text-muted small text-uppercase mb-1">Học sinh</div>
                             <h3 class="mb-0 fw-bold text-info">@ViewBag.TotalStudents</h3>
+                            <small class="text-muted">
+                                <i class="bi bi-people"></i> Tổng số học sinh
+                            </small>
                         </div>
                         <div class="stat-icon bg-info bg-opacity-10 text-info">
-                            <i class="bi bi-people"></i>
+                            <i class="bi bi-people-fill"></i>
                         </div>
                     </div>
                 </div>
@@ -45,15 +51,18 @@
         </div>
 
         <div class="col-md-6 col-lg-3">
-            <div class="card stat-card border-start border-5 border-success">
+            <div class="card stat-card border-start border-5 border-success h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <div class="text-muted small text-uppercase mb-1">Mentor</div>
                             <h3 class="mb-0 fw-bold text-success">@ViewBag.TotalTutors</h3>
+                            <small class="text-success">
+                                <i class="bi bi-check-circle"></i> @ViewBag.ActiveTutors đang hoạt động
+                            </small>
                         </div>
                         <div class="stat-icon bg-success bg-opacity-10 text-success">
-                            <i class="bi bi-person-badge"></i>
+                            <i class="bi bi-person-badge-fill"></i>
                         </div>
                     </div>
                 </div>
@@ -61,15 +70,18 @@
         </div>
 
         <div class="col-md-6 col-lg-3">
-            <div class="card stat-card border-start border-5 border-danger">
+            <div class="card stat-card border-start border-5 border-primary h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <div class="text-muted small text-uppercase mb-1">Đang diễn ra</div>
-                            <h3 class="mb-0 fw-bold text-danger">@ViewBag.OngoingClasses</h3>
+                            <div class="text-muted small text-uppercase mb-1">Tỷ lệ hoàn thành</div>
+                            <h3 class="mb-0 fw-bold text-primary">@ViewBag.CompletionRate.ToString("F1")%</h3>
+                            <small class="text-muted">
+                                @ViewBag.CompletedClasses/@ViewBag.TotalClasses lớp
+                            </small>
                         </div>
-                        <div class="stat-icon bg-danger bg-opacity-10 text-danger">
-                            <i class="bi bi-clock-history"></i>
+                        <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                            <i class="bi bi-trophy-fill"></i>
                         </div>
                     </div>
                 </div>
@@ -77,121 +89,152 @@
         </div>
     </div>
 
-    <!-- Charts Section -->
+    <!-- Charts Row 1 -->
     <div class="row g-3 mb-4">
         <div class="col-lg-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-pie-chart me-2"></i>Phân bố lớp học</h5>
+            <div class="card h-100">
+                <div class="card-header bg-warning bg-opacity-10">
+                    <h5 class="mb-0"><i class="bi bi-table me-2 text-warning"></i>Danh sách lớp học chi tiết</h5>
                 </div>
-                <div class="card-body">
-                    <div class="text-center py-5">
-                        <i class="bi bi-graph-up fs-1 text-warning mb-3 d-block"></i>
-                        <p class="text-muted">Biểu đồ phân bố lớp học theo môn học</p>
-                        <small class="text-muted">Chức năng sẽ được cập nhật sau</small>
-                    </div>
+                <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                    @{
+                        var classDetails = ViewBag.ClassDetailsList as IEnumerable<dynamic>;
+                        if (classDetails != null && classDetails.Any())
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover mb-0">
+                                    <thead class="table-light sticky-top">
+                                        <tr>
+                                            <th>Lớp học</th>
+                                            <th>Môn</th>
+                                            <th>Mentor</th>
+                                            <th>HS</th>
+                                            <th>Trạng thái</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in classDetails)
+                                        {
+                                            var badgeClass = item.Status == Webgiasu.Models.ClassStatus.Active ? "bg-success" : 
+                                                           item.Status == Webgiasu.Models.ClassStatus.Completed ? "bg-primary" : "bg-secondary";
+                                            <tr>
+                                                <td>
+                                                    <a href="@Url.Action("ClassDetails", "School", new { id = item.Id })" class="text-decoration-none fw-semibold">
+                                                        @item.ClassName
+                                                    </a>
+                                                </td>
+                                                <td><span class="badge bg-info">@item.Subject</span></td>
+                                                <td><small>@item.TutorName</small></td>
+                                                <td class="text-center"><strong>@item.StudentCount</strong></td>
+                                                <td><span class="badge @badgeClass">@item.StatusText</span></td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-center py-5">
+                                <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                                <p class="text-muted mt-2">Chưa có lớp học nào</p>
+                            </div>
+                        }
+                    }
                 </div>
             </div>
         </div>
 
         <div class="col-lg-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Xu hướng tăng trưởng</h5>
+            <div class="card h-100">
+                <div class="card-header bg-info bg-opacity-10">
+                    <h5 class="mb-0"><i class="bi bi-graph-up me-2 text-info"></i>Trạng thái lớp học</h5>
                 </div>
                 <div class="card-body">
-                    <div class="text-center py-5">
-                        <i class="bi bi-bar-chart fs-1 text-info mb-3 d-block"></i>
-                        <p class="text-muted">Biểu đồ tăng trưởng học sinh và lớp học</p>
-                        <small class="text-muted">Chức năng sẽ được cập nhật sau</small>
-                    </div>
+                    <canvas id="statusChart" style="max-height: 300px;"></canvas>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Detailed Stats -->
-    <div class="row g-3">
-        <div class="col-lg-4">
+    <!-- Charts Row 2 -->
+    <div class="row g-3 mb-4">
+        <div class="col-12">
             <div class="card">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="bi bi-check-circle me-2"></i>Lớp đã hoàn thành</h5>
+                <div class="card-header bg-success bg-opacity-10">
+                    <h5 class="mb-0"><i class="bi bi-bar-chart-line me-2 text-success"></i>Tăng trưởng lớp học 6 tháng</h5>
                 </div>
-                <div class="card-body text-center">
-                    <h1 class="display-4 fw-bold text-success mb-0">@ViewBag.CompletedClasses</h1>
-                    <p class="text-muted mb-0">Lớp học</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-4">
-            <div class="card">
-                <div class="card-header bg-warning text-white">
-                    <h5 class="mb-0"><i class="bi bi-arrow-repeat me-2"></i>Đang diễn ra</h5>
-                </div>
-                <div class="card-body text-center">
-                    <h1 class="display-4 fw-bold text-warning mb-0">@ViewBag.OngoingClasses</h1>
-                    <p class="text-muted mb-0">Lớp học</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-4">
-            <div class="card">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="bi bi-hourglass-split me-2"></i>Sắp bắt đầu</h5>
-                </div>
-                <div class="card-body text-center">
-                    <h1 class="display-4 fw-bold text-info mb-0">0</h1>
-                    <p class="text-muted mb-0">Lớp học</p>
+                <div class="card-body">
+                    <canvas id="monthlyChart" style="max-height: 350px;"></canvas>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Performance Metrics -->
-    <div class="row g-3 mt-2">
+    <div class="row g-3">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-trophy me-2"></i>Hiệu suất hệ thống</h5>
+                <div class="card-header bg-secondary bg-opacity-10">
+                    <h5 class="mb-0"><i class="bi bi-speedometer2 me-2 text-secondary"></i>Hiệu suất hệ thống</h5>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3 mb-3">
+                    <div class="row g-4">
+                        <div class="col-md-3">
                             <div class="text-center">
-                                <div class="h2 fw-bold text-success mb-2">95%</div>
-                                <div class="text-muted small">Tỷ lệ hoàn thành</div>
-                                <div class="progress mt-2" style="height: 5px;">
-                                    <div class="progress-bar bg-success" style="width: 95%"></div>
+                                <div class="position-relative d-inline-block mb-3">
+                                    <canvas id="completionRateChart" width="120" height="120"></canvas>
+                                    <div class="position-absolute top-50 start-50 translate-middle">
+                                        <div class="h3 fw-bold text-success mb-0">@ViewBag.CompletionRate.ToString("F0")%</div>
+                                    </div>
                                 </div>
+                                <h6 class="fw-semibold">Tỷ lệ hoàn thành</h6>
+                                <p class="text-muted small mb-0">Lớp học đã hoàn thành</p>
                             </div>
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-md-3">
                             <div class="text-center">
-                                <div class="h2 fw-bold text-info mb-2">4.5/5</div>
-                                <div class="text-muted small">Đánh giá trung bình</div>
-                                <div class="progress mt-2" style="height: 5px;">
-                                    <div class="progress-bar bg-info" style="width: 90%"></div>
+                                <div class="position-relative d-inline-block mb-3">
+                                    <canvas id="activeRateChart" width="120" height="120"></canvas>
+                                    <div class="position-absolute top-50 start-50 translate-middle">
+                                        @{
+                                            var activeRate = ViewBag.TotalClasses > 0 ? (double)ViewBag.ActiveClasses / ViewBag.TotalClasses * 100 : 0;
+                                        }
+                                        <div class="h3 fw-bold text-warning mb-0">@activeRate.ToString("F0")%</div>
+                                    </div>
                                 </div>
+                                <h6 class="fw-semibold">Tỷ lệ hoạt động</h6>
+                                <p class="text-muted small mb-0">Lớp đang hoạt động</p>
                             </div>
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-md-3">
                             <div class="text-center">
-                                <div class="h2 fw-bold text-warning mb-2">88%</div>
-                                <div class="text-muted small">Sự hài lòng</div>
-                                <div class="progress mt-2" style="height: 5px;">
-                                    <div class="progress-bar bg-warning" style="width: 88%"></div>
+                                <div class="position-relative d-inline-block mb-3">
+                                    <canvas id="mentorRateChart" width="120" height="120"></canvas>
+                                    <div class="position-absolute top-50 start-50 translate-middle">
+                                        @{
+                                            var mentorRate = ViewBag.TotalTutors > 0 ? (double)ViewBag.ActiveTutors / ViewBag.TotalTutors * 100 : 0;
+                                        }
+                                        <div class="h3 fw-bold text-info mb-0">@mentorRate.ToString("F0")%</div>
+                                    </div>
                                 </div>
+                                <h6 class="fw-semibold">Mentor tham gia</h6>
+                                <p class="text-muted small mb-0">Mentor đang hoạt động</p>
                             </div>
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-md-3">
                             <div class="text-center">
-                                <div class="h2 fw-bold text-danger mb-2">100%</div>
-                                <div class="text-muted small">Tham gia</div>
-                                <div class="progress mt-2" style="height: 5px;">
-                                    <div class="progress-bar bg-danger" style="width: 100%"></div>
+                                <div class="position-relative d-inline-block mb-3">
+                                    <canvas id="studentAvgChart" width="120" height="120"></canvas>
+                                    <div class="position-absolute top-50 start-50 translate-middle">
+                                        @{
+                                            var avgStudents = ViewBag.TotalClasses > 0 ? (double)ViewBag.TotalStudents / ViewBag.TotalClasses : 0;
+                                        }
+                                        <div class="h3 fw-bold text-primary mb-0">@avgStudents.ToString("F1")</div>
+                                    </div>
                                 </div>
+                                <h6 class="fw-semibold">TB học sinh/lớp</h6>
+                                <p class="text-muted small mb-0">Trung bình mỗi lớp</p>
                             </div>
                         </div>
                     </div>
@@ -200,3 +243,162 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Màu sắc gradient
+        const colors = {
+            primary: ['#667eea', '#764ba2'],
+            success: ['#11998e', '#38ef7d'],
+            warning: ['#f093fb', '#f5576c'],
+            info: ['#4facfe', '#00f2fe'],
+            danger: ['#fa709a', '#fee140']
+        };
+
+        // Chart: Trạng thái lớp học (Bar Chart)
+        const statusData = @Html.Raw(Json.Serialize(ViewBag.ClassesByStatus));
+        const statusLabels = statusData.map(x => x.status);
+        const statusValues = statusData.map(x => x.count);
+
+        const statusChart = new Chart(document.getElementById('statusChart'), {
+            type: 'bar',
+            data: {
+                labels: statusLabels,
+                datasets: [{
+                    label: 'Số lượng lớp',
+                    data: statusValues,
+                    backgroundColor: [
+                        'rgba(102, 126, 234, 0.8)',
+                        'rgba(17, 153, 142, 0.8)',
+                        'rgba(250, 112, 154, 0.8)'
+                    ],
+                    borderColor: [
+                        '#667eea',
+                        '#11998e',
+                        '#fa709a'
+                    ],
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.y + ' lớp học';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 },
+                        grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Chart 3: Tăng trưởng theo tháng (Line Chart)
+        const monthlyData = @Html.Raw(Json.Serialize(ViewBag.ClassesByMonth));
+        const monthLabels = monthlyData.map(x => x.month);
+        const monthValues = monthlyData.map(x => x.count);
+
+        const studentsData = @Html.Raw(Json.Serialize(ViewBag.StudentsByMonth));
+        const studentValues = studentsData.map(x => x.count);
+
+        const monthlyChart = new Chart(document.getElementById('monthlyChart'), {
+            type: 'line',
+            data: {
+                labels: monthLabels,
+                datasets: [
+                    {
+                        label: 'Lớp học mới',
+                        data: monthValues,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        pointBackgroundColor: '#667eea'
+                    },
+                    {
+                        label: 'Học sinh mới',
+                        data: studentValues,
+                        borderColor: '#11998e',
+                        backgroundColor: 'rgba(17, 153, 142, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        pointBackgroundColor: '#11998e'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            padding: 15,
+                            font: { size: 13 }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 },
+                        grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Circular Progress Charts
+        function createCircularChart(canvasId, value, color1, color2) {
+            return new Chart(document.getElementById(canvasId), {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [value, 100 - value],
+                        backgroundColor: [color1, 'rgba(0, 0, 0, 0.05)'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    }
+                }
+            });
+        }
+
+        createCircularChart('completionRateChart', @ViewBag.CompletionRate, '#11998e', '#e0e0e0');
+        createCircularChart('activeRateChart', @activeRate, '#f093fb', '#e0e0e0');
+        createCircularChart('mentorRateChart', @mentorRate, '#4facfe', '#e0e0e0');
+        
+        const avgValue = @avgStudents * 10; // Scale to percentage (assume max 10 students per class)
+        createCircularChart('studentAvgChart', avgValue > 100 ? 100 : avgValue, '#667eea', '#e0e0e0');
+    </script>
+}

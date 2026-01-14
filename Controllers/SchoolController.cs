@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Webgiasu.Models;
 using Webgiasu.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Webgiasu.Controllers
 {
@@ -21,6 +22,324 @@ namespace Webgiasu.Controllers
         {
             return HttpContext.Session.GetInt32("UserId") ?? 0;
         }
+
+        // ============================================================
+        // SCHEDULE MANAGEMENT ACTIONS
+        // ============================================================
+
+        // Danh sách lịch trao đổi
+        public IActionResult ManageSchedules()
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var schedules = _db.ClassSchedules
+                    .Where(s => s.Class!.SchoolId == userId)
+                    .OrderByDescending(s => s.ScheduleDate)
+                    .Select(s => new Models.ViewModels.ScheduleListViewModel
+                    {
+                        Id = s.Id,
+                        Title = s.Title,
+                        ScheduleDate = s.ScheduleDate,
+                        StartTime = s.StartTime,
+                        EndTime = s.EndTime,
+                        MeetingType = s.MeetingType,
+                        Status = s.Status,
+                        ClassName = s.Class!.ClassName,
+                        Subject = s.Class.Subject,
+                        TotalStudents = s.Class.Students!.Count
+                    })
+                    .ToList();
+
+                return View(schedules);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in ManageSchedules: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi!";
+                return RedirectToAction("Dashboard");
+            }
+        }
+
+        // Tạo lịch trao đổi - GET
+        public IActionResult CreateSchedule(int? classId)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                // Lấy danh sách lớp học
+                var classes = _classService.GetClassesBySchoolId(userId);
+                ViewBag.Classes = classes;
+
+                var model = new Models.ViewModels.CreateScheduleViewModel();
+                if (classId.HasValue)
+                {
+                    model.ClassId = classId.Value;
+                }
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in CreateSchedule GET: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi!";
+                return RedirectToAction("ManageSchedules");
+            }
+        }
+
+        // Tạo lịch trao đổi - POST
+        [HttpPost]
+        public IActionResult CreateSchedule(Models.ViewModels.CreateScheduleViewModel model)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                if (!ModelState.IsValid)
+                {
+                    var classes = _classService.GetClassesBySchoolId(userId);
+                    ViewBag.Classes = classes;
+                    return View(model);
+                }
+
+                // Validate class belongs to school
+                var classInfo = _classService.GetClassById(model.ClassId);
+                if (classInfo == null || classInfo.SchoolId != userId)
+                {
+                    TempData["Error"] = "Lớp học không hợp lệ!";
+                    return RedirectToAction("CreateSchedule");
+                }
+
+                // Validate time
+                if (model.StartTime >= model.EndTime)
+                {
+                    TempData["Error"] = "Giờ kết thúc phải sau giờ bắt đầu!";
+                    var classes = _classService.GetClassesBySchoolId(userId);
+                    ViewBag.Classes = classes;
+                    return View(model);
+                }
+
+                // Create schedule
+                var schedule = new ClassSchedule
+                {
+                    ClassId = model.ClassId,
+                    Title = model.Title,
+                    ScheduleDate = model.ScheduleDate,
+                    StartTime = model.StartTime,
+                    EndTime = model.EndTime,
+                    MeetingType = model.MeetingType,
+                    Location = model.Location,
+                    Content = model.Content,
+                    Notes = model.Notes,
+                    Status = ScheduleStatus.Upcoming,
+                    CreatedBy = userId,
+                    CreatedDate = DateTime.Now
+                };
+
+                _db.ClassSchedules.Add(schedule);
+                _db.SaveChanges();
+
+                TempData["Success"] = "Tạo lịch trao đổi thành công!";
+                return RedirectToAction("ScheduleDetails", new { id = schedule.Id });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in CreateSchedule POST: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi!";
+                return RedirectToAction("CreateSchedule");
+            }
+        }
+
+        // Chi tiết lịch trao đổi
+        public IActionResult ScheduleDetails(int id)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var schedule = _db.ClassSchedules
+                    .Where(s => s.Id == id && s.Class!.SchoolId == userId)
+                    .Select(s => new Models.ViewModels.ScheduleDetailsViewModel
+                    {
+                        Id = s.Id,
+                        Title = s.Title,
+                        ScheduleDate = s.ScheduleDate,
+                        StartTime = s.StartTime,
+                        EndTime = s.EndTime,
+                        MeetingType = s.MeetingType,
+                        Location = s.Location,
+                        Content = s.Content,
+                        Notes = s.Notes,
+                        Status = s.Status,
+                        CreatedDate = s.CreatedDate,
+                        CreatorName = s.Creator!.FullName,
+                        ClassId = s.ClassId,
+                        ClassName = s.Class!.ClassName,
+                        Subject = s.Class.Subject,
+                        TutorName = s.Class.Tutor != null ? s.Class.Tutor.FullName : null,
+                        TutorEmail = s.Class.Tutor != null ? s.Class.Tutor.Email : null,
+                        TotalStudents = s.Class.Students!.Count
+                    })
+                    .FirstOrDefault();
+
+                if (schedule == null)
+                {
+                    TempData["Error"] = "Không tìm thấy lịch trao đổi!";
+                    return RedirectToAction("ManageSchedules");
+                }
+
+                return View(schedule);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in ScheduleDetails: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi!";
+                return RedirectToAction("ManageSchedules");
+            }
+        }
+
+        // Chỉnh sửa lịch trao đổi - GET
+        public IActionResult EditSchedule(int id)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var schedule = _db.ClassSchedules
+                    .Where(s => s.Id == id && s.Class!.SchoolId == userId)
+                    .FirstOrDefault();
+
+                if (schedule == null)
+                {
+                    TempData["Error"] = "Không tìm thấy lịch trao đổi!";
+                    return RedirectToAction("ManageSchedules");
+                }
+
+                var model = new Models.ViewModels.EditScheduleViewModel
+                {
+                    Id = schedule.Id,
+                    Title = schedule.Title,
+                    ScheduleDate = schedule.ScheduleDate,
+                    StartTime = schedule.StartTime,
+                    EndTime = schedule.EndTime,
+                    MeetingType = schedule.MeetingType,
+                    Location = schedule.Location,
+                    Content = schedule.Content,
+                    Notes = schedule.Notes,
+                    Status = schedule.Status,
+                    ClassId = schedule.ClassId,
+                    ClassName = schedule.Class!.ClassName
+                };
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in EditSchedule GET: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi!";
+                return RedirectToAction("ManageSchedules");
+            }
+        }
+
+        // Chỉnh sửa lịch trao đổi - POST
+        [HttpPost]
+        public IActionResult EditSchedule(Models.ViewModels.EditScheduleViewModel model)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+
+                var schedule = _db.ClassSchedules
+                    .Where(s => s.Id == model.Id && s.Class!.SchoolId == userId)
+                    .FirstOrDefault();
+
+                if (schedule == null)
+                {
+                    TempData["Error"] = "Không tìm thấy lịch trao đổi!";
+                    return RedirectToAction("ManageSchedules");
+                }
+
+                // Validate time
+                if (model.StartTime >= model.EndTime)
+                {
+                    TempData["Error"] = "Giờ kết thúc phải sau giờ bắt đầu!";
+                    return View(model);
+                }
+
+                // Update
+                schedule.Title = model.Title;
+                schedule.ScheduleDate = model.ScheduleDate;
+                schedule.StartTime = model.StartTime;
+                schedule.EndTime = model.EndTime;
+                schedule.MeetingType = model.MeetingType;
+                schedule.Location = model.Location;
+                schedule.Content = model.Content;
+                schedule.Notes = model.Notes;
+                schedule.Status = model.Status;
+                schedule.UpdatedDate = DateTime.Now;
+
+                _db.SaveChanges();
+
+                TempData["Success"] = "Cập nhật lịch trao đổi thành công!";
+                return RedirectToAction("ScheduleDetails", new { id = schedule.Id });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in EditSchedule POST: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi!";
+                return RedirectToAction("EditSchedule", new { id = model.Id });
+            }
+        }
+
+        // Xóa lịch trao đổi
+        [HttpPost]
+        public IActionResult DeleteSchedule(int id)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0)
+                {
+                    return Json(new { success = false, message = "Chưa đăng nhập!" });
+                }
+
+                var schedule = _db.ClassSchedules
+                    .Where(s => s.Id == id && s.Class!.SchoolId == userId)
+                    .FirstOrDefault();
+
+                if (schedule == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy lịch trao đổi!" });
+                }
+
+                _db.ClassSchedules.Remove(schedule);
+                _db.SaveChanges();
+
+                return Json(new { success = true, message = "Xóa lịch trao đổi thành công!" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in DeleteSchedule: {ex.Message}");
+                return Json(new { success = false, message = "Đã xảy ra lỗi!" });
+            }
+        }
+
+        // ============================================================
+        // END SCHEDULE MANAGEMENT ACTIONS
+        // ============================================================
 
         public IActionResult Dashboard()
         {
@@ -44,8 +363,32 @@ namespace Webgiasu.Controllers
                 var tutorIds = classes.Where(c => c.TutorId.HasValue).Select(c => c.TutorId.Value).Distinct().ToList();
                 ViewBag.TotalTutors = tutorIds.Count;
                 
-                // For students, we'd need to count from ClassStudent table
-                ViewBag.TotalStudents = 0; // TODO: Count from _classService.GetClassStudents
+                // Count total students
+                var totalStudents = 0;
+                foreach (var c in classes)
+                {
+                    totalStudents += _classService.GetClassStudentIds(c.Id).Count;
+                }
+                ViewBag.TotalStudents = totalStudents;
+
+                // Lấy danh sách lớp học để hiển thị (tối đa 5 lớp gần nhất)
+                var recentClasses = classes
+                    .OrderByDescending(c => c.CreatedDate)
+                    .Take(5)
+                    .Select(c => new Models.ViewModels.ClassViewModel
+                    {
+                        Id = c.Id,
+                        ClassName = c.ClassName,
+                        Subject = c.Subject,
+                        Description = c.Description ?? "",
+                        TutorName = c.TutorId.HasValue ? _userService.GetUserById(c.TutorId.Value)?.FullName ?? "Chưa có" : "Chưa có",
+                        StudentCount = _classService.GetClassStudentIds(c.Id).Count,
+                        StartDate = c.StartDate?.ToString("dd/MM/yyyy") ?? "Chưa xác định",
+                        Status = c.Status
+                    })
+                    .ToList();
+
+                ViewBag.RecentClasses = recentClasses;
 
                 return View();
             }
@@ -280,14 +623,113 @@ namespace Webgiasu.Controllers
                 // Thống kê chi tiết
                 var classes = _classService.GetClassesBySchoolId(userId);
                 
+                // Tổng quan
                 ViewBag.TotalClasses = classes.Count;
                 ViewBag.ActiveClasses = classes.Count(c => c.Status == ClassStatus.Active);
                 ViewBag.CompletedClasses = classes.Count(c => c.Status == ClassStatus.Completed);
                 ViewBag.OngoingClasses = classes.Count(c => c.Status == ClassStatus.Active);
                 
+                // Đếm số mentor và học sinh
                 var tutorIds = classes.Where(c => c.TutorId.HasValue).Select(c => c.TutorId.Value).Distinct().ToList();
                 ViewBag.TotalTutors = tutorIds.Count;
-                ViewBag.TotalStudents = 0; // TODO
+                
+                var totalStudents = 0;
+                foreach (var c in classes)
+                {
+                    totalStudents += _classService.GetClassStudentIds(c.Id).Count;
+                }
+                ViewBag.TotalStudents = totalStudents;
+
+                // Thống kê theo môn học
+                var classBySubject = classes.GroupBy(c => c.Subject)
+                    .Select(g => new { Subject = g.Key, Count = g.Count() })
+                    .OrderByDescending(x => x.Count)
+                    .ToList();
+                ViewBag.ClassesBySubject = (IEnumerable<dynamic>)classBySubject;
+
+                // Thống kê theo trạng thái
+                var classByStatus = new List<dynamic>
+                {
+                    new { Status = "Đang hoạt động", Count = classes.Count(c => c.Status == ClassStatus.Active) },
+                    new { Status = "Đã hoàn thành", Count = classes.Count(c => c.Status == ClassStatus.Completed) },
+                    new { Status = "Đã hủy", Count = classes.Count(c => c.Status == ClassStatus.Cancelled) }
+                };
+                ViewBag.ClassesByStatus = (IEnumerable<dynamic>)classByStatus;
+
+                // Thống kê theo thời gian (6 tháng gần nhất)
+                var sixMonthsAgo = DateTime.Now.AddMonths(-6);
+                var classesByMonth = classes
+                    .Where(c => c.CreatedDate >= sixMonthsAgo)
+                    .GroupBy(c => new { c.CreatedDate.Year, c.CreatedDate.Month })
+                    .Select(g => new
+                    {
+                        Month = $"Tháng {g.Key.Month}/{g.Key.Year}",
+                        Count = g.Count(),
+                        Order = g.Key.Year * 12 + g.Key.Month
+                    })
+                    .OrderBy(x => x.Order)
+                    .ToList();
+                ViewBag.ClassesByMonth = (IEnumerable<dynamic>)classesByMonth;
+
+                // Thống kê số học sinh theo tháng
+                var studentsByMonth = new List<dynamic>();
+                for (int i = 5; i >= 0; i--)
+                {
+                    var monthDate = DateTime.Now.AddMonths(-i);
+                    var monthClasses = classes.Where(c => 
+                        c.CreatedDate.Year == monthDate.Year && 
+                        c.CreatedDate.Month == monthDate.Month
+                    ).ToList();
+                    
+                    var monthStudentCount = 0;
+                    foreach (var c in monthClasses)
+                    {
+                        monthStudentCount += _classService.GetClassStudentIds(c.Id).Count;
+                    }
+                    
+                    studentsByMonth.Add(new 
+                    { 
+                        Month = $"Tháng {monthDate.Month}/{monthDate.Year}",
+                        Count = monthStudentCount 
+                    });
+                }
+                ViewBag.StudentsByMonth = (IEnumerable<dynamic>)studentsByMonth;
+
+                // Top 5 môn học phổ biến
+                var topSubjects = classBySubject.Take(5).ToList();
+                ViewBag.TopSubjects = (IEnumerable<dynamic>)topSubjects;
+
+                // Thống kê mentor hoạt động
+                var activeTutors = classes
+                    .Where(c => c.TutorId.HasValue && c.Status == ClassStatus.Active)
+                    .Select(c => c.TutorId.Value)
+                    .Distinct()
+                    .Count();
+                ViewBag.ActiveTutors = activeTutors;
+
+                // Tỷ lệ hoàn thành
+                var completionRate = classes.Count > 0 
+                    ? (double)classes.Count(c => c.Status == ClassStatus.Completed) / classes.Count * 100 
+                    : 0;
+                ViewBag.CompletionRate = completionRate;
+
+                // Danh sách lớp học chi tiết (lấy tất cả)
+                var classDetailsList = classes
+                    .OrderByDescending(c => c.CreatedDate)
+                    .Select(c => new
+                    {
+                        Id = c.Id,
+                        ClassName = c.ClassName,
+                        Subject = c.Subject,
+                        TutorName = c.TutorId.HasValue ? _userService.GetUserById(c.TutorId.Value)?.FullName ?? "Chưa có" : "Chưa có",
+                        StudentCount = _classService.GetClassStudentIds(c.Id).Count,
+                        StartDate = c.StartDate?.ToString("dd/MM/yyyy") ?? "Chưa xác định",
+                        Status = c.Status,
+                        StatusText = c.Status == ClassStatus.Active ? "Đang hoạt động" : 
+                                   c.Status == ClassStatus.Completed ? "Đã hoàn thành" : "Đã hủy"
+                    })
+                    .ToList();
+                ViewBag.ClassDetailsList = (IEnumerable<dynamic>)classDetailsList;
 
                 return View();
             }

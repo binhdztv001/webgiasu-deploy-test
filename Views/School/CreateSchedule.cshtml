@@ -1,0 +1,200 @@
+﻿@model Webgiasu.Models.ViewModels.CreateScheduleViewModel
+
+@{
+    ViewData["Title"] = "Tạo lịch trao đổi";
+    Layout = "~/Views/Shared/_SchoolLayout.cshtml";
+}
+
+<div class="dashboard-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h2><i class="bi bi-calendar-plus me-2 text-warning"></i>Tạo lịch trao đổi mới</h2>
+        <p class="text-muted mb-0">Lên lịch buổi trao đổi với học sinh trong lớp</p>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0"><i class="bi bi-clipboard me-2"></i>Thông tin lịch trao đổi</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="CreateSchedule" method="post">
+                        <!-- Chọn lớp học -->
+                        <div class="mb-3">
+                            <label asp-for="ClassId" class="form-label fw-semibold">
+                                <i class="bi bi-book text-warning"></i> Lớp học <span class="text-danger">*</span>
+                            </label>
+                            <select asp-for="ClassId" class="form-select" required>
+                                <option value="">-- Chọn lớp học --</option>
+                                @foreach (var c in ViewBag.Classes as List<Webgiasu.Models.SchoolClass>)
+                                {
+                                    <option value="@c.Id" selected="@(c.Id == Model.ClassId)">
+                                        @c.ClassName - @c.Subject
+                                    </option>
+                                }
+                            </select>
+                            <span asp-validation-for="ClassId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Tiêu đề -->
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label fw-semibold">
+                                <i class="bi bi-card-heading text-warning"></i> Tiêu đề <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Title" class="form-control" placeholder="VD: Buổi trao đổi tuần 1, Giải đáp thắc mắc..."  required />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <!-- Ngày và Giờ -->
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label asp-for="ScheduleDate" class="form-label fw-semibold">
+                                    <i class="bi bi-calendar3 text-warning"></i> Ngày <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="ScheduleDate" type="date" class="form-control" required />
+                                <span asp-validation-for="ScheduleDate" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="StartTime" class="form-label fw-semibold">
+                                    <i class="bi bi-clock text-warning"></i> Giờ bắt đầu <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="StartTime" type="time" class="form-control" required />
+                                <span asp-validation-for="StartTime" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="EndTime" class="form-label fw-semibold">
+                                    <i class="bi bi-clock-fill text-warning"></i> Giờ kết thúc <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="EndTime" type="time" class="form-control" required />
+                                <span asp-validation-for="EndTime" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Hình thức -->
+                        <div class="mb-3">
+                            <label asp-for="MeetingType" class="form-label fw-semibold">
+                                <i class="bi bi-geo-alt text-warning"></i> Hình thức <span class="text-danger">*</span>
+                            </label>
+                            <select asp-for="MeetingType" class="form-select" id="meetingTypeSelect" required>
+                                <option value="Online">Online</option>
+                                <option value="Offline">Offline</option>
+                            </select>
+                            <span asp-validation-for="MeetingType" class="text-danger"></span>
+                        </div>
+
+                        <!-- Địa điểm/Link -->
+                        <div class="mb-3">
+                            <label asp-for="Location" class="form-label fw-semibold" id="locationLabel">
+                                <i class="bi bi-link-45deg text-warning"></i> Link meeting (Google Meet, Zoom...)
+                            </label>
+                            <input asp-for="Location" class="form-control" id="locationInput" 
+                                   placeholder="https://meet.google.com/xxx-yyyy-zzz" />
+                            <span asp-validation-for="Location" class="text-danger"></span>
+                            <small class="text-muted" id="locationHint">Nhập link cuộc họp online</small>
+                        </div>
+
+                        <!-- Nội dung -->
+                        <div class="mb-3">
+                            <label asp-for="Content" class="form-label fw-semibold">
+                                <i class="bi bi-file-text text-warning"></i> Nội dung trao đổi
+                            </label>
+                            <textarea asp-for="Content" class="form-control" rows="4" 
+                                      placeholder="Mô tả nội dung buổi trao đổi, chủ đề, mục tiêu..."></textarea>
+                            <span asp-validation-for="Content" class="text-danger"></span>
+                        </div>
+
+                        <!-- Ghi chú -->
+                        <div class="mb-3">
+                            <label asp-for="Notes" class="form-label fw-semibold">
+                                <i class="bi bi-sticky text-warning"></i> Ghi chú
+                            </label>
+                            <textarea asp-for="Notes" class="form-control" rows="2" 
+                                      placeholder="Ghi chú thêm (tài liệu cần chuẩn bị, yêu cầu...)"></textarea>
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-warning">
+                                <i class="bi bi-check-circle me-2"></i>Tạo lịch trao đổi
+                            </button>
+                            <a asp-controller="School" asp-action="ManageSchedules" class="btn btn-secondary">
+                                <i class="bi bi-x-circle me-2"></i>Hủy
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar - Hướng dẫn -->
+        <div class="col-lg-4">
+            <div class="card mb-3">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0"><i class="bi bi-info-circle me-2"></i>Hướng dẫn</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6 class="fw-semibold">1. Chọn lớp học</h6>
+                        <small class="text-muted">Chọn lớp học cần trao đổi</small>
+                    </div>
+                    <div class="mb-3">
+                        <h6 class="fw-semibold">2. Đặt thời gian</h6>
+                        <small class="text-muted">Chọn ngày giờ phù hợp với lịch của mentor và học sinh</small>
+                    </div>
+                    <div class="mb-3">
+                        <h6 class="fw-semibold">3. Chọn hình thức</h6>
+                        <small class="text-muted">Online (link meeting) hoặc Offline (địa chỉ cụ thể)</small>
+                    </div>
+                    <div>
+                        <h6 class="fw-semibold">4. Nội dung</h6>
+                        <small class="text-muted">Mô tả rõ ràng mục đích buổi trao đổi</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-warning text-white">
+                    <h6 class="mb-0"><i class="bi bi-lightbulb me-2"></i>Lưu ý</h6>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0 small">
+                        <li class="mb-2">Tạo lịch trước ít nhất 1 ngày để học sinh chuẩn bị</li>
+                        <li class="mb-2">Đảm bảo link meeting hoạt động (nếu online)</li>
+                        <li class="mb-2">Kiểm tra lịch của mentor trước khi tạo</li>
+                        <li>Có thể chỉnh sửa hoặc hủy lịch sau khi tạo</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Dynamic label and placeholder based on meeting type
+        const meetingTypeSelect = document.getElementById('meetingTypeSelect');
+        const locationLabel = document.getElementById('locationLabel');
+        const locationInput = document.getElementById('locationInput');
+        const locationHint = document.getElementById('locationHint');
+
+        meetingTypeSelect.addEventListener('change', function() {
+            if (this.value === 'Online') {
+                locationLabel.innerHTML = '<i class="bi bi-link-45deg text-warning"></i> Link meeting (Google Meet, Zoom...)';
+                locationInput.placeholder = 'https://meet.google.com/xxx-yyyy-zzz';
+                locationHint.textContent = 'Nhập link cuộc họp online';
+            } else {
+                locationLabel.innerHTML = '<i class="bi bi-geo-alt text-warning"></i> Địa điểm cụ thể';
+                locationInput.placeholder = 'VD: Phòng 101, Tòa nhà A, Trường XYZ';
+                locationHint.textContent = 'Nhập địa chỉ gặp mặt trực tiếp';
+            }
+        });
+
+        // Trigger on page load if Offline is selected
+        if (meetingTypeSelect.value === 'Offline') {
+            meetingTypeSelect.dispatchEvent(new Event('change'));
+        }
+    </script>
+}

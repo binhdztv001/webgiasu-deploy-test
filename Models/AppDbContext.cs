@@ -31,6 +31,8 @@ namespace Webgiasu.Models
 
         public DbSet<SchoolClass> SchoolClasses { get; set; }
         public DbSet<ClassStudent> ClassStudents { get; set; }
+        
+        public DbSet<ClassSchedule> ClassSchedules { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -222,6 +224,29 @@ namespace Webgiasu.Models
             modelBuilder.Entity<ClassStudent>()
                 .HasIndex(cs => new { cs.ClassId, cs.StudentId })
                 .IsUnique();
+
+            // ClassSchedule relationships
+            modelBuilder.Entity<ClassSchedule>()
+                .HasOne(cs => cs.Class)
+                .WithMany()
+                .HasForeignKey(cs => cs.ClassId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ClassSchedule>()
+                .HasOne(cs => cs.Creator)
+                .WithMany()
+                .HasForeignKey(cs => cs.CreatedBy)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Indexes for ClassSchedule
+            modelBuilder.Entity<ClassSchedule>()
+                .HasIndex(cs => cs.ClassId);
+
+            modelBuilder.Entity<ClassSchedule>()
+                .HasIndex(cs => cs.ScheduleDate);
+
+            modelBuilder.Entity<ClassSchedule>()
+                .HasIndex(cs => cs.Status);
 
 
     }
