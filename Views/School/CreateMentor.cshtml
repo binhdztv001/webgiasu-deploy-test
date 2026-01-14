@@ -1,0 +1,159 @@
+﻿@{
+    ViewData["Title"] = "Tạo tài khoản Mentor";
+    Layout = "~/Views/Shared/_SchoolLayout.cshtml";
+}
+
+<div class="dashboard-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h2><i class="bi bi-person-plus-fill me-2 text-warning"></i>Tạo tài khoản Mentor</h2>
+        <p class="text-muted">Tạo tài khoản mới cho Mentor cấp Đại học</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0"><i class="bi bi-person-badge me-2"></i>Thông tin tài khoản Mentor</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-controller="School" asp-action="CreateMentor" method="post">
+                        <!-- Thông tin đăng nhập -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-3 text-warning">
+                                <i class="bi bi-shield-lock me-2"></i>Thông tin đăng nhập
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label fw-semibold">
+                                        Tên đăng nhập <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control" name="username" required 
+                                           placeholder="Nhập tên đăng nhập (ít nhất 3 ký tự)" minlength="3">
+                                    <small class="text-muted">Tên đăng nhập duy nhất trong hệ thống</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">
+                                        Mật khẩu <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="password" class="form-control" id="password" name="password" required 
+                                           placeholder="Nhập mật khẩu (ít nhất 6 ký tự)" minlength="6">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">
+                                        Xác nhận mật khẩu <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required 
+                                           placeholder="Nhập lại mật khẩu">
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- Thông tin cá nhân -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-3 text-warning">
+                                <i class="bi bi-person me-2"></i>Thông tin cá nhân
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label fw-semibold">
+                                        Họ và tên <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control" name="fullName" required 
+                                           placeholder="Nhập họ và tên đầy đủ">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">
+                                        Email <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="email" class="form-control" name="email" required 
+                                           placeholder="example@email.com">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Số điện thoại</label>
+                                    <input type="tel" class="form-control" name="phoneNumber" 
+                                           placeholder="0123456789">
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- Thông tin Mentor -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-3 text-warning">
+                                <i class="bi bi-briefcase me-2"></i>Thông tin nghề nghiệp
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label fw-semibold">Giới thiệu bản thân</label>
+                                    <textarea class="form-control" name="bio" rows="3" 
+                                              placeholder="Giới thiệu ngắn gọn về bản thân..."></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Môn học chuyên dạy</label>
+                                    <input type="text" class="form-control" name="subjects" 
+                                           placeholder="Ví dụ: Toán, Lý, Hóa">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Trình độ học vấn</label>
+                                    <input type="text" class="form-control" name="education" 
+                                           placeholder="Ví dụ: Thạc sĩ, Tiến sĩ">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Số năm kinh nghiệm</label>
+                                    <input type="number" class="form-control" name="experienceYears" min="0" value="0" 
+                                           placeholder="0">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Chứng chỉ</label>
+                                    <input type="text" class="form-control" name="certificates" 
+                                           placeholder="Các chứng chỉ đã có">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>Lưu ý:</strong> Tài khoản Mentor được tạo bởi nhà trường sẽ tự động được phê duyệt 
+                            và có cấp học <strong>Đại học</strong>.
+                        </div>
+
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a asp-controller="School" asp-action="ManageMentors" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Quay lại
+                            </a>
+                            <button type="submit" class="btn btn-warning">
+                                <i class="bi bi-check-circle me-2"></i>Tạo tài khoản
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Validate password match
+document.querySelector('form').addEventListener('submit', function(e) {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    if (password !== confirmPassword) {
+        e.preventDefault();
+        alert('Mật khẩu xác nhận không khớp!');
+        document.getElementById('confirmPassword').focus();
+        return false;
+    }
+    
+    if (password.length < 6) {
+        e.preventDefault();
+        alert('Mật khẩu phải có ít nhất 6 ký tự!');
+        document.getElementById('password').focus();
+        return false;
+    }
+});
+</script>

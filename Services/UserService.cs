@@ -30,7 +30,13 @@ namespace Webgiasu.Services
                     return false;
 
                 user.RegisteredDate = DateTime.Now;
-                user.IsApproved = user.Role == UserRole.Student;
+                // Chỉ tự động phê duyệt nếu IsApproved chưa được set (mặc định cho Student)
+                // Nếu đã được set từ bên ngoài (ví dụ School tạo Mentor), giữ nguyên giá trị đó
+                if (!user.IsApproved && user.Role == UserRole.Student)
+                {
+                    user.IsApproved = true;
+                }
+                
                 _db.Users.Add(user);
                 _db.SaveChanges();
                 return true;

@@ -1,0 +1,205 @@
+﻿@model List<Webgiasu.Models.User>
+@{
+    ViewData["Title"] = "Quản lý Mentor";
+    Layout = "~/Views/Shared/_SchoolLayout.cshtml";
+}
+
+<div class="dashboard-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2><i class="bi bi-people-fill me-2 text-warning"></i>Quản lý Mentor</h2>
+                <p class="text-muted">Danh sách các Mentor do nhà trường tạo</p>
+            </div>
+            <a asp-controller="School" asp-action="CreateMentor" class="btn btn-warning">
+                <i class="bi bi-plus-circle me-2"></i>Tạo tài khoản Mentor
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Summary -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-muted small mb-1">Tổng số Mentor</div>
+                            <h3 class="mb-0 fw-bold">@Model.Count</h3>
+                        </div>
+                        <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                            <i class="bi bi-person-badge"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-muted small mb-1">Đã phê duyệt</div>
+                            <h3 class="mb-0 fw-bold">@Model.Count(m => m.IsApproved)</h3>
+                        </div>
+                        <div class="stat-icon bg-success bg-opacity-10 text-success">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-muted small mb-1">Cấp Đại học</div>
+                            <h3 class="mb-0 fw-bold">@Model.Count(m => m.Level == Webgiasu.Models.EducationLevel.DaiHoc)</h3>
+                        </div>
+                        <div class="stat-icon bg-info bg-opacity-10 text-info">
+                            <i class="bi bi-mortarboard"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mentors List -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-list-ul me-2"></i>Danh sách Mentor</h5>
+        </div>
+        <div class="card-body">
+            @if (Model != null && Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Tên đăng nhập</th>
+                                <th>Họ và tên</th>
+                                <th>Email</th>
+                                <th>Số điện thoại</th>
+                                <th>Môn dạy</th>
+                                <th>Kinh nghiệm</th>
+                                <th>Ngày tạo</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var mentor in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@mentor.Username</strong>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="rounded-circle bg-warning bg-opacity-10 text-warning d-inline-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
+                                                <i class="bi bi-person"></i>
+                                            </div>
+                                            <div>
+                                                <div>@mentor.FullName</div>
+                                                @if (mentor.IsPremium)
+                                                {
+                                                    <small class="text-warning">
+                                                        <i class="bi bi-star-fill"></i> Premium
+                                                    </small>
+                                                }
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>@mentor.Email</td>
+                                    <td>@mentor.PhoneNumber</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(mentor.Subjects))
+                                        {
+                                            <span class="badge bg-info">@mentor.Subjects</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Chưa cập nhật</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (mentor.ExperienceYears.HasValue && mentor.ExperienceYears.Value > 0)
+                                        {
+                                            <span>@mentor.ExperienceYears năm</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Chưa cập nhật</span>
+                                        }
+                                    </td>
+                                    <td>@mentor.RegisteredDate.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        @if (mentor.IsApproved)
+                                        {
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-check-circle me-1"></i>Đã phê duyệt
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning">
+                                                <i class="bi bi-clock me-1"></i>Chờ duyệt
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                    onclick="deleteMentor(@mentor.Id, '@mentor.FullName')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center text-muted py-5">
+                    <i class="bi bi-inbox fs-1 mb-3 d-block"></i>
+                    <p>Chưa có Mentor nào</p>
+                    <a asp-controller="School" asp-action="CreateMentor" class="btn btn-warning">
+                        <i class="bi bi-plus-circle me-2"></i>Tạo tài khoản Mentor đầu tiên
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+function deleteMentor(id, name) {
+    if (confirm(`Bạn có chắc chắn muốn xóa tài khoản Mentor "${name}"?\n\nLưu ý: Chỉ có thể xóa Mentor không đang giảng dạy lớp nào.`)) {
+        fetch(`/School/DeleteMentor/${id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                location.reload();
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            alert('Đã xảy ra lỗi khi xóa Mentor!');
+            console.error('Error:', error);
+        });
+    }
+}
+</script>

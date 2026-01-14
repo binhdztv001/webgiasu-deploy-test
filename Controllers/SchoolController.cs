@@ -1014,5 +1014,190 @@ namespace Webgiasu.Controllers
                 return Json(new { success = false, message = "Đã xảy ra lỗi!" });
             }
         }
+
+        // ============================================================
+        // MENTOR MANAGEMENT ACTIONS
+        // ============================================================
+
+        // Quản lý danh sách Mentor đã tạo
+        public IActionResult ManageMentors()
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                // Lấy tất cả mentor cấp Đại học đã được phê duyệt
+                var mentors = _userService.GetUsersByRole(UserRole.Tutor)
+                    .Where(m => m.Level.HasValue && m.Level.Value == EducationLevel.DaiHoc && m.IsApproved)
+                    .OrderByDescending(m => m.RegisteredDate)
+                    .ToList();
+
+                return View(mentors);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in ManageMentors: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi khi tải danh sách Mentor!";
+                return RedirectToAction("Dashboard");
+            }
+        }
+
+        // Tạo tài khoản Mentor - GET
+        public IActionResult CreateMentor()
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in CreateMentor GET: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi!";
+                return RedirectToAction("Dashboard");
+            }
+        }
+
+        // Tạo tài khoản Mentor - POST
+        [HttpPost]
+        public IActionResult CreateMentor(string username, string password, string confirmPassword, 
+            string fullName, string email, string phoneNumber, string bio, string subjects, 
+            string education, int experienceYears, string certificates)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                // Validate input
+                if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password) ||
+                    string.IsNullOrWhiteSpace(fullName) || string.IsNullOrWhiteSpace(email))
+                {
+                    TempData["Error"] = "Vui lòng điền đầy đủ thông tin bắt buộc!";
+                    return RedirectToAction("CreateMentor");
+                }
+
+                // Check password match
+                if (password != confirmPassword)
+                {
+                    TempData["Error"] = "Mật khẩu xác nhận không khớp!";
+                    return RedirectToAction("CreateMentor");
+                }
+
+                // Check username length
+                if (username.Length < 3)
+                {
+                    TempData["Error"] = "Tên đăng nhập phải có ít nhất 3 ký tự!";
+                    return RedirectToAction("CreateMentor");
+                }
+
+                // Check password length
+                if (password.Length < 6)
+                {
+                    TempData["Error"] = "Mật khẩu phải có ít nhất 6 ký tự!";
+                    return RedirectToAction("CreateMentor");
+                }
+
+                // Check if username already exists
+                var existingUser = _userService.GetAllUsers()
+                    .FirstOrDefault(u => u.Username.ToLower() == username.ToLower());
+                if (existingUser != null)
+                {
+                    TempData["Error"] = "Tên đăng nhập đã tồn tại!";
+                    return RedirectToAction("CreateMentor");
+                }
+
+                // Create new mentor account
+                var mentor = new User
+                {
+                    Username = username,
+                    Password = password,
+                    FullName = fullName,
+                    Email = email,
+                    PhoneNumber = phoneNumber ?? "",
+                    Role = UserRole.Tutor,
+                    Level = EducationLevel.DaiHoc, // Mặc định cấp Đại học
+                    IsApproved = true, // Tự động phê duyệt vì được tạo bởi School
+                    RegisteredDate = DateTime.Now,
+                    Bio = bio ?? "",
+                    Subjects = subjects ?? "",
+                    Education = education ?? "",
+                    ExperienceYears = experienceYears,
+                    Certificates = certificates ?? ""
+                };
+
+                if (_userService.Register(mentor))
+                {
+                    TempData["Success"] = $"Tạo tài khoản Mentor thành công! Tên đăng nhập: {username}";
+                    return RedirectToAction("ManageMentors");
+                }
+                else
+                {
+                    TempData["Error"] = "Không thể tạo tài khoản Mentor. Vui lòng thử lại!";
+                    return RedirectToAction("CreateMentor");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in CreateMentor POST: {ex.Message}");
+                Console.WriteLine($"   Stack trace: {ex.StackTrace}");
+                TempData["Error"] = $"Đã xảy ra lỗi khi tạo tài khoản Mentor: {ex.Message}";
+                return RedirectToAction("CreateMentor");
+            }
+        }
+
+        // Xóa tài khoản Mentor - POST
+        [HttpPost]
+        public IActionResult DeleteMentor(int id)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0)
+                {
+                    return Json(new { success = false, message = "Chưa đăng nhập!" });
+                }
+
+                var mentor = _userService.GetUserById(id);
+                if (mentor == null || mentor.Role != UserRole.Tutor)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy Mentor!" });
+                }
+
+                // Kiểm tra xem Mentor có đang dạy lớp nào không
+                var classes = _classService.GetClassesBySchoolId(userId);
+                var teachingClasses = classes.Where(c => c.TutorId == id && c.Status == ClassStatus.Active).ToList();
+                
+                if (teachingClasses.Any())
+                {
+                    return Json(new { success = false, message = "Không thể xóa Mentor đang giảng dạy!" });
+                }
+
+                // Xóa mentor khỏi database
+                var mentorToDelete = _db.Users.Find(id);
+                if (mentorToDelete != null)
+                {
+                    _db.Users.Remove(mentorToDelete);
+                    _db.SaveChanges();
+                    return Json(new { success = true, message = "Xóa tài khoản Mentor thành công!" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Không thể xóa Mentor!" });
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in DeleteMentor: {ex.Message}");
+                return Json(new { success = false, message = "Đã xảy ra lỗi!" });
+            }
+        }
+
+        // ============================================================
+        // END MENTOR MANAGEMENT ACTIONS
+        // ============================================================
     }
 }
