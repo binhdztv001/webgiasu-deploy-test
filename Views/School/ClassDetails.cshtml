@@ -119,11 +119,20 @@
                             <i class="bi bi-calendar-plus me-1"></i>@Model.CreatedDate
                         </div>
                     </div>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="button" class="btn btn-primary flex-fill" onclick="toggleSchedules()">
+                            <i class="bi bi-calendar-event me-2"></i>Danh sách lịch trao đổi (@(ViewBag.Schedules != null ? ((IEnumerable<dynamic>)ViewBag.Schedules).Count() : 0))
+                        </button>
+                        <button type="button" class="btn btn-info flex-fill" onclick="toggleStudents()">
+                            <i class="bi bi-people me-2"></i>Danh sách học sinh (@Model.Students.Count)
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <!-- Class Schedules -->
-            <div class="card mb-4">
+            <!-- Class Schedules (Hidden by default) -->
+            <div id="schedulesCard" class="card mb-4" style="display: none;">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">
                         <i class="bi bi-calendar-event me-2"></i>Lịch trao đổi (@(ViewBag.Schedules != null ? ((IEnumerable<dynamic>)ViewBag.Schedules).Count() : 0) lịch)
@@ -235,8 +244,8 @@
                 </div>
             </div>
 
-            <!-- Students List -->
-            <div class="card">
+            <!-- Students List (Hidden by default) -->
+            <div id="studentsCard" class="card" style="display: none;">
                 <div class="card-header bg-info text-white">
                     <h5 class="mb-0">
                         <i class="bi bi-people me-2"></i>Danh sách học sinh (@Model.Students.Count người)
@@ -366,6 +375,32 @@
 
 @section Scripts {
     <script>
+        function toggleSchedules() {
+            const schedulesCard = document.getElementById('schedulesCard');
+            const studentsCard = document.getElementById('studentsCard');
+            
+            if (schedulesCard.style.display === 'none') {
+                schedulesCard.style.display = 'block';
+                studentsCard.style.display = 'none';
+                schedulesCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else {
+                schedulesCard.style.display = 'none';
+            }
+        }
+
+        function toggleStudents() {
+            const schedulesCard = document.getElementById('schedulesCard');
+            const studentsCard = document.getElementById('studentsCard');
+            
+            if (studentsCard.style.display === 'none') {
+                studentsCard.style.display = 'block';
+                schedulesCard.style.display = 'none';
+                studentsCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else {
+                studentsCard.style.display = 'none';
+            }
+        }
+
         function deleteClass(classId) {
             if (!confirm('Bạn có chắc chắn muốn xóa lớp học này?\n\nThao tác này không thể hoàn tác!')) {
                 return;
