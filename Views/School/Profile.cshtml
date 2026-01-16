@@ -1,0 +1,252 @@
+﻿@model Webgiasu.Models.User
+@{
+    ViewData["Title"] = "Hồ sơ Nhà trường";
+    Layout = "_SchoolLayout";
+}
+
+<div class="page-header mb-4">
+    <h2 class="fw-bold">
+        <i class="bi bi-person-circle text-warning"></i> Hồ sơ Nhà trường
+    </h2>
+    <p class="text-muted">Quản lý thông tin tài khoản Nhà trường của bạn</p>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body text-center p-4">
+                <div class="mb-4">
+                    <div class="rounded-circle d-inline-flex align-items-center justify-content-center text-white" style="width: 120px; height: 120px; background: linear-gradient(135deg, #FFC107 0%, #FFD54F 100%);">
+                        <i class="bi bi-building-fill" style="font-size: 4rem;"></i>
+                    </div>
+                </div>
+                <h4 class="fw-bold mb-1">@Model.FullName</h4>
+                <p class="text-muted mb-3">@Model.Username</p>
+                <span class="badge badge-pill px-4 py-2" style="background: linear-gradient(135deg, #FFC107 0%, #FFD54F 100%); color: white;">
+                    <i class="bi bi-building me-1"></i> Nhà trường
+                </span>
+
+                <hr class="my-4" />
+
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-pill" style="border: 2px solid #FFC107; color: #FFC107; background: transparent;" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                        <i class="bi bi-pencil-square me-1"></i> Chỉnh sửa hồ sơ
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary btn-pill" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                        <i class="bi bi-key me-1"></i> Đổi mật khẩu
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card shadow-sm h-100">
+            <div class="card-header text-white" style="background: linear-gradient(135deg, #FFC107 0%, #FFD54F 100%);">
+                <h5 class="mb-0">
+                    <i class="bi bi-info-circle me-2"></i> Thông tin chi tiết
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="border-start border-4 ps-3 mb-4" style="border-color: #FFC107 !important;">
+                            <label class="text-muted small mb-1">Tên nhà trường</label>
+                            <h6 class="fw-bold mb-0">@Model.FullName</h6>
+                        </div>
+
+                        <div class="border-start border-4 ps-3 mb-4" style="border-color: #FFC107 !important;">
+                            <label class="text-muted small mb-1">Email</label>
+                            <h6 class="fw-bold mb-0">
+                                <i class="bi bi-envelope me-1" style="color: #FFC107;"></i> @Model.Email
+                            </h6>
+                        </div>
+
+                        <div class="border-start border-4 ps-3 mb-4" style="border-color: #FFC107 !important;">
+                            <label class="text-muted small mb-1">Tên đăng nhập</label>
+                            <h6 class="fw-bold mb-0">
+                                <i class="bi bi-person-badge me-1" style="color: #FFC107;"></i> @Model.Username
+                            </h6>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="border-start border-4 ps-3 mb-4" style="border-color: #FFC107 !important;">
+                            <label class="text-muted small mb-1">Số điện thoại</label>
+                            <h6 class="fw-bold mb-0">
+                                <i class="bi bi-phone me-1" style="color: #FFC107;"></i> @(string.IsNullOrEmpty(Model.PhoneNumber) ? "Chưa cập nhật" : Model.PhoneNumber)
+                            </h6>
+                        </div>
+
+                        <div class="border-start border-4 ps-3 mb-4" style="border-color: #FFC107 !important;">
+                            <label class="text-muted small mb-1">Vai trò</label>
+                            <h6 class="fw-bold mb-0">
+                                <span class="badge" style="background: linear-gradient(135deg, #FFC107 0%, #FFD54F 100%); color: white;">Nhà trường</span>
+                            </h6>
+                        </div>
+
+                        <div class="border-start border-4 ps-3 mb-4" style="border-color: #FFC107 !important;">
+                            <label class="text-muted small mb-1">Trạng thái</label>
+                            <h6 class="fw-bold mb-0">
+                                <span class="badge bg-success">
+                                    <i class="bi bi-check-circle me-1"></i> Đang hoạt động
+                                </span>
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert border-0" style="background-color: rgba(255, 193, 7, 0.1); color: #FFC107; border-left: 4px solid #FFC107 !important;">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    <strong>Thông tin:</strong> Tài khoản Nhà trường có thể tạo lớp học, quản lý Mentor, học sinh và lịch trao đổi.
+                </div>
+            </div>
+
+            <div class="card shadow-sm mt-4">
+                <div class="card-header text-white" style="background: linear-gradient(135deg, #00BCD4 0%, #26C6DA 100%);">
+                    <h5 class="mb-0">
+                        <i class="bi bi-graph-up me-2"></i> Thống kê hoạt động
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3 mb-3 mb-md-0">
+                            <div class="border-end">
+                                <h3 class="fw-bold mb-1" style="color: #FFC107;">
+                                    @ViewBag.TotalClasses
+                                </h3>
+                                <p class="text-muted mb-0 small">Lớp học</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3 mb-md-0">
+                            <div class="border-end">
+                                <h3 class="fw-bold mb-1" style="color: #4CAF50;">
+                                    @ViewBag.ActiveClasses
+                                </h3>
+                                <p class="text-muted mb-0 small">Đang hoạt động</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3 mb-md-0">
+                            <div class="border-end">
+                                <h3 class="fw-bold mb-1" style="color: #2196F3;">
+                                    @ViewBag.TotalTutors
+                                </h3>
+                                <p class="text-muted mb-0 small">Mentor</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 class="fw-bold mb-1" style="color: #9C27B0;">
+                                @ViewBag.TotalStudents
+                            </h3>
+                            <p class="text-muted mb-0 small">Học sinh</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" data-bs-backdrop="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #FFC107 0%, #FFD54F 100%);">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-pencil-square me-2"></i> Chỉnh sửa hồ sơ
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-controller="School" asp-action="UpdateProfile" method="post">
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-person-circle me-1" style="color: #FFC107;"></i> Tên nhà trường
+                        </label>
+                        <input type="text" name="fullName" class="form-control" value="@Model.FullName" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-envelope me-1" style="color: #FFC107;"></i> Email
+                        </label>
+                        <input type="email" name="email" class="form-control" value="@Model.Email" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-phone me-1" style="color: #FFC107;"></i> Số điện thoại
+                        </label>
+                        <input type="tel" name="phoneNumber" class="form-control" value="@Model.PhoneNumber" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i> Hủy
+                    </button>
+                    <button type="submit" class="btn text-white" style="background: linear-gradient(135deg, #FFC107 0%, #FFD54F 100%);">
+                        <i class="bi bi-check-circle me-1"></i> Lưu thay đổi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Change Password Modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" data-bs-backdrop="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #FFC107 0%, #FFD54F 100%);">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-key me-2"></i> Đổi mật khẩu
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-controller="School" asp-action="ChangePassword" method="post" id="changePasswordForm">
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-lock me-1" style="color: #FFC107;"></i> Mật khẩu hiện tại
+                        </label>
+                        <input type="password" name="currentPassword" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-lock-fill me-1" style="color: #FFC107;"></i> Mật khẩu mới
+                        </label>
+                        <input type="password" name="newPassword" id="newPassword" class="form-control" required minlength="6" />
+                        <div class="form-text">Tối thiểu 6 ký tự</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-shield-lock me-1" style="color: #FFC107;"></i> Xác nhận mật khẩu mới
+                        </label>
+                        <input type="password" name="confirmPassword" id="confirmPassword" class="form-control" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i> Hủy
+                    </button>
+                    <button type="submit" class="btn text-white" style="background: linear-gradient(135deg, #FFC107 0%, #FFD54F 100%);">
+                        <i class="bi bi-check-circle me-1"></i> Đổi mật khẩu
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+            var newPass = document.getElementById('newPassword').value;
+            var confirmPass = document.getElementById('confirmPassword').value;
+            
+            if (newPass !== confirmPass) {
+                e.preventDefault();
+                alert('Mật khẩu xác nhận không khớp!');
+                return false;
+            }
+        });
+    </script>
+}

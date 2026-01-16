@@ -51,6 +51,7 @@ namespace Webgiasu.Controllers
                         UserRole.Tutor => RedirectToAction("Dashboard", "Tutor"),
                         UserRole.Admin => RedirectToAction("Dashboard", "Admin"),
                         UserRole.School => RedirectToAction("Dashboard", "School"),
+                        UserRole.Enterprise => RedirectToAction("Dashboard", "Enterprise"),
                         _ => RedirectToAction("Index", "Home")
                     };
                 }

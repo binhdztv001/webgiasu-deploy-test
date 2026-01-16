@@ -758,6 +758,43 @@ namespace Webgiasu.Controllers
             }
         }
 
+        public IActionResult Profile()
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var school = _userService.GetUserById(userId);
+                if (school == null) return NotFound();
+
+                // Thống kê tổng quan cho Profile
+                var classes = _classService.GetClassesBySchoolId(userId);
+                ViewBag.TotalClasses = classes.Count;
+                ViewBag.ActiveClasses = classes.Count(c => c.Status == ClassStatus.Active);
+                
+                // Count tutors
+                var tutorIds = classes.Where(c => c.TutorId.HasValue).Select(c => c.TutorId.Value).Distinct().ToList();
+                ViewBag.TotalTutors = tutorIds.Count;
+                
+                // Count students
+                var totalStudents = 0;
+                foreach (var c in classes)
+                {
+                    totalStudents += _classService.GetClassStudentIds(c.Id).Count;
+                }
+                ViewBag.TotalStudents = totalStudents;
+
+                return View(school);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in Profile: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi khi tải hồ sơ!";
+                return RedirectToAction("Dashboard");
+            }
+        }
+
         public IActionResult Settings()
         {
             try
@@ -796,6 +833,13 @@ namespace Webgiasu.Controllers
 
                     TempData["Success"] = "Cập nhật thông tin thành công!";
                 }
+                
+                // Check if request came from Profile page
+                var referer = Request.Headers["Referer"].ToString();
+                if (referer.Contains("/School/Profile"))
+                {
+                    return RedirectToAction("Profile");
+                }
                 return RedirectToAction("Settings");
             }
             catch (Exception ex)
@@ -803,6 +847,64 @@ namespace Webgiasu.Controllers
                 Console.WriteLine($"❌ Error in UpdateProfile: {ex.Message}");
                 TempData["Error"] = "Đã xảy ra lỗi!";
                 return RedirectToAction("Settings");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult ChangePassword(string currentPassword, string newPassword, string confirmPassword)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var school = _userService.GetUserById(userId);
+                if (school == null)
+                {
+                    TempData["Error"] = "Không tìm thấy tài khoản!";
+                    return RedirectToAction("Profile");
+                }
+
+                // Validate current password
+                if (school.Password != currentPassword)
+                {
+                    TempData["Error"] = "Mật khẩu hiện tại không đúng!";
+                    return RedirectToAction("Profile");
+                }
+
+                // Validate new password
+                if (string.IsNullOrWhiteSpace(newPassword) || newPassword.Length < 6)
+                {
+                    TempData["Error"] = "Mật khẩu mới phải có ít nhất 6 ký tự!";
+                    return RedirectToAction("Profile");
+                }
+
+                // Validate confirm password
+                if (newPassword != confirmPassword)
+                {
+                    TempData["Error"] = "Mật khẩu xác nhận không khớp!";
+                    return RedirectToAction("Profile");
+                }
+
+                // Update password
+                school.Password = newPassword;
+                _userService.UpdateUser(school);
+
+                TempData["Success"] = "Đổi mật khẩu thành công!";
+                
+                // Check if request came from Profile page
+                var referer = Request.Headers["Referer"].ToString();
+                if (referer.Contains("/School/Profile"))
+                {
+                    return RedirectToAction("Profile");
+                }
+                return RedirectToAction("Settings");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in ChangePassword: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi!";
+                return RedirectToAction("Profile");
             }
         }
 

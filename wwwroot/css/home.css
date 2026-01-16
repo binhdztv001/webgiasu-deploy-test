@@ -616,18 +616,70 @@
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background: #ddd;
     cursor: pointer;
     transition: all 0.3s ease;
     border: 2px solid transparent;
 }
 
-.indicator:hover {
-    background: #999;
+/* Individual indicator colors (default state) */
+/* Indicator 0: Student - Blue */
+.indicator[data-slide="0"] {
+    background: rgba(33, 150, 243, 0.4);
+    border-color: rgba(33, 150, 243, 0.2);
+}
+
+/* Indicator 1: Mentor - Green */
+.indicator[data-slide="1"] {
+    background: rgba(76, 175, 80, 0.4);
+    border-color: rgba(76, 175, 80, 0.2);
+}
+
+/* Indicator 2: Admin - Red */
+.indicator[data-slide="2"] {
+    background: rgba(220, 53, 69, 0.4);
+    border-color: rgba(220, 53, 69, 0.2);
+}
+
+/* Indicator 3: Enterprise - Brown */
+.indicator[data-slide="3"] {
+    background: rgba(121, 85, 72, 0.4);
+    border-color: rgba(121, 85, 72, 0.2);
+}
+
+/* Indicator 4: School - Yellow */
+.indicator[data-slide="4"] {
+    background: rgba(255, 193, 7, 0.4);
+    border-color: rgba(255, 193, 7, 0.2);
+}
+
+/* Hover states */
+.indicator[data-slide="0"]:hover {
+    background: rgba(33, 150, 243, 0.7);
     transform: scale(1.2);
 }
 
-/* Indicator colors based on data-slide */
+.indicator[data-slide="1"]:hover {
+    background: rgba(76, 175, 80, 0.7);
+    transform: scale(1.2);
+}
+
+.indicator[data-slide="2"]:hover {
+    background: rgba(220, 53, 69, 0.7);
+    transform: scale(1.2);
+}
+
+.indicator[data-slide="3"]:hover {
+    background: rgba(121, 85, 72, 0.7);
+    transform: scale(1.2);
+}
+
+.indicator[data-slide="4"]:hover {
+    background: rgba(255, 193, 7, 0.7);
+    transform: scale(1.2);
+}
+
+/* Active states - Full opacity with glow */
+/* Indicator 0 Active: Student - Blue */
 .indicator[data-slide="0"].active {
     background: #2196F3;
     border-color: #2196F3;
@@ -635,6 +687,7 @@
     box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
 }
 
+/* Indicator 1 Active: Mentor - Green */
 .indicator[data-slide="1"].active {
     background: #4CAF50;
     border-color: #4CAF50;
@@ -642,6 +695,7 @@
     box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
 }
 
+/* Indicator 2 Active: Admin - Red */
 .indicator[data-slide="2"].active {
     background: #DC3545;
     border-color: #DC3545;
@@ -649,7 +703,16 @@
     box-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
 }
 
+/* Indicator 3 Active: Enterprise - Brown */
 .indicator[data-slide="3"].active {
+    background: #795548;
+    border-color: #795548;
+    transform: scale(1.3);
+    box-shadow: 0 0 10px rgba(121, 85, 72, 0.5);
+}
+
+/* Indicator 4 Active: School - Yellow */
+.indicator[data-slide="4"].active {
     background: #FFC107;
     border-color: #FFC107;
     transform: scale(1.3);
@@ -744,6 +807,58 @@
 .school-register-btn:active {
     background-color: #ffffff !important;
     color: #ffc107 !important;
+}
+
+/* ===========================
+   ENTERPRISE CARD BUTTON STYLES
+   =========================== */
+
+/* Enterprise Register Button - Hover with brown glow */
+.carousel-card[data-index="3"] .btn-pill[style*="border: 2px solid #795548"]:hover {
+    background: linear-gradient(135deg, #795548 0%, #8D6E63 100%) !important;
+    color: #ffffff !important;
+    border-color: #795548 !important;
+    box-shadow: 0 0 20px rgba(121, 85, 72, 0.6);
+    transform: translateY(-2px);
+}
+
+/* Enterprise Login Button - Hover with stronger glow */
+.carousel-card[data-index="3"] .btn-pill[style*="background: linear-gradient(135deg, #795548"]:hover {
+    box-shadow: 0 0 25px rgba(121, 85, 72, 0.7);
+    transform: translateY(-2px);
+}
+
+/* ===========================
+   ENTERPRISE CARD BUTTON STYLES
+   =========================== */
+
+/* Enterprise Register Button - Transparent background, brown text, NO border */
+.carousel-card[data-index="3"] .btn-pill[style*="border: 2px solid #795548"] {
+    background-color: transparent !important;
+    color: #795548 !important;
+    border: none !important;
+}
+
+.carousel-card[data-index="3"] .btn-pill[style*="border: 2px solid #795548"]:hover {
+    background: linear-gradient(135deg, #795548 0%, #8D6E63 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 0 20px rgba(121, 85, 72, 0.6);
+    transform: translateY(-2px);
+}
+
+.carousel-card[data-index="3"] .btn-pill[style*="border: 2px solid #795548"]:hover i {
+    color: #ffffff !important;
+}
+
+.carousel-card[data-index="3"] .btn-pill[style*="border: 2px solid #795548"] i {
+    color: #795548 !important;
+}
+
+/* Enterprise Login Button - Hover with stronger glow */
+.carousel-card[data-index="3"] .btn-pill[style*="background: linear-gradient(135deg, #795548"]:hover {
+    box-shadow: 0 0 25px rgba(121, 85, 72, 0.7);
+    transform: translateY(-2px);
 }
 
 /* ===========================

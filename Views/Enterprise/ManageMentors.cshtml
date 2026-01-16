@@ -1,0 +1,114 @@
+﻿@model List<Webgiasu.Models.User>
+
+@{
+    ViewData["Title"] = "Quản lý Mentor";
+    Layout = "~/Views/Shared/_EnterpriseLayout.cshtml";
+}
+
+<div class="dashboard-container">
+    <!-- Page Header -->
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div class="mb-2 mb-md-0">
+            <h5 class="fw-bold mb-1 text-dark">
+                <i class="bi bi-people text-primary me-2"></i>Quản lý Mentor
+            </h5>
+            <p class="text-muted mb-0 small">Danh sách tất cả Mentor đã được tạo</p>
+        </div>
+        <a asp-action="CreateMentor" class="btn btn-primary btn-sm">
+            <i class="bi bi-person-plus me-1"></i> Tạo Mentor mới
+        </a>
+    </div>
+
+    <!-- Stats -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card stat-card border-0 shadow-sm">
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small text-uppercase">Tổng Mentor</p>
+                            <h3 class="fw-bold mb-0 text-primary">@Model.Count</h3>
+                        </div>
+                        <div class="stat-icon bg-primary bg-opacity-10 rounded">
+                            <i class="bi bi-people text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mentor List -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header py-3 bg-white border-bottom">
+            <h6 class="mb-0 fw-bold text-dark">
+                <i class="bi bi-list-ul text-primary me-2"></i>Danh sách Mentor
+            </h6>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Họ tên</th>
+                                <th>Email</th>
+                                <th>SĐT</th>
+                                <th>Môn học</th>
+                                <th>Kinh nghiệm</th>
+                                <th>Ngày tạo</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var index = 1;
+                            }
+                            @foreach (var mentor in Model)
+                            {
+                                <tr>
+                                    <td class="fw-semibold">@index</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="https://ui-avatars.com/api/?name=@mentor.FullName&background=795548&color=fff&size=32" 
+                                                 class="rounded-circle me-2" alt="Avatar" width="32" height="32">
+                                            <span class="fw-semibold">@mentor.FullName</span>
+                                        </div>
+                                    </td>
+                                    <td>@mentor.Email</td>
+                                    <td>@(string.IsNullOrEmpty(mentor.PhoneNumber) ? "Chưa có" : mentor.PhoneNumber)</td>
+                                    <td>@(string.IsNullOrEmpty(mentor.Subjects) ? "Chưa cập nhật" : mentor.Subjects)</td>
+                                    <td>@(mentor.ExperienceYears ?? 0) năm</td>
+                                    <td>@mentor.RegisteredDate.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        @if (mentor.IsApproved)
+                                        {
+                                            <span class="badge bg-success">Đã phê duyệt</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning">Chưa phê duyệt</span>
+                                        }
+                                    </td>
+                                </tr>
+                                index++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="p-5 text-center">
+                    <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                    <p class="text-muted mt-3">Chưa có Mentor nào được tạo</p>
+                    <a asp-action="CreateMentor" class="btn btn-primary">
+                        <i class="bi bi-person-plus me-1"></i> Tạo Mentor đầu tiên
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>

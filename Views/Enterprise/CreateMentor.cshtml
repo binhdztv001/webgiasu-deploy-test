@@ -1,0 +1,145 @@
+﻿@{
+    ViewData["Title"] = "Tạo tài khoản Mentor";
+    Layout = "~/Views/Shared/_EnterpriseLayout.cshtml";
+}
+
+<div class="dashboard-container">
+    <!-- Page Header -->
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div class="mb-2 mb-md-0">
+            <h5 class="fw-bold mb-1 text-dark">
+                <i class="bi bi-person-plus text-primary me-2"></i>Tạo tài khoản Mentor
+            </h5>
+            <p class="text-muted mb-0 small">Tạo tài khoản mới cho Mentor cấp Đại học</p>
+        </div>
+        <a asp-action="ManageMentors" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Quay lại
+        </a>
+    </div>
+
+    <!-- Form -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header py-3">
+                    <h6 class="mb-0 fw-bold text-white">
+                        <i class="bi bi-person-badge me-2"></i>Thông tin Mentor
+                    </h6>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" asp-action="CreateMentor">
+                        <!-- Account Information -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-dark mb-3">
+                                <i class="bi bi-shield-lock text-primary me-2"></i>Thông tin đăng nhập
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label fw-semibold">
+                                        Tên đăng nhập <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" name="username" class="form-control" required minlength="3" />
+                                    <small class="text-muted">Tối thiểu 3 ký tự</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">
+                                        Mật khẩu <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="password" name="password" class="form-control" required minlength="6" />
+                                    <small class="text-muted">Tối thiểu 6 ký tự</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">
+                                        Xác nhận mật khẩu <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="password" name="confirmPassword" class="form-control" required minlength="6" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <!-- Personal Information -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-dark mb-3">
+                                <i class="bi bi-person text-success me-2"></i>Thông tin cá nhân
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label fw-semibold">
+                                        Họ và tên <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" name="fullName" class="form-control" required />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">
+                                        Email <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="email" name="email" class="form-control" required />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Số điện thoại</label>
+                                    <input type="tel" name="phoneNumber" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <!-- Professional Information -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-dark mb-3">
+                                <i class="bi bi-mortarboard text-info me-2"></i>Thông tin chuyên môn
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label fw-semibold">Giới thiệu bản thân</label>
+                                    <textarea name="bio" class="form-control" rows="3" 
+                                              placeholder="Giới thiệu ngắn gọn về bản thân..."></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Môn học giảng dạy</label>
+                                    <input type="text" name="subjects" class="form-control" 
+                                           placeholder="Ví dụ: Toán, Lý, Hóa" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Số năm kinh nghiệm</label>
+                                    <input type="number" name="experienceYears" class="form-control" 
+                                           min="0" value="0" />
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label fw-semibold">Trình độ học vấn</label>
+                                    <input type="text" name="education" class="form-control" 
+                                           placeholder="Ví dụ: Cử nhân Sư phạm Toán, ĐH Sư phạm Hà Nội" />
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label fw-semibold">Chứng chỉ</label>
+                                    <textarea name="certificates" class="form-control" rows="2" 
+                                              placeholder="Các chứng chỉ, giải thưởng..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <!-- Note -->
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>Lưu ý:</strong> Tài khoản Mentor sẽ được tự động phê duyệt và có cấp độ Đại học.
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <a asp-action="ManageMentors" class="btn btn-secondary">
+                                <i class="bi bi-x-circle me-1"></i> Hủy
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle me-1"></i> Tạo tài khoản
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

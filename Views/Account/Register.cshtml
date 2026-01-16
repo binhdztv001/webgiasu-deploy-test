@@ -6,6 +6,7 @@
         Webgiasu.Models.UserRole.Student => "Học sinh",
         Webgiasu.Models.UserRole.Tutor => "Mentor",
         Webgiasu.Models.UserRole.School => "Nhà trường",
+        Webgiasu.Models.UserRole.Enterprise => "Doanh nghiệp",
         _ => "Người dùng"
     };
     var roleIcon = Model.Role switch
@@ -13,6 +14,7 @@
         Webgiasu.Models.UserRole.Student => "bi-person-circle",
         Webgiasu.Models.UserRole.Tutor => "bi-mortarboard",
         Webgiasu.Models.UserRole.School => "bi-building",
+        Webgiasu.Models.UserRole.Enterprise => "bi-briefcase-fill",
         _ => "bi-person"
     };
     var roleColor = Model.Role switch
@@ -32,6 +34,45 @@
 }
 
 <link rel="stylesheet" href="~/css/animations.css" asp-append-version="true" />
+
+@if (Model.Role == Webgiasu.Models.UserRole.Enterprise)
+{
+    <style>
+        .register-card .card-header {
+            background: linear-gradient(135deg, #795548 0%, #8D6E63 100%) !important;
+        }
+        .btn-enterprise {
+            background: linear-gradient(135deg, #795548 0%, #8D6E63 100%);
+            color: white;
+            border: none;
+        }
+        .btn-enterprise:hover {
+            background: linear-gradient(135deg, #6D4C41 0%, #795548 100%);
+            color: white;
+        }
+        .btn-outline-enterprise {
+            border: none;
+            color: #795548;
+            background: transparent;
+        }
+        .btn-outline-enterprise:hover {
+            background: linear-gradient(135deg, #795548 0%, #8D6E63 100%);
+            color: white;
+            border: none;
+        }
+        .text-enterprise {
+            color: #795548 !important;
+        }
+        .badge.text-enterprise {
+            color: #795548 !important;
+        }
+        .form-control-animated:focus {
+            border-color: #795548;
+            box-shadow: 0 0 0 4px rgba(121, 85, 72, 0.15);
+        }
+    </style>
+}
+
 
 <div class="container mt-5 mb-5">
     <div class="row justify-content-center">
@@ -154,7 +195,7 @@
                         }
 
                         <div class="d-grid gap-2 mb-3 fade-in-up delay-5">
-                            <button type="submit" class="btn btn-@roleColor btn-lg btn-pill btn-animated shadow-sm">
+                            <button type="submit" class="btn @(Model.Role == Webgiasu.Models.UserRole.Enterprise ? "btn-enterprise" : "btn-" + roleColor) btn-lg btn-pill btn-animated shadow-sm">
                                 <i class="bi bi-person-plus-fill me-2"></i> Đăng ký ngay
                             </button>
                         </div>
@@ -163,7 +204,7 @@
 
                         <div class="text-center fade-in-up delay-5">
                             <p class="text-muted mb-3">Đã có tài khoản?</p>
-                            <a asp-action="Login" asp-route-role="@Model.Role.ToString()" class="btn btn-outline-@roleColor btn-pill btn-animated px-5">
+                            <a asp-action="Login" asp-route-role="@Model.Role.ToString()" class="btn @(Model.Role == Webgiasu.Models.UserRole.Enterprise ? "btn-outline-enterprise" : "btn-outline-" + roleColor) btn-pill btn-animated px-5">
                                 <i class="bi bi-box-arrow-in-right me-2"></i> Đăng nhập
                             </a>
                         </div>
@@ -171,7 +212,7 @@
                 </div>
 
                 <div class="card-footer bg-light text-center py-3 fade-in-up delay-5">
-                    <a asp-controller="Home" asp-action="Index" asp-route-role="@Model.Role.ToString()" class="btn btn-outline-@roleColor @(Model.Role == Webgiasu.Models.UserRole.School ? "btn-no-border-hover" : "btn-pill") btn-animated px-5">
+                    <a asp-controller="Home" asp-action="Index" asp-route-role="@Model.Role.ToString()" class="btn @(Model.Role == Webgiasu.Models.UserRole.Enterprise ? "btn-outline-enterprise" : "btn-outline-" + roleColor) @(Model.Role == Webgiasu.Models.UserRole.School || Model.Role == Webgiasu.Models.UserRole.Enterprise ? "btn-no-border-hover" : "btn-pill") btn-animated px-5">
                         <i class="bi bi-arrow-left me-1"></i> Quay lại trang chủ
                     </a>
                 </div>

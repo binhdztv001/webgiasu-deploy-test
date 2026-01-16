@@ -1,14 +1,12 @@
-﻿@using Webgiasu.Services
-@{
-    ViewBag.Theme = "school";
+﻿@{
+    ViewBag.Theme = "enterprise";
 }
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Learn with Mentor - Nhà trường</title>
+    <title>@ViewData["Title"] - Enterprise Portal</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/animations.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/school-layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/enterprise-layout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/dropdown-fix.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Webgiasu.styles.css" asp-append-version="true" />
     <style>
@@ -40,7 +38,7 @@
                     <button class="btn btn-link text-white me-3" id="sidebarToggle">
                         <i class="bi bi-list fs-3"></i>
                     </button>
-                    <a class="navbar-brand fw-bold text-white d-flex align-items-center" asp-controller="School" asp-action="Dashboard">
+                    <a class="navbar-brand fw-bold text-white d-flex align-items-center" asp-controller="Enterprise" asp-action="Dashboard">
                         <i class="bi bi-mortarboard-fill me-2 fs-4"></i>
                         <span class="d-none d-md-inline">Learn with Mentor</span>
                     </a>
@@ -58,7 +56,7 @@
                             </span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end notification-dropdown">
-                            <li class="dropdown-header" style="background: linear-gradient(135deg, #FFC107 0%, #FFD54F 100%); padding: 1rem 1.25rem; margin: -0.5rem -0.5rem 0.5rem -0.5rem; border-radius: 12px 12px 0 0;">
+                            <li class="dropdown-header" style="background: linear-gradient(135deg, #795548 0%, #8D6E63 100%); padding: 1rem 1.25rem; margin: -0.5rem -0.5rem 0.5rem -0.5rem; border-radius: 12px 12px 0 0;">
                                 <h6 class="mb-0 text-white">Thông báo</h6>
                             </li>
                             <li><hr class="dropdown-divider"></li>
@@ -69,16 +67,30 @@
                                             <i class="bi bi-check-circle"></i>
                                         </div>
                                         <div class="notification-content">
-                                            <p class="mb-1 fw-semibold">Lớp học mới được tạo</p>
-                                            <small class="text-muted">Lớp Toán 10A đã sẵn sàng</small>
-                                            <small class="d-block text-muted mt-1">10 phút trước</small>
+                                            <p class="mb-1 fw-semibold">Mentor mới đã được tạo</p>
+                                            <small class="text-muted">Tài khoản mentor đã được kích hoạt</small>
+                                            <small class="d-block text-muted mt-1">5 phút trước</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item notification-item" href="#">
+                                    <div class="d-flex">
+                                        <div class="notification-icon bg-info">
+                                            <i class="bi bi-calendar-check"></i>
+                                        </div>
+                                        <div class="notification-content">
+                                            <p class="mb-1 fw-semibold">Lịch trao đổi mới</p>
+                                            <small class="text-muted">Trường ABC đã thêm lịch học mới</small>
+                                            <small class="d-block text-muted mt-1">1 giờ trước</small>
                                         </div>
                                     </div>
                                 </a>
                             </li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <a class="dropdown-item text-center text-warning fw-semibold" href="#">
+                                <a class="dropdown-item text-center text-primary fw-semibold" href="#">
                                     Xem tất cả thông báo
                                 </a>
                             </li>
@@ -98,7 +110,7 @@
                     <!-- Profile -->
                     <div class="dropdown">
                         <button class="btn btn-link text-white d-flex align-items-center gap-2 profile-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="https://ui-avatars.com/api/?name=@userName&background=fff&color=FFC107&size=40" 
+                            <img src="https://ui-avatars.com/api/?name=@userName&background=fff&color=795548&size=40" 
                                  class="rounded-circle profile-avatar" alt="Avatar" width="40" height="40">
                             <span class="d-none d-md-inline fw-semibold">@userName</span>
                             <i class="bi bi-chevron-down profile-chevron"></i>
@@ -106,20 +118,20 @@
                         <ul class="dropdown-menu dropdown-menu-end profile-dropdown">
                             <li class="dropdown-header">
                                 <div class="text-center py-2">
-                                    <img src="https://ui-avatars.com/api/?name=@userName&background=FFC107&color=fff&size=60" 
+                                    <img src="https://ui-avatars.com/api/?name=@userName&background=795548&color=fff&size=60" 
                                          class="rounded-circle mb-2 profile-avatar-large" alt="Avatar" width="60" height="60">
                                     <h6 class="mb-0 fw-bold">@userName</h6>
-                                    <small class="text-muted">Nhà trường</small>
+                                    <small class="text-muted">Doanh nghiệp</small>
                                 </div>
                             </li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <a class="dropdown-item profile-menu-item" asp-controller="School" asp-action="Profile">
-                                    <i class="bi bi-person-circle me-2"></i> Thông tin nhà trường
+                                <a class="dropdown-item profile-menu-item" asp-controller="Enterprise" asp-action="Profile">
+                                    <i class="bi bi-person me-2"></i> Thông tin doanh nghiệp
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item profile-menu-item" asp-controller="School" asp-action="Settings">
+                                <a class="dropdown-item profile-menu-item" asp-controller="Enterprise" asp-action="Settings">
                                     <i class="bi bi-gear me-2"></i> Cài đặt tài khoản
                                 </a>
                             </li>
@@ -136,6 +148,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- Logout Confirm Modal -->
             <div class="modal fade" id="logoutConfirmModal" tabindex="-1" data-bs-backdrop="false">
                 <div class="modal-dialog modal-dialog-centered">
@@ -185,39 +198,39 @@
                 <nav class="sidebar-nav">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="School" asp-action="Dashboard">
+                            <a class="nav-link" asp-controller="Enterprise" asp-action="Dashboard">
                                 <i class="bi bi-house"></i>
                                 <span>Trang chủ</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="School" asp-action="ManageClasses">
-                                <i class="bi bi-list-ul"></i>
-                                <span>Danh sách lớp học</span>
+                            <a class="nav-link" asp-controller="Enterprise" asp-action="CreateMentor">
+                                <i class="bi bi-person-plus"></i>
+                                <span>Tạo tài khoản Mentor</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="School" asp-action="EditClasses">
-                                <i class="bi bi-pencil-square"></i>
-                                <span>Quản lý lớp học</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="School" asp-action="ManageMentors">
-                                <i class="bi bi-person-badge"></i>
+                            <a class="nav-link" asp-controller="Enterprise" asp-action="ManageMentors">
+                                <i class="bi bi-people"></i>
                                 <span>Quản lý Mentor</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="School" asp-action="ManageSchedules">
-                                <i class="bi bi-calendar-event"></i>
-                                <span>Quản lý lịch trao đổi</span>
+                            <a class="nav-link" asp-controller="Enterprise" asp-action="SchoolClasses">
+                                <i class="bi bi-book"></i>
+                                <span>Lớp học các trường</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="School" asp-action="Statistics">
+                            <a class="nav-link" asp-controller="Enterprise" asp-action="SchoolSchedules">
+                                <i class="bi bi-calendar-week"></i>
+                                <span>Lịch trao đổi</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Enterprise" asp-action="Statistics">
                                 <i class="bi bi-bar-chart-line"></i>
-                                <span>Thống kê nhà trường</span>
+                                <span>Thống kê</span>
                             </a>
                         </li>
                         <li class="nav-divider"></li>
@@ -240,9 +253,9 @@
                 <div class="sidebar-footer">
                     <div class="card bg-gradient">
                         <div class="card-body text-center py-3">
-                            <i class="bi bi-mortarboard text-warning fs-2 mb-2"></i>
-                            <p class="mb-1 fw-bold small text-white">Hệ thống quản lý</p>
-                            <p class="mb-0 text-white small">Nhà trường</p>
+                            <i class="bi bi-award text-warning fs-2 mb-2"></i>
+                            <p class="mb-1 fw-bold small">Nâng cao chất lượng</p>
+                            <p class="mb-0 text-muted small">Quản lý hiệu quả</p>
                         </div>
                     </div>
                 </div>
@@ -301,6 +314,22 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 }
+                @if (TempData["Info"] != null)
+                {
+                    <div class="alert alert-info alert-dismissible fade show custom-alert" role="alert">
+                        <div class="d-flex align-items-center">
+                            <div class="alert-icon-wrapper bg-info">
+                                <i class="bi bi-info-lg"></i>
+                            </div>
+                            <div class="alert-content">
+                                <strong>Thông tin!</strong>
+                                <span>@TempData["Info"]</span>
+                            </div>
+                        </div>
+                        <div class="alert-progress alert-progress-info"></div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
 
                 @RenderBody()
 
@@ -308,7 +337,7 @@
                 <footer class="content-footer">
                     <div class="d-flex justify-content-between align-items-center">
                         <p class="mb-0 text-muted small">
-                            © 2025 School Portal - Learn with Mentor. All rights reserved.
+                            © 2025 Enterprise Portal - Learn with Mentor. All rights reserved.
                         </p>
                         <div class="d-flex gap-3">
                             <a href="#" class="text-muted small text-decoration-none">Hướng dẫn</a>
@@ -325,7 +354,7 @@
     <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header" style="background: linear-gradient(135deg, #FFC107 0%, #FFD54F 100%); color: white;">
+                <div class="modal-header" style="background: linear-gradient(135deg, #795548 0%, #8D6E63 100%); color: white;">
                     <h5 class="modal-title" id="settingsModalLabel">
                         <i class="bi bi-gear me-2"></i>Cài đặt giao diện
                     </h5>
@@ -337,10 +366,10 @@
                             <i class="bi bi-palette me-2"></i>Chế độ hiển thị
                         </label>
                         <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-outline-warning flex-fill theme-btn active" data-theme="light">
+                            <button type="button" class="btn btn-outline-primary flex-fill theme-btn active" data-theme="light">
                                 <i class="bi bi-sun me-2"></i>Sáng
                             </button>
-                            <button type="button" class="btn btn-outline-warning flex-fill theme-btn" data-theme="dark">
+                            <button type="button" class="btn btn-outline-primary flex-fill theme-btn" data-theme="dark">
                                 <i class="bi bi-moon-stars me-2"></i>Tối
                             </button>
                         </div>
@@ -427,7 +456,7 @@
                 const isMobile = () => window.innerWidth < 992;
                 
                 if (!isMobile()) {
-                    const state = localStorage.getItem('schoolSidebarState');
+                    const state = localStorage.getItem('enterpriseSidebarState');
                     if (state === 'collapsed') {
                         sidebar.classList.add('collapsed');
                         mainContent.classList.add('expanded');
@@ -442,7 +471,7 @@
                     } else {
                         sidebar.classList.toggle('collapsed');
                         mainContent.classList.toggle('expanded');
-                        localStorage.setItem('schoolSidebarState', 
+                        localStorage.setItem('enterpriseSidebarState', 
                             sidebar.classList.contains('collapsed') ? 'collapsed' : 'expanded');
                     }
                 });
@@ -527,11 +556,11 @@
             function setActiveThemeButton(theme) {
                 document.querySelectorAll('.theme-btn').forEach(btn => {
                     if (btn.dataset.theme === theme) {
-                        btn.classList.remove('btn-outline-warning');
-                        btn.classList.add('btn-warning', 'active');
+                        btn.classList.remove('btn-outline-primary');
+                        btn.classList.add('btn-primary', 'active');
                     } else {
-                        btn.classList.remove('btn-warning', 'active');
-                        btn.classList.add('btn-outline-warning');
+                        btn.classList.remove('btn-primary', 'active');
+                        btn.classList.add('btn-outline-primary');
                     }
                 });
             }

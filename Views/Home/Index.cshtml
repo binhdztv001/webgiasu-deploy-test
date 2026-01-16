@@ -2,7 +2,7 @@
     ViewData["Title"] = "Trang chủ";
 }
 
-<link rel="stylesheet" href="~/css/home.css?v=6" />
+<link rel="stylesheet" href="~/css/home.css?v=10" />
 
 <div class="row mt-5 mb-5 fade-in">
 <div class="col-lg-8 mx-auto text-center">
@@ -34,10 +34,10 @@
     <div class="carousel-3d-scene" id="carousel3d">
         <!-- Card 1: Học sinh -->
         <div class="carousel-card" data-index="0">
-            <div class="card h-100 shadow-soft border-0">
+            <div class="card h-100 shadow-soft border-0" style="box-shadow: 0 0 30px rgba(33, 150, 243, 0.4), 0 8px 20px rgba(33, 150, 243, 0.3) !important; border: 2px solid rgba(33, 150, 243, 0.3) !important;">
                 <div class="card-body text-center p-5">
                     <div class="mb-4">
-                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center bg-primary bg-gradient text-white" style="width: 100px; height: 100px;">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center bg-primary bg-gradient text-white" style="width: 100px; height: 100px; box-shadow: 0 0 20px rgba(33, 150, 243, 0.5);">
                             <i class="bi bi-person-circle" style="font-size: 3.5rem;"></i>
                         </div>
                     </div>
@@ -70,10 +70,10 @@
 
         <!-- Card 2: Mentor -->
         <div class="carousel-card" data-index="1">
-            <div class="card h-100 shadow-soft border-0">
+            <div class="card h-100 shadow-soft border-0" style="box-shadow: 0 0 30px rgba(76, 175, 80, 0.4), 0 8px 20px rgba(76, 175, 80, 0.3) !important; border: 2px solid rgba(76, 175, 80, 0.3) !important;">
                 <div class="card-body text-center p-5">
                     <div class="mb-4">
-                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center bg-success bg-gradient text-white" style="width: 100px; height: 100px;">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center bg-success bg-gradient text-white" style="width: 100px; height: 100px; box-shadow: 0 0 20px rgba(76, 175, 80, 0.5);">
                             <i class="bi bi-mortarboard" style="font-size: 3.5rem;"></i>
                         </div>
                     </div>
@@ -106,10 +106,10 @@
 
         <!-- Card 3: Quản trị -->
         <div class="carousel-card" data-index="2">
-            <div class="card h-100 shadow-soft border-0">
+            <div class="card h-100 shadow-soft border-0" style="box-shadow: 0 0 30px rgba(220, 53, 69, 0.4), 0 8px 20px rgba(220, 53, 69, 0.3) !important; border: 2px solid rgba(220, 53, 69, 0.3) !important;">
                 <div class="card-body text-center p-5">
                     <div class="mb-4">
-                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center bg-danger bg-gradient text-white" style="width: 100px; height: 100px;">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center bg-danger bg-gradient text-white" style="width: 100px; height: 100px; box-shadow: 0 0 20px rgba(220, 53, 69, 0.5);">
                             <i class="bi bi-shield-check" style="font-size: 3.5rem;"></i>
                         </div>
                     </div>
@@ -137,12 +137,48 @@
             </div>
         </div>
 
-        <!-- Card 4: Nhà trường -->
+        <!-- Card 4: Doanh nghiệp -->
         <div class="carousel-card" data-index="3">
-            <div class="card h-100 shadow-soft border-0">
+            <div class="card h-100 shadow-soft border-0" style="box-shadow: 0 0 30px rgba(121, 85, 72, 0.4), 0 8px 20px rgba(121, 85, 72, 0.3) !important; border: 2px solid rgba(121, 85, 72, 0.3) !important;">
                 <div class="card-body text-center p-5">
                     <div class="mb-4">
-                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center bg-warning bg-gradient text-white" style="width: 100px; height: 100px;">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center text-white" style="width: 100px; height: 100px; background: linear-gradient(135deg, #795548 0%, #8D6E63 100%); box-shadow: 0 0 20px rgba(121, 85, 72, 0.5);">
+                            <i class="bi bi-briefcase-fill" style="font-size: 3.5rem;"></i>
+                        </div>
+                    </div>
+                    <h3 class="card-title mb-3 fw-bold">Doanh nghiệp</h3>
+                    <p class="card-text text-muted mb-4">
+                        Tạo Mentor, theo dõi hoạt động các trường
+                    </p>
+                    <div class="list-group list-group-flush mb-4 text-start">
+                        <div class="list-group-item border-0 ps-0">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i> Tạo tài khoản Mentor
+                        </div>
+                        <div class="list-group-item border-0 ps-0">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i> Xem thông tin lớp học
+                        </div>
+                        <div class="list-group-item border-0 ps-0">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i> Quản lý hiệu quả
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Account" asp-action="Login" asp-route-role="Enterprise" class="btn btn-lg btn-pill" style="background: linear-gradient(135deg, #795548 0%, #8D6E63 100%); color: white; border: none;">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
+                        </a>
+                        <a asp-controller="Account" asp-action="Register" asp-route-role="Enterprise" class="btn btn-pill" style="border: 2px solid #795548; color: #795548; background: transparent;">
+                            <i class="bi bi-person-plus me-1"></i> Đăng ký
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 5: Nhà trường -->
+        <div class="carousel-card" data-index="4">
+            <div class="card h-100 shadow-soft border-0" style="box-shadow: 0 0 30px rgba(255, 193, 7, 0.4), 0 8px 20px rgba(255, 193, 7, 0.3) !important; border: 2px solid rgba(255, 193, 7, 0.3) !important;">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center bg-warning bg-gradient text-white" style="width: 100px; height: 100px; box-shadow: 0 0 20px rgba(255, 193, 7, 0.5);">
                             <i class="bi bi-building" style="font-size: 3.5rem;"></i>
                         </div>
                     </div>
@@ -188,6 +224,7 @@
         <span class="indicator" data-slide="1"></span>
         <span class="indicator" data-slide="2"></span>
         <span class="indicator" data-slide="3"></span>
+        <span class="indicator" data-slide="4"></span>
     </div>
 </div>
 

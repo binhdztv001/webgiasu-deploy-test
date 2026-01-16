@@ -1,0 +1,192 @@
+﻿@{
+    ViewData["Title"] = "Chi tiết lớp học";
+    Layout = "~/Views/Shared/_EnterpriseLayout.cshtml";
+    var classInfo = ViewBag.Class as Webgiasu.Models.SchoolClass;
+    var school = ViewBag.School as Webgiasu.Models.User;
+    var tutor = ViewBag.Tutor as Webgiasu.Models.User;
+    var students = ViewBag.Students as List<Webgiasu.Models.User>;
+}
+
+<div class="dashboard-container">
+    <!-- Page Header -->
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div class="mb-2 mb-md-0">
+            <h5 class="fw-bold mb-1 text-dark">
+                <i class="bi bi-info-circle me-2" style="color: #795548;"></i>Chi tiết lớp học
+            </h5>
+            <p class="text-muted mb-0 small">Xem thông tin chi tiết về lớp học @classInfo?.ClassName</p>
+        </div>
+        <a asp-action="SchoolClasses" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Quay lại danh sách
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <!-- Thông tin cơ bản -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header py-3 bg-white border-bottom">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="bi bi-info-circle me-2" style="color: #795548;"></i>Thông tin cơ bản
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Tên lớp học:</label>
+                        <p class="mb-0 fs-5 fw-semibold">@classInfo?.ClassName</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Môn học:</label>
+                        <p class="mb-0">
+                            <span class="badge" style="background: linear-gradient(135deg, #795548 0%, #8D6E63 100%); font-size: 1rem; padding: 0.5rem 1rem;">
+                                @classInfo?.Subject
+                            </span>
+                        </p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Trường:</label>
+                        <p class="mb-0">
+                            <i class="bi bi-building me-2" style="color: #795548;"></i>
+                            <span class="fw-semibold">@school?.FullName</span>
+                        </p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Mentor phụ trách:</label>
+                        <p class="mb-0">
+                            <i class="bi bi-person-check me-2" style="color: #795548;"></i>
+                            <span class="fw-semibold">@(tutor?.FullName ?? "Chưa có")</span>
+                        </p>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label fw-bold small text-muted">Số lượng học sinh:</label>
+                        <p class="mb-0">
+                            <i class="bi bi-people me-2" style="color: #795548;"></i>
+                            <span class="fw-bold fs-5" style="color: #795548;">@students?.Count</span> học sinh
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thời gian & Trạng thái -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header py-3 bg-white border-bottom">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="bi bi-calendar-event me-2" style="color: #795548;"></i>Thời gian & Trạng thái
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Ngày tạo lớp:</label>
+                        <p class="mb-0">
+                            <i class="bi bi-calendar-plus me-2" style="color: #795548;"></i>
+                            @classInfo?.CreatedDate.ToString("dd/MM/yyyy HH:mm")
+                        </p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Ngày bắt đầu:</label>
+                        <p class="mb-0">
+                            <i class="bi bi-calendar-check me-2" style="color: #795548;"></i>
+                            @(classInfo?.StartDate?.ToString("dd/MM/yyyy") ?? "Chưa xác định")
+                        </p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Trạng thái:</label>
+                        <p class="mb-0">
+                            @if (classInfo?.Status == Webgiasu.Models.ClassStatus.Active)
+                            {
+                                <span class="badge bg-success" style="font-size: 1rem; padding: 0.5rem 1rem;">
+                                    <i class="bi bi-check-circle me-1"></i>Đang hoạt động
+                                </span>
+                            }
+                            else if (classInfo?.Status == Webgiasu.Models.ClassStatus.Completed)
+                            {
+                                <span class="badge bg-primary" style="font-size: 1rem; padding: 0.5rem 1rem;">
+                                    <i class="bi bi-check-all me-1"></i>Đã hoàn thành
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger" style="font-size: 1rem; padding: 0.5rem 1rem;">
+                                    <i class="bi bi-x-circle me-1"></i>Đã hủy
+                                </span>
+                            }
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Danh sách học sinh -->
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header py-3 bg-white border-bottom">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="bi bi-people me-2" style="color: #795548;"></i>Danh sách học sinh (@students?.Count)
+                    </h6>
+                </div>
+                <div class="card-body p-0">
+                    @if (students != null && students.Count > 0)
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Họ và tên</th>
+                                        <th>Email</th>
+                                        <th>Số điện thoại</th>
+                                        <th>Cấp học</th>
+                                        <th>Ngày tham gia</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        var index = 1;
+                                    }
+                                    @foreach (var student in students)
+                                    {
+                                        <tr>
+                                            <td class="fw-semibold">@index</td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="https://ui-avatars.com/api/?name=@student.FullName&background=795548&color=fff&size=32" 
+                                                         class="rounded-circle me-2" 
+                                                         alt="Avatar" 
+                                                         width="32" 
+                                                         height="32">
+                                                    <span class="fw-semibold">@student.FullName</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <i class="bi bi-envelope me-1"></i>@student.Email
+                                            </td>
+                                            <td>
+                                                <i class="bi bi-phone me-1"></i>@student.PhoneNumber
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-info">
+                                                    @(student.Level.HasValue ? student.Level.Value.ToString() : "N/A")
+                                                </span>
+                                            </td>
+                                            <td>@student.RegisteredDate.ToString("dd/MM/yyyy")</td>
+                                        </tr>
+                                        index++;
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="p-5 text-center">
+                            <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                            <p class="text-muted mt-3">Chưa có học sinh nào trong lớp</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -5,6 +5,7 @@
         Student,
         Tutor,
         Admin,
-        School
+        School,
+        Enterprise
     }
 }

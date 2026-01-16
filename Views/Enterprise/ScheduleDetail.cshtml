@@ -1,0 +1,207 @@
+﻿@{
+    ViewData["Title"] = "Chi tiết lịch trao đổi";
+    Layout = "~/Views/Shared/_EnterpriseLayout.cshtml";
+    var schedule = ViewBag.Schedule as Webgiasu.Models.ClassSchedule;
+    var classInfo = ViewBag.Class as Webgiasu.Models.SchoolClass;
+    var school = ViewBag.School as Webgiasu.Models.User;
+    var tutor = ViewBag.Tutor as Webgiasu.Models.User;
+}
+
+<div class="dashboard-container">
+    <!-- Page Header -->
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div class="mb-2 mb-md-0">
+            <h5 class="fw-bold mb-1 text-dark">
+                <i class="bi bi-calendar-event me-2" style="color: #795548;"></i>Chi tiết lịch trao đổi
+            </h5>
+            <p class="text-muted mb-0 small">Xem thông tin chi tiết về lịch trao đổi</p>
+        </div>
+        <a asp-action="SchoolSchedules" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Quay lại danh sách
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <!-- Thông tin chính -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header py-3 bg-white border-bottom">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="bi bi-info-circle me-2" style="color: #795548;"></i>Thông tin lịch trao đổi
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small text-muted">Tiêu đề:</label>
+                        <h4 class="mb-0 fw-bold" style="color: #795548;">@schedule?.Title</h4>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted">Trường:</label>
+                            <p class="mb-0">
+                                <i class="bi bi-building me-2" style="color: #795548;"></i>
+                                <span class="fw-semibold">@school?.FullName</span>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted">Lớp học:</label>
+                            <p class="mb-0">
+                                <i class="bi bi-book me-2" style="color: #795548;"></i>
+                                <span class="fw-semibold">@classInfo?.ClassName</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted">Môn học:</label>
+                            <p class="mb-0">
+                                <span class="badge" style="background: linear-gradient(135deg, #795548 0%, #8D6E63 100%); font-size: 1rem; padding: 0.5rem 1rem;">
+                                    @classInfo?.Subject
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted">Mentor:</label>
+                            <p class="mb-0">
+                                <i class="bi bi-person-check me-2" style="color: #795548;"></i>
+                                <span class="fw-semibold">@(tutor?.FullName ?? "Chưa có")</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small text-muted">Ngày:</label>
+                            <p class="mb-0">
+                                <i class="bi bi-calendar3 me-2" style="color: #795548;"></i>
+                                <span class="fw-bold">@schedule?.ScheduleDate.ToString("dd/MM/yyyy")</span>
+                            </p>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small text-muted">Giờ bắt đầu:</label>
+                            <p class="mb-0">
+                                <i class="bi bi-clock me-2" style="color: #795548;"></i>
+                                <span class="fw-bold">@schedule?.StartTime.ToString(@"hh\:mm")</span>
+                            </p>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small text-muted">Giờ kết thúc:</label>
+                            <p class="mb-0">
+                                <i class="bi bi-clock-fill me-2" style="color: #795548;"></i>
+                                <span class="fw-bold">@schedule?.EndTime.ToString(@"hh\:mm")</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Hình thức:</label>
+                        <p class="mb-0">
+                            @if (schedule?.MeetingType == "Online")
+                            {
+                                <span class="badge bg-primary" style="font-size: 1rem; padding: 0.5rem 1rem;">
+                                    <i class="bi bi-camera-video me-1"></i>Online
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success" style="font-size: 1rem; padding: 0.5rem 1rem;">
+                                    <i class="bi bi-person-workspace me-1"></i>Offline
+                                </span>
+                            }
+                        </p>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(schedule?.Location))
+                    {
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-muted">Địa điểm:</label>
+                            <p class="mb-0">
+                                <i class="bi bi-geo-alt me-2" style="color: #795548;"></i>
+                                <span>@schedule.Location</span>
+                            </p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Trạng thái & Actions -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header py-3 bg-white border-bottom">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="bi bi-gear me-2" style="color: #795548;"></i>Trạng thái
+                    </h6>
+                </div>
+                <div class="card-body text-center">
+                    @if (schedule?.Status == Webgiasu.Models.ScheduleStatus.Upcoming)
+                    {
+                        <div class="mb-3">
+                            <i class="bi bi-clock-history" style="font-size: 4rem; color: #17a2b8;"></i>
+                        </div>
+                        <span class="badge bg-info" style="font-size: 1.25rem; padding: 0.75rem 1.5rem;">
+                            <i class="bi bi-hourglass-split me-1"></i>Sắp diễn ra
+                        </span>
+                    }
+                    else if (schedule?.Status == Webgiasu.Models.ScheduleStatus.InProgress)
+                    {
+                        <div class="mb-3">
+                            <i class="bi bi-hourglass-split" style="font-size: 4rem; color: #ffc107;"></i>
+                        </div>
+                        <span class="badge bg-warning" style="font-size: 1.25rem; padding: 0.75rem 1.5rem;">
+                            <i class="bi bi-play-circle me-1"></i>Đang diễn ra
+                        </span>
+                    }
+                    else if (schedule?.Status == Webgiasu.Models.ScheduleStatus.Completed)
+                    {
+                        <div class="mb-3">
+                            <i class="bi bi-check-circle" style="font-size: 4rem; color: #28a745;"></i>
+                        </div>
+                        <span class="badge bg-success" style="font-size: 1.25rem; padding: 0.75rem 1.5rem;">
+                            <i class="bi bi-check-all me-1"></i>Đã hoàn thành
+                        </span>
+                    }
+                    else
+                    {
+                        <div class="mb-3">
+                            <i class="bi bi-x-circle" style="font-size: 4rem; color: #dc3545;"></i>
+                        </div>
+                        <span class="badge bg-danger" style="font-size: 1.25rem; padding: 0.75rem 1.5rem;">
+                            <i class="bi bi-slash-circle me-1"></i>Đã hủy
+                        </span>
+                    }
+                </div>
+            </div>
+
+            <!-- Quick Info -->
+            <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, rgba(121, 85, 72, 0.05) 0%, rgba(141, 110, 99, 0.05) 100%);">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3" style="color: #795548;">
+                        <i class="bi bi-info-circle me-2"></i>Thông tin nhanh
+                    </h6>
+                    <div class="mb-2">
+                        <small class="text-muted d-block">Thời lượng dự kiến:</small>
+                        <span class="fw-bold" style="color: #795548;">
+                            @{
+                                var duration = schedule?.EndTime - schedule?.StartTime;
+                                var hours = duration?.Hours ?? 0;
+                                var minutes = duration?.Minutes ?? 0;
+                            }
+                            @hours giờ @minutes phút
+                        </span>
+                    </div>
+                    <div class="mb-2">
+                        <small class="text-muted d-block">Ngày tạo lịch:</small>
+                        <span class="fw-bold" style="color: #795548;">
+                            @schedule?.CreatedDate.ToString("dd/MM/yyyy HH:mm")
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

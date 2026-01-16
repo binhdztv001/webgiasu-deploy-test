@@ -1,0 +1,164 @@
+﻿@model Webgiasu.Models.User
+@{
+    ViewData["Title"] = "Cài đặt - Doanh nghiệp";
+    Layout = "_EnterpriseLayout";
+}
+
+<div class="page-header mb-4">
+    <h2 class="fw-bold">
+        <i class="bi bi-gear" style="color: #795548;"></i> Cài đặt tài khoản
+    </h2>
+    <p class="text-muted">Quản lý thông tin và cài đặt Doanh nghiệp</p>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Profile Information -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header text-white" style="background: linear-gradient(135deg, #795548 0%, #8D6E63 100%);">
+                <h5 class="mb-0">
+                    <i class="bi bi-person-circle me-2"></i> Thông tin doanh nghiệp
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <form asp-controller="Enterprise" asp-action="UpdateProfile" method="post">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-building me-1" style="color: #795548;"></i> Tên doanh nghiệp
+                        </label>
+                        <input type="text" name="FullName" class="form-control" value="@Model.FullName" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-envelope me-1" style="color: #795548;"></i> Email
+                        </label>
+                        <input type="email" name="Email" class="form-control" value="@Model.Email" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-phone me-1" style="color: #795548;"></i> Số điện thoại
+                        </label>
+                        <input type="tel" name="PhoneNumber" class="form-control" value="@Model.PhoneNumber" required />
+                    </div>
+                    <button type="submit" class="btn text-white" style="background: linear-gradient(135deg, #795548 0%, #8D6E63 100%);">
+                        <i class="bi bi-check-circle me-1"></i> Cập nhật thông tin
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Change Password -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header text-white" style="background: linear-gradient(135deg, #FF9800 0%, #FFA726 100%);">
+                <h5 class="mb-0">
+                    <i class="bi bi-shield-lock me-2"></i> Đổi mật khẩu
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <form asp-controller="Enterprise" asp-action="ChangePassword" method="post" id="changePasswordForm">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-lock text-warning me-1"></i> Mật khẩu hiện tại
+                        </label>
+                        <input type="password" name="CurrentPassword" class="form-control" required />
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-lock-fill text-warning me-1"></i> Mật khẩu mới
+                            </label>
+                            <input type="password" name="NewPassword" id="newPassword" class="form-control" required minlength="6" />
+                            <div class="form-text">Tối thiểu 6 ký tự</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-shield-check text-warning me-1"></i> Xác nhận mật khẩu
+                            </label>
+                            <input type="password" id="confirmPassword" class="form-control" required />
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="bi bi-key me-1"></i> Đổi mật khẩu
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Account Info -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header text-white" style="background: linear-gradient(135deg, #00BCD4 0%, #26C6DA 100%);">
+                <h5 class="mb-0">
+                    <i class="bi bi-info-circle me-2"></i> Thông tin tài khoản
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small mb-1">Tên đăng nhập</label>
+                        <h6 class="fw-bold mb-0">
+                            <i class="bi bi-person-badge me-1" style="color: #795548;"></i> @Model.Username
+                        </h6>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small mb-1">Vai trò</label>
+                        <h6 class="fw-bold mb-0">
+                            <span class="badge" style="background: linear-gradient(135deg, #795548 0%, #8D6E63 100%); color: white;">Doanh nghiệp</span>
+                        </h6>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small mb-1">Ngày đăng ký</label>
+                        <h6 class="fw-bold mb-0">@Model.RegisteredDate.ToString("dd/MM/yyyy")</h6>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small mb-1">Trạng thái</label>
+                        <h6 class="fw-bold mb-0">
+                            <span class="badge bg-success">
+                                <i class="bi bi-check-circle me-1"></i> Đang hoạt động
+                            </span>
+                        </h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Tips -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-shield-check me-2"></i> Bảo mật
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <ul class="mb-0">
+                    <li class="mb-2">
+                        <small>Sử dụng mật khẩu mạnh ít nhất 8 ký tự</small>
+                    </li>
+                    <li class="mb-2">
+                        <small>Không chia sẻ mật khẩu với người khác</small>
+                    </li>
+                    <li class="mb-2">
+                        <small>Đổi mật khẩu định kỳ</small>
+                    </li>
+                    <li>
+                        <small>Đăng xuất sau khi sử dụng</small>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+            var newPass = document.getElementById('newPassword').value;
+            var confirmPass = document.getElementById('confirmPassword').value;
+            
+            if (newPass !== confirmPass) {
+                e.preventDefault();
+                alert('Mật khẩu xác nhận không khớp!');
+                return false;
+            }
+        });
+    </script>
+}
