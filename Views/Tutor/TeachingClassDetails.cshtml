@@ -1,0 +1,198 @@
+﻿@{
+    ViewData["Title"] = "Chi tiết lớp học";
+    Layout = "_TutorLayout";
+    var classInfo = ViewBag.Class as Webgiasu.Models.SchoolClass;
+    var school = ViewBag.School as Webgiasu.Models.User;
+    var students = ViewBag.Students as List<Webgiasu.Models.ViewModels.StudentInClassViewModel>;
+}
+
+<div>
+    <!-- Page Header -->
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h5 class="fw-bold mb-1 text-dark">
+                <i class="bi bi-info-circle-fill text-success me-2"></i>Chi tiết lớp học
+            </h5>
+            <p class="text-muted mb-0 small">Thông tin chi tiết về lớp học</p>
+        </div>
+        <a asp-action="MyTeachingClasses" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Quay lại danh sách
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="row g-4">
+        <!-- Left Column -->
+        <div class="col-lg-8">
+            <!-- Class Info Card -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-gradient text-black" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="bi bi-book me-2"></i>@classInfo?.ClassName
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Status -->
+                    <div class="mb-4">
+                        <span class="badge @(classInfo?.Status == ClassStatus.Active ? "bg-success" :
+                                                                        classInfo?.Status == ClassStatus.Completed ? "bg-secondary" :
+                                                                        classInfo?.Status == ClassStatus.Upcoming ? "bg-info" : "bg-danger") fs-6">
+                            @(classInfo?.Status == ClassStatus.Active ? "Đang diễn ra" :
+                                                        classInfo?.Status == ClassStatus.Completed ? "Đã hoàn thành" :
+                                                        classInfo?.Status == ClassStatus.Upcoming ? "Sắp bắt đầu" : "Đã hủy")
+                        </span>
+                    </div>
+
+                    <!-- Details -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="border-start border-success border-3 ps-3">
+                                <p class="text-muted small mb-1">Môn học</p>
+                                <h6 class="fw-bold mb-0">@classInfo?.Subject</h6>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="border-start border-success border-3 ps-3">
+                                <p class="text-muted small mb-1">Số học sinh</p>
+                                <h6 class="fw-bold mb-0">
+                                    <i class="bi bi-people me-1"></i>@students?.Count người
+                                </h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="border-start border-success border-3 ps-3">
+                                <p class="text-muted small mb-1">Bắt đầu</p>
+                                <h6 class="fw-bold mb-0">@(classInfo?.StartDate?.ToString("dd/MM/yyyy") ?? "Chưa xác định")</h6>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="border-start border-success border-3 ps-3">
+                                <p class="text-muted small mb-1">Kết thúc</p>
+                                <h6 class="fw-bold mb-0">@(classInfo?.EndDate?.ToString("dd/MM/yyyy") ?? "Chưa xác định")</h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(classInfo?.Description))
+                    {
+                        <div class="mb-0">
+                            <h6 class="fw-bold text-dark mb-2">Mô tả</h6>
+                            <p class="text-muted">@classInfo.Description</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Students List -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom text-black">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="bi bi-people me-2"></i>Danh sách học sinh
+                        (@(students?.Count ?? 0))
+                       
+                    </h6>
+                </div>
+                <div class="card-body p-0">
+                    @if (students != null && students.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="px-3">STT</th>
+                                        <th>Họ và tên</th>
+                                        <th>Email</th>
+                                        <th>Số điện thoại</th>
+                                        <th>Ngày tham gia</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (int i = 0; i < students.Count; i++)
+                                    {
+                                        var student = students[i];
+                                        <tr>
+                                            <td class="px-3">@(i + 1)</td>
+                                            <td>
+                                                <strong>@student.FullName</strong>
+                                            </td>
+                                            <td>
+                                                <small class="text-muted">
+                                                    <i class="bi bi-envelope me-1"></i>@student.Email
+                                                </small>
+                                            </td>
+                                            <td>
+                                                <small class="text-muted">
+                                                    <i class="bi bi-phone me-1"></i>@student.PhoneNumber
+                                                </small>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-light text-dark">@student.JoinedDate</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                            <p class="text-muted mb-0 mt-2">Chưa có học sinh nào trong lớp</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-lg-4">
+            <!-- School Info -->
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-header bg-warning bg-opacity-10 border-bottom">
+                    <h6 class="mb-0 fw-bold text-warning">
+                        <i class="bi bi-building me-2"></i>Nhà trường
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <strong class="d-block">@school?.FullName</strong>
+                    </div>
+                    @if (!string.IsNullOrEmpty(school?.Email))
+                    {
+                        <small class="text-muted d-block">
+                            <i class="bi bi-envelope me-1"></i>@school.Email
+                        </small>
+                    }
+                    @if (!string.IsNullOrEmpty(school?.PhoneNumber))
+                    {
+                        <small class="text-muted d-block">
+                            <i class="bi bi-phone me-1"></i>@school.PhoneNumber
+                        </small>
+                    }
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light border-bottom">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="bi bi-lightning me-2"></i>Thao tác nhanh
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <a asp-action="MyClassSchedules" class="btn btn-outline-primary btn-sm w-100 mb-2">
+                        <i class="bi bi-calendar-event me-1"></i>Xem lịch trao đổi
+                    </a>
+                    <small class="text-muted d-block mt-3">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Lớp được tạo: @classInfo?.CreatedDate.ToString("dd/MM/yyyy HH:mm")
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -44,10 +44,11 @@ namespace Webgiasu.Controllers
         private readonly ICommunityService _communityService;
         private readonly IHubContext<CommunityHub> _hubContext;
         private readonly IPremiumService _premiumService;
+        private readonly AppDbContext _db;
 
         public TutorController(IProblemService problemService, ISolutionService solutionService, IFriendshipService friendshipService,
             IUserService userService, IRatingService ratingService, IMessageService messageService, 
-            ICommunityService communityService, IHubContext<CommunityHub> hubContext, IPremiumService premiumService)
+            ICommunityService communityService, IHubContext<CommunityHub> hubContext, IPremiumService premiumService, AppDbContext db)
         {
             _problemService = problemService;
             _solutionService = solutionService;
@@ -58,6 +59,7 @@ namespace Webgiasu.Controllers
             _communityService = communityService;
             _hubContext = hubContext;
             _premiumService = premiumService;
+            _db = db;
         }
 
         private int GetCurrentUserId()
@@ -207,7 +209,7 @@ namespace Webgiasu.Controllers
                 var userId = GetCurrentUserId();
                 if (userId == 0) return RedirectToAction("Login", "Account");
 
-            // If no problemId provided, redirect to MyProblems
+                // If no problemId provided, redirect to MyProblems
                 if (!problemId.HasValue)
                 {
                     TempData["Warning"] = "Vui lòng chọn bài toán để gửi lời giải!";
@@ -221,7 +223,7 @@ namespace Webgiasu.Controllers
                     return RedirectToAction("MyProblems");
                 }
 
-            // Check if tutor is assigned to this problem
+                // Check if tutor is assigned to this problem
                 if (problem.AssignedTutorId != userId)
                 {
                     TempData["Error"] = "Bạn không có quyền gửi lời giải cho bài toán này!";
@@ -234,6 +236,11 @@ namespace Webgiasu.Controllers
                 };
 
                 ViewBag.Problem = problem;
+
+                // ✅ Thêm thông tin Student và Tutor cho AI Chat
+                ViewBag.Student = _userService.GetUserById(problem.StudentId);
+                ViewBag.Tutor = _userService.GetUserById(userId);
+
                 return View(model);
             }
             catch (Exception ex)
@@ -1191,6 +1198,266 @@ namespace Webgiasu.Controllers
                 Console.WriteLine($"❌ Error in Statistics: {ex.Message}");
                 TempData["Error"] = "Đã xảy ra lỗi khi tải thống kê!";
                 return RedirectToAction("Dashboard");
+            }
+        }
+
+        public IActionResult MyTeachingClasses()
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var user = _userService.GetUserById(userId);
+                if (user == null || user.Role != UserRole.Tutor)
+                {
+                    TempData["Error"] = "Chỉ Mentor mới có thể xem trang này!";
+                    return RedirectToAction("Dashboard");
+                }
+
+                if (!user.Level.HasValue || user.Level.Value != EducationLevel.DaiHoc)
+                {
+                    TempData["Error"] = "Tính năng này chỉ dành cho Mentor Đại học!";
+                    return RedirectToAction("Dashboard");
+                }
+
+                // ✅ LẤY DANH SÁCH LỚP HỌC MÀ MENTOR ĐANG DẠY
+                var myClasses = _db.SchoolClasses
+                    .Where(c => c.TutorId == userId)
+                    .Include(c => c.School)
+                    .Include(c => c.Students)
+                    .OrderByDescending(c => c.CreatedDate)
+                    .ToList();
+
+                var classViewModels = myClasses.Select(c => new ClassSchoolViewModel
+                {
+                    Id = c.Id,
+                    ClassName = c.ClassName ?? "Không có tên",
+                    Subject = c.Subject ?? "Chưa xác định",
+                    Description = c.Description ?? "",
+                    SchoolName = c.School?.FullName ?? "Chưa cập nhật",
+                    TutorName = user.FullName, // Chính mình
+                    TutorEmail = user.Email ?? "",
+                    StudentCount = _db.ClassStudents.Count(cs => cs.ClassId == c.Id),
+                    StartDate = c.StartDate?.ToString("dd/MM/yyyy") ?? "Chưa xác định",
+                    EndDate = c.EndDate?.ToString("dd/MM/yyyy") ?? "Chưa xác định",
+                    Status = c.Status,
+                    CreatedDate = c.CreatedDate.ToString("dd/MM/yyyy HH:mm")
+                }).ToList();
+
+                ViewBag.TotalClasses = classViewModels.Count;
+                ViewBag.ActiveClasses = classViewModels.Count(c => c.Status == ClassStatus.Active);
+
+                return View(classViewModels);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in MyTeachingClasses: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi khi tải danh sách lớp học!";
+                return RedirectToAction("Dashboard");
+            }
+        }
+
+        public IActionResult TeachingClassDetails(int id)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var user = _userService.GetUserById(userId);
+                if (user == null || user.Role != UserRole.Tutor ||
+                    !user.Level.HasValue || user.Level.Value != EducationLevel.DaiHoc)
+                {
+                    TempData["Error"] = "Bạn không có quyền truy cập!";
+                    return RedirectToAction("Dashboard");
+                }
+
+                // Kiểm tra xem Mentor có phải là giảng viên của lớp này không
+                var classInfo = _db.SchoolClasses
+                    .Include(c => c.School)
+                    .Include(c => c.Tutor)
+                    .FirstOrDefault(c => c.Id == id);
+
+                if (classInfo == null)
+                {
+                    TempData["Error"] = "Không tìm thấy lớp học!";
+                    return RedirectToAction("MyTeachingClasses");
+                }
+
+                if (classInfo.TutorId != userId)
+                {
+                    TempData["Error"] = "Bạn không phải là giảng viên của lớp này!";
+                    return RedirectToAction("MyTeachingClasses");
+                }
+
+                // ✅ DEBUG: Log để kiểm tra
+                Console.WriteLine($"📊 TeachingClassDetails - ClassId: {id}");
+
+                // ✅ LẤY DANH SÁCH HỌC SINH ĐÚNG CÁCH
+                var students = _db.ClassStudents
+                    .Where(cs => cs.ClassId == id)
+                    .Include(cs => cs.Student)
+                    .Select(cs => new StudentInClassViewModel
+                    {
+                        Id = cs.Student!.Id,
+                        FullName = cs.Student.FullName,
+                        Email = cs.Student.Email ?? "",
+                        PhoneNumber = cs.Student.PhoneNumber ?? "",
+                        JoinedDate = cs.JoinedDate.ToString("dd/MM/yyyy")
+                    })
+                    .ToList();
+
+                // ✅ LOG KẾT QUẢ
+                Console.WriteLine($"✅ Found {students.Count} students");
+                foreach (var s in students)
+                {
+                    Console.WriteLine($"   - {s.FullName} (ID: {s.Id})");
+                }
+
+                // ✅ GÁN VÀO VIEWBAG
+                ViewBag.Class = classInfo;
+                ViewBag.Students = students; // ← QUAN TRỌNG: Phải gán vào ViewBag
+                ViewBag.School = classInfo.School;
+                ViewBag.Tutor = classInfo.Tutor;
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in TeachingClassDetails: {ex.Message}");
+                Console.WriteLine($"   Stack trace: {ex.StackTrace}");
+                TempData["Error"] = "Đã xảy ra lỗi!";
+                return RedirectToAction("MyTeachingClasses");
+            }
+        }
+
+        public IActionResult MyClassSchedules()
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var user = _userService.GetUserById(userId);
+                if (user == null || user.Role != UserRole.Tutor ||
+                    !user.Level.HasValue || user.Level.Value != EducationLevel.DaiHoc)
+                {
+                    TempData["Error"] = "Tính năng này chỉ dành cho Mentor Đại học!";
+                    return RedirectToAction("Dashboard");
+                }
+
+                // Lấy danh sách lớp học mà Mentor đang dạy
+                var myClassIds = _db.SchoolClasses
+                    .Where(c => c.TutorId == userId)
+                    .Select(c => c.Id)
+                    .ToList();
+
+                // Lấy tất cả lịch trao đổi của các lớp học đó
+                var schedules = _db.ClassSchedules
+                    .Where(s => myClassIds.Contains(s.ClassId))
+                    .Include(s => s.Class)
+                        .ThenInclude(c => c!.School)
+                    .OrderByDescending(s => s.ScheduleDate)
+                    .ThenBy(s => s.StartTime)
+                    .Select(s => new ScheduleListViewModel
+                    {
+                        Id = s.Id,
+                        Title = s.Title,
+                        ScheduleDate = s.ScheduleDate,
+                        StartTime = s.StartTime,
+                        EndTime = s.EndTime,
+                        MeetingType = s.MeetingType,
+                        Status = s.Status,
+                        ClassName = s.Class!.ClassName,
+                        Subject = s.Class.Subject,
+                        TotalStudents = _db.ClassStudents.Count(cs => cs.ClassId == s.ClassId)
+                    })
+                    .ToList();
+
+                // Thống kê
+                ViewBag.TotalSchedules = schedules.Count;
+                ViewBag.UpcomingSchedules = schedules.Count(s => s.Status == ScheduleStatus.Upcoming);
+                ViewBag.CompletedSchedules = schedules.Count(s => s.Status == ScheduleStatus.Completed);
+
+                return View(schedules);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in MyClassSchedules: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi khi tải lịch trao đổi!";
+                return RedirectToAction("Dashboard");
+            }
+        }
+
+        public IActionResult ScheduleDetails(int id)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var user = _userService.GetUserById(userId);
+                if (user == null || user.Role != UserRole.Tutor ||
+                    !user.Level.HasValue || user.Level.Value != EducationLevel.DaiHoc)
+                {
+                    TempData["Error"] = "Bạn không có quyền truy cập!";
+                    return RedirectToAction("Dashboard");
+                }
+
+                // Kiểm tra xem Mentor có phải là giảng viên của lớp này không
+                var schedule = _db.ClassSchedules
+                    .Include(s => s.Class)
+                        .ThenInclude(c => c!.School)
+                    .Include(s => s.Creator)
+                    .FirstOrDefault(s => s.Id == id);
+
+                if (schedule == null)
+                {
+                    TempData["Error"] = "Không tìm thấy lịch trao đổi!";
+                    return RedirectToAction("MyClassSchedules");
+                }
+
+                // Kiểm tra Mentor có dạy lớp này không
+                if (schedule.Class?.TutorId != userId)
+                {
+                    TempData["Error"] = "Bạn không có quyền xem lịch trao đổi này!";
+                    return RedirectToAction("MyClassSchedules");
+                }
+
+                // ✅ Lấy số học sinh từ bảng ClassStudents
+                var studentCount = _db.ClassStudents
+                    .Count(cs => cs.ClassId == schedule.ClassId);
+
+                var model = new ScheduleDetailsViewModel
+                {
+                    Id = schedule.Id,
+                    Title = schedule.Title,
+                    ScheduleDate = schedule.ScheduleDate,
+                    StartTime = schedule.StartTime,
+                    EndTime = schedule.EndTime,
+                    MeetingType = schedule.MeetingType,
+                    Location = schedule.Location,
+                    Content = schedule.Content,
+                    Notes = schedule.Notes,
+                    Status = schedule.Status,
+                    CreatedDate = schedule.CreatedDate,
+                    CreatorName = schedule.Creator?.FullName ?? "Nhà trường",
+                    ClassId = schedule.ClassId,
+                    ClassName = schedule.Class!.ClassName,
+                    Subject = schedule.Class.Subject,
+                    TutorName = user.FullName, // Chính mình
+                    TutorEmail = user.Email,
+                    TotalStudents = studentCount
+                };
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in ScheduleDetails: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi!";
+                return RedirectToAction("MyClassSchedules");
             }
         }
 

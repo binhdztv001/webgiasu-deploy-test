@@ -21,4 +21,8 @@
     <None Include="wwwroot\images\aaa.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

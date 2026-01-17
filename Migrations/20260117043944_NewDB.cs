@@ -87,6 +87,9 @@ namespace Webgiasu.Migrations
                     Role = table.Column<int>(type: "int", nullable: false),
                     IsApproved = table.Column<bool>(type: "bit", nullable: false),
                     RegisteredDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsPremium = table.Column<bool>(type: "bit", nullable: false),
+                    PremiumExpiredAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Level = table.Column<int>(type: "int", nullable: true),
                     Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Subjects = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Education = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -254,6 +257,40 @@ namespace Webgiasu.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SchoolClasses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SchoolId = table.Column<int>(type: "int", nullable: false),
+                    ClassName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Subject = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TutorId = table.Column<int>(type: "int", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    MeetingType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SchoolClasses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SchoolClasses_Users_SchoolId",
+                        column: x => x.SchoolId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_SchoolClasses_Users_TutorId",
+                        column: x => x.TutorId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CommunityComments",
                 columns: table => new
                 {
@@ -309,6 +346,38 @@ namespace Webgiasu.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GroupPayments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GroupId = table.Column<int>(type: "int", nullable: false),
+                    MemberId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CompletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    TransactionId = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupPayments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GroupPayments_ProblemGroups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "ProblemGroups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GroupPayments_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -377,6 +446,70 @@ namespace Webgiasu.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ClassSchedules",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClassId = table.Column<int>(type: "int", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    ScheduleDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    StartTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    EndTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    MeetingType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Location = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Notes = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClassSchedules", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ClassSchedules_SchoolClasses_ClassId",
+                        column: x => x.ClassId,
+                        principalTable: "SchoolClasses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ClassSchedules_Users_CreatedBy",
+                        column: x => x.CreatedBy,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ClassStudents",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClassId = table.Column<int>(type: "int", nullable: false),
+                    StudentId = table.Column<int>(type: "int", nullable: false),
+                    JoinedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClassStudents", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ClassStudents_SchoolClasses_ClassId",
+                        column: x => x.ClassId,
+                        principalTable: "SchoolClasses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ClassStudents_Users_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CommunityCommentLikes",
                 columns: table => new
                 {
@@ -403,6 +536,37 @@ namespace Webgiasu.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClassSchedules_ClassId",
+                table: "ClassSchedules",
+                column: "ClassId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClassSchedules_CreatedBy",
+                table: "ClassSchedules",
+                column: "CreatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClassSchedules_ScheduleDate",
+                table: "ClassSchedules",
+                column: "ScheduleDate");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClassSchedules_Status",
+                table: "ClassSchedules",
+                column: "Status");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClassStudents_ClassId_StudentId",
+                table: "ClassStudents",
+                columns: new[] { "ClassId", "StudentId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClassStudents_StudentId",
+                table: "ClassStudents",
+                column: "StudentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CommunityCommentLikes_CommentId_UserId",
@@ -456,6 +620,16 @@ namespace Webgiasu.Migrations
                 table: "Friendships",
                 columns: new[] { "RequesterId", "AddresseeId" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupPayments_GroupId",
+                table: "GroupPayments",
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupPayments_UserId",
+                table: "GroupPayments",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Messages_ReceiverId",
@@ -522,11 +696,27 @@ namespace Webgiasu.Migrations
                 name: "IX_Ratings_TutorId",
                 table: "Ratings",
                 column: "TutorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SchoolClasses_SchoolId",
+                table: "SchoolClasses",
+                column: "SchoolId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SchoolClasses_TutorId",
+                table: "SchoolClasses",
+                column: "TutorId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ClassSchedules");
+
+            migrationBuilder.DropTable(
+                name: "ClassStudents");
+
             migrationBuilder.DropTable(
                 name: "CommunityCommentLikes");
 
@@ -535,6 +725,9 @@ namespace Webgiasu.Migrations
 
             migrationBuilder.DropTable(
                 name: "Friendships");
+
+            migrationBuilder.DropTable(
+                name: "GroupPayments");
 
             migrationBuilder.DropTable(
                 name: "Messages");
@@ -553,6 +746,9 @@ namespace Webgiasu.Migrations
 
             migrationBuilder.DropTable(
                 name: "Solutions");
+
+            migrationBuilder.DropTable(
+                name: "SchoolClasses");
 
             migrationBuilder.DropTable(
                 name: "CommunityComments");

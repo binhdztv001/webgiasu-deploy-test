@@ -78,14 +78,13 @@ namespace Webgiasu.Services
             try
             {
                 return _db.Users
-                    .Where(u => u.Role == UserRole.Tutor && u.IsApproved)
-                    .OrderByDescending(u => u.IsPremium)
-                    .ThenByDescending(u => u.ExperienceYears)
-                    .ThenBy(u => u.FullName)
+                    .Where(u => u.Role == UserRole.Tutor && !u.IsApproved)  
+                    .OrderBy(u => u.RegisteredDate)  
                     .ToList();
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"❌ Error in GetPendingTutors: {ex.Message}");
                 return new List<User>();
             }
         }

@@ -1,0 +1,164 @@
+﻿@model List<Webgiasu.Models.ViewModels.ClassSchoolViewModel>
+
+@{
+    ViewData["Title"] = "Lớp học của tôi";
+    Layout = "_TutorLayout";
+}
+
+<div>
+    <!-- Page Header -->
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h5 class="fw-bold mb-1 text-dark">
+                <i class="bi bi-chalkboard-teacher text-success me-2"></i>Lớp học đang giảng dạy
+            </h5>
+            <p class="text-muted mb-0 small">Danh sách các lớp học mà bạn đang giảng dạy</p>
+        </div>
+        <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Quay lại Dashboard
+        </a>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small">Tổng số lớp</p>
+                            <h3 class="fw-bold mb-0">@ViewBag.TotalClasses</h3>
+                        </div>
+                        <div class="rounded-circle bg-success bg-opacity-10 p-3">
+                            <i class="bi bi-collection text-success" style="font-size: 1.5rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small">Lớp đang dạy</p>
+                            <h3 class="fw-bold mb-0 text-success">@ViewBag.ActiveClasses</h3>
+                        </div>
+                        <div class="rounded-circle bg-success bg-opacity-10 p-3">
+                            <i class="bi bi-check-circle text-success" style="font-size: 1.5rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Classes List -->
+    @if (Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var classItem in Model)
+            {
+                <div class="col-lg-6">
+                    <div class="card border-0 shadow-sm h-100 hover-card">
+                        <div class="card-header bg-gradient text-black" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                            <h5 class="mb-0 fw-bold">
+                                <i class="bi bi-book me-2"></i>@classItem.ClassName
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <span class="badge @(classItem.Status == ClassStatus.Active ? "bg-success" :
+                                                                                            classItem.Status == ClassStatus.Completed ? "bg-secondary" :
+                                                                                            classItem.Status == ClassStatus.Upcoming ? "bg-info" : "bg-danger")">
+                                                                                                                                                             <i class="bi bi-dot me-1"></i>
+                                    @(classItem.Status == ClassStatus.Active ? "Đang diễn ra" :
+                                                                classItem.Status == ClassStatus.Completed ? "Đã hoàn thành" :
+                                                                classItem.Status == ClassStatus.Upcoming ? "Sắp bắt đầu" : "Đã hủy")
+                        </span>
+                    </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-6">
+                                    <div class="border-start border-success border-3 ps-3">
+                                        <p class="text-muted small mb-0">Môn học</p>
+                                        <p class="fw-semibold mb-0">@classItem.Subject</p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="border-start border-success border-3 ps-3">
+                                        <p class="text-muted small mb-0">Nhà trường</p>
+                                        <p class="fw-semibold mb-0">@classItem.SchoolName</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-6">
+                                    <div class="border-start border-success border-3 ps-3">
+                                        <p class="text-muted small mb-0">Số học sinh</p>
+                                        <p class="fw-semibold mb-0">
+                                            <i class="bi bi-people text-info me-1"></i>
+                                            @classItem.StudentCount người
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="border-start border-success border-3 ps-3">
+                                        <p class="text-muted small mb-0">Bắt đầu</p>
+                                        <p class="fw-semibold mb-0">@classItem.StartDate</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                    @if (!string.IsNullOrEmpty(classItem.Description))
+                            {
+                                <div class="alert alert-light border-0 mb-3">
+                                    <p class="text-muted small mb-0">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        @classItem.Description
+                                    </p>
+                                </div>
+                            }
+                        </div>
+                        <div class="card-footer bg-light">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar-plus me-1"></i>
+                                    Tạo lúc: @classItem.CreatedDate
+                                </small>
+                                <a asp-action="TeachingClassDetails" asp-route-id="@classItem.Id" class="btn btn-success btn-sm">
+                                    <i class="bi bi-eye me-1"></i>Xem chi tiết
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
+                <h5 class="text-muted mt-3 mb-2">Chưa có lớp học nào</h5>
+                <p class="text-muted mb-0">
+                    Bạn chưa được phân công giảng dạy lớp học nào.<br>
+                    Vui lòng liên hệ nhà trường để được phân công.
+                </p>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .hover-card {
+        transition: all 0.3s ease;
+    }
+
+        .hover-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+        }
+</style>

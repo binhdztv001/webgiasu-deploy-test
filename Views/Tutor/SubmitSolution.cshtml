@@ -3,6 +3,15 @@
     ViewData["Title"] = "Gửi lời giải";
     Layout = "_TutorLayout";
     var problem = ViewBag.Problem as Webgiasu.Models.Problem;
+
+    // ✅ Tạo ViewModel cho AI Chat Partial
+    var aiModel = new Webgiasu.Models.ViewModels.ProblemDetailsViewModel
+    {
+        Problem = problem,
+        Student = ViewBag.Student as Webgiasu.Models.User,
+        AssignedTutor = ViewBag.Tutor as Webgiasu.Models.User,
+        Solution = null
+    };
 }
 
 @functions {
@@ -31,79 +40,205 @@
     }
 }
 
-<div class="row justify-content-center">
-    <div class="col-lg-10">
+<div class="row">
+    <!-- Left Column: Problem Details + AI Assistant -->
+    <div class="col-lg-5">
+        <!-- ✅ Thông tin bài toán chi tiết (giống ProblemDetails) -->
         <div class="card shadow-sm mb-4">
             <div class="card-header bg-primary text-white">
-                <h4 class="mb-0"><i class="bi bi-file-text"></i> Thông tin bài toán</h4>
+                <h5 class="mb-0">
+                    <i class="bi bi-file-text"></i> Thông tin bài toán
+                </h5>
             </div>
             <div class="card-body">
-                <h5>@problem?.Title</h5>
-                <p class="text-muted">@Html.Raw(problem?.Description)</p>
-                <div class="mb-0">
-                    <span class="badge bg-secondary me-1">@problem?.Type</span>
+                <!-- Problem ID & Status -->
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <strong><i class="bi bi-hash"></i> Mã bài:</strong> #@problem?.Id
+                    </div>
+                    <div class="col-6 text-end">
+                        <span class="badge bg-info fs-6">
+                            <i class="bi bi-hourglass-split"></i> Đang giải
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Title -->
+                <h5 class="mb-3">@problem?.Title</h5>
+
+                <!-- Badges -->
+                <div class="mb-3">
+                    <span class="badge bg-secondary me-2">
+                        <i class="bi bi-book"></i> @problem?.Type
+                    </span>
                     @if (problem != null)
                     {
-                        <span class="badge bg-@GetGradeLevelBadgeClass(problem.Difficulty) me-1">
+                        <span class="badge bg-@GetGradeLevelBadgeClass(problem.Difficulty) me-2">
                             <i class="bi bi-mortarboard"></i> @GetGradeLevelText(problem.Difficulty)
                         </span>
                     }
-                    <span class="badge bg-info">@problem?.Price.ToString("N0") đ</span>
+                    <span class="badge bg-success fs-6">
+                        <i class="bi bi-currency-dollar"></i> @problem?.Price.ToString("N0") đ
+                    </span>
+                </div>
+
+                <hr />
+
+                <!-- Description -->
+                <h6 class="mb-2">
+                    <i class="bi bi-file-text"></i> Mô tả chi tiết:
+                </h6>
+                <div class="bg-light p-3 rounded mb-3">
+                    <div>@Html.Raw(problem?.Description)</div>
+                </div>
+
+                <!-- Image -->
+                @if (!string.IsNullOrEmpty(problem?.ImageUrl) && problem.ImageUrl != "/images/default.jpg")
+                {
+                    <div class="mb-3">
+                        <h6><i class="bi bi-image"></i> Hình ảnh đề bài:</h6>
+                        <img src="@problem.ImageUrl"
+                             alt="Problem image"
+                             class="img-fluid rounded border"
+                             style="max-height: 300px; cursor: pointer;"
+                             onclick="window.open('@problem.ImageUrl', '_blank')" />
+                        <small class="text-muted d-block mt-1">
+                            <i class="bi bi-info-circle"></i> Click để xem ảnh cỡ lớn
+                        </small>
+                    </div>
+                }
+
+                <hr />
+
+                <!-- Dates -->
+                <div class="row">
+                    <div class="col-6">
+                        <p class="mb-1">
+                            <strong><i class="bi bi-calendar-plus"></i> Ngày đăng:</strong>
+                        </p>
+                        <p class="small">@problem?.CreatedDate.ToString("dd/MM/yyyy HH:mm")</p>
+                    </div>
+                    <div class="col-6">
+                        <p class="mb-1">
+                            <strong><i class="bi bi-calendar-event"></i> Deadline:</strong>
+                        </p>
+                        <p class="text-danger fw-bold small">
+                            @problem?.Deadline.ToString("dd/MM/yyyy HH:mm")
+                        </p>
+                        @if (problem != null)
+                        {
+                            var timeLeft = problem.Deadline - DateTime.Now;
+                            <small class="text-muted">
+                                Còn @timeLeft.Days ngày @timeLeft.Hours giờ
+                            </small>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="card shadow">
+        <!-- ✅ AI Tutor Assistant -->
+        <div class="sticky-top" style="top: 20px;">
+            @await Html.PartialAsync("_AiChatPartial", aiModel)
+
+            <!-- Tips Card -->
+            <div class="card shadow-sm mt-3">
+                <div class="card-header bg-warning text-dark">
+                    <h6 class="mb-0">
+                        <i class="bi bi-lightbulb"></i> Gợi ý viết lời giải tốt
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0 small">
+                        <li>Trình bày có hệ thống, chia thành các bước rõ ràng</li>
+                        <li>Giải thích lý do sử dụng công thức/phương pháp</li>
+                        <li>Viết kết luận cuối cùng một cách rõ ràng</li>
+                        <li>Kiểm tra lại chính tả và các phép tính</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Solution Form -->
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
             <div class="card-header bg-success text-white">
-                <h4 class="mb-0"><i class="bi bi-send"></i> Gửi lời giải</h4>
+                <h5 class="mb-0">
+                    <i class="bi bi-send"></i> Gửi lời giải
+                </h5>
             </div>
             <div class="card-body p-4">
                 <form asp-action="SubmitSolution" method="post" enctype="multipart/form-data">
                     <input type="hidden" asp-for="ProblemId" />
-                    
-                    <div class="alert alert-info">
+
+                    <!-- Alert -->
+                    <div class="alert alert-info border-0">
                         <i class="bi bi-info-circle"></i>
-                        <strong>Lưu ý:</strong> Hãy giải thích chi tiết từng bước để học sinh dễ hiểu
+                        <strong>Lưu ý:</strong> Hãy giải thích chi tiết từng bước để học sinh dễ hiểu.
+                        Bạn có thể hỏi AI ở bên trái để được gợi ý!
                     </div>
 
+                    <!-- Content Editor -->
                     <div class="mb-4">
                         <label asp-for="Content" class="form-label fw-bold">
-                            <i class="bi bi-file-text"></i> Nội dung lời giải <span class="text-danger">*</span>
+                            <i class="bi bi-file-text"></i> Nội dung lời giải
+                            <span class="text-danger">*</span>
                         </label>
-                        <textarea asp-for="Content" class="form-control" rows="15" placeholder="Nhập lời giải chi tiết của bạn...&#10;&#10;VD:&#10;Bước 1: Xác định dữ kiện...&#10;Bước 2: Áp dụng công thức...&#10;Bước 3: Tính toán...&#10;Kết luận: ..." required></textarea>
+                        <textarea asp-for="Content"
+                                  class="form-control"
+                                  rows="20"
+                                  placeholder="Nhập lời giải chi tiết của bạn...&#10;&#10;VD:&#10;Bước 1: Xác định dữ kiện...&#10;Bước 2: Áp dụng công thức...&#10;Bước 3: Tính toán...&#10;Kết luận: ..."
+                                  required></textarea>
                         <small class="text-muted">
-                            <i class="bi bi-lightbulb"></i> 
+                            <i class="bi bi-lightbulb"></i>
                             Nên trình bày rõ ràng, có đánh số thứ tự các bước
                         </small>
                     </div>
 
+                    <!-- File Upload -->
                     <div class="mb-4">
                         <label asp-for="SolutionFile" class="form-label fw-bold">
                             <i class="bi bi-paperclip"></i> File đính kèm (tùy chọn)
                         </label>
-                        <input asp-for="SolutionFile" type="file" class="form-control" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" />
+                        <input asp-for="SolutionFile"
+                               type="file"
+                               class="form-control"
+                               accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" />
                         <small class="text-muted">
                             Hỗ trợ: PDF, Word, hình ảnh (Tối đa 10MB)
                         </small>
                     </div>
 
+                    <!-- Checklist -->
                     <div class="card bg-light mb-4">
                         <div class="card-body">
-                            <h5 class="mb-3"><i class="bi bi-check2-square"></i> Checklist trước khi gửi:</h5>
+                            <h6 class="mb-3">
+                                <i class="bi bi-check2-square"></i> Checklist trước khi gửi:
+                            </h6>
                             <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="check1" required />
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       id="check1"
+                                       required />
                                 <label class="form-check-label" for="check1">
                                     Đã kiểm tra lại toàn bộ lời giải
                                 </label>
                             </div>
                             <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="check2" required />
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       id="check2"
+                                       required />
                                 <label class="form-check-label" for="check2">
                                     Lời giải đã rõ ràng, dễ hiểu
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="check3" required />
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       id="check3"
+                                       required />
                                 <label class="form-check-label" for="check3">
                                     Đã trả lời đúng yêu cầu của đề bài
                                 </label>
@@ -111,13 +246,27 @@
                         </div>
                     </div>
 
-                    <div class="alert alert-success">
-                        <h5 class="mb-2"><i class="bi bi-cash-coin"></i> Thu nhập từ bài này:</h5>
-                        <h3 class="text-success mb-0">@problem?.Price.ToString("N0") đ</h3>
+                    <!-- Revenue Display -->
+                    <div class="alert alert-success border-0">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">
+                                    <i class="bi bi-cash-coin"></i> Thu nhập từ bài này:
+                                </h6>
+                                <h3 class="text-success mb-0">
+                                    @problem?.Price.ToString("N0") đ
+                                </h3>
+                            </div>
+                            <i class="bi bi-currency-dollar text-success"
+                               style="font-size: 3rem; opacity: 0.2;"></i>
+                        </div>
                     </div>
 
+                    <!-- Action Buttons -->
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-success btn-lg" onclick="return confirm('Bạn chắc chắn muốn gửi lời giải này?')">
+                        <button type="submit"
+                                class="btn btn-success btn-lg"
+                                onclick="return confirm('Bạn chắc chắn muốn gửi lời giải này?')">
                             <i class="bi bi-send-check"></i> Gửi lời giải
                         </button>
                         <a asp-action="MyProblems" class="btn btn-outline-secondary">
@@ -127,21 +276,6 @@
                 </form>
             </div>
         </div>
-
-        <div class="card shadow-sm mt-4">
-            <div class="card-header bg-warning text-dark">
-                <h5 class="mb-0"><i class="bi bi-lightbulb"></i> Gợi ý viết lời giải tốt</h5>
-            </div>
-            <div class="card-body">
-                <ul class="mb-0">
-                    <li>Trình bày có hệ thống, chia thành các bước rõ ràng</li>
-                    <li>Giải thích lý do tại sao sử dụng công thức/phương pháp đó</li>
-                    <li>Viết kết luận cuối cùng một cách rõ ràng</li>
-                    <li>Nếu có thể, vẽ hình hoặc sơ đồ minh họa</li>
-                    <li>Kiểm tra lại chính tả và các phép tính</li>
-                </ul>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -149,23 +283,49 @@
     <script src="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
     <script>
         CKEDITOR.replace('Content', {
-            height: 300,
+            height: 500,
 
             removePlugins: 'elementspath,save,print,preview,find,flash,forms,iframe,fullscreen',
 
-            removeButtons: 'Save,NewPage,ExportPdf,Preview,Print,Templates,SelectAll,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Flash,Iframe,Maximize,Source',
+            removeButtons: 'Save,NewPage,ExportPdf,Preview,Print,Templates,SelectAll,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Flash,Iframe,Maximize',
 
             toolbar: [
                 { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike'] },
                 { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
                 { name: 'links', items: ['Link', 'Unlink'] },
-                { name: 'insert', items: ['Image', 'Table', 'Mathjax'] },
+                { name: 'insert', items: ['Image', 'Table', 'HorizontalRule'] },
                 { name: 'styles', items: ['Format', 'FontSize'] },
                 { name: 'colors', items: ['TextColor', 'BGColor'] },
                 { name: 'tools', items: ['Source'] }
-            ]
-        });
-        CKEDITOR.config.versionCheck = false;
-    </script>
+            ],
 
+            // ✅ Cho phép paste từ Word/Excel
+            pasteFromWordRemoveFontStyles: false,
+            pasteFromWordRemoveStyles: false
+        });
+
+        CKEDITOR.config.versionCheck = false;
+
+        // ✅ Auto-save to localStorage
+        setInterval(function() {
+            const content = CKEDITOR.instances.Content.getData();
+            if (content.trim()) {
+                localStorage.setItem('solution_draft_@Model.ProblemId', content);
+                console.log('💾 Auto-saved');
+            }
+        }, 30000); // Mỗi 30 giây
+
+        // ✅ Load draft on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            const draft = localStorage.getItem('solution_draft_@Model.ProblemId');
+            if (draft && confirm('Tìm thấy bản nháp đã lưu. Bạn có muốn khôi phục?')) {
+                CKEDITOR.instances.Content.setData(draft);
+            }
+        });
+
+        // ✅ Clear draft after submit
+        document.querySelector('form').addEventListener('submit', function() {
+            localStorage.removeItem('solution_draft_@Model.ProblemId');
+        });
+    </script>
 }

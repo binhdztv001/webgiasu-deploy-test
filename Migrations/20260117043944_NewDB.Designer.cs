@@ -12,8 +12,8 @@ using Webgiasu.Models;
 namespace Webgiasu.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260114103417_AddMeetingTypeToSchoolClass")]
-    partial class AddMeetingTypeToSchoolClass
+    [Migration("20260117043944_NewDB")]
+    partial class NewDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

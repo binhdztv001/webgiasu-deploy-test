@@ -2388,5 +2388,279 @@ namespace Webgiasu.Controllers
             }
         }
 
+        public IActionResult MyClassSchool()
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var user = _userService.GetUserById(userId);
+                if (user == null)
+                {
+                    TempData["Error"] = "Không tìm thấy thông tin người dùng!";
+                    return RedirectToAction("Dashboard");
+                }
+
+                // ✅ KIỂM TRA QUYỀN TRUY CẬP - CHỈ HỌC SINH ĐẠI HỌC
+                if (user.Role != UserRole.Student)
+                {
+                    TempData["Error"] = "Chỉ học sinh mới có thể xem trang này!";
+                    return RedirectToAction("Dashboard");
+                }
+
+                if (!user.Level.HasValue || user.Level.Value != EducationLevel.DaiHoc)
+                {
+                    TempData["Error"] = "Tính năng này chỉ dành cho học sinh Đại học!";
+                    return RedirectToAction("Dashboard");
+                }
+
+                // ✅ LẤY DANH SÁCH LỚP HỌC
+                var myClasses = _db.ClassStudents
+                    .Where(cs => cs.StudentId == userId)
+                    .Include(cs => cs.Class)
+                        .ThenInclude(c => c.School)
+                    .Include(cs => cs.Class)
+                        .ThenInclude(c => c.Tutor)
+                    .Include(cs => cs.Class)
+                        .ThenInclude(c => c.Students)
+                    .Select(cs => cs.Class!)
+                    .Where(c => c != null)
+                    .OrderByDescending(c => c.CreatedDate)
+                    .ToList();
+
+                var classViewModels = myClasses
+                    .Where(c => c != null)
+                    .Select(c => new ClassSchoolViewModel
+                    {
+                        Id = c.Id,
+                        ClassName = c.ClassName ?? "Không có tên",
+                        Subject = c.Subject ?? "Chưa xác định",
+                        Description = c.Description ?? "",
+                        SchoolName = c.School?.FullName ?? "Chưa cập nhật",
+                        TutorName = c.Tutor?.FullName ?? "Chưa có",
+                        TutorEmail = c.Tutor?.Email ?? "",
+                        StudentCount = c.Students?.Count ?? 0,
+                        StartDate = c.StartDate?.ToString("dd/MM/yyyy") ?? "Chưa xác định",
+                        EndDate = c.EndDate?.ToString("dd/MM/yyyy") ?? "Chưa xác định",
+                        Status = c.Status,
+                        CreatedDate = c.CreatedDate.ToString("dd/MM/yyyy HH:mm")
+                    }).ToList();
+
+                ViewBag.TotalClasses = classViewModels.Count;
+                ViewBag.ActiveClasses = classViewModels.Count(c => c.Status == ClassStatus.Active);
+
+                return View(classViewModels);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in MyClassSchool: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi khi tải danh sách lớp học!";
+                return RedirectToAction("Dashboard");
+            }
+        }
+
+        public IActionResult ClassSchoolDetails(int id)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var user = _userService.GetUserById(userId);
+                if (user == null || user.Role != UserRole.Student ||
+                    !user.Level.HasValue || user.Level.Value != EducationLevel.DaiHoc)
+                {
+                    TempData["Error"] = "Bạn không có quyền truy cập!";
+                    return RedirectToAction("Dashboard");
+                }
+
+                // Kiểm tra xem học sinh có trong lớp này không
+                var classStudent = _db.ClassStudents
+                    .FirstOrDefault(cs => cs.ClassId == id && cs.StudentId == userId);
+
+                if (classStudent == null)
+                {
+                    TempData["Error"] = "Bạn không thuộc lớp học này!";
+                    return RedirectToAction("MyClassSchool");
+                }
+
+                var classInfo = _db.SchoolClasses
+                    .Include(c => c.School)
+                    .Include(c => c.Tutor)
+                    .Include(c => c.Students)
+                    .FirstOrDefault(c => c.Id == id);
+
+                if (classInfo == null)
+                {
+                    TempData["Error"] = "Không tìm thấy lớp học!";
+                    return RedirectToAction("MyClassSchool");
+                }
+
+                // Lấy danh sách học sinh trong lớp
+                var students = _db.ClassStudents
+                    .Where(cs => cs.ClassId == id)
+                    .Include(cs => cs.Student)
+                    .Select(cs => new
+                    {
+                        Id = cs.Student!.Id,
+                        FullName = cs.Student.FullName,
+                        Email = cs.Student.Email ?? "",
+                        PhoneNumber = cs.Student.PhoneNumber ?? "",
+                        JoinedDate = cs.JoinedDate.ToString("dd/MM/yyyy")
+                    })
+                    .ToList();
+
+                ViewBag.Class = classInfo;
+                ViewBag.Students = students;
+                ViewBag.School = classInfo.School;
+                ViewBag.Tutor = classInfo.Tutor;
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in ClassSchoolDetails: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi!";
+                return RedirectToAction("MyClassSchool");
+            }
+        }
+
+        public IActionResult MyClassSchedules()
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var user = _userService.GetUserById(userId);
+                if (user == null || user.Role != UserRole.Student ||
+                    !user.Level.HasValue || user.Level.Value != EducationLevel.DaiHoc)
+                {
+                    TempData["Error"] = "Tính năng này chỉ dành cho học sinh Đại học!";
+                    return RedirectToAction("Dashboard");
+                }
+
+                // Lấy danh sách lớp học mà học sinh tham gia
+                var myClassIds = _db.ClassStudents
+                    .Where(cs => cs.StudentId == userId)
+                    .Select(cs => cs.ClassId)
+                    .ToList();
+
+                // Lấy tất cả lịch trao đổi của các lớp học đó
+                var schedules = _db.ClassSchedules
+                    .Where(s => myClassIds.Contains(s.ClassId))
+                    .Include(s => s.Class)
+                        .ThenInclude(c => c!.School)
+                    .Include(s => s.Class)
+                        .ThenInclude(c => c!.Tutor)
+                    .OrderByDescending(s => s.ScheduleDate)
+                    .ThenBy(s => s.StartTime)
+                    .Select(s => new ScheduleListViewModel
+                    {
+                        Id = s.Id,
+                        Title = s.Title,
+                        ScheduleDate = s.ScheduleDate,
+                        StartTime = s.StartTime,
+                        EndTime = s.EndTime,
+                        MeetingType = s.MeetingType,
+                        Status = s.Status,
+                        ClassName = s.Class!.ClassName,
+                        Subject = s.Class.Subject,
+                        TotalStudents = s.Class.Students!.Count
+                    })
+                    .ToList();
+
+                // Thống kê
+                ViewBag.TotalSchedules = schedules.Count;
+                ViewBag.UpcomingSchedules = schedules.Count(s => s.Status == ScheduleStatus.Upcoming);
+                ViewBag.CompletedSchedules = schedules.Count(s => s.Status == ScheduleStatus.Completed);
+
+                return View(schedules);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in MyClassSchedules: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi khi tải lịch trao đổi!";
+                return RedirectToAction("Dashboard");
+            }
+        }
+
+        public IActionResult ScheduleDetails(int id)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var user = _userService.GetUserById(userId);
+                if (user == null || user.Role != UserRole.Student ||
+                    !user.Level.HasValue || user.Level.Value != EducationLevel.DaiHoc)
+                {
+                    TempData["Error"] = "Bạn không có quyền truy cập!";
+                    return RedirectToAction("Dashboard");
+                }
+
+                // Kiểm tra xem học sinh có thuộc lớp học của lịch này không
+                var schedule = _db.ClassSchedules
+                    .Include(s => s.Class)
+                        .ThenInclude(c => c!.School)
+                    .Include(s => s.Class)
+                        .ThenInclude(c => c!.Tutor)
+                    .Include(s => s.Creator)
+                    .FirstOrDefault(s => s.Id == id);
+
+                if (schedule == null)
+                {
+                    TempData["Error"] = "Không tìm thấy lịch trao đổi!";
+                    return RedirectToAction("MyClassSchedules");
+                }
+
+                // Kiểm tra học sinh có trong lớp này không
+                var isInClass = _db.ClassStudents
+                    .Any(cs => cs.ClassId == schedule.ClassId && cs.StudentId == userId);
+
+                if (!isInClass)
+                {
+                    TempData["Error"] = "Bạn không có quyền xem lịch trao đổi này!";
+                    return RedirectToAction("MyClassSchedules");
+                }
+
+                // ✅ FIX: Lấy số học sinh từ bảng ClassStudents thay vì navigation property
+                var studentCount = _db.ClassStudents
+                    .Count(cs => cs.ClassId == schedule.ClassId);
+
+                var model = new ScheduleDetailsViewModel
+                {
+                    Id = schedule.Id,
+                    Title = schedule.Title,
+                    ScheduleDate = schedule.ScheduleDate,
+                    StartTime = schedule.StartTime,
+                    EndTime = schedule.EndTime,
+                    MeetingType = schedule.MeetingType,
+                    Location = schedule.Location,
+                    Content = schedule.Content,
+                    Notes = schedule.Notes,
+                    Status = schedule.Status,
+                    CreatedDate = schedule.CreatedDate,
+                    CreatorName = schedule.Creator?.FullName ?? "Nhà trường",
+                    ClassId = schedule.ClassId,
+                    ClassName = schedule.Class!.ClassName,
+                    Subject = schedule.Class.Subject,
+                    TutorName = schedule.Class.Tutor?.FullName,
+                    TutorEmail = schedule.Class.Tutor?.Email,
+                    TotalStudents = studentCount // ✅ Sử dụng giá trị đếm trực tiếp
+                };
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in ScheduleDetails: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi!";
+                return RedirectToAction("MyClassSchedules");
+            }
+        }
+
     }
 }
