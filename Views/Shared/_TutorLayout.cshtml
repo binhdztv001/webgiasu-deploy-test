@@ -68,75 +68,8 @@
 
                 <!-- Right: Actions -->
                 <div class="d-flex align-items-center gap-3">
-                    <!-- Notifications -->
-                    <div class="dropdown">
-
-                        <button class="btn btn-link position-relative" type="button" data-bs-toggle="dropdown"
-                                style="color: rgba(255,255,255,0.9);">
-                            <i class="bi bi-bell fs-5"></i>
-
-                            <span class="position-absolute bottom-0 start-70 rounded-pill bg-danger px-1 py-0"
-                                  style="font-size: 0.58rem;">
-                                3
-                            </span>
-                        </button>
-
-
-                        <ul class="dropdown-menu dropdown-menu-end notification-dropdown">
-                        <li class="dropdown-header" style="background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%); padding: 1rem 1.25rem; margin: -0.5rem -0.5rem 0.5rem -0.5rem; border-radius: 12px 12px 0 0;">
-                            <h6 class="mb-0 text-white">Thông báo</h6>
-                        </li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <a class="dropdown-item notification-item" href="#">
-                                    <div class="d-flex">
-                                        <div class="notification-icon bg-success">
-                                            <i class="bi bi-check-circle"></i>
-                                        </div>
-                                        <div class="notification-content">
-                                            <p class="mb-1 fw-semibold">Yêu cầu mới</p>
-                                            <small class="text-muted">Bài toán "Giải phương trình" đang chờ bạn</small>
-                                            <small class="d-block text-muted mt-1">5 phút trước</small>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item notification-item" href="#">
-                                    <div class="d-flex">
-                                        <div class="notification-icon bg-warning">
-                                            <i class="bi bi-star"></i>
-                                        </div>
-                                        <div class="notification-content">
-                                            <p class="mb-1 fw-semibold">Đánh giá mới</p>
-                                            <small class="text-muted">Học sinh Nguyễn Văn A đã đánh giá 5★</small>
-                                            <small class="d-block text-muted mt-1">1 giờ trước</small>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item notification-item" href="#">
-                                    <div class="d-flex">
-                                        <div class="notification-icon bg-info">
-                                            <i class="bi bi-cash"></i>
-                                        </div>
-                                        <div class="notification-content">
-                                            <p class="mb-1 fw-semibold">Thanh toán thành công</p>
-                                            <small class="text-muted">Bạn nhận được 150,000₫</small>
-                                            <small class="d-block text-muted mt-1">2 giờ trước</small>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <a class="dropdown-item text-center fw-semibold" href="#" style="color: #4CAF50 !important;">
-                                    Xem tất cả thông báo
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                    <!-- Notifications - Replace the old notification code with this -->
+                    @await Component.InvokeAsync("NotificationDropdown")
 
                     <!-- Messages -->
                     @await Component.InvokeAsync("MessageDropdown")

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Webgiasu.Models;
 using Webgiasu.Models.ViewModels;
@@ -13,5 +13,6 @@ namespace Webgiasu.Services
         Task<TutorRatingsSummaryViewModel> GetTutorRatingsSummaryAsync(int tutorId);
         Task<double> GetAverageRatingForTutorAsync(int tutorId);
         Task<Rating?> GetRatingByIdAsync(int ratingId);
+        Task<Rating?> GetRatingByProblemIdAsync(int problemId);
     }
 }

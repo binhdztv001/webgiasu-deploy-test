@@ -40,11 +40,13 @@ namespace Webgiasu.Controllers
         private readonly IProblemGroupService _problemGroupService;
         private readonly ISePayGateway _sePayGateway;
         private readonly IPremiumService _premiumService;
+        private readonly INotificationService _notificationService;
 
         public StudentController(AppDbContext db, IProblemService problemService, ISolutionService solutionService, 
             IPaymentService paymentService, IUserService userService, IRatingService ratingService,
             IFriendshipService friendshipService, IMessageService messageService, IPremiumService premiumService,
-            ICommunityService communityService, IHubContext<CommunityHub> hubContext, IProblemGroupService problemGroupService, ISePayGateway sePayGateway)
+            ICommunityService communityService, IHubContext<CommunityHub> hubContext, IProblemGroupService problemGroupService, ISePayGateway sePayGateway
+            , INotificationService notificationService)
         {
             _db=db;
             _problemService = problemService;
@@ -59,6 +61,7 @@ namespace Webgiasu.Controllers
             _hubContext = hubContext;
             _problemGroupService = problemGroupService;
             _sePayGateway = sePayGateway;
+            _notificationService = notificationService;
         }
 
         private int GetCurrentUserId()
@@ -268,6 +271,18 @@ namespace Webgiasu.Controllers
 
                 if (success)
                 {
+                    // ✅ NEW: Tạo thông báo cho Tutor khi nhận được đánh giá
+                    var student = _userService.GetUserById(userId);
+                    if (student != null)
+                    {
+                        _notificationService.NotifyTutorRatingReceived(
+                            model.TutorId,
+                            model.ProblemId,
+                            student.FullName,
+                            model.Stars
+                        );
+                    }
+
                     TempData["Success"] = "Đánh giá Mentor thành công! Cảm ơn phản hồi của bạn.";
                     return RedirectToAction("ProblemDetails", new { id = model.ProblemId });
                 }
@@ -864,7 +879,20 @@ namespace Webgiasu.Controllers
                 var success = _friendshipService.SendFriendRequest(userId, model.UserId);
 
                 if (success)
+                {
+                    // ✅ Tạo thông báo cho người nhận lời mời
+                    var sender = _userService.GetUserById(userId);
+                    if (sender != null)
+                    {
+                        _notificationService.NotifyFriendRequestSent(
+                            model.UserId,
+                            userId,
+                            sender.FullName
+                        );
+                    }
+
                     return Json(new { success = true, message = "Đã gửi lời mời kết bạn!" });
+                }
                 else
                     return Json(new { success = false, message = "Không thể gửi lời mời. Có thể đã gửi trước đó!" });
             }
@@ -888,7 +916,22 @@ namespace Webgiasu.Controllers
                 var success = _friendshipService.AcceptFriendRequest(model.FriendshipId, userId);
 
                 if (success)
+                {
+                    // ✅ Tạo thông báo cho người gửi lời mời
+                    var friendship = _friendshipService.GetFriendshipById(model.FriendshipId);
+                    var accepter = _userService.GetUserById(userId);
+
+                    if (friendship != null && accepter != null)
+                    {
+                        _notificationService.NotifyFriendRequestAccepted(
+                            friendship.RequesterId,
+                            userId,
+                            accepter.FullName
+                        );
+                    }
+
                     return Json(new { success = true, message = "Đã chấp nhận lời mời kết bạn!" });
+                }
                 else
                     return Json(new { success = false, message = "Không thể chấp nhận lời mời!" });
             }
@@ -1599,6 +1642,9 @@ namespace Webgiasu.Controllers
                             Amount = price
                         };
                         _paymentService.CreatePayment(payment);
+
+                        // ✅ TẠO NOTIFICATION
+                        _notificationService.NotifyProblemCreated(userId, problem.Id, problem.Title);
 
                         TempData["Success"] = "Đăng bài toán thành công!";
                         return RedirectToAction("Dashboard");
@@ -2660,6 +2706,38 @@ namespace Webgiasu.Controllers
                 TempData["Error"] = "Đã xảy ra lỗi!";
                 return RedirectToAction("MyClassSchedules");
             }
+        }
+
+        // ✅ Action: Mark notification as read
+        [HttpPost]
+        public IActionResult MarkNotificationAsRead(int id)
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return Unauthorized();
+
+            _notificationService.MarkAsRead(id);
+            return Ok();
+        }
+
+        // ✅ Action: View all notifications
+        public IActionResult Notifications()
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return RedirectToAction("Login", "Account");
+
+            var notifications = _notificationService.GetRecentNotifications(userId, 50);
+            return View(notifications);
+        }
+
+        // ✅ Action: Mark all as read
+        [HttpPost]
+        public IActionResult MarkAllNotificationsAsRead()
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return Unauthorized();
+
+            _notificationService.MarkAllAsRead(userId);
+            return RedirectToAction("Notifications");
         }
 
     }

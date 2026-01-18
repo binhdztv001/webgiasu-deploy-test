@@ -1,0 +1,130 @@
+﻿@model Webgiasu.Models.ViewModels.NotificationDropdownVM
+
+<div class="dropdown">
+    <button class="btn btn-link position-relative" type="button" data-bs-toggle="dropdown" 
+            style="color: rgba(255,255,255,0.9);">
+        <i class="bi bi-bell fs-5"></i>
+        @if (Model.UnreadCount > 0)
+        {
+            <span class="position-absolute bottom-0 start-70 rounded-pill bg-danger px-1 py-0"
+                  style="font-size: 0.58rem;">
+                @Model.UnreadCount
+            </span>
+        }
+    </button>
+    
+    <ul class="dropdown-menu dropdown-menu-end notification-dropdown">
+        <li class="dropdown-header" style="background: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%); padding: 1rem 1.25rem; margin: -0.5rem -0.5rem 0.5rem -0.5rem; border-radius: 12px 12px 0 0;">
+            <h6 class="mb-0 text-white">Thông báo</h6>
+        </li>
+        
+        <li><hr class="dropdown-divider"></li>
+        
+        @if (!Model.Notifications.Any())
+        {
+            <li class="dropdown-item text-muted text-center">
+                Không có thông báo mới
+            </li>
+        }
+        else
+        {
+            @foreach (var notification in Model.Notifications)
+            {
+                var iconClass = notification.Type switch
+                {
+                    Webgiasu.Models.NotificationType.ProblemCreated => "bi-plus-circle",
+                    Webgiasu.Models.NotificationType.TutorAccepted => "bi-person-check",
+                    Webgiasu.Models.NotificationType.SolutionSubmitted => "bi-check-circle",
+                    Webgiasu.Models.NotificationType.PaymentCompleted => "bi-credit-card",
+                    Webgiasu.Models.NotificationType.GroupInvite => "bi-people",
+                    Webgiasu.Models.NotificationType.FriendRequest => "bi-person-plus",
+                    _ => "bi-bell"
+                };
+
+                var bgClass = notification.Type switch
+                {
+                    Webgiasu.Models.NotificationType.ProblemCreated => "bg-primary",
+                    Webgiasu.Models.NotificationType.TutorAccepted => "bg-info",
+                    Webgiasu.Models.NotificationType.SolutionSubmitted => "bg-success",
+                    Webgiasu.Models.NotificationType.PaymentCompleted => "bg-success",
+                    Webgiasu.Models.NotificationType.GroupInvite => "bg-warning",
+                    Webgiasu.Models.NotificationType.FriendRequest => "bg-primary",
+                    _ => "bg-secondary"
+                };
+
+                var timeAgo = GetTimeAgo(notification.CreatedDate);
+                
+                <li>
+                    <a class="dropdown-item notification-item @(!notification.IsRead ? "unread" : "")" 
+                       href="@(notification.Link ?? "#")"
+                       onclick="markAsRead(@notification.Id)">
+                        <div class="d-flex">
+                            <div class="notification-icon @bgClass">
+                                <i class="@iconClass"></i>
+                            </div>
+                            <div class="notification-content">
+                                <p class="mb-1 fw-semibold">@notification.Title</p>
+                                <small class="text-muted">@notification.Message</small>
+                                <small class="d-block text-muted mt-1">@timeAgo</small>
+                            </div>
+                            @if (!notification.IsRead)
+                            {
+                                <div class="notification-badge">
+                                    <span class="badge bg-danger rounded-pill">Mới</span>
+                                </div>
+                            }
+                        </div>
+                    </a>
+                </li>
+            }
+        }
+        
+        <li><hr class="dropdown-divider"></li>
+        <li>
+            <a class="dropdown-item text-center text-primary fw-semibold" 
+               asp-controller="Student" asp-action="Notifications">
+                Xem tất cả thông báo
+            </a>
+        </li>
+    </ul>
+</div>
+
+@functions {
+    string GetTimeAgo(DateTime dateTime)
+    {
+        var timeSpan = DateTime.Now - dateTime;
+
+        if (timeSpan.TotalMinutes < 1)
+            return "vừa xong";
+        if (timeSpan.TotalMinutes < 60)
+            return $"{(int)timeSpan.TotalMinutes} phút trước";
+        if (timeSpan.TotalHours < 24)
+            return $"{(int)timeSpan.TotalHours} giờ trước";
+        if (timeSpan.TotalDays < 30)
+            return $"{(int)timeSpan.TotalDays} ngày trước";
+
+        return dateTime.ToString("dd/MM/yyyy");
+    }
+}
+
+<style>
+    .notification-item.unread {
+        background-color: #f0f8ff;
+    }
+    
+    .notification-badge {
+        margin-left: auto;
+        align-self: flex-start;
+    }
+</style>
+
+<script>
+    function markAsRead(notificationId) {
+        fetch(`/Student/MarkNotificationAsRead/${notificationId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    }
+</script>

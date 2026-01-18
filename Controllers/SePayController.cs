@@ -14,11 +14,13 @@ namespace Webgiasu.Controllers
     {
         private readonly AppDbContext _db;
         private readonly ISePayGateway _sePayGateway;
+        private readonly INotificationService _notificationService;
 
-        public SePayController(AppDbContext db, ISePayGateway sePayGateway)
+        public SePayController(AppDbContext db, ISePayGateway sePayGateway, INotificationService notificationService)
         {
             _db = db;
             _sePayGateway = sePayGateway;
+            _notificationService = notificationService;
         }
 
         [HttpPost("webhook")]
@@ -123,6 +125,24 @@ namespace Webgiasu.Controllers
                     payment.Status = PaymentStatus.Completed;
                     payment.CompletedDate = DateTime.Now;
                     payment.TransactionId = transactionId;
+
+                    // ✅ THÔNG BÁO CHO STUDENT
+                    _notificationService.NotifyPaymentCompleted(
+                        payment.StudentId,
+                        payment.Id,
+                        payment.Amount
+                    );
+
+                    // ✅ NEW: THÔNG BÁO CHO TUTOR KHI NHẬN ĐƯỢC TIỀN
+                    var problem = _db.Problems.Find(payment.ProblemId);
+                    if (problem?.AssignedTutorId.HasValue == true)
+                    {
+                        _notificationService.NotifyTutorPaymentReceived(
+                            problem.AssignedTutorId.Value,
+                            problem.Id,
+                            payment.Amount
+                        );
+                    }
                 }
                 else if (isFailed)
                 {
@@ -166,6 +186,35 @@ namespace Webgiasu.Controllers
                     if (member != null)
                     {
                         member.PaymentStatus = GroupPaymentStatus.Paid;
+                    }
+
+                    // ✅ NEW: Thông báo cho user khi thanh toán nhóm thành công
+                    _notificationService.NotifyPaymentCompleted(
+                        groupPayment.UserId,
+                        groupPayment.Id,
+                        groupPayment.Amount
+                    );
+
+                    // ✅ NEW: Kiểm tra xem tất cả thành viên đã thanh toán chưa
+                    var group = _db.ProblemGroups.Find(groupPayment.GroupId);
+                    if (group != null)
+                    {
+                        var allMembers = _db.ProblemGroupMembers.Where(m => m.GroupId == group.Id).ToList();
+                        var allPaid = allMembers.All(m => m.PaymentStatus == GroupPaymentStatus.Paid);
+
+                        if (allPaid)
+                        {
+                            // ✅ Nếu tất cả đã thanh toán, thông báo cho Tutor
+                            var problem = _db.Problems.Find(group.ProblemId);
+                            if (problem?.AssignedTutorId.HasValue == true)
+                            {
+                                _notificationService.NotifyTutorPaymentReceived(
+                                    problem.AssignedTutorId.Value,
+                                    problem.Id,
+                                    group.TotalPrice
+                                );
+                            }
+                        }
                     }
                 }
                 else if (string.Equals(status, "FAILED", StringComparison.OrdinalIgnoreCase))
@@ -242,7 +291,8 @@ namespace Webgiasu.Controllers
             var targetAmount = (decimal)amount.Value;
 
             var candidate = _db.Payments
-                .Where(p => p.Status == PaymentStatus.Pending && p.Amount == targetAmount)
+                // .Where(p => p.Status == PaymentStatus.Pending && p.Amount == targetAmount)
+                .Where(p => p.Amount == targetAmount)
                 .OrderByDescending(p => p.CreatedDate)
                 .FirstOrDefault();
 
