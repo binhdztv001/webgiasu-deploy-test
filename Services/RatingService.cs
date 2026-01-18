@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -82,5 +82,9 @@ namespace Webgiasu.Services
         }
 
         public async Task<Rating?> GetRatingByIdAsync(int ratingId) => await _db.Ratings.FindAsync(ratingId);
+
+        // ✅ NEW: Lấy rating theo ProblemId
+        public async Task<Rating?> GetRatingByProblemIdAsync(int problemId)
+            => await _db.Ratings.FirstOrDefaultAsync(r => r.ProblemId == problemId);
     }
 }

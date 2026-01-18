@@ -45,10 +45,13 @@ namespace Webgiasu.Controllers
         private readonly IHubContext<CommunityHub> _hubContext;
         private readonly IPremiumService _premiumService;
         private readonly AppDbContext _db;
+        private readonly INotificationService _notificationService;
+        private readonly IPaymentService _paymentService;
 
         public TutorController(IProblemService problemService, ISolutionService solutionService, IFriendshipService friendshipService,
             IUserService userService, IRatingService ratingService, IMessageService messageService, 
-            ICommunityService communityService, IHubContext<CommunityHub> hubContext, IPremiumService premiumService, AppDbContext db)
+            ICommunityService communityService, IHubContext<CommunityHub> hubContext, IPremiumService premiumService, AppDbContext db
+            , INotificationService notificationService, IPaymentService paymentService)
         {
             _problemService = problemService;
             _solutionService = solutionService;
@@ -60,6 +63,8 @@ namespace Webgiasu.Controllers
             _hubContext = hubContext;
             _premiumService = premiumService;
             _db = db;
+            _notificationService = notificationService;
+            _paymentService = paymentService;
         }
 
         private int GetCurrentUserId()
@@ -166,7 +171,20 @@ namespace Webgiasu.Controllers
 
                 if (_problemService.AssignProblemToTutor(id, userId))
                 {
-                    TempData["Success"] = "Bạn đã nhận bài toán thành công!";
+                    // ✅ THÔNG BÁO CHO STUDENT
+                    var problem = _problemService.GetProblemById(id);
+                    var tutor = _userService.GetUserById(userId);
+
+                    if (problem != null && tutor != null)
+                    {
+                        _notificationService.NotifyTutorAccepted(
+                            problem.StudentId,
+                            id,
+                            tutor.FullName
+                        );
+                    }
+
+                    TempData["Success"] = "Đã nhận bài toán thành công!";
                     return RedirectToAction("MyProblems");
                 }
                 else
@@ -271,12 +289,25 @@ namespace Webgiasu.Controllers
 
                     if (_solutionService.CreateSolution(solution))
                     {
-                    // Update problem status
+                        // Update problem status
                         var problem = _problemService.GetProblemById(model.ProblemId);
                         if (problem != null)
                         {
                             problem.Status = ProblemStatus.Solved;
                             _problemService.UpdateProblem(problem);
+
+                            // ✅ TẠO NOTIFICATION CHO STUDENT
+                            _notificationService.NotifySolutionSubmitted(
+                                problem.StudentId,
+                                model.ProblemId
+                            );
+
+                            // ✅ NEW: TẠO NOTIFICATION CHO TUTOR
+                            _notificationService.NotifyTutorSolutionSubmitted(
+                                userId,
+                                model.ProblemId,
+                                problem.Title
+                            );
                         }
 
                         TempData["Success"] = "Gửi lời giải thành công!";
@@ -526,20 +557,26 @@ namespace Webgiasu.Controllers
                 if (userId == 0) return RedirectToAction("Login", "Account");
 
                 var solutions = _solutionService.GetSolutionsByTutorId(userId);
-                var model = new TutorEarningsViewModel
-                {
-                    Solutions = solutions,
-                    TotalEarnings = 0
-                };
+
+                // ✅ TÍNH TỔNG THU NHẬP THỰC TẾ - CHỈ TÍNH BÀI ĐÃ THANH TOÁN
+                int totalEarnings = 0;
 
                 foreach (var solution in solutions)
                 {
-                    var problem = _problemService.GetProblemById(solution.ProblemId);
-                    if (problem != null && problem.Status == ProblemStatus.Solved)
+                    var payment = _paymentService.GetPaymentByProblemId(solution.ProblemId);
+
+                    // Chỉ tính khi payment đã completed
+                    if (payment != null && payment.Status == PaymentStatus.Completed)
                     {
-                        model.TotalEarnings += (int)problem.Price;
+                        totalEarnings += (int)payment.Amount;
                     }
                 }
+
+                var model = new TutorEarningsViewModel
+                {
+                    Solutions = solutions,
+                    TotalEarnings = totalEarnings
+                };
 
                 return View(model);
             }

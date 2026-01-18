@@ -1,5 +1,7 @@
 ﻿@model Webgiasu.Models.ViewModels.TutorEarningsViewModel
 @inject Webgiasu.Services.IProblemService ProblemService
+@inject Webgiasu.Services.IPaymentService PaymentService
+@inject Webgiasu.Services.IRatingService RatingService
 @{
     ViewData["Title"] = "Thu nhập";
     Layout = "~/Views/Shared/_TutorLayout.cshtml";
@@ -68,6 +70,14 @@
                             @foreach (var solution in Model.Solutions.OrderByDescending(s => s.SubmittedDate))
                             {
                                 var problem = ProblemService.GetProblemById(solution.ProblemId);
+                                
+                                // ✅ KIỂM TRA PAYMENT STATUS THỰC TẾ
+                                var payment = PaymentService.GetPaymentByProblemId(solution.ProblemId);
+                                var isPaid = payment?.Status == Webgiasu.Models.PaymentStatus.Completed;
+                                
+                                // ✅ KIỂM TRA RATING TỪ BẢNG RATINGS
+                                var rating = await RatingService.GetRatingByProblemIdAsync(solution.ProblemId);
+                                
                                 <tr>
                                     <td class="fw-bold">#@solution.Id</td>
                                     <td>
@@ -79,12 +89,12 @@
                                     </td>
                                     <td>@solution.SubmittedDate.ToString("dd/MM/yyyy HH:mm")</td>
                                     <td>
-                                        @if (solution.Rating.HasValue)
+                                        @if (rating != null)
                                         {
                                             <div class="text-warning">
                                                 @for (int i = 1; i <= 5; i++)
                                                 {
-                                                    if (i <= solution.Rating.Value)
+                                                    if (i <= rating.Stars)
                                                     {
                                                         <i class="bi bi-star-fill"></i>
                                                     }
@@ -94,6 +104,12 @@
                                                     }
                                                 }
                                             </div>
+                                            @if (!string.IsNullOrEmpty(rating.Comment))
+                                            {
+                                                <small class="text-muted d-block" title="@rating.Comment">
+                                                    "@(rating.Comment.Length > 30 ? rating.Comment.Substring(0, 30) + "..." : rating.Comment)"
+                                                </small>
+                                            }
                                         }
                                         else
                                         {
@@ -104,21 +120,38 @@
                                         @if (problem != null)
                                         {
                                             @problem.Price.ToString("N0")
-                                
                                             <text>đ</text>
                                         }
                                     </td>
                                     <td>
-                                        @if (problem?.Status == Webgiasu.Models.ProblemStatus.Solved)
+                                        @if (isPaid)
                                         {
                                             <span class="badge bg-success">
                                                 <i class="bi bi-check-circle"></i> Đã thanh toán
                                             </span>
+                                            @if (payment?.CompletedDate != null)
+                                            {
+                                                <small class="d-block text-muted mt-1">
+                                                    @payment.CompletedDate.Value.ToString("dd/MM/yyyy")
+                                                </small>
+                                            }
+                                        }
+                                        else if (payment?.Status == Webgiasu.Models.PaymentStatus.Pending)
+                                        {
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="bi bi-clock"></i> Chờ thanh toán
+                                            </span>
+                                        }
+                                        else if (payment?.Status == Webgiasu.Models.PaymentStatus.Failed)
+                                        {
+                                            <span class="badge bg-danger">
+                                                <i class="bi bi-x-circle"></i> Thất bại
+                                            </span>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-warning">
-                                                <i class="bi bi-clock"></i> Chờ xác nhận
+                                            <span class="badge bg-secondary">
+                                                <i class="bi bi-question-circle"></i> Chưa xác định
                                             </span>
                                         }
                                     </td>

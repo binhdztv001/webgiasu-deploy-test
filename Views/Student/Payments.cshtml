@@ -1,4 +1,6 @@
 ﻿@model List<Webgiasu.Models.Payment>
+@inject Webgiasu.Services.ISolutionService SolutionService
+@inject Webgiasu.Services.IProblemService ProblemService
 @{
     ViewData["Title"] = "Quản lý thanh toán";
     Layout = "_StudentLayout";
@@ -76,6 +78,11 @@
                         <tbody>
                             @foreach (var payment in Model)
                             {
+                                @* ✅ KIỂM TRA XEM TUTOR ĐÃ GỬI LỜI GIẢI CHƯA *@
+                                var solution = SolutionService.GetSolutionByProblemId(payment.ProblemId);
+                                var problem = ProblemService.GetProblemById(payment.ProblemId);
+                                var hasSolution = solution != null;
+
                                 <tr>
                                     <td class="fw-bold">#@payment.Id</td>
                                     <td>
@@ -94,9 +101,18 @@
                                         }
                                         else if (payment.Status == Webgiasu.Models.PaymentStatus.Pending)
                                         {
-                                            <span class="badge bg-warning">
-                                                <i class="bi bi-hourglass-split"></i> Chờ thanh toán
-                                            </span>
+                                            @if (hasSolution)
+                                            {
+                                                <span class="badge bg-warning">
+                                                    <i class="bi bi-hourglass-split"></i> Chờ thanh toán
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-info">
+                                                    <i class="bi bi-clock-history"></i> Chờ Mentor giải
+                                                </span>
+                                            }
                                         }
                                         else if (payment.Status == Webgiasu.Models.PaymentStatus.Failed)
                                         {
@@ -124,12 +140,24 @@
                                     <td>
                                         @if (payment.Status == Webgiasu.Models.PaymentStatus.Pending)
                                         {
-                                            <form asp-action="ProcessPayment" method="post" class="d-inline">
-                                                <input type="hidden" name="paymentId" value="@payment.Id" />
-                                                <button type="submit" class="btn btn-sm btn-success">
-                                                    <i class="bi bi-credit-card"></i> Thanh toán
+                                            @if (hasSolution)
+                                            {
+                                                @* ✅ CÓ LỜI GIẢI - CHO PHÉP THANH TOÁN *@
+                                                <form asp-action="ProcessPayment" method="post" class="d-inline">
+                                                    <input type="hidden" name="paymentId" value="@payment.Id" />
+                                                    <button type="submit" class="btn btn-sm btn-success">
+                                                        <i class="bi bi-credit-card"></i> Thanh toán
+                                                    </button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                @* ✅ CHƯA CÓ LỜI GIẢI - HIỆN THÔNG BÁO *@
+                                                <button type="button" class="btn btn-sm btn-secondary" disabled
+                                                        title="Chờ Mentor gửi lời giải">
+                                                    <i class="bi bi-clock"></i> Đang chờ
                                                 </button>
-                                            </form>
+                                            }
                                         }
                                         else if (payment.Status == Webgiasu.Models.PaymentStatus.Completed)
                                         {
@@ -154,6 +182,49 @@
                     </a>
                 </div>
             }
+        </div>
+    </div>
+
+    @* ✅ THÊM LEGEND GIẢI THÍCH TRẠNG THÁI *@
+    <div class="card shadow-sm mt-4">
+        <div class="card-header bg-light">
+            <h6 class="mb-0"><i class="bi bi-info-circle me-2"></i>Chú thích trạng thái</h6>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-success me-2">
+                            <i class="bi bi-check-circle"></i> Đã thanh toán
+                        </span>
+                        <small class="text-muted">Bạn đã thanh toán và có thể xem lời giải</small>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-warning me-2">
+                            <i class="bi bi-hourglass-split"></i> Chờ thanh toán
+                        </span>
+                        <small class="text-muted">Mentor đã gửi lời giải, vui lòng thanh toán</small>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-info me-2">
+                            <i class="bi bi-clock-history"></i> Chờ Mentor giải
+                        </span>
+                        <small class="text-muted">Mentor đang giải bài toán, chưa thể thanh toán</small>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-danger me-2">
+                            <i class="bi bi-x-circle"></i> Thất bại
+                        </span>
+                        <small class="text-muted">Giao dịch thanh toán không thành công</small>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
