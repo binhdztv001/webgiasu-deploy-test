@@ -298,9 +298,25 @@
                                     }
                                 }
                                 
+                                <!-- ✅ THÊM NÚT XEM APPLICATIONS -->
                                 @if (problem.Status == Webgiasu.Models.ProblemStatus.WaitingForTutor)
                                 {
-                                    <a asp-action="EditProblem" asp-route-id="@problem.Id" class="btn btn-sm btn-outline-warning" title="Chỉnh sửa">
+                                    <a asp-action="ViewTutorApplications" 
+                                       asp-route-problemId="@problem.Id" 
+                                       class="btn btn-sm btn-warning flex-grow-1"
+                                       title="Xem Mentor đăng ký">
+                                        <i class="bi bi-people me-1"></i>Mentor 
+                                        @{
+                                            var appCountDict = ViewBag.ApplicationCounts as Dictionary<int, int>;
+                                            var displayCount = appCountDict?.ContainsKey(problem.Id) == true 
+                                                ? appCountDict[problem.Id] 
+                                                : 0;
+                                        }
+                                        (@displayCount)
+                                    </a>
+                                    
+                                    <a asp-action="EditProblem" asp-route-id="@problem.Id" 
+                                       class="btn btn-sm btn-outline-warning" title="Chỉnh sửa">
                                         <i class="bi bi-pencil"></i>
                                     </a>
                                 }

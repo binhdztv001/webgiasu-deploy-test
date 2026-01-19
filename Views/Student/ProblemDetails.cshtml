@@ -373,6 +373,31 @@
                     <strong>Trạng thái:</strong> Mentor đang giải bài toán
                 </div>
             }
+
+            @if (Model.Problem.Status == ProblemStatus.WaitingForTutor)
+            {
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">
+                            <i class="bi bi-people me-2"></i>Mentor đăng ký
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-3">
+                            <i class="bi bi-info-circle text-info me-1"></i>
+                            Có <strong>@ViewBag.ApplicationCount</strong> Mentor đã đăng ký nhận bài này
+                        </p>
+                        
+                        <div class="d-grid">
+                            <a asp-action="ViewTutorApplications" 
+                               asp-route-problemId="@Model.Problem.Id" 
+                               class="btn btn-warning btn-lg">
+                                <i class="bi bi-people me-1"></i>Xem & Chọn Mentor
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
 
         <div class="col-lg-4">

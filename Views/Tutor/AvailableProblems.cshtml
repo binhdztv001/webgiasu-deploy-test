@@ -212,16 +212,17 @@
 
                             <!-- Action Buttons -->
                             <div class="d-flex gap-2">
-                                <a asp-action="ProblemDetails" asp-route-id="@problem.Id" class="btn btn-sm btn-outline-primary flex-fill">
+                                <a asp-action="ProblemDetails" asp-route-id="@problem.Id" 
+                                   class="btn btn-sm btn-outline-primary flex-fill">
                                     <i class="bi bi-eye me-1"></i>Xem
                                 </a>
-                                <form asp-action="AcceptProblem" method="post" class="flex-fill">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="id" value="@problem.Id" />
-                                    <button type="submit" class="btn btn-sm btn-success w-100" onclick="return confirm('✅ Bạn chắc chắn muốn nhận bài này?\n\nLưu ý: Bạn sẽ cần hoàn thành bài trước deadline.')">
-                                        <i class="bi bi-check-circle me-1"></i>Nhận bài
-                                    </button>
-                                </form>
+                                
+                                <!-- ✅ FIX: Đổi thành link -->
+                                <a asp-action="ApplyForProblem" 
+                                   asp-route-problemId="@problem.Id" 
+                                   class="btn btn-sm btn-success flex-fill">
+                                    <i class="bi bi-hand-thumbs-up me-1"></i>Đăng ký
+                                </a>
                             </div>
                         </div>
 

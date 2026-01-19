@@ -47,11 +47,12 @@ namespace Webgiasu.Controllers
         private readonly AppDbContext _db;
         private readonly INotificationService _notificationService;
         private readonly IPaymentService _paymentService;
+        private readonly ITutorApplicationService _tutorApplicationService;
 
         public TutorController(IProblemService problemService, ISolutionService solutionService, IFriendshipService friendshipService,
             IUserService userService, IRatingService ratingService, IMessageService messageService, 
             ICommunityService communityService, IHubContext<CommunityHub> hubContext, IPremiumService premiumService, AppDbContext db
-            , INotificationService notificationService, IPaymentService paymentService)
+            , INotificationService notificationService, IPaymentService paymentService, ITutorApplicationService tutorApplicationService)
         {
             _problemService = problemService;
             _solutionService = solutionService;
@@ -65,6 +66,7 @@ namespace Webgiasu.Controllers
             _db = db;
             _notificationService = notificationService;
             _paymentService = paymentService;
+            _tutorApplicationService = tutorApplicationService;
         }
 
         private int GetCurrentUserId()
@@ -161,44 +163,149 @@ namespace Webgiasu.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult AcceptProblem(int id)
+        [HttpGet]
+        public IActionResult ApplyForProblem(int problemId)
         {
             try
             {
                 var userId = GetCurrentUserId();
                 if (userId == 0) return RedirectToAction("Login", "Account");
 
-                if (_problemService.AssignProblemToTutor(id, userId))
+                var problem = _problemService.GetProblemById(problemId);
+                if (problem == null)
                 {
-                    // ✅ THÔNG BÁO CHO STUDENT
-                    var problem = _problemService.GetProblemById(id);
-                    var tutor = _userService.GetUserById(userId);
+                    TempData["Error"] = "Không tìm thấy bài toán!";
+                    return RedirectToAction("AvailableProblems");
+                }
 
-                    if (problem != null && tutor != null)
+                // ✅ Kiểm tra bài toán có còn available không
+                if (problem.Status != ProblemStatus.WaitingForTutor)
+                {
+                    TempData["Warning"] = "Bài toán này đã có Mentor nhận rồi!";
+                    return RedirectToAction("AvailableProblems");
+                }
+
+                // ✅ Kiểm tra đã apply chưa
+                if (_tutorApplicationService.HasTutorApplied(problemId, userId))
+                {
+                    TempData["Warning"] = "Bạn đã đăng ký bài này rồi!";
+                    return RedirectToAction("MyApplications");
+                }
+
+                // ✅ Tạo model với giá trị mặc định
+                var model = new ApplyProblemViewModel
+                {
+                    ProblemId = problemId,
+                    ProblemTitle = problem.Title,
+                    OriginalPrice = problem.Price,
+                    Deadline = problem.Deadline,
+                    ProposedPrice = problem.Price, // Default = giá gốc
+                    EstimatedDays = CalculateEstimatedDays(problem.Deadline) // Tự động tính
+                };
+
+                ViewBag.Problem = problem;
+                ViewBag.Student = _userService.GetUserById(problem.StudentId);
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in ApplyForProblem GET: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi!";
+                return RedirectToAction("AvailableProblems");
+            }
+        }
+
+        private int CalculateEstimatedDays(DateTime deadline)
+        {
+            var daysLeft = (deadline - DateTime.Now).Days;
+
+            if (daysLeft <= 1) return 1;
+            if (daysLeft <= 3) return 2;
+            if (daysLeft <= 7) return Math.Max(1, daysLeft - 1);
+
+            return Math.Min(7, daysLeft / 2); // Mặc định = 1/2 thời gian còn lại
+        }
+
+        // ✅ THAY THẾ AcceptProblem
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ApplyForProblem(ApplyProblemViewModel model)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                if (!ModelState.IsValid)
+                {
+                    // ✅ Reload problem info khi validation fail
+                    var prob = _problemService.GetProblemById(model.ProblemId);
+                    if (prob != null)
                     {
-                        _notificationService.NotifyTutorAccepted(
+                        model.ProblemTitle = prob.Title;
+                        model.OriginalPrice = prob.Price;
+                        model.Deadline = prob.Deadline;
+                        ViewBag.Problem = prob;
+                        ViewBag.Student = _userService.GetUserById(prob.StudentId);
+                    }
+
+                    TempData["Error"] = "Vui lòng điền đầy đủ thông tin!";
+                    return View(model);
+                }
+
+                var problem = _problemService.GetProblemById(model.ProblemId);
+                if (problem == null || problem.Status != ProblemStatus.WaitingForTutor)
+                {
+                    TempData["Error"] = "Bài toán không còn khả dụng!";
+                    return RedirectToAction("AvailableProblems");
+                }
+
+                var success = _tutorApplicationService.ApplyForProblem(
+                    model.ProblemId,
+                    userId,
+                    model.Proposal,
+                    model.ProposedPrice,
+                    model.EstimatedDays
+                );
+
+                if (success)
+                {
+                    var tutor = _userService.GetUserById(userId);
+                    if (tutor != null)
+                    {
+                        _notificationService.NotifyTutorApplied(
                             problem.StudentId,
-                            id,
+                            model.ProblemId,
                             tutor.FullName
                         );
                     }
 
-                    TempData["Success"] = "Đã nhận bài toán thành công!";
-                    return RedirectToAction("MyProblems");
+                    TempData["Success"] = "✅ Đã gửi đơn đăng ký thành công! Chờ học sinh duyệt.";
+                    return RedirectToAction("MyApplications");
                 }
                 else
                 {
-                    TempData["Error"] = "Không thể nhận bài toán này!";
+                    TempData["Error"] = "Không thể đăng ký. Bạn có thể đã đăng ký trước đó!";
                     return RedirectToAction("AvailableProblems");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error in AcceptProblem: {ex.Message}");
-                TempData["Error"] = "Đã xảy ra lỗi khi nhận bài toán!";
+                Console.WriteLine($"❌ Error in ApplyForProblem POST: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi!";
                 return RedirectToAction("AvailableProblems");
             }
+        }
+
+        // ✅ THÊM ACTION: Danh sách đơn đăng ký của Tutor
+        public IActionResult MyApplications()
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return RedirectToAction("Login", "Account");
+
+            var applications = _tutorApplicationService.GetTutorApplications(userId);
+            return View(applications);
         }
 
         public IActionResult MyProblems()
@@ -1496,6 +1603,37 @@ namespace Webgiasu.Controllers
                 TempData["Error"] = "Đã xảy ra lỗi!";
                 return RedirectToAction("MyClassSchedules");
             }
+        }
+
+        [HttpPost]
+        public IActionResult WithdrawApplication([FromBody] WithdrawApplicationRequest request)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0)
+                    return Json(new { success = false, message = "Vui lòng đăng nhập!" });
+
+                var success = _tutorApplicationService.WithdrawApplication(request.ApplicationId, userId);
+
+                if (success)
+                {
+                    return Json(new { success = true, message = "Đã rút đơn thành công!" });
+                }
+
+                return Json(new { success = false, message = "Không thể rút đơn!" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in WithdrawApplication: {ex.Message}");
+                return Json(new { success = false, message = "Đã xảy ra lỗi!" });
+            }
+        }
+
+        // ✅ THÊM REQUEST MODEL
+        public class WithdrawApplicationRequest
+        {
+            public int ApplicationId { get; set; }
         }
 
     }

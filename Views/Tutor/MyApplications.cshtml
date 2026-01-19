@@ -1,0 +1,169 @@
+﻿@model List<Webgiasu.Models.TutorApplication>
+@{
+    ViewData["Title"] = "Đơn đăng ký của tôi";
+    Layout = "_TutorLayout";
+}
+
+<div>
+    <!-- Page Header -->
+    <div class="page-header mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <div>
+                <h2 class="fw-bold">
+                    <i class="bi bi-file-earmark-check text-success me-2"></i>Đơn đăng ký của tôi
+                </h2>
+                <p class="text-muted mb-0">Theo dõi các đơn đăng ký nhận bài toán</p>
+            </div>
+            <div>
+                <a asp-action="AvailableProblems" class="btn btn-success">
+                    <i class="bi bi-plus-circle me-1"></i>Tìm bài mới
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    @if (Model.Any())
+    {
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm text-center">
+                    <div class="card-body p-3">
+                        <i class="bi bi-hourglass-split text-warning fs-2 mb-2"></i>
+                        <h4 class="fw-bold mb-1">@Model.Count(a => a.Status == Webgiasu.Models.ApplicationStatus.Pending)</h4>
+                        <p class="text-muted mb-0 small">Chờ duyệt</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm text-center">
+                    <div class="card-body p-3">
+                        <i class="bi bi-check-circle text-success fs-2 mb-2"></i>
+                        <h4 class="fw-bold mb-1">@Model.Count(a => a.Status == Webgiasu.Models.ApplicationStatus.Approved)</h4>
+                        <p class="text-muted mb-0 small">Đã duyệt</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm text-center">
+                    <div class="card-body p-3">
+                        <i class="bi bi-x-circle text-danger fs-2 mb-2"></i>
+                        <h4 class="fw-bold mb-1">@Model.Count(a => a.Status == Webgiasu.Models.ApplicationStatus.Rejected)</h4>
+                        <p class="text-muted mb-0 small">Bị từ chối</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <ul class="nav nav-pills mb-4" id="applicationTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="all-tab" data-bs-toggle="pill" data-bs-target="#all" type="button">
+                    Tất cả (@Model.Count)
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pending-tab" data-bs-toggle="pill" data-bs-target="#pending" type="button">
+                    Chờ duyệt (@Model.Count(a => a.Status == Webgiasu.Models.ApplicationStatus.Pending))
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="approved-tab" data-bs-toggle="pill" data-bs-target="#approved" type="button">
+                    Đã duyệt (@Model.Count(a => a.Status == Webgiasu.Models.ApplicationStatus.Approved))
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="rejected-tab" data-bs-toggle="pill" data-bs-target="#rejected" type="button">
+                    Bị từ chối (@Model.Count(a => a.Status == Webgiasu.Models.ApplicationStatus.Rejected))
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="applicationTabsContent">
+            <!-- All Applications -->
+            <div class="tab-pane fade show active" id="all" role="tabpanel">
+                @await Html.PartialAsync("_ApplicationsList", Model)
+            </div>
+
+            <!-- Pending Applications -->
+            <div class="tab-pane fade" id="pending" role="tabpanel">
+                @await Html.PartialAsync("_ApplicationsList", Model.Where(a => a.Status == Webgiasu.Models.ApplicationStatus.Pending).ToList())
+            </div>
+
+            <!-- Approved Applications -->
+            <div class="tab-pane fade" id="approved" role="tabpanel">
+                @await Html.PartialAsync("_ApplicationsList", Model.Where(a => a.Status == Webgiasu.Models.ApplicationStatus.Approved).ToList())
+            </div>
+
+            <!-- Rejected Applications -->
+            <div class="tab-pane fade" id="rejected" role="tabpanel">
+                @await Html.PartialAsync("_ApplicationsList", Model.Where(a => a.Status == Webgiasu.Models.ApplicationStatus.Rejected).ToList())
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Empty State -->
+        <div class="card shadow-sm">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-inbox text-muted" style="font-size: 5rem; opacity: 0.3;"></i>
+                <h4 class="mt-3 text-muted">Chưa có đơn đăng ký nào</h4>
+                <p class="text-muted mb-4">Hãy bắt đầu tìm và đăng ký nhận bài toán phù hợp!</p>
+                <a asp-action="AvailableProblems" class="btn btn-success btn-lg">
+                    <i class="bi bi-search me-1"></i>Tìm bài toán
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // ✅ Auto-refresh pending applications every 30 seconds
+        let autoRefreshInterval;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Only auto-refresh when on "Pending" tab
+            document.querySelectorAll('#applicationTabs button').forEach(tab => {
+                tab.addEventListener('shown.bs.tab', function(e) {
+                    clearInterval(autoRefreshInterval);
+
+                    if (e.target.id === 'pending-tab') {
+                        autoRefreshInterval = setInterval(() => {
+                            console.log('Auto-refreshing pending applications...');
+                            location.reload();
+                        }, 30000); // 30 seconds
+                    }
+                });
+            });
+        });
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', function() {
+            clearInterval(autoRefreshInterval);
+        });
+    </script>
+}
+
+<style>
+    .nav-pills .nav-link {
+        color: #6c757d;
+        border: 1px solid #dee2e6;
+        margin-right: 0.5rem;
+    }
+
+        .nav-pills .nav-link.active {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+    .hover-card {
+        transition: all 0.3s ease;
+    }
+
+        .hover-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+        }
+</style>
