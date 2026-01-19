@@ -1,0 +1,191 @@
+﻿@model Webgiasu.Models.ViewModels.ApplyProblemViewModel
+@{
+    ViewData["Title"] = "Đăng ký nhận bài";
+    Layout = "_TutorLayout";
+    var problem = ViewBag.Problem as Webgiasu.Models.Problem;
+    var student = ViewBag.Student as Webgiasu.Models.User;
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Back Button -->
+            <div class="mb-3">
+                <a asp-action="AvailableProblems" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>Quay lại
+                </a>
+            </div>
+
+            <!-- Problem Info Card -->
+            @if (problem != null)
+            {
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-file-earmark-text me-2"></i>
+                            Thông tin bài toán
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="mb-3">@problem.Title</h4>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <p class="mb-2">
+                                    <i class="bi bi-book text-primary me-1"></i>
+                                    <strong>Môn học:</strong> @problem.Type
+                                </p>
+                                <p class="mb-2">
+                                    <i class="bi bi-mortarboard text-primary me-1"></i>
+                                    <strong>Cấp học:</strong>
+                                    @switch (problem.Difficulty)
+                                    {
+                                        case Webgiasu.Models.DifficultyLevel.TieuHoc:
+                                            <text>Tiểu học</text>
+                                            break;
+                                        case Webgiasu.Models.DifficultyLevel.THCS:
+                                            <text>THCS</text>
+                                            break;
+                                        case Webgiasu.Models.DifficultyLevel.THPT:
+                                            <text>THPT</text>
+                                            break;
+                                        case Webgiasu.Models.DifficultyLevel.DaiHoc:
+                                            <text>Đại học</text>
+                                            break;
+                                    }
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-2">
+                                    <i class="bi bi-cash-stack text-success me-1"></i>
+                                    <strong>Giá gốc:</strong>
+                                    <span class="text-success fw-bold">@problem.Price.ToString("N0")đ</span>
+                                </p>
+                                <p class="mb-2">
+                                    <i class="bi bi-calendar-event text-danger me-1"></i>
+                                    <strong>Deadline:</strong>
+                                    <span class="text-danger">@problem.Deadline.ToString("dd/MM/yyyy HH:mm")</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        @if (student != null)
+                        {
+                            <hr />
+                            <div class="alert alert-info mb-0">
+                                <i class="bi bi-person me-1"></i>
+                                <strong>Học sinh:</strong> @student.FullName
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- Application Form -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-hand-thumbs-up me-2"></i>
+                        Đơn đăng ký nhận bài
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="ApplyForProblem" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="ProblemId" />
+
+                        <!-- Proposal -->
+                        <div class="mb-4">
+                            <label asp-for="Proposal" class="form-label fw-bold">
+                                <i class="bi bi-chat-square-text text-success me-1"></i>
+                                Đề xuất của bạn <span class="text-danger">*</span>
+                            </label>
+                            <textarea asp-for="Proposal"
+                                      class="form-control"
+                                      rows="6"
+                                      placeholder="Giới thiệu về bản thân, kinh nghiệm, phương pháp giải và cam kết hoàn thành..."></textarea>
+                            <span asp-validation-for="Proposal" class="text-danger"></span>
+                            <div class="form-text">
+                                <i class="bi bi-lightbulb me-1"></i>
+                                Tối thiểu 50 ký tự. Hãy thể hiện năng lực và sự chuyên nghiệp!
+                            </div>
+                        </div>
+
+                        <!-- Proposed Price -->
+                        <div class="mb-4">
+                            <label asp-for="ProposedPrice" class="form-label fw-bold">
+                                <i class="bi bi-currency-dollar text-success me-1"></i>
+                                Giá đề xuất (VNĐ) <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <input asp-for="ProposedPrice"
+                                       type="number"
+                                       class="form-control form-control-lg"
+                                       min="10000"
+                                       max="10000000"
+                                       step="1000" />
+                                <span class="input-group-text">đ</span>
+                            </div>
+                            <span asp-validation-for="ProposedPrice" class="text-danger"></span>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Từ 10,000đ đến 10,000,000đ. Giá gốc: <strong>@Model.OriginalPrice?.ToString("N0")đ</strong>
+                            </div>
+                        </div>
+
+                        <!-- Estimated Days -->
+                        <div class="mb-4">
+                            <label asp-for="EstimatedDays" class="form-label fw-bold">
+                                <i class="bi bi-calendar-check text-success me-1"></i>
+                                Thời gian dự kiến (ngày) <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="EstimatedDays"
+                                   type="number"
+                                   class="form-control form-control-lg"
+                                   min="1"
+                                   max="30" />
+                            <span asp-validation-for="EstimatedDays" class="text-danger"></span>
+                            <div class="form-text">
+                                <i class="bi bi-clock-history me-1"></i>
+                                Từ 1 đến 30 ngày
+                            </div>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <!-- Warning -->
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <strong>Lưu ý:</strong> Sau khi gửi đơn, học sinh sẽ xem xét và duyệt.
+                            Bạn chỉ có thể làm bài sau khi được chấp nhận.
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-success btn-lg flex-grow-1">
+                                <i class="bi bi-send me-1"></i>
+                                Gửi đơn đăng ký
+                            </button>
+                            <a asp-action="AvailableProblems" class="btn btn-outline-secondary btn-lg">
+                                <i class="bi bi-x-circle me-1"></i>
+                                Hủy
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // ✅ Format price input
+        document.querySelector('input[name="ProposedPrice"]').addEventListener('input', function(e) {
+            let value = this.value.replace(/[^0-9]/g, '');
+            this.value = value;
+        });
+    </script>
+}

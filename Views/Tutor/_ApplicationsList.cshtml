@@ -1,0 +1,184 @@
+﻿@model List<Webgiasu.Models.TutorApplication>
+
+@if (Model.Any())
+{
+    <div class="row">
+        @foreach (var application in Model.OrderByDescending(a => a.AppliedDate))
+        {
+            var statusBadgeClass = application.Status switch
+            {
+                Webgiasu.Models.ApplicationStatus.Pending => "warning",
+                Webgiasu.Models.ApplicationStatus.Approved => "success",
+                Webgiasu.Models.ApplicationStatus.Rejected => "danger",
+                Webgiasu.Models.ApplicationStatus.Withdrawn => "secondary",
+                _ => "secondary"
+            };
+
+            var statusText = application.Status switch
+            {
+                Webgiasu.Models.ApplicationStatus.Pending => "Chờ duyệt",
+                Webgiasu.Models.ApplicationStatus.Approved => "Đã duyệt",
+                Webgiasu.Models.ApplicationStatus.Rejected => "Bị từ chối",
+                Webgiasu.Models.ApplicationStatus.Withdrawn => "Đã rút",
+                _ => "Khác"
+            };
+
+            var statusIcon = application.Status switch
+            {
+                Webgiasu.Models.ApplicationStatus.Pending => "hourglass-split",
+                Webgiasu.Models.ApplicationStatus.Approved => "check-circle",
+                Webgiasu.Models.ApplicationStatus.Rejected => "x-circle",
+                Webgiasu.Models.ApplicationStatus.Withdrawn => "arrow-counterclockwise",
+                _ => "question-circle"
+            };
+
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card shadow-sm h-100 hover-card">
+                    <div class="card-body">
+                        <!-- Header with Status Badge -->
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h6 class="card-title mb-0 flex-grow-1 text-truncate"
+                                title="@application.Problem?.Title">
+                                @(application.Problem?.Title ?? "Bài toán đã bị xóa")
+                            </h6>
+                            <span class="badge bg-@statusBadgeClass ms-2">
+                                <i class="bi bi-@statusIcon me-1"></i>@statusText
+                            </span>
+                        </div>
+
+                        <!-- Proposal Preview -->
+                        <div class="mb-3">
+                            <small class="text-muted fw-semibold">Đề xuất:</small>
+                            <p class="small mb-0" style="height: 60px; overflow: hidden; text-overflow: ellipsis;">
+                                @{
+                                    var proposalPreview = application.Proposal.Length > 100
+                                    ? application.Proposal.Substring(0, 100) + "..."
+                                    : application.Proposal;
+                                }
+                                @proposalPreview
+                            </p>
+                        </div>
+
+                        <!-- Price & Days -->
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <small class="text-muted d-block">Giá đề xuất</small>
+                                <strong class="text-success">@application.ProposedPrice.ToString("N0")đ</strong>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted d-block">Thời gian</small>
+                                <strong class="text-info">@application.EstimatedDays ngày</strong>
+                            </div>
+                        </div>
+
+                        <!-- Dates -->
+                        <div class="mb-3">
+                            <small class="text-muted d-block">
+                                <i class="bi bi-calendar-plus me-1"></i>
+                                Đăng ký: @application.AppliedDate.ToString("dd/MM/yyyy HH:mm")
+                            </small>
+                            @if (application.ResponsedDate.HasValue)
+                            {
+                                <small class="text-muted d-block">
+                                    <i class="bi bi-calendar-check me-1"></i>
+                                    Phản hồi: @application.ResponsedDate.Value.ToString("dd/MM/yyyy HH:mm")
+                                </small>
+                            }
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex gap-2">
+                            @if (application.Problem != null)
+                            {
+                                <a asp-action="ProblemDetails"
+                                   asp-route-id="@application.ProblemId"
+                                   class="btn btn-sm btn-outline-primary flex-grow-1">
+                                    <i class="bi bi-eye me-1"></i>Xem bài
+                                </a>
+                            }
+
+                            @if (application.Status == Webgiasu.Models.ApplicationStatus.Pending)
+                            {
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-danger"
+                                        onclick="withdrawApplication(@application.Id)"
+                                        title="Rút đơn">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            }
+
+                            @if (application.Status == Webgiasu.Models.ApplicationStatus.Approved)
+                            {
+                                <a asp-action="MyProblems"
+                                   class="btn btn-sm btn-success flex-grow-1">
+                                    <i class="bi bi-briefcase me-1"></i>Bài đã nhận
+                                </a>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="card-footer bg-light">
+                        <small class="text-muted">
+                            @if (application.Status == Webgiasu.Models.ApplicationStatus.Pending)
+                            {
+                                <i class="bi bi-clock-history me-1"></i>
+                                <text>Đang chờ học sinh xem xét</text>
+                            }
+                            else if (application.Status == Webgiasu.Models.ApplicationStatus.Approved)
+                            {
+                                <i class="bi bi-check-circle text-success me-1"></i>
+                                <text>Bạn đã được chọn làm Mentor</text>
+                            }
+                            else if (application.Status == Webgiasu.Models.ApplicationStatus.Rejected)
+                            {
+                                <i class="bi bi-x-circle text-danger me-1"></i>
+                                <text>Học sinh đã chọn Mentor khác</text>
+                            }
+                            else
+                            {
+                                <i class="bi bi-arrow-counterclockwise me-1"></i>
+                                <text>Bạn đã rút đơn</text>
+                            }
+                        </small>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-info text-center">
+        <i class="bi bi-info-circle me-2"></i>
+        Không có đơn đăng ký nào trong danh mục này
+    </div>
+}
+
+<script>
+    function withdrawApplication(applicationId) {
+        if (!confirm('Bạn chắc chắn muốn rút đơn đăng ký này?')) return;
+
+        fetch(`/Tutor/WithdrawApplication`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+            },
+            body: JSON.stringify({ applicationId: applicationId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Đã rút đơn thành công!');
+                location.reload();
+            } else {
+                alert(data.message || 'Không thể rút đơn!');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Đã xảy ra lỗi!');
+        });
+    }
+</script>

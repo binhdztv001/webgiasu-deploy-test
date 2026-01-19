@@ -36,6 +36,8 @@ namespace Webgiasu.Models
 
         public DbSet<Notification> Notifications { get; set; }
 
+        public DbSet<TutorApplication> TutorApplications { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -250,7 +252,18 @@ namespace Webgiasu.Models
             modelBuilder.Entity<ClassSchedule>()
                 .HasIndex(cs => cs.Status);
 
+            modelBuilder.Entity<TutorApplication>(entity =>
+            {
+                entity.HasOne(ta => ta.Problem)
+                      .WithMany()
+                      .HasForeignKey(ta => ta.ProblemId)
+                      .OnDelete(DeleteBehavior.Cascade);
 
-    }
+                entity.HasOne(ta => ta.Tutor)
+                      .WithMany()
+                      .HasForeignKey(ta => ta.TutorId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+        }
     }
 }

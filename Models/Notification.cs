@@ -10,7 +10,10 @@
         FriendRequest,
         FriendRequestAccepted, // Lời mời kết bạn
         RatingReceived,          // Khi nhận được đánh giá
-        PaymentReceived          // Khi nhận được tiền thanh toán
+        PaymentReceived,          // Khi nhận được tiền thanh toán
+        TutorApplied,           // ✅ THÊM MỚI
+        ApplicationApproved,    // ✅ THÊM MỚI
+        ApplicationRejected     // ✅ THÊM MỚI (optional)
     }
 
     public class Notification

@@ -184,20 +184,22 @@
             <div class="card shadow-sm mb-4 border-success">
                 <div class="card-body">
                     <h5 class="text-center mb-3">
-                        <i class="bi bi-hand-thumbs-up"></i> Nhận bài này?
+                        <i class="bi bi-hand-thumbs-up"></i> Quan tâm bài này?
                     </h5>
-                    <form asp-action="AcceptProblem" method="post">
-                        <input type="hidden" name="id" value="@Model.Problem.Id" />
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-success btn-lg" onclick="return confirm('Bạn chắc chắn muốn nhận bài này?')">
-                                <i class="bi bi-check-circle"></i> Nhận bài ngay
-                            </button>
-                        </div>
-                    </form>
+                    
+                    <!-- ✅ FIX: Link đến form đăng ký -->
+                    <div class="d-grid gap-2">
+                        <a asp-action="ApplyForProblem" 
+                           asp-route-problemId="@Model.Problem.Id" 
+                           class="btn btn-success btn-lg">
+                            <i class="bi bi-hand-thumbs-up me-1"></i> Đăng ký nhận bài
+                        </a>
+                    </div>
+                    
                     <div class="alert alert-info mt-3 mb-0">
                         <small>
                             <i class="bi bi-info-circle"></i> 
-                            Sau khi nhận bài, bạn cần gửi lời giải trước deadline
+                            Bạn cần gửi đề xuất để học sinh xem xét
                         </small>
                     </div>
                 </div>

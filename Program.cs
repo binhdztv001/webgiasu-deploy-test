@@ -79,6 +79,7 @@ builder.Services.AddScoped<IPremiumService, PremiumService>();
 builder.Services.AddScoped<IProblemGroupService, ProblemGroupService>();
 builder.Services.AddScoped<ISchoolClassService, SchoolClassService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<ITutorApplicationService, TutorApplicationService>();
 
 // Add SignalR
 builder.Services.AddSignalR();

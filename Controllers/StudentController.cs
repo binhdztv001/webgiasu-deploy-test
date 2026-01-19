@@ -41,14 +41,16 @@ namespace Webgiasu.Controllers
         private readonly ISePayGateway _sePayGateway;
         private readonly IPremiumService _premiumService;
         private readonly INotificationService _notificationService;
+        private readonly ITutorApplicationService _tutorApplicationService;
+
 
         public StudentController(AppDbContext db, IProblemService problemService, ISolutionService solutionService, 
             IPaymentService paymentService, IUserService userService, IRatingService ratingService,
             IFriendshipService friendshipService, IMessageService messageService, IPremiumService premiumService,
             ICommunityService communityService, IHubContext<CommunityHub> hubContext, IProblemGroupService problemGroupService, ISePayGateway sePayGateway
-            , INotificationService notificationService)
+            , INotificationService notificationService, ITutorApplicationService tutorApplicationService)
         {
-            _db=db;
+            _db = db;
             _problemService = problemService;
             _solutionService = solutionService;
             _paymentService = paymentService;
@@ -62,6 +64,7 @@ namespace Webgiasu.Controllers
             _problemGroupService = problemGroupService;
             _sePayGateway = sePayGateway;
             _notificationService = notificationService;
+            _tutorApplicationService = tutorApplicationService;
         }
 
         private int GetCurrentUserId()
@@ -170,6 +173,12 @@ namespace Webgiasu.Controllers
                     Group = groupInfo, // ✅ Thêm thông tin nhóm
                     GroupMembers = groupInfo != null ? _problemGroupService.GetGroupMembers(groupInfo.Id) : null
                 };
+
+                if (problem.Status == ProblemStatus.WaitingForTutor)
+                {
+                    var apps = _tutorApplicationService.GetApplicationsForProblem(id, false);
+                    ViewBag.ApplicationCount = apps.Count(a => a.Status == ApplicationStatus.Pending);
+                }
 
                 // Check if student has rated this problem
                 ViewBag.HasRated = await _ratingService.HasStudentRatedProblemAsync(id, userId);
@@ -486,15 +495,20 @@ namespace Webgiasu.Controllers
 
                 // Get groups user is member of
                 var groups = _problemGroupService.GetGroupsByUserId(userId);
-
-                // ✅ Create HashSet of problem IDs that are in groups
                 var groupProblemIds = groups.Select(g => g.ProblemId).ToHashSet();
-
-                // ✅ Create mapping: ProblemId -> GroupId for quick lookup
                 var problemGroupMap = groups.ToDictionary(g => g.ProblemId, g => g.Id);
+
+                // ✅ THÊM: Đếm số application cho mỗi bài
+                var applicationCounts = new Dictionary<int, int>();
+                foreach (var problem in problems.Where(p => p.Status == ProblemStatus.WaitingForTutor))
+                {
+                    var apps = _tutorApplicationService.GetApplicationsForProblem(problem.Id, false);
+                    applicationCounts[problem.Id] = apps.Count(a => a.Status == ApplicationStatus.Pending);
+                }
 
                 ViewBag.GroupProblemIds = groupProblemIds;
                 ViewBag.ProblemGroupMap = problemGroupMap;
+                ViewBag.ApplicationCounts = applicationCounts; // ✅ THÊM
 
                 return View(problems);
             }
@@ -2521,132 +2535,6 @@ namespace Webgiasu.Controllers
                     return RedirectToAction("Dashboard");
                 }
 
-                // Kiểm tra xem học sinh có trong lớp này không
-                var classStudent = _db.ClassStudents
-                    .FirstOrDefault(cs => cs.ClassId == id && cs.StudentId == userId);
-
-                if (classStudent == null)
-                {
-                    TempData["Error"] = "Bạn không thuộc lớp học này!";
-                    return RedirectToAction("MyClassSchool");
-                }
-
-                var classInfo = _db.SchoolClasses
-                    .Include(c => c.School)
-                    .Include(c => c.Tutor)
-                    .Include(c => c.Students)
-                    .FirstOrDefault(c => c.Id == id);
-
-                if (classInfo == null)
-                {
-                    TempData["Error"] = "Không tìm thấy lớp học!";
-                    return RedirectToAction("MyClassSchool");
-                }
-
-                // Lấy danh sách học sinh trong lớp
-                var students = _db.ClassStudents
-                    .Where(cs => cs.ClassId == id)
-                    .Include(cs => cs.Student)
-                    .Select(cs => new
-                    {
-                        Id = cs.Student!.Id,
-                        FullName = cs.Student.FullName,
-                        Email = cs.Student.Email ?? "",
-                        PhoneNumber = cs.Student.PhoneNumber ?? "",
-                        JoinedDate = cs.JoinedDate.ToString("dd/MM/yyyy")
-                    })
-                    .ToList();
-
-                ViewBag.Class = classInfo;
-                ViewBag.Students = students;
-                ViewBag.School = classInfo.School;
-                ViewBag.Tutor = classInfo.Tutor;
-
-                return View();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Error in ClassSchoolDetails: {ex.Message}");
-                TempData["Error"] = "Đã xảy ra lỗi!";
-                return RedirectToAction("MyClassSchool");
-            }
-        }
-
-        public IActionResult MyClassSchedules()
-        {
-            try
-            {
-                var userId = GetCurrentUserId();
-                if (userId == 0) return RedirectToAction("Login", "Account");
-
-                var user = _userService.GetUserById(userId);
-                if (user == null || user.Role != UserRole.Student ||
-                    !user.Level.HasValue || user.Level.Value != EducationLevel.DaiHoc)
-                {
-                    TempData["Error"] = "Tính năng này chỉ dành cho học sinh Đại học!";
-                    return RedirectToAction("Dashboard");
-                }
-
-                // Lấy danh sách lớp học mà học sinh tham gia
-                var myClassIds = _db.ClassStudents
-                    .Where(cs => cs.StudentId == userId)
-                    .Select(cs => cs.ClassId)
-                    .ToList();
-
-                // Lấy tất cả lịch trao đổi của các lớp học đó
-                var schedules = _db.ClassSchedules
-                    .Where(s => myClassIds.Contains(s.ClassId))
-                    .Include(s => s.Class)
-                        .ThenInclude(c => c!.School)
-                    .Include(s => s.Class)
-                        .ThenInclude(c => c!.Tutor)
-                    .OrderByDescending(s => s.ScheduleDate)
-                    .ThenBy(s => s.StartTime)
-                    .Select(s => new ScheduleListViewModel
-                    {
-                        Id = s.Id,
-                        Title = s.Title,
-                        ScheduleDate = s.ScheduleDate,
-                        StartTime = s.StartTime,
-                        EndTime = s.EndTime,
-                        MeetingType = s.MeetingType,
-                        Status = s.Status,
-                        ClassName = s.Class!.ClassName,
-                        Subject = s.Class.Subject,
-                        TotalStudents = s.Class.Students!.Count
-                    })
-                    .ToList();
-
-                // Thống kê
-                ViewBag.TotalSchedules = schedules.Count;
-                ViewBag.UpcomingSchedules = schedules.Count(s => s.Status == ScheduleStatus.Upcoming);
-                ViewBag.CompletedSchedules = schedules.Count(s => s.Status == ScheduleStatus.Completed);
-
-                return View(schedules);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Error in MyClassSchedules: {ex.Message}");
-                TempData["Error"] = "Đã xảy ra lỗi khi tải lịch trao đổi!";
-                return RedirectToAction("Dashboard");
-            }
-        }
-
-        public IActionResult ScheduleDetails(int id)
-        {
-            try
-            {
-                var userId = GetCurrentUserId();
-                if (userId == 0) return RedirectToAction("Login", "Account");
-
-                var user = _userService.GetUserById(userId);
-                if (user == null || user.Role != UserRole.Student ||
-                    !user.Level.HasValue || user.Level.Value != EducationLevel.DaiHoc)
-                {
-                    TempData["Error"] = "Bạn không có quyền truy cập!";
-                    return RedirectToAction("Dashboard");
-                }
-
                 // Kiểm tra xem học sinh có thuộc lớp học của lịch này không
                 var schedule = _db.ClassSchedules
                     .Include(s => s.Class)
@@ -2738,6 +2626,106 @@ namespace Webgiasu.Controllers
 
             _notificationService.MarkAllAsRead(userId);
             return RedirectToAction("Notifications");
+        }
+
+
+        // ✅ ACTION: Xem danh sách Tutors đăng ký
+public IActionResult ViewTutorApplications(int problemId)
+{
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var problem = _problemService.GetProblemById(problemId);
+                if (problem == null || problem.StudentId != userId)
+                {
+                    TempData["Error"] = "Không tìm thấy bài toán!";
+                    return RedirectToAction("MyProblems");
+                }
+
+                // ✅ LẤY APPLICATIONS VỚI ƯU TIÊN PREMIUM
+                var applications = _tutorApplicationService.GetApplicationsForProblem(problemId, prioritizePremium: true);
+
+                ViewBag.Problem = problem;
+                return View(applications);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi!";
+                return RedirectToAction("MyProblems");
+            }
+        }
+
+        // ✅ ACTION: Duyệt Tutor
+        [HttpPost]
+        public IActionResult ApproveApplication([FromBody] ApproveApplicationRequest request)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0)
+                {
+                    Console.WriteLine("❌ User not logged in");
+                    return Json(new { success = false, message = "Vui lòng đăng nhập!" });
+                }
+
+                Console.WriteLine($"📝 ApproveApplication called by user {userId} for application {request.ApplicationId}");
+
+                var success = _tutorApplicationService.ApproveApplication(request.ApplicationId, userId);
+
+                if (success)
+                {
+                    var application = _tutorApplicationService.GetApplicationById(request.ApplicationId);
+                    if (application != null && application.Problem != null)
+                    {
+                        Console.WriteLine($"✅ Sending notification to tutor {application.TutorId}");
+                        _notificationService.NotifyApplicationApproved(
+                            application.TutorId,
+                            application.ProblemId,
+                            application.Problem.Title
+                        );
+                    }
+
+                    return Json(new { success = true, message = "Đã duyệt Mentor thành công!" });
+                }
+
+                Console.WriteLine($"❌ ApproveApplication returned false");
+                return Json(new { success = false, message = "Không thể duyệt! Có thể bài toán đã được nhận hoặc đơn đã xử lý." });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in ApproveApplication controller: {ex.Message}");
+                Console.WriteLine($"   Stack trace: {ex.StackTrace}");
+                return Json(new { success = false, message = $"Đã xảy ra lỗi: {ex.Message}" });
+            }
+        }
+
+        // ✅ THÊM REQUEST MODEL
+        public class ApproveApplicationRequest
+        {
+            public int ApplicationId { get; set; }
+        }
+
+        // ✅ ACTION: Từ chối Tutor
+        [HttpPost]
+        public IActionResult RejectApplication(int applicationId)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return Json(new { success = false, message = "Vui lòng đăng nhập!" });
+
+                var success = _tutorApplicationService.RejectApplication(applicationId, userId);
+
+                return Json(new { success = success, message = success ? "Đã từ chối!" : "Không thể từ chối!" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error: {ex.Message}");
+                return Json(new { success = false, message = "Đã xảy ra lỗi!" });
+            }
         }
 
     }

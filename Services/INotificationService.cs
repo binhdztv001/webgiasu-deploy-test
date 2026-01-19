@@ -20,6 +20,9 @@ namespace Webgiasu.Services
         bool NotifyTutorSolutionSubmitted(int tutorId, int problemId, string problemTitle);
         bool NotifyTutorRatingReceived(int tutorId, int problemId, string studentName, int stars);
         bool NotifyTutorPaymentReceived(int tutorId, int problemId, decimal amount);
+        bool NotifyTutorApplied(int studentId, int problemId, string tutorName);
+        bool NotifyApplicationApproved(int tutorId, int problemId, string problemTitle);
+        bool NotifyApplicationRejected(int tutorId, int problemId, string reason);
     }
 }
 

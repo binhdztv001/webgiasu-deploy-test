@@ -84,7 +84,7 @@ namespace Webgiasu.Services
         }
 
         // ========== STUDENT NOTIFICATIONS ==========
-        
+
         public bool NotifyProblemCreated(int userId, int problemId, string problemTitle)
         {
             var notification = new Notification
@@ -93,7 +93,7 @@ namespace Webgiasu.Services
                 Type = NotificationType.ProblemCreated,
                 Title = "Đăng bài thành công",
                 Message = $"Bài toán '{problemTitle}' đã được đăng thành công",
-                Link = $"/Student/ProblemDetails/{problemId}",
+                Link = $"/Student/ProblemDetails?id={problemId}", // ✅ FIX
                 ProblemId = problemId
             };
 
@@ -108,7 +108,7 @@ namespace Webgiasu.Services
                 Type = NotificationType.TutorAccepted,
                 Title = "Mentor đã nhận yêu cầu",
                 Message = $"{tutorName} đã nhận bài toán của bạn",
-                Link = $"/Student/ProblemDetails/{problemId}",
+                Link = $"/Student/ProblemDetails?id={problemId}", // ✅ FIX
                 ProblemId = problemId
             };
 
@@ -123,7 +123,7 @@ namespace Webgiasu.Services
                 Type = NotificationType.SolutionSubmitted,
                 Title = "Bài giải đã sẵn sàng",
                 Message = "Mentor đã hoàn thành bài toán của bạn",
-                Link = $"/Student/ProblemDetails/{problemId}",
+                Link = $"/Student/ProblemDetails?id={problemId}", // ✅ FIX
                 ProblemId = problemId
             };
 
@@ -138,7 +138,7 @@ namespace Webgiasu.Services
                 Type = NotificationType.PaymentCompleted,
                 Title = "Thanh toán thành công",
                 Message = $"Giao dịch {amount:N0}đ hoàn tất",
-                Link = $"/Student/Payments",
+                Link = $"/Student/Payments", // ✅ OK
                 PaymentId = paymentId
             };
 
@@ -153,7 +153,7 @@ namespace Webgiasu.Services
                 Type = NotificationType.FriendRequest,
                 Title = "Lời mời kết bạn mới",
                 Message = $"{senderName} đã gửi lời mời kết bạn cho bạn",
-                Link = "/Student/FriendShip"
+                Link = "/Student/FriendShip" // ✅ OK
             };
 
             return CreateNotification(notification);
@@ -167,17 +167,14 @@ namespace Webgiasu.Services
                 Type = NotificationType.FriendRequest,
                 Title = "Lời mời kết bạn được chấp nhận",
                 Message = $"{acceptedByUserName} đã chấp nhận lời mời kết bạn của bạn",
-                Link = "/Student/FriendShip"
+                Link = "/Student/FriendShip" // ✅ OK
             };
 
             return CreateNotification(notification);
         }
 
-        // ========== ✅ TUTOR NOTIFICATIONS ==========
+        // ========== TUTOR NOTIFICATIONS ==========
 
-        /// <summary>
-        /// Thông báo cho Tutor khi gửi bài giải thành công
-        /// </summary>
         public bool NotifyTutorSolutionSubmitted(int tutorId, int problemId, string problemTitle)
         {
             var notification = new Notification
@@ -186,16 +183,13 @@ namespace Webgiasu.Services
                 Type = NotificationType.SolutionSubmitted,
                 Title = "Gửi bài giải thành công",
                 Message = $"Bạn đã gửi lời giải cho bài toán '{problemTitle}'",
-                Link = $"/Tutor/ProblemDetails/{problemId}",
+                Link = $"/Tutor/ProblemDetails?id={problemId}", // ✅ FIX
                 ProblemId = problemId
             };
 
             return CreateNotification(notification);
         }
 
-        /// <summary>
-        /// Thông báo cho Tutor khi nhận được đánh giá từ Student
-        /// </summary>
         public bool NotifyTutorRatingReceived(int tutorId, int problemId, string studentName, int stars)
         {
             var starText = stars switch
@@ -214,16 +208,13 @@ namespace Webgiasu.Services
                 Type = NotificationType.RatingReceived,
                 Title = "Nhận được đánh giá mới",
                 Message = $"{studentName} đã đánh giá {starText} cho bài giải của bạn",
-                Link = $"/Tutor/MyRatings",
+                Link = $"/Tutor/MyRatings", // ✅ OK
                 ProblemId = problemId
             };
 
             return CreateNotification(notification);
         }
 
-        /// <summary>
-        /// Thông báo cho Tutor khi nhận được tiền thanh toán
-        /// </summary>
         public bool NotifyTutorPaymentReceived(int tutorId, int problemId, decimal amount)
         {
             var notification = new Notification
@@ -231,13 +222,118 @@ namespace Webgiasu.Services
                 UserId = tutorId,
                 Type = NotificationType.PaymentReceived,
                 Title = "Nhận được thanh toán",
-                Message = $"Bạn đã nhận {amount:N0}đ từ bài giải ##{problemId}",
-                Link = $"/Tutor/Earnings",
+                Message = $"Bạn đã nhận {amount:N0}đ từ bài giải ###{problemId}",
+                Link = $"/Tutor/Earnings", // ✅ OK
                 ProblemId = problemId,
-                PaymentId = problemId // Có thể điều chỉnh nếu có PaymentId riêng
+                PaymentId = problemId
             };
 
             return CreateNotification(notification);
+        }
+
+        // ========== NEW APPLICATION SYSTEM ==========
+
+        /// <summary>
+        /// Thông báo cho Student khi có Tutor apply
+        /// </summary>
+        public bool NotifyTutorApplied(int studentId, int problemId, string tutorName)
+        {
+            try
+            {
+                if (studentId <= 0 || problemId <= 0 || string.IsNullOrWhiteSpace(tutorName))
+                {
+                    Console.WriteLine("❌ Invalid notification parameters");
+                    return false;
+                }
+
+                var notification = new Notification
+                {
+                    UserId = studentId,
+                    Type = NotificationType.TutorApplied,
+                    Title = "Mentor mới đăng ký",
+                    Message = $"{tutorName} đã đăng ký nhận bài toán của bạn",
+                    Link = $"/Student/ViewTutorApplications?problemId={problemId}", // ✅ FIX
+                    ProblemId = problemId,
+                    CreatedDate = DateTime.Now,
+                    IsRead = false
+                };
+
+                return CreateNotification(notification);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error NotifyTutorApplied: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Thông báo cho Tutor khi application được chấp nhận
+        /// </summary>
+        public bool NotifyApplicationApproved(int tutorId, int problemId, string problemTitle)
+        {
+            try
+            {
+                if (tutorId <= 0 || problemId <= 0 || string.IsNullOrWhiteSpace(problemTitle))
+                {
+                    Console.WriteLine("❌ Invalid notification parameters");
+                    return false;
+                }
+
+                var notification = new Notification
+                {
+                    UserId = tutorId,
+                    Type = NotificationType.ApplicationApproved,
+                    Title = "Đơn đăng ký được chấp nhận",
+                    Message = $"Bạn đã được chọn giải bài '{problemTitle}'",
+                    Link = $"/Tutor/ProblemDetails?id={problemId}", // ✅ FIX
+                    ProblemId = problemId,
+                    CreatedDate = DateTime.Now,
+                    IsRead = false
+                };
+
+                return CreateNotification(notification);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error NotifyApplicationApproved: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Thông báo cho Tutor khi application bị từ chối
+        /// </summary>
+        public bool NotifyApplicationRejected(int tutorId, int problemId, string reason)
+        {
+            try
+            {
+                if (tutorId <= 0 || problemId <= 0)
+                {
+                    return false;
+                }
+
+                var notification = new Notification
+                {
+                    UserId = tutorId,
+                    Type = NotificationType.ApplicationRejected,
+                    Title = "Đơn đăng ký bị từ chối",
+                    Message = !string.IsNullOrWhiteSpace(reason)
+                        ? $"Đơn đăng ký của bạn không được chấp nhận: {reason}"
+                        : "Học sinh đã chọn Mentor khác",
+                    Link = $"/Tutor/MyApplications", // ✅ FIX
+                    ProblemId = problemId,
+                    CreatedDate = DateTime.Now,
+                    IsRead = false
+                };
+
+                return CreateNotification(notification);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error NotifyApplicationRejected: {ex.Message}");
+                return false;
+            }
         }
     }
 }
