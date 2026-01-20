@@ -2448,6 +2448,78 @@ namespace Webgiasu.Controllers
             }
         }
 
+        public IActionResult MyClassSchedules()
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var user = _userService.GetUserById(userId);
+                if (user == null)
+                {
+                    TempData["Error"] = "Không tìm thấy thông tin người dùng!";
+                    return RedirectToAction("Dashboard");
+                }
+
+                // ✅ KIỂM TRA QUYỀN TRUY CẬP - CHỈ HỌC SINH ĐẠI HỌC
+                if (user.Role != UserRole.Student)
+                {
+                    TempData["Error"] = "Chỉ học sinh mới có thể xem trang này!";
+                    return RedirectToAction("Dashboard");
+                }
+
+                if (!user.Level.HasValue || user.Level.Value != EducationLevel.DaiHoc)
+                {
+                    TempData["Error"] = "Tính năng này chỉ dành cho học sinh Đại học!";
+                    return RedirectToAction("Dashboard");
+                }
+
+                // ✅ LẤY DANH SÁCH LỚP HỌC MÀ HỌC SINH THAM GIA
+                var myClassIds = _db.ClassStudents
+                    .Where(cs => cs.StudentId == userId)
+                    .Select(cs => cs.ClassId)
+                    .ToList();
+
+                // ✅ LẤY TẤT CẢ LỊCH TRAO ĐỔI CỦA CÁC LỚP HỌC ĐÓ
+                var schedules = _db.ClassSchedules
+                    .Where(s => myClassIds.Contains(s.ClassId))
+                    .Include(s => s.Class)
+                        .ThenInclude(c => c!.School)
+                    .Include(s => s.Class)
+                        .ThenInclude(c => c!.Tutor)
+                    .OrderByDescending(s => s.ScheduleDate)
+                    .ThenBy(s => s.StartTime)
+                    .Select(s => new ScheduleListViewModel
+                    {
+                        Id = s.Id,
+                        Title = s.Title,
+                        ScheduleDate = s.ScheduleDate,
+                        StartTime = s.StartTime,
+                        EndTime = s.EndTime,
+                        MeetingType = s.MeetingType,
+                        Status = s.Status,
+                        ClassName = s.Class!.ClassName,
+                        Subject = s.Class.Subject,
+                        TotalStudents = _db.ClassStudents.Count(cs => cs.ClassId == s.ClassId)
+                    })
+                    .ToList();
+
+                // ✅ THỐNG KÊ
+                ViewBag.TotalSchedules = schedules.Count;
+                ViewBag.UpcomingSchedules = schedules.Count(s => s.Status == ScheduleStatus.Upcoming);
+                ViewBag.CompletedSchedules = schedules.Count(s => s.Status == ScheduleStatus.Completed);
+
+                return View(schedules);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in MyClassSchedules: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi khi tải lịch trao đổi!";
+                return RedirectToAction("Dashboard");
+            }
+        }
+
         public IActionResult MyClassSchool()
         {
             try
