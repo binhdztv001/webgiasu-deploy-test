@@ -158,6 +158,12 @@ body[data-theme="school"] .profile-dropdown {
     --menu-color-rgb: 255,152,0 !important;
 }
 
+/* Enterprise */
+body[data-theme="enterprise"] .profile-dropdown {
+    --menu-color: #795548 !important;
+    --menu-color-rgb: 109, 76, 65 !important;
+}
+
 /* ===== Override Bootstrap dropdown-item states ===== */
 .profile-dropdown .dropdown-item,
 .profile-dropdown .dropdown-item:focus,
