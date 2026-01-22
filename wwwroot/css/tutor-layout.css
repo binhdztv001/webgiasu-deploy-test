@@ -1126,8 +1126,14 @@ html, body {
     animation: fadeIn 0.5s ease-out;
     animation-delay: 0.2s;
     animation-fill-mode: both;
-    margin-bottom: 1rem; /* t?o kho?ng cách d??i b?ng */
+    margin-bottom: 1rem;
+    -ms-overflow-style: none; /* IE & Edge cũ */
+    scrollbar-width: none; /* Firefox */
 }
+
+    .content-wrapper .table-responsive::-webkit-scrollbar {
+        display: none; /* Chrome, Safari */
+    }
 
 /* Form elements fade */
 .content-wrapper form {

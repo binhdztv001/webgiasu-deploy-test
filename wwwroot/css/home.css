@@ -87,7 +87,7 @@
 .hover-card {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    overflow: visible !important;
+    overflow: hidden !important;
     border-radius: 16px;
     background: white;
     z-index: 1;
@@ -417,7 +417,7 @@
     position: relative;
     width: 100%;
     height: 650px;
-    margin: 60px auto;
+    margin: 30px auto;
     perspective: 1500px;
     overflow: visible;
 }
@@ -604,7 +604,7 @@
 /* Indicators */
 .carousel-indicators-3d {
     position: absolute;
-    bottom: -50px;
+    bottom: -10px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
