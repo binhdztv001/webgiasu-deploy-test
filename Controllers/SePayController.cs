@@ -26,6 +26,8 @@ namespace Webgiasu.Controllers
         [HttpPost("webhook")]
         public async Task<IActionResult> Webhook()
         {
+            try
+            {
             IDictionary<string, string>? payload = null;
 
             if (Request.HasFormContentType)
@@ -82,7 +84,11 @@ namespace Webgiasu.Controllers
 
             // Thử resolve individual payment trước
             var paymentId = ResolvePaymentId(payload);
-            
+
+            if (paymentId == null && !string.IsNullOrEmpty(transactionId))
+            {
+                paymentId = ResolvePaymentByTransaction(transactionId);
+            }
             // Nếu không có, thử group payment
             int? groupPaymentId = null;
             if (paymentId == null)
@@ -236,8 +242,17 @@ namespace Webgiasu.Controllers
 
                 return new JsonResult(response);
             }
+                Console.WriteLine("🔥🔥🔥 SEPAY WEBHOOK HIT 🔥🔥🔥");
+                return Ok(new { status = "ok" });
+            }
+            catch (Exception ex)
+            {
+                // LOG lỗi để debug
+                Console.WriteLine("SePay webhook error: " + ex);
 
-            return new JsonResult(new { message = "Unmapped transaction" });
+                // 🚑 CỨU SEPAY: LUÔN TRẢ 200
+                return Ok(new { status = "ok" });
+            }
         }
 
         private int? ResolvePaymentByTransaction(string? transactionId)

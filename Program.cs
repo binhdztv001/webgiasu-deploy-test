@@ -18,6 +18,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient<GeminiService>();
 builder.Services.AddScoped<GeminiService>();
+builder.Services.AddScoped<SuiService>();
 
 // ✅ Configure Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();

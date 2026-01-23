@@ -344,23 +344,33 @@ namespace Webgiasu.Controllers
 
         [HttpGet]
         public IActionResult PaymentCheckout(int paymentId)
-            {
+        {
             var userId = GetCurrentUserId();
             if (userId == 0) return RedirectToAction("Login", "Account");
 
             var payment = _paymentService.GetPaymentById(paymentId);
             if (payment == null || payment.StudentId != userId || payment.Status != PaymentStatus.Pending)
-            {
                 return NotFound();
-            }
 
-            var successUrl = Url.Action("PaymentResult", "Student", new { paymentId, status = "success" }, Request.Scheme);
-            var errorUrl = Url.Action("PaymentResult", "Student", new { paymentId, status = "error" }, Request.Scheme);
-            var cancelUrl = Url.Action("PaymentResult", "Student", new { paymentId, status = "cancel" }, Request.Scheme);
+            var successUrl = Url.Action("PaymentResult", "Student",
+                new { paymentId, status = "success" }, Request.Scheme);
 
-            var checkout = _sePayGateway.BuildCheckout(payment, successUrl!, errorUrl!, cancelUrl!);
+            var errorUrl = Url.Action("PaymentResult", "Student",
+                new { paymentId, status = "error" }, Request.Scheme);
+
+            var cancelUrl = Url.Action("PaymentResult", "Student",
+                new { paymentId, status = "cancel" }, Request.Scheme);
+
+            var checkout = _sePayGateway.BuildCheckout(
+                payment,
+                successUrl!,
+                errorUrl!,
+                cancelUrl!
+            );
+
             return View(checkout);
         }
+
 
         [HttpGet]
         public IActionResult PaymentResult(int paymentId, string status)
