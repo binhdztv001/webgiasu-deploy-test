@@ -46,8 +46,9 @@ namespace Webgiasu.Services
                 ["currency"] = "VND",
                 ["order_amount"] = ((long)payment.Amount).ToString(),
                 ["operation"] = "PURCHASE",
-                ["order_description"] = $"Thanh toan bai toan #{payment.ProblemId}",
-                ["order_invoice_number"] = $"LEARNTUTOR-{payment.Id}",
+                ["payment_method"] = paymentMethod,
+                ["order_description"] = $"Thanh toan bai toan {payment.ProblemId}",
+                ["order_invoice_number"] = $"LEARNTUTOR{payment.Id}",
                 ["customer_id"] = payment.StudentId.ToString(),
                 ["success_url"] = successUrl,
                 ["error_url"] = errorUrl,
@@ -58,8 +59,18 @@ namespace Webgiasu.Services
 
             var orderedKeys = new[]
             {
-                "merchant", "currency", "order_amount", "operation", "order_description",
-                "order_invoice_number", "customer_id", "success_url", "error_url", "cancel_url", "signature"
+                "merchant",
+                "currency",
+                "order_amount",
+                "operation",
+                "payment_method",
+                "order_description",
+                "order_invoice_number",
+                "customer_id",
+                "success_url",
+                "error_url",
+                "cancel_url",
+                "signature"
             };
 
             var ordered = new List<KeyValuePair<string, string>>();
@@ -84,7 +95,7 @@ namespace Webgiasu.Services
         {
             var orderedKeys = new[]
             {
-                "merchant", "currency", "order_amount", "operation", "order_description",
+                "merchant", "currency", "order_amount", "operation", "payment_method", "order_description",
                 "order_invoice_number", "customer_id", "success_url", "error_url", "cancel_url"
             };
 
