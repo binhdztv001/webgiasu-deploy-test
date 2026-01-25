@@ -14,20 +14,20 @@ namespace Webgiasu.Controllers
     {
         private readonly AppDbContext _db;
         private readonly ISePayGateway _sePayGateway;
-        private readonly INotificationService _notificationService;
-
-        public SePayController(AppDbContext db, ISePayGateway sePayGateway, INotificationService notificationService)
+        private readonly SuiService _suiService;
+        private readonly NotificationService _notificationService;
+        
+        public SePayController(AppDbContext db, ISePayGateway sePayGateway, SuiService suiService, NotificationService notificationService)
         {
             _db = db;
             _sePayGateway = sePayGateway;
+            _suiService = suiService;
             _notificationService = notificationService;
         }
 
         [HttpPost("webhook")]
         public async Task<IActionResult> Webhook()
         {
-            try
-            {
             IDictionary<string, string>? payload = null;
 
             if (Request.HasFormContentType)
@@ -130,25 +130,15 @@ namespace Webgiasu.Controllers
                 {
                     payment.Status = PaymentStatus.Completed;
                     payment.CompletedDate = DateTime.Now;
-                    payment.TransactionId = transactionId;
 
-                    // ✅ THÔNG BÁO CHO STUDENT
-                    _notificationService.NotifyPaymentCompleted(
-                        payment.StudentId,
-                        payment.Id,
-                        payment.Amount
+                    // SUI Blockchain
+                    var suiTx = await _suiService.RecordPaymentAsync(
+                        payment.Id.ToString(),               // order_id
+                        (long)payment.Amount,                // amount
+                        DateTimeOffset.UtcNow.ToUnixTimeSeconds()
                     );
 
-                    // ✅ NEW: THÔNG BÁO CHO TUTOR KHI NHẬN ĐƯỢC TIỀN
-                    var problem = _db.Problems.Find(payment.ProblemId);
-                    if (problem?.AssignedTutorId.HasValue == true)
-                    {
-                        _notificationService.NotifyTutorPaymentReceived(
-                            problem.AssignedTutorId.Value,
-                            problem.Id,
-                            payment.Amount
-                        );
-                    }
+                    payment.TransactionId = suiTx; // txDigest
                 }
                 else if (isFailed)
                 {
@@ -183,9 +173,24 @@ namespace Webgiasu.Controllers
 
                 if (isSuccess)
                 {
+                    // Idempotency: đã hoàn tất thì không ghi lại blockchain
+                    if (groupPayment.Status == PaymentStatus.Completed &&
+                        !string.IsNullOrEmpty(groupPayment.TransactionId))
+                    {
+                        return new JsonResult(new { status = "ok" });
+                    }
+
                     groupPayment.Status = PaymentStatus.Completed;
                     groupPayment.CompletedDate = DateTime.Now;
-                    groupPayment.TransactionId = transactionId;
+
+                    // BIÊN LAI BLOCKCHAIN
+                    var suiTx = await _suiService.RecordPaymentAsync(
+                        groupPayment.Id.ToString(),               // order_id
+                        (long)groupPayment.Amount,                // amount
+                        DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+                    );
+
+                    groupPayment.TransactionId = suiTx;
 
                     // Cập nhật trạng thái member
                     var member = _db.ProblemGroupMembers.Find(groupPayment.MemberId);
@@ -227,7 +232,6 @@ namespace Webgiasu.Controllers
                 {
                     groupPayment.Status = PaymentStatus.Failed;
                 }
-
                 _db.SaveChanges();
 
                 var response = new
@@ -242,17 +246,7 @@ namespace Webgiasu.Controllers
 
                 return new JsonResult(response);
             }
-                Console.WriteLine("🔥🔥🔥 SEPAY WEBHOOK HIT 🔥🔥🔥");
-                return Ok(new { status = "ok" });
-            }
-            catch (Exception ex)
-            {
-                // LOG lỗi để debug
-                Console.WriteLine("SePay webhook error: " + ex);
-
-                // 🚑 CỨU SEPAY: LUÔN TRẢ 200
-                return Ok(new { status = "ok" });
-            }
+            return Ok(new { status = "ok" });
         }
 
         private int? ResolvePaymentByTransaction(string? transactionId)

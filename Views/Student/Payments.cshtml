@@ -71,7 +71,7 @@
                                 <th>Số tiền</th>
                                 <th>Ngày tạo</th>
                                 <th>Trạng thái</th>
-                                <th>Mã giao dịch</th>
+                                <th>Mã Blockchain</th>
                                 <th>Hành động</th>
                             </tr>
                         </thead>
@@ -130,7 +130,14 @@
                                     <td>
                                         @if (!string.IsNullOrEmpty(payment.TransactionId))
                                         {
-                                            <code>@payment.TransactionId</code>
+                                            <a href="https://suiexplorer.com/txblock/@payment.TransactionId"
+                                               target="_blank"
+                                               class="text-decoration-none">
+                                                <span class="badge bg-dark">
+                                                    <i class="bi bi-link-45deg"></i>
+                                                    On-chain
+                                                </span>
+                                            </a>
                                         }
                                         else
                                         {

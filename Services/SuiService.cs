@@ -9,7 +9,7 @@ public class SuiService
     private readonly ILogger<SuiService> _logger;
 
     private const string PackageId =
-        "0xab7c191f829fd3364da9176d0d8190ca030aa1a8f1cf0df54880312266669744";
+        "0xc55e654338597ccac35e79cf780a45e65e06cff420a51e7ef782d7807019a3dc";
     private const string MoveModule = "payment";
     private const string MoveFunction = "record_payment";
 
@@ -19,10 +19,8 @@ public class SuiService
     }
 
     public async Task<string> RecordPaymentAsync(
-        string studentWallet,
-        string tutorWallet,
-        long amount,
         string orderId,
+        long amount,
         long timestamp
     )
     {
@@ -34,7 +32,7 @@ public class SuiService
                 $"--package {PackageId} " +
                 $"--module {MoveModule} " +
                 $"--function {MoveFunction} " +
-                $"--args {studentWallet} {tutorWallet} {amount} {orderId} {timestamp} " +
+                $"--args \"{orderId}\" {amount} {timestamp} " +
                 $"--gas-budget 100000000 " +
                 $"--json",
             RedirectStandardOutput = true,
@@ -54,10 +52,9 @@ public class SuiService
         if (!string.IsNullOrWhiteSpace(error))
             _logger.LogError("SUI ERROR:\n{Error}", error);
 
-        var txHash = ExtractTxHash(output);
-
-        return txHash ?? "PENDING";
+        return ExtractTxHash(output) ?? "PENDING";
     }
+
 
     private string? ExtractTxHash(string output)
     {
