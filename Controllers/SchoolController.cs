@@ -11,12 +11,15 @@ namespace Webgiasu.Controllers
         private readonly AppDbContext _db;
         private readonly IUserService _userService;
         private readonly ISchoolClassService _classService;
+        private readonly IStatisticsExportService _statisticsExportService;
 
-        public SchoolController(AppDbContext db, IUserService userService, ISchoolClassService classService)
+
+        public SchoolController(AppDbContext db, IUserService userService, ISchoolClassService classService, IStatisticsExportService statisticsExportService)
         {
             _db = db;
             _userService = userService;
             _classService = classService;
+            _statisticsExportService = statisticsExportService;
         }
 
         private int GetCurrentUserId()
@@ -1355,11 +1358,175 @@ namespace Webgiasu.Controllers
             }
         }
 
-        // ============================================================
-        // END MENTOR MANAGEMENT ACTIONS
-        // ============================================================
+        [HttpGet]
+        public IActionResult ExportStatisticsToPdf()
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var school = _userService.GetUserById(userId);
+                var classes = _classService.GetClassesBySchoolId(userId);
+
+                // Đếm mentor
+                var tutorIds = classes.Where(c => c.TutorId.HasValue).Select(c => c.TutorId.Value).Distinct().ToList();
+                var totalTutors = tutorIds.Count;
+                var activeTutors = classes.Where(c => c.TutorId.HasValue && c.Status == ClassStatus.Active)
+                    .Select(c => c.TutorId.Value).Distinct().Count();
+
+                // Đếm học sinh
+                var totalStudents = 0;
+                foreach (var c in classes)
+                {
+                    totalStudents += _classService.GetClassStudentIds(c.Id).Count;
+                }
+
+                var data = new SchoolStatisticsExportModel
+                {
+                    TotalClasses = classes.Count,
+                    ActiveClasses = classes.Count(c => c.Status == ClassStatus.Active),
+                    CompletedClasses = classes.Count(c => c.Status == ClassStatus.Completed),
+                    OngoingClasses = classes.Count(c => c.Status == ClassStatus.Active),
+                    TotalStudents = totalStudents,
+                    TotalTutors = totalTutors,
+                    ActiveTutors = activeTutors,
+                    CompletionRate = classes.Count > 0 ? (double)classes.Count(c => c.Status == ClassStatus.Completed) / classes.Count * 100 : 0,
+
+                    ClassesBySubject = classes.GroupBy(c => c.Subject)
+                        .Select(g => new SubjectStatistic { Subject = g.Key, Count = g.Count() })
+                        .OrderByDescending(x => x.Count)
+                        .ToList(),
+
+                    ClassesByStatus = new List<StatusStatistic>
+            {
+                new StatusStatistic { Status = "Đang hoạt động", Count = classes.Count(c => c.Status == ClassStatus.Active) },
+                new StatusStatistic { Status = "Đã hoàn thành", Count = classes.Count(c => c.Status == ClassStatus.Completed) },
+                new StatusStatistic { Status = "Đã hủy", Count = classes.Count(c => c.Status == ClassStatus.Cancelled) }
+            },
+
+                    ClassesByMonth = classes.Where(c => c.CreatedDate >= DateTime.Now.AddMonths(-6))
+                        .GroupBy(c => new { c.CreatedDate.Year, c.CreatedDate.Month })
+                        .Select(g => new MonthStatistic
+                        {
+                            Month = $"Tháng {g.Key.Month}/{g.Key.Year}",
+                            Count = g.Count()
+                        })
+                        .ToList(),
+
+                    ClassDetails = classes.OrderByDescending(c => c.CreatedDate)
+                        .Select(c => new ClassDetailStatistic
+                        {
+                            ClassName = c.ClassName,
+                            Subject = c.Subject,
+                            TutorName = c.TutorId.HasValue ? _userService.GetUserById(c.TutorId.Value)?.FullName ?? "Chưa có" : "Chưa có",
+                            StudentCount = _classService.GetClassStudentIds(c.Id).Count,
+                            Status = c.Status == ClassStatus.Active ? "Đang hoạt động" :
+                                    c.Status == ClassStatus.Completed ? "Đã hoàn thành" : "Đã hủy",
+                            StartDate = c.StartDate?.ToString("dd/MM/yyyy") ?? "Chưa xác định"
+                        })
+                        .ToList()
+                };
+
+                var pdfBytes = _statisticsExportService.ExportSchoolStatisticsToPdf(data, school?.FullName ?? "Nhà trường");
+
+                return File(pdfBytes, "application/pdf", $"ThongKeNhaTruong_{DateTime.Now:yyyyMMdd}.pdf");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in ExportStatisticsToPdf: {ex.Message}");
+                Console.WriteLine($"   Stack trace: {ex.StackTrace}");
+                TempData["Error"] = "Đã xảy ra lỗi khi xuất PDF!";
+                return RedirectToAction("Statistics");
+            }
+        }
+
+        [HttpGet]
+        public IActionResult ExportStatisticsToExcel()
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var school = _userService.GetUserById(userId);
+                var classes = _classService.GetClassesBySchoolId(userId);
+
+                // Đếm mentor
+                var tutorIds = classes.Where(c => c.TutorId.HasValue).Select(c => c.TutorId.Value).Distinct().ToList();
+                var totalTutors = tutorIds.Count;
+                var activeTutors = classes.Where(c => c.TutorId.HasValue && c.Status == ClassStatus.Active)
+                    .Select(c => c.TutorId.Value).Distinct().Count();
+
+                // Đếm học sinh
+                var totalStudents = 0;
+                foreach (var c in classes)
+                {
+                    totalStudents += _classService.GetClassStudentIds(c.Id).Count;
+                }
+
+                var data = new SchoolStatisticsExportModel
+                {
+                    TotalClasses = classes.Count,
+                    ActiveClasses = classes.Count(c => c.Status == ClassStatus.Active),
+                    CompletedClasses = classes.Count(c => c.Status == ClassStatus.Completed),
+                    OngoingClasses = classes.Count(c => c.Status == ClassStatus.Active),
+                    TotalStudents = totalStudents,
+                    TotalTutors = totalTutors,
+                    ActiveTutors = activeTutors,
+                    CompletionRate = classes.Count > 0 ? (double)classes.Count(c => c.Status == ClassStatus.Completed) / classes.Count * 100 : 0,
+
+                    ClassesBySubject = classes.GroupBy(c => c.Subject)
+                        .Select(g => new SubjectStatistic { Subject = g.Key, Count = g.Count() })
+                        .OrderByDescending(x => x.Count)
+                        .ToList(),
+
+                    ClassesByStatus = new List<StatusStatistic>
+            {
+                new StatusStatistic { Status = "Đang hoạt động", Count = classes.Count(c => c.Status == ClassStatus.Active) },
+                new StatusStatistic { Status = "Đã hoàn thành", Count = classes.Count(c => c.Status == ClassStatus.Completed) },
+                new StatusStatistic { Status = "Đã hủy", Count = classes.Count(c => c.Status == ClassStatus.Cancelled) }
+            },
+
+                    ClassesByMonth = classes.Where(c => c.CreatedDate >= DateTime.Now.AddMonths(-6))
+                        .GroupBy(c => new { c.CreatedDate.Year, c.CreatedDate.Month })
+                        .Select(g => new MonthStatistic
+                        {
+                            Month = $"Tháng {g.Key.Month}/{g.Key.Year}",
+                            Count = g.Count()
+                        })
+                        .ToList(),
+
+                    ClassDetails = classes.OrderByDescending(c => c.CreatedDate)
+                        .Select(c => new ClassDetailStatistic
+                        {
+                            ClassName = c.ClassName,
+                            Subject = c.Subject,
+                            TutorName = c.TutorId.HasValue ? _userService.GetUserById(c.TutorId.Value)?.FullName ?? "Chưa có" : "Chưa có",
+                            StudentCount = _classService.GetClassStudentIds(c.Id).Count,
+                            Status = c.Status == ClassStatus.Active ? "Đang hoạt động" :
+                                    c.Status == ClassStatus.Completed ? "Đã hoàn thành" : "Đã hủy",
+                            StartDate = c.StartDate?.ToString("dd/MM/yyyy") ?? "Chưa xác định"
+                        })
+                        .ToList()
+                };
+
+                var excelBytes = _statisticsExportService.ExportSchoolStatisticsToExcel(data, school?.FullName ?? "Nhà trường");
+
+                return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    $"ThongKeNhaTruong_{DateTime.Now:yyyyMMdd}.xlsx");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in ExportStatisticsToExcel: {ex.Message}");
+                Console.WriteLine($"   Stack trace: {ex.StackTrace}");
+                TempData["Error"] = "Đã xảy ra lỗi khi xuất Excel!";
+                return RedirectToAction("Statistics");
+            }
+        }
 
 
-        
+
+
     }
 }

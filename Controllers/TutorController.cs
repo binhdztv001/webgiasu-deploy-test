@@ -48,11 +48,12 @@ namespace Webgiasu.Controllers
         private readonly INotificationService _notificationService;
         private readonly IPaymentService _paymentService;
         private readonly ITutorApplicationService _tutorApplicationService;
+        private readonly IStatisticsExportService _statisticsExportService;
 
         public TutorController(IProblemService problemService, ISolutionService solutionService, IFriendshipService friendshipService,
             IUserService userService, IRatingService ratingService, IMessageService messageService, 
             ICommunityService communityService, IHubContext<CommunityHub> hubContext, IPremiumService premiumService, AppDbContext db
-            , INotificationService notificationService, IPaymentService paymentService, ITutorApplicationService tutorApplicationService)
+            , INotificationService notificationService, IPaymentService paymentService, ITutorApplicationService tutorApplicationService, IStatisticsExportService statisticsExportService)
         {
             _problemService = problemService;
             _solutionService = solutionService;
@@ -67,6 +68,7 @@ namespace Webgiasu.Controllers
             _notificationService = notificationService;
             _paymentService = paymentService;
             _tutorApplicationService = tutorApplicationService;
+            _statisticsExportService = statisticsExportService;
         }
 
         private int GetCurrentUserId()
@@ -1634,6 +1636,138 @@ namespace Webgiasu.Controllers
         public class WithdrawApplicationRequest
         {
             public int ApplicationId { get; set; }
+        }
+
+
+        // ✅ EXPORT TO PDF
+        [HttpGet]
+        public IActionResult ExportStatisticsToPdf()
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var user = _userService.GetUserById(userId);
+                var assignedProblems = _problemService.GetProblemsByTutorId(userId);
+                var solutions = _solutionService.GetSolutionsByTutorId(userId);
+
+                var data = new TutorStatisticsExportModel
+                {
+                    TotalProblems = assignedProblems.Count,
+                    SolvedProblems = assignedProblems.Count(p => p.Status == ProblemStatus.Solved),
+                    InProgressProblems = assignedProblems.Count(p => p.Status == ProblemStatus.InProgress),
+                    TotalEarnings = assignedProblems
+                        .Where(p => p.Status == ProblemStatus.Solved)
+                        .Sum(p => p.Price),
+                    PendingEarnings = assignedProblems
+                        .Where(p => p.Status == ProblemStatus.InProgress)
+                        .Sum(p => p.Price),
+
+                    ProblemsByType = assignedProblems.GroupBy(p => p.Type)
+                        .Select(g => new TypeStatistic { Type = g.Key.ToString(), Count = g.Count() })
+                        .ToList(),
+
+                    ProblemsByDifficulty = assignedProblems.GroupBy(p => p.Difficulty)
+                        .Select(g => new DifficultyStatistic { Difficulty = g.Key.ToString(), Count = g.Count() })
+                        .ToList(),
+
+                    ProblemsByMonth = assignedProblems.Where(p => p.CreatedDate >= DateTime.Now.AddMonths(-6))
+                        .GroupBy(p => new { p.CreatedDate.Year, p.CreatedDate.Month })
+                        .Select(g => new MonthStatistic
+                        {
+                            Month = $"{g.Key.Month}/{g.Key.Year}",
+                            Count = g.Count()
+                        })
+                        .ToList(),
+
+                    EarningsByMonth = assignedProblems
+                        .Where(p => p.Status == ProblemStatus.Solved && p.CreatedDate >= DateTime.Now.AddMonths(-6))
+                        .GroupBy(p => new { p.CreatedDate.Year, p.CreatedDate.Month })
+                        .Select(g => new MonthStatistic
+                        {
+                            Month = $"{g.Key.Month}/{g.Key.Year}",
+                            Amount = g.Sum(p => p.Price)
+                        })
+                        .ToList()
+                };
+
+                var pdfBytes = _statisticsExportService.ExportTutorStatisticsToPdf(data, user?.FullName ?? "Mentor");
+
+                return File(pdfBytes, "application/pdf", $"ThongKeGiangDay_{DateTime.Now:yyyyMMdd}.pdf");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in ExportStatisticsToPdf: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi khi xuất PDF!";
+                return RedirectToAction("Statistics");
+            }
+        }
+
+        // ✅ EXPORT TO EXCEL
+        [HttpGet]
+        public IActionResult ExportStatisticsToExcel()
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var user = _userService.GetUserById(userId);
+                var assignedProblems = _problemService.GetProblemsByTutorId(userId);
+                var solutions = _solutionService.GetSolutionsByTutorId(userId);
+
+                var data = new TutorStatisticsExportModel
+                {
+                    TotalProblems = assignedProblems.Count,
+                    SolvedProblems = assignedProblems.Count(p => p.Status == ProblemStatus.Solved),
+                    InProgressProblems = assignedProblems.Count(p => p.Status == ProblemStatus.InProgress),
+                    TotalEarnings = assignedProblems
+                        .Where(p => p.Status == ProblemStatus.Solved)
+                        .Sum(p => p.Price),
+                    PendingEarnings = assignedProblems
+                        .Where(p => p.Status == ProblemStatus.InProgress)
+                        .Sum(p => p.Price),
+
+                    ProblemsByType = assignedProblems.GroupBy(p => p.Type)
+                        .Select(g => new TypeStatistic { Type = g.Key.ToString(), Count = g.Count() })
+                        .ToList(),
+
+                    ProblemsByDifficulty = assignedProblems.GroupBy(p => p.Difficulty)
+                        .Select(g => new DifficultyStatistic { Difficulty = g.Key.ToString(), Count = g.Count() })
+                        .ToList(),
+
+                    ProblemsByMonth = assignedProblems.Where(p => p.CreatedDate >= DateTime.Now.AddMonths(-6))
+                        .GroupBy(p => new { p.CreatedDate.Year, p.CreatedDate.Month })
+                        .Select(g => new MonthStatistic
+                        {
+                            Month = $"{g.Key.Month}/{g.Key.Year}",
+                            Count = g.Count()
+                        })
+                        .ToList(),
+
+                    EarningsByMonth = assignedProblems
+                        .Where(p => p.Status == ProblemStatus.Solved && p.CreatedDate >= DateTime.Now.AddMonths(-6))
+                        .GroupBy(p => new { p.CreatedDate.Year, p.CreatedDate.Month })
+                        .Select(g => new MonthStatistic
+                        {
+                            Month = $"{g.Key.Month}/{g.Key.Year}",
+                            Amount = g.Sum(p => p.Price)
+                        })
+                        .ToList()
+                };
+
+                var excelBytes = _statisticsExportService.ExportTutorStatisticsToExcel(data, user?.FullName ?? "Mentor");
+
+                return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    $"ThongKeGiangDay_{DateTime.Now:yyyyMMdd}.xlsx");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in ExportStatisticsToExcel: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi khi xuất Excel!";
+                return RedirectToAction("Statistics");
+            }
         }
 
     }

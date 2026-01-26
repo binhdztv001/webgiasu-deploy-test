@@ -2,6 +2,7 @@
 using Webgiasu.Models;
 using Webgiasu.Services;
 using Microsoft.EntityFrameworkCore;
+using Webgiasu.Models.ViewModels;
 
 namespace Webgiasu.Controllers
 {
@@ -10,12 +11,14 @@ namespace Webgiasu.Controllers
         private readonly AppDbContext _db;
         private readonly IUserService _userService;
         private readonly ISchoolClassService _classService;
+        private readonly IStatisticsExportService _statisticsExportService;
 
-        public EnterpriseController(AppDbContext db, IUserService userService, ISchoolClassService classService)
+        public EnterpriseController(AppDbContext db, IUserService userService, ISchoolClassService classService, IStatisticsExportService statisticsExportService)
         {
             _db = db;
             _userService = userService;
             _classService = classService;
+            _statisticsExportService = statisticsExportService;
         }
 
         private int GetCurrentUserId()
@@ -617,6 +620,192 @@ namespace Webgiasu.Controllers
                 Console.WriteLine($"❌ Error in ChangePassword: {ex.Message}");
                 TempData["Error"] = "Đã xảy ra lỗi khi đổi mật khẩu!";
                 return RedirectToAction("Settings");
+            }
+        }
+
+        [HttpGet]
+        public IActionResult ExportStatisticsToPdf()
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var user = _userService.GetUserById(userId);
+                
+                // Lấy dữ liệu từ Statistics action
+                var allMentors = _userService.GetUsersByRole(UserRole.Tutor)
+                    .Where(m => m.Level.HasValue && m.Level.Value == EducationLevel.DaiHoc && m.IsApproved)
+                    .ToList();
+                var allSchools = _userService.GetUsersByRole(UserRole.School);
+
+                var totalClasses = 0;
+                var activeClasses = 0;
+                var totalStudents = 0;
+                var totalSchedules = 0;
+
+                var schoolStats = new List<SchoolStatisticDetail>();
+                foreach (var school in allSchools)
+                {
+                    var classes = _classService.GetClassesBySchoolId(school.Id);
+                    var schoolClasses = classes.Count;
+                    var schoolActiveClasses = classes.Count(c => c.Status == ClassStatus.Active);
+                    
+                    var schoolStudents = 0;
+                    foreach (var c in classes)
+                    {
+                        schoolStudents += _classService.GetClassStudentIds(c.Id).Count;
+                    }
+
+                    var schoolSchedules = _db.ClassSchedules.Count(s => s.Class!.SchoolId == school.Id);
+
+                    totalClasses += schoolClasses;
+                    activeClasses += schoolActiveClasses;
+                    totalStudents += schoolStudents;
+                    totalSchedules += schoolSchedules;
+
+                    schoolStats.Add(new SchoolStatisticDetail
+                    {
+                        SchoolName = school.FullName,
+                        TotalClasses = schoolClasses,
+                        ActiveClasses = schoolActiveClasses,
+                        TotalStudents = schoolStudents,
+                        TotalSchedules = schoolSchedules
+                    });
+                }
+
+                var data = new EnterpriseStatisticsExportModel
+                {
+                    TotalSchools = allSchools.Count,
+                    TotalMentors = allMentors.Count,
+                    TotalClasses = totalClasses,
+                    ActiveClasses = activeClasses,
+                    TotalStudents = totalStudents,
+                    TotalSchedules = totalSchedules,
+                    SchoolStats = schoolStats,
+
+                    MentorsBySubject = allMentors
+                        .Where(m => !string.IsNullOrEmpty(m.Subjects))
+                        .GroupBy(m => m.Subjects)
+                        .Select(g => new SubjectStatistic { Subject = g.Key, Count = g.Count() })
+                        .OrderByDescending(x => x.Count)
+                        .Take(5)
+                        .ToList(),
+
+                    SchedulesByStatus = new List<StatusStatistic>
+                    {
+                        new StatusStatistic { Status = "Sắp diễn ra", Count = _db.ClassSchedules.Count(s => s.Status == ScheduleStatus.Upcoming) },
+                        new StatusStatistic { Status = "Đang diễn ra", Count = _db.ClassSchedules.Count(s => s.Status == ScheduleStatus.InProgress) },
+                        new StatusStatistic { Status = "Đã hoàn thành", Count = _db.ClassSchedules.Count(s => s.Status == ScheduleStatus.Completed) },
+                        new StatusStatistic { Status = "Đã hủy", Count = _db.ClassSchedules.Count(s => s.Status == ScheduleStatus.Cancelled) }
+                    },
+
+                    ClassesByMonth = new List<MonthStatistic>() // Có thể bỏ trống hoặc tính toán nếu cần
+                };
+
+                var pdfBytes = _statisticsExportService.ExportEnterpriseStatisticsToPdf(data, user?.FullName ?? "Enterprise");
+                
+                return File(pdfBytes, "application/pdf", $"ThongKeHeThong_{DateTime.Now:yyyyMMdd}.pdf");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in ExportStatisticsToPdf: {ex.Message}");
+                Console.WriteLine($"   Stack trace: {ex.StackTrace}");
+                TempData["Error"] = "Đã xảy ra lỗi khi xuất PDF!";
+                return RedirectToAction("Statistics");
+            }
+        }
+
+        [HttpGet]
+        public IActionResult ExportStatisticsToExcel()
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var user = _userService.GetUserById(userId);
+                
+                var allMentors = _userService.GetUsersByRole(UserRole.Tutor)
+                    .Where(m => m.Level.HasValue && m.Level.Value == EducationLevel.DaiHoc && m.IsApproved)
+                    .ToList();
+                var allSchools = _userService.GetUsersByRole(UserRole.School);
+
+                var totalClasses = 0;
+                var activeClasses = 0;
+                var totalStudents = 0;
+                var totalSchedules = 0;
+
+                var schoolStats = new List<SchoolStatisticDetail>();
+                foreach (var school in allSchools)
+                {
+                    var classes = _classService.GetClassesBySchoolId(school.Id);
+                    var schoolClasses = classes.Count;
+                    var schoolActiveClasses = classes.Count(c => c.Status == ClassStatus.Active);
+                    
+                    var schoolStudents = 0;
+                    foreach (var c in classes)
+                    {
+                        schoolStudents += _classService.GetClassStudentIds(c.Id).Count;
+                    }
+
+                    var schoolSchedules = _db.ClassSchedules.Count(s => s.Class!.SchoolId == school.Id);
+
+                    totalClasses += schoolClasses;
+                    activeClasses += schoolActiveClasses;
+                    totalStudents += schoolStudents;
+                    totalSchedules += schoolSchedules;
+
+                    schoolStats.Add(new SchoolStatisticDetail
+                    {
+                        SchoolName = school.FullName,
+                        TotalClasses = schoolClasses,
+                        ActiveClasses = schoolActiveClasses,
+                        TotalStudents = schoolStudents,
+                        TotalSchedules = schoolSchedules
+                    });
+                }
+
+                var data = new EnterpriseStatisticsExportModel
+                {
+                    TotalSchools = allSchools.Count,
+                    TotalMentors = allMentors.Count,
+                    TotalClasses = totalClasses,
+                    ActiveClasses = activeClasses,
+                    TotalStudents = totalStudents,
+                    TotalSchedules = totalSchedules,
+                    SchoolStats = schoolStats,
+
+                    MentorsBySubject = allMentors
+                        .Where(m => !string.IsNullOrEmpty(m.Subjects))
+                        .GroupBy(m => m.Subjects)
+                        .Select(g => new SubjectStatistic { Subject = g.Key, Count = g.Count() })
+                        .OrderByDescending(x => x.Count)
+                        .Take(5)
+                        .ToList(),
+
+                    SchedulesByStatus = new List<StatusStatistic>
+                    {
+                        new StatusStatistic { Status = "Sắp diễn ra", Count = _db.ClassSchedules.Count(s => s.Status == ScheduleStatus.Upcoming) },
+                        new StatusStatistic { Status = "Đang diễn ra", Count = _db.ClassSchedules.Count(s => s.Status == ScheduleStatus.InProgress) },
+                        new StatusStatistic { Status = "Đã hoàn thành", Count = _db.ClassSchedules.Count(s => s.Status == ScheduleStatus.Completed) },
+                        new StatusStatistic { Status = "Đã hủy", Count = _db.ClassSchedules.Count(s => s.Status == ScheduleStatus.Cancelled) }
+                    },
+
+                    ClassesByMonth = new List<MonthStatistic>()
+                };
+
+                var excelBytes = _statisticsExportService.ExportEnterpriseStatisticsToExcel(data, user?.FullName ?? "Enterprise");
+                
+                return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+                    $"ThongKeHeThong_{DateTime.Now:yyyyMMdd}.xlsx");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in ExportStatisticsToExcel: {ex.Message}");
+                Console.WriteLine($"   Stack trace: {ex.StackTrace}");
+                TempData["Error"] = "Đã xảy ra lỗi khi xuất Excel!";
+                return RedirectToAction("Statistics");
             }
         }
     }
