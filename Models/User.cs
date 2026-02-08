@@ -35,7 +35,4 @@
         public ICollection<ProblemGroupInvite>? SentInvites { get; set; }
     }
 
-
-
-
 }

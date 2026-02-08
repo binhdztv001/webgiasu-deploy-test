@@ -117,7 +117,7 @@
                 </div>
                 <div class="card-body">
                     <div class="bg-light p-3 rounded">
-                        <pre class="mb-0" style="white-space: pre-wrap;">@Model.Solution.Content</pre>
+                        @Html.Raw(Model.Solution.Content)
                     </div>
 
                     @if (!string.IsNullOrEmpty(Model.Solution.FileUrl))
