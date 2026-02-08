@@ -71,7 +71,8 @@
                                 <th>Số tiền</th>
                                 <th>Ngày tạo</th>
                                 <th>Trạng thái</th>
-                                <th>Mã Blockchain</th>
+                                <th>Mã giao dịch</th>
+                                <th>Mã SUI Blockchain</th>
                                 <th>Hành động</th>
                             </tr>
                         </thead>
@@ -125,6 +126,15 @@
                                             <span class="badge bg-secondary">
                                                 <i class="bi bi-arrow-return-left"></i> Hoàn tiền
                                             </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(payment.TransactionId)) {
+                                            <code>@payment.TransactionId</code>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
                                         }
                                     </td>
                                     <td>
