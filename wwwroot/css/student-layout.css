@@ -2,24 +2,11 @@
    STUDENT LAYOUT STYLES - FULLY OPTIMIZED
    =========================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-:root {
-    --header-height: 70px;
-    --sidebar-width: 280px;
-    --sidebar-collapsed-width: 70px;
-    /* Student theme: Blue/Cyan - More vibrant and readable */
+body[data-theme="student"] {
     --primary-gradient: linear-gradient(135deg, #2196F3 0%, #00BCD4 100%);
-    --student-gradient: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%);
+    --theme-gradient: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%);
     --sidebar-bg: #263238;
     --sidebar-hover: #34495e;
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Force UTF-8 encoding */
-* {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-    box-sizing: border-box;
 }
 
 /* ===========================

@@ -22,6 +22,7 @@
         Webgiasu.Models.UserRole.Student => "primary",
         Webgiasu.Models.UserRole.Tutor => "success",
         Webgiasu.Models.UserRole.School => "warning",
+        Webgiasu.Models.UserRole.Enterprise => "enterprise",
         _ => "secondary"
     };
     var glowClass = Model.Role switch
@@ -29,60 +30,18 @@
         Webgiasu.Models.UserRole.Student => "hover-glow-primary",
         Webgiasu.Models.UserRole.Tutor => "hover-glow-success",
         Webgiasu.Models.UserRole.School => "hover-glow-warning",
+        Webgiasu.Models.UserRole.Enterprise => "hover-glow-enterprise",
         _ => "hover-glow-primary"
     };
 }
 
 <link rel="stylesheet" href="~/css/animations.css" asp-append-version="true" />
 
-@if (Model.Role == Webgiasu.Models.UserRole.Enterprise)
-{
-    <style>
-        .register-card .card-header {
-            background: linear-gradient(135deg, #795548 0%, #8D6E63 100%) !important;
-        }
-        .btn-enterprise {
-            background: linear-gradient(135deg, #795548 0%, #8D6E63 100%);
-            color: white;
-            border: none;
-        }
-        .btn-enterprise:hover {
-            background: linear-gradient(135deg, #6D4C41 0%, #795548 100%);
-            color: white;
-        }
-        .btn-outline-enterprise {
-            border: none;
-            color: #795548;
-            background: transparent;
-        }
-        .btn-outline-enterprise:hover {
-            background: linear-gradient(135deg, #795548 0%, #8D6E63 100%);
-            color: white;
-            border: none;
-        }
-        .text-enterprise {
-            color: #795548 !important;
-        }
-        .badge.text-enterprise {
-            color: #795548 !important;
-        }
-        .form-control-animated:focus {
-            border-color: #795548;
-            box-shadow: 0 0 0 4px rgba(121, 85, 72, 0.15);
-        }
-    </style>
-}
-
-
 <div class="container mt-5 mb-5">
     <div class="row justify-content-center">
         <div class="col-lg-6 col-md-8">
-            <div class="card shadow-lg border-0 register-card @glowClass fade-in"
-                style="
-                --role-color: var(--bs-@roleColor);
-                --role-color-rgb: var(--bs-@roleColor-rgb);
-            ">
-                <div class="card-header bg-@roleColor bg-gradient text-white text-center py-4 register-header">
+            <div class="card shadow-lg border-0 register-card @glowClass fade-in">
+                <div class="card-header bg-@roleColor bg-gradient-@roleColor text-white text-center py-4 register-header">
                     <div class="mb-2 icon-container">
                         <i class="@roleIcon icon-bounce" style="font-size: 3rem;"></i>
                     </div>
@@ -90,7 +49,7 @@
                     <p class="mb-0 fade-in-up delay-2">Vai trò: <span class="badge bg-white text-@roleColor badge-animated">@roleText</span></p>
                 </div>
                 
-                <div class="card-body p-4 p-md-5">
+                <div class="card-body p-3 p-md-4">
                     <form asp-action="Register" method="post" id="registerForm">
                         <input type="hidden" asp-for="Role" />
                         
@@ -110,7 +69,6 @@
                             <div class="form-text">Chỉ sử dụng chữ cái, số và dấu gạch dưới (_)</div>
                         </div>
 
-                        @* ✅ Thêm dropdown Level cho Student và Tutor *@
                         @if (Model.Role == Webgiasu.Models.UserRole.Student || Model.Role == Webgiasu.Models.UserRole.Tutor)
                         {
                             <div class="mb-4 fade-in-up delay-2">
@@ -195,7 +153,7 @@
                         }
 
                         <div class="d-grid gap-2 mb-3 fade-in-up delay-5">
-                            <button type="submit" class="btn @(Model.Role == Webgiasu.Models.UserRole.Enterprise ? "btn-enterprise" : "btn-" + roleColor) btn-lg btn-pill btn-animated shadow-sm">
+                            <button type="submit" class="btn btn-@roleColor btn-lg btn-pill btn-animated shadow-sm">
                                 <i class="bi bi-person-plus-fill me-2"></i> Đăng ký ngay
                             </button>
                         </div>
@@ -204,7 +162,7 @@
 
                         <div class="text-center fade-in-up delay-5">
                             <p class="text-muted mb-3">Đã có tài khoản?</p>
-                            <a asp-action="Login" asp-route-role="@Model.Role.ToString()" class="btn @(Model.Role == Webgiasu.Models.UserRole.Enterprise ? "btn-outline-enterprise" : "btn-outline-" + roleColor) btn-pill btn-animated px-5">
+                            <a asp-action="Login" asp-route-role="@Model.Role.ToString()" class="btn btn-outline-@roleColor btn-pill btn-animated px-5">
                                 <i class="bi bi-box-arrow-in-right me-2"></i> Đăng nhập
                             </a>
                         </div>
@@ -212,7 +170,7 @@
                 </div>
 
                 <div class="card-footer bg-light text-center py-3 fade-in-up delay-5">
-                    <a asp-controller="Home" asp-action="Index" asp-route-role="@Model.Role.ToString()" class="btn @(Model.Role == Webgiasu.Models.UserRole.Enterprise ? "btn-outline-enterprise" : "btn-outline-" + roleColor) @(Model.Role == Webgiasu.Models.UserRole.School || Model.Role == Webgiasu.Models.UserRole.Enterprise ? "btn-no-border-hover" : "btn-pill") btn-animated px-5">
+                    <a asp-controller="Home" asp-action="Index" asp-route-role="@Model.Role.ToString()" class="btn btn-outline-@roleColor btn-no-border-hover btn-pill btn-animated px-5">
                         <i class="bi bi-arrow-left me-1"></i> Quay lại trang chủ
                     </a>
                 </div>
@@ -220,124 +178,6 @@
         </div>
     </div>
 </div>
-
-<style>
-    .register-card {
-        border-radius: 20px;
-        overflow: hidden;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        --role-color: var(--bs-primary);
-        --role-color-rgb: var(--bs-primary-rgb);
-    }
-    
-    .register-card:hover {
-        transform: translateY(-10px);
-    }
-    
-    .register-header {
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .register-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-        animation: shimmer 3s infinite;
-    }
-    
-    @@keyframes shimmer {
-        0% { left: -100%; }
-        100% { left: 100%; }
-    }
-    
-    .icon-container {
-        display: inline-block;
-    }
-    
-    .form-control-animated {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border: 2px solid #e9ecef;
-        border-radius: 12px;
-    }
-
-    .form-control-animated:focus {
-        box-shadow: 0 0 0 4px rgba(var(--role-color-rgb), 0.25);
-        border-color: var(--role-color);
-        transform: translateY(-2px);
-    }
-    
-    .btn-animated {
-        position: relative;
-        overflow: hidden;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .btn-animated::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0;
-        height: 0;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.3);
-        transform: translate(-50%, -50%);
-        transition: width 0.6s, height 0.6s;
-    }
-    
-    .btn-animated:hover::before {
-        width: 400px;
-        height: 400px;
-    }
-    
-    .btn-animated:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    }
-    
-    .btn-pill {
-        border-radius: 50px;
-    }
-    
-    .alert-animated {
-        border-radius: 12px;
-        transition: all 0.3s ease;
-    }
-    
-    .alert-animated:hover {
-        transform: translateX(5px);
-    }
-    
-    .input-group .btn {
-        border-radius: 0 12px 12px 0;
-        border-color: #e9ecef;
-    }
-    
-    .input-group .form-control {
-        border-radius: 12px 0 0 12px;
-    }
-    
-    /* Floating animation for card on load */
-    @@keyframes floatIn {
-        0% {
-            opacity: 0;
-            transform: translateY(50px) scale(0.95);
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-    }
-    
-    .register-card {
-        animation: floatIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    }
-</style>
 
 @section Scripts {
     <script>

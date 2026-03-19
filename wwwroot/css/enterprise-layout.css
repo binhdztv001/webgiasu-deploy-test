@@ -2,25 +2,12 @@
    ENTERPRISE LAYOUT STYLES - BROWN THEME
    =========================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-:root {
-    --header-height: 70px;
-    --sidebar-width: 280px;
-    --sidebar-collapsed-width: 70px;
-    /* Enterprise theme: Brown/Wood - Professional and trustworthy */
+/*body[data-theme="enterprise"] {
     --primary-gradient: linear-gradient(135deg, #795548 0%, #8D6E63 100%);
-    --enterprise-gradient: linear-gradient(135deg, #6D4C41 0%, #795548 100%);
+    --theme-gradient: linear-gradient(135deg, #6D4C41 0%, #795548 100%);
     --sidebar-bg: #1a1a1a;
     --sidebar-hover: #2d2d2d;
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Force UTF-8 encoding */
-* {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-    box-sizing: border-box;
-}
+}*/
 
 /* ===========================
    BODY & HTML - Không scroll body

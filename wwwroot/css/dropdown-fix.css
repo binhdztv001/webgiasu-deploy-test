@@ -51,8 +51,8 @@
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18) !important;
     overflow: hidden !important;
     background: #fff;
-    --menu-color: #2196F3;
-    --menu-color-rgb: 33,150,243;
+    --profile-dropdown-color: #2196F3;
+    --profile-dropdown-color-rgb: 33,150,243;
 }
 
 /* Profile Dropdown Header */
@@ -128,40 +128,40 @@
     }
 
     .profile-dropdown .profile-menu-item:hover {
-        background: linear-gradient( 90deg, rgba(var(--menu-color-rgb), 0.08) 0%, transparent 100% ) !important;
-        color: var(--menu-color);
+        background: linear-gradient( 90deg, rgba(var(--profile-dropdown-color-rgb), 0.08) 0%, transparent 100% ) !important;
+        color: var(--profile-dropdown-color);
     }
 
         .profile-dropdown .profile-menu-item:hover::before {
-            background: var(--menu-color);
+            background: var(--profile-dropdown-color);
         }
 
         .profile-dropdown .profile-menu-item:hover i {
-            color: var(--menu-color) ;
+            color: var(--profile-dropdown-color) ;
         }
 
 /* Admin */
 body[data-theme="admin"] .profile-dropdown {
-    --menu-color: #263238 !important;
-    --menu-color-rgb: 255, 255, 255 !important;
+    --profile-dropdown-color: #263238 !important;
+    --profile-dropdown-color-rgb: 255, 255, 255 !important;
 }
 
 /* Tutor */
 body[data-theme="tutor"] .profile-dropdown {
-    --menu-color: #4CAF50 !important;
-    --menu-color-rgb: 76,175,80 !important;
+    --profile-dropdown-color: #4CAF50 !important;
+    --profile-dropdown-color-rgb: 76,175,80 !important;
 }
 
 /* School */
 body[data-theme="school"] .profile-dropdown {
-    --menu-color: #FF9800 !important;
-    --menu-color-rgb: 255,152,0 !important;
+    --profile-dropdown-color: #FF9800 !important;
+    --profile-dropdown-color-rgb: 255,152,0 !important;
 }
 
 /* Enterprise */
 body[data-theme="enterprise"] .profile-dropdown {
-    --menu-color: #795548 !important;
-    --menu-color-rgb: 109, 76, 65 !important;
+    --profile-dropdown-color: #795548 !important;
+    --profile-dropdown-color-rgb: 109, 76, 65 !important;
 }
 
 /* ===== Override Bootstrap dropdown-item states ===== */
@@ -176,19 +176,19 @@ body[data-theme="enterprise"] .profile-dropdown {
 .profile-dropdown .profile-menu-item:hover,
 .profile-dropdown .profile-menu-item:active,
 .profile-dropdown .profile-menu-item.active {
-    color: var(--menu-color) !important;
+    color: var(--profile-dropdown-color) !important;
 }
 
     .profile-dropdown .profile-menu-item:hover::before,
     .profile-dropdown .profile-menu-item:active::before,
     .profile-dropdown .profile-menu-item.active::before {
-        background: var(--menu-color) !important;
+        background: var(--profile-dropdown-color) !important;
     }
 
     .profile-dropdown .profile-menu-item:hover i,
     .profile-dropdown .profile-menu-item:active i,
     .profile-dropdown .profile-menu-item.active i {
-        color: var(--menu-color) !important;
+        color: var(--profile-dropdown-color) !important;
     }
 
 /* Logout Item */
