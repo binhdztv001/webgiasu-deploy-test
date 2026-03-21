@@ -39,10 +39,7 @@
 
 /* index.cshtml */
 @media (max-width: 992px) {
-
     .navbar-collapse {
-        background: white;
-        padding: 1rem;
         border-radius: 12px;
         margin-top: 10px;
     }
@@ -85,11 +82,6 @@
 }
 
 @media (max-width: 768px) {
-
-    .main-content {
-        padding-top: 80px !important;
-    }
-
     .card-body {
         padding: 1.5rem !important;
     }

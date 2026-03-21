@@ -1,20 +1,18 @@
 ﻿@model Webgiasu.Models.ViewModels.NotificationDropdownVM
 
 <div class="dropdown">
-    <button class="btn btn-link position-relative" type="button" data-bs-toggle="dropdown" 
-            style="color: rgba(255,255,255,0.9);">
-        <i class="bi bi-bell fs-5"></i>
+    <button class="btn btn-link position-relative text-white" type="button" data-bs-toggle="dropdown" data-bs-display="static">
+        <i class="bi bi-bell fs-5 text-white"></i>
         @if (Model.UnreadCount > 0)
         {
-            <span class="position-absolute bottom-0 start-70 rounded-pill bg-danger px-1 py-0"
-                  style="font-size: 0.58rem;">
+            <span class="position-absolute bottom-0 start-70 rounded-pill bg-danger px-1 py-0">
                 @Model.UnreadCount
             </span>
         }
     </button>
     
     <ul class="dropdown-menu dropdown-menu-end notification-dropdown">
-        <li class="dropdown-header" style="background: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%); padding: 1rem 1.25rem; margin: -0.5rem -0.5rem 0.5rem -0.5rem; border-radius: 12px 12px 0 0;">
+        <li class="dropdown-header">
             <h6 class="mb-0 text-white">Thông báo</h6>
         </li>
         
@@ -116,17 +114,6 @@
         return dateTime.ToString("dd/MM/yyyy");
     }
 }
-
-<style>
-    .notification-item.unread {
-        background-color: #f0f8ff;
-    }
-    
-    .notification-badge {
-        margin-left: auto;
-        align-self: flex-start;
-    }
-</style>
 
 <script>
     function markAsRead(notificationId) {

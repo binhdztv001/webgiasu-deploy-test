@@ -2,118 +2,6 @@
     ViewData["Title"] = "Giới thiệu";
 }
 
-<style>
-.about-header {
-    background: linear-gradient(90deg, #00c853, #00bcd4, #00c853, #00bcd4);
-    background-size: 300% 100%;
-    animation: gradientWave 8s ease-in-out infinite;
-    color: white;
-    padding: 5rem 0;
-    margin-bottom: 3rem;
-    border-radius: 25px;
-    position: relative;
-    overflow: hidden;
-}
-    
-.about-header::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-    animation: rotate 20s linear infinite;
-}
-    
-@@keyframes gradientWave {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-    
-@@keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-    
-.about-header .container {
-    position: relative;
-    z-index: 1;
-}
-    
-.about-header h1 {
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
-    animation: fadeInDown 0.8s ease-out;
-}
-    
-.about-header p {
-    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
-    animation: fadeInUp 0.8s ease-out 0.2s backwards;
-}
-    
-@@keyframes fadeInDown {
-    from {
-        opacity: 0;
-        transform: translateY(-30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-    
-@@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-    
-    .role-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border: none;
-        border-radius: 15px;
-        overflow: hidden;
-    }
-    
-    .role-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-    }
-    
-    .role-icon {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 1.5rem;
-        font-size: 2.5rem;
-        color: white;
-    }
-    
-    .feature-box {
-        padding: 2rem;
-        border-radius: 12px;
-        background: rgba(255, 255, 255, 0.7);
-        border: 2px solid rgba(0,0,0,0.05);
-        height: 100%;
-        transition: all 0.3s ease;
-    }
-    
-    .feature-box:hover {
-        background: white;
-        border-color: rgba(102, 126, 234, 0.3);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    }
-</style>
-
 <div class="about-header text-center">
     <div class="container">
         <h1 class="display-4 fw-bold mb-3">
@@ -125,14 +13,14 @@
 
 <div class="container">
     <!-- Tổng quan dự án -->
-    <div class="row mb-5">
+    <div class="info-guide row mb-5">
         <div class="col-lg-10 mx-auto">
-            <div class="card border-0 shadow-lg" style="border-radius: 20px;">
+            <div class="card border-0 shadow-lg">
                 <div class="card-body p-5">
-                    <h2 class="fw-bold mb-4 text-center" style="color: #667eea;">
+                    <h2 class="fw-bold mb-4 text-center">
                         <i class="bi bi-lightbulb me-2"></i>Tổng quan dự án
                     </h2>
-                    <p class="lead text-muted mb-4" style="line-height: 1.8;">
+                    <p class="lead text-muted mb-4 text-justify">
                         <strong>Learn with Mentor</strong> là nền tảng kết nối học sinh và mentor được xây dựng với sứ mệnh dân chủ hóa giáo dục, 
                         mang đến cơ hội học tập chất lượng cao và chi phí hợp lý cho mọi học sinh Việt Nam. 
                         Không chỉ là nơi giải đáp bài tập, chúng tôi còn tạo ra một cộng đồng học tập năng động 
@@ -142,7 +30,7 @@
                     <div class="row g-4 mt-4">
                         <div class="col-md-4">
                             <div class="feature-box text-center">
-                                <i class="bi bi-bullseye text-primary" style="font-size: 3rem;"></i>
+                                <i class="bi bi-bullseye text-primary"></i>
                                 <h5 class="fw-bold mt-3 mb-3">Mục tiêu</h5>
                                 <p class="text-muted mb-0">
                                     Xây dựng cộng đồng học tập toàn diện, kết nối hàng triệu học sinh với đội ngũ mentor giàu kinh nghiệm
@@ -151,7 +39,7 @@
                         </div>
                         <div class="col-md-4">
                             <div class="feature-box text-center">
-                                <i class="bi bi-gem text-success" style="font-size: 3rem;"></i>
+                                <i class="bi bi-gem text-success"></i>
                                 <h5 class="fw-bold mt-3 mb-3">Giá trị cốt lõi</h5>
                                 <p class="text-muted mb-0">
                                     Minh bạch, công bằng, chất lượng được đảm bảo qua hệ thống đánh giá nghiêm ngặt
@@ -160,7 +48,7 @@
                         </div>
                         <div class="col-md-4">
                             <div class="feature-box text-center">
-                                <i class="bi bi-trophy text-warning" style="font-size: 3rem;"></i>
+                                <i class="bi bi-trophy text-warning"></i>
                                 <h5 class="fw-bold mt-3 mb-3">Đóng góp</h5>
                                 <p class="text-muted mb-0">
                                     Tạo việc làm cho sinh viên, nâng cao chất lượng giáo dục, ứng dụng công nghệ 4.0
@@ -175,7 +63,7 @@
 
     <!-- Các đối tượng sử dụng -->
     <div class="mb-5">
-        <h2 class="fw-bold text-center mb-5" style="color: #667eea;">
+        <h2 class="fw-bold text-center mb-5">
             <i class="bi bi-people-fill me-2"></i>Đối tượng sử dụng
         </h2>
         
@@ -184,7 +72,7 @@
             <div class="col-md-6 col-lg-3">
                 <div class="card role-card h-100 shadow">
                     <div class="card-body p-4">
-                        <div class="role-icon" style="background: linear-gradient(135deg, #0d6efd 0%, #084298 100%);">
+                        <div class="role-icon role-icon-student">
                             <i class="bi bi-person-circle"></i>
                         </div>
                         <h4 class="text-center fw-bold mb-3">Học sinh</h4>
@@ -203,7 +91,7 @@
             <div class="col-md-6 col-lg-3">
                 <div class="card role-card h-100 shadow">
                     <div class="card-body p-4">
-                        <div class="role-icon" style="background: linear-gradient(135deg, #198754 0%, #0d4a2a 100%);">
+                        <div class="role-icon role-icon-mentor">
                             <i class="bi bi-mortarboard"></i>
                         </div>
                         <h4 class="text-center fw-bold mb-3">Mentor</h4>
@@ -222,7 +110,7 @@
             <div class="col-md-6 col-lg-3">
                 <div class="card role-card h-100 shadow">
                     <div class="card-body p-4">
-                        <div class="role-icon" style="background: linear-gradient(135deg, #ffc107 0%, #cc9a06 100%);">
+                        <div class="role-icon role-icon-school">
                             <i class="bi bi-building"></i>
                         </div>
                         <h4 class="text-center fw-bold mb-3">Nhà trường</h4>
@@ -241,16 +129,16 @@
             <div class="col-md-6 col-lg-3">
                 <div class="card role-card h-100 shadow">
                     <div class="card-body p-4">
-                        <div class="role-icon" style="background: linear-gradient(135deg, #dc3545 0%, #a02a37 100%);">
+                        <div class="role-icon role-icon-enterprise">
                             <i class="bi bi-shield-check"></i>
                         </div>
-                        <h4 class="text-center fw-bold mb-3">Quản trị viên</h4>
+                        <h4 class="text-center fw-bold mb-3">Doanh nghiệp</h4>
                         <ul class="list-unstyled">
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Quản lý toàn diện hệ thống</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Bảo mật dữ liệu chặt chẽ</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Kiểm soát chất lượng</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Thống kê chi tiết</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Duyệt và quản lý mentor</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Hợp tác với nhà trường</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Tạo tài khoản Mentor</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Xem thông tin lớp học</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Xem các lịch trao đổi</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Thống kê hiệu quả</li>
                         </ul>
                     </div>
                 </div>
@@ -261,17 +149,17 @@
     <!-- Tính năng nổi bật -->
     <div class="row mb-5">
         <div class="col-lg-10 mx-auto">
-            <h2 class="fw-bold text-center mb-5" style="color: #667eea;">
+            <h2 class="fw-bold text-center mb-5">
                 <i class="bi bi-stars me-2"></i>Tính năng nổi bật
             </h2>
-            
+
             <div class="row g-4">
                 <div class="col-md-6">
-                    <div class="card border-0 shadow" style="border-radius: 15px;">
+                    <div class="card border-0 shadow">
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center mb-3">
-                                <div class="rounded-circle d-inline-flex align-items-center justify-content-center me-3" style="width: 70px; height: 70px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); flex-shrink: 0;">
-                                    <i class="bi bi-robot text-white" style="font-size: 2rem;"></i>
+                                <div class="rounded-circle d-inline-flex align-items-center justify-content-center me-3 icon-gradient-purple">
+                                    <i class="bi bi-robot text-white"></i>
                                 </div>
                                 <h4 class="fw-bold mb-0">AI gợi ý bài giải</h4>
                             </div>
@@ -284,11 +172,11 @@
                 </div>
 
                 <div class="col-md-6">
-                    <div class="card border-0 shadow" style="border-radius: 15px;">
+                    <div class="card border-0 shadow">
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center mb-3">
-                                <div class="rounded-circle d-inline-flex align-items-center justify-content-center me-3" style="width: 70px; height: 70px; background: linear-gradient(135deg, #00c853 0%, #00a843 100%); flex-shrink: 0;">
-                                    <i class="bi bi-qr-code-scan text-white" style="font-size: 2rem;"></i>
+                                <div class="rounded-circle d-inline-flex align-items-center justify-content-center me-3 icon-gradient-green">
+                                    <i class="bi bi-qr-code-scan text-white"></i>
                                 </div>
                                 <h4 class="fw-bold mb-0">Thanh toán QR</h4>
                             </div>
@@ -301,11 +189,11 @@
                 </div>
 
                 <div class="col-md-6">
-                    <div class="card border-0 shadow" style="border-radius: 15px;">
+                    <div class="card border-0 shadow">
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center mb-3">
-                                <div class="rounded-circle d-inline-flex align-items-center justify-content-center me-3" style="width: 70px; height: 70px; background: linear-gradient(135deg, #9C27B0 0%, #8E24AA 100%); flex-shrink: 0;">
-                                    <i class="bi bi-people text-white" style="font-size: 2rem;"></i>
+                                <div class="rounded-circle d-inline-flex align-items-center justify-content-center me-3 icon-gradient-violet">
+                                    <i class="bi bi-people text-white"></i>
                                 </div>
                                 <h4 class="fw-bold mb-0">Kết nối & Kết bạn</h4>
                             </div>
@@ -318,11 +206,11 @@
                 </div>
 
                 <div class="col-md-6">
-                    <div class="card border-0 shadow" style="border-radius: 15px;">
+                    <div class="card border-0 shadow">
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center mb-3">
-                                <div class="rounded-circle d-inline-flex align-items-center justify-content-center me-3" style="width: 70px; height: 70px; background: linear-gradient(135deg, #E91E63 0%, #D81B60 100%); flex-shrink: 0;">
-                                    <i class="bi bi-chat-dots text-white" style="font-size: 2rem;"></i>
+                                <div class="rounded-circle d-inline-flex align-items-center justify-content-center me-3 icon-gradient-pink">
+                                    <i class="bi bi-chat-dots text-white"></i>
                                 </div>
                                 <h4 class="fw-bold mb-0">Diễn đàn Cộng đồng</h4>
                             </div>
@@ -339,18 +227,21 @@
 
     <!-- Call to Action -->
     <div class="text-center mb-5">
-        <div class="card border-0 shadow-lg position-relative overflow-hidden" style="border-radius: 20px;">
+        <div class="card border-0 shadow-lg position-relative overflow-hidden">
             <!-- Animated gradient background -->
-            <div class="position-absolute w-100 h-100" style="top: 0; left: 0; z-index: 0; background: linear-gradient(90deg, #00c853, #00bcd4, #00c853, #00bcd4); background-size: 300% 100%; animation: gradientWave 8s ease-in-out infinite;"></div>
-            
-            <div class="card-body p-5 position-relative" style="z-index: 1;">
-                <h3 class="fw-bold text-white mb-3" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">Sẵn sàng bắt đầu hành trình học tập của bạn?</h3>
-                <p class="text-white mb-4" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">Tham gia cộng đồng hơn 1,500 học sinh và Mentor ngay hôm nay</p>
+            <div class="position-absolute w-100 h-100 cta-bg"></div>
+            <div class="card-body p-5 position-relative">
+                <h3 class="fw-bold text-white mb-3">
+                    Sẵn sàng bắt đầu hành trình học tập của bạn?
+                </h3>
+                <p class="text-white mb-4">
+                    Tham gia cộng đồng hơn 1,500 học sinh và Mentor ngay hôm nay
+                </p>
                 <div class="d-flex justify-content-center gap-3 flex-wrap">
-                    <a href="/Account/Register?role=Student" class="btn btn-lg px-5 py-3" style="border-radius: 50px; font-weight: 600; background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%); color: white; border: none; box-shadow: 0 8px 20px rgba(0, 188, 212, 0.4); transition: all 0.3s ease;">
+                    <a href="/Account/Register?role=Student" class="btn btn-lg px-5 py-3 btn-cta-student">
                         <i class="bi bi-person-plus me-2"></i>Đăng ký làm Học sinh
                     </a>
-                    <a href="/Account/Register?role=Tutor" class="btn btn-lg px-5 py-3" style="border-radius: 50px; font-weight: 600; background: linear-gradient(135deg, #00c853 0%, #00a843 100%); color: white; border: none; box-shadow: 0 8px 20px rgba(0, 200, 83, 0.4); transition: all 0.3s ease;">
+                    <a href="/Account/Register?role=Tutor" class="btn btn-lg px-5 py-3 btn-cta-mentor">
                         <i class="bi bi-briefcase me-2"></i>Trở thành Mentor
                     </a>
                 </div>

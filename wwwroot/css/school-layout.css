@@ -1,13 +1,6 @@
 ﻿/* ===========================
-   SCHOOL LAYOUT STYLES - YELLOW THEME
+   BODY & HTML - Không scroll body
    =========================== */
-
-/*body[data-theme="school"] {
-    --primary-gradient: linear-gradient(135deg, #FFC107 0%, #FFD54F 100%);
-    --theme-gradient: linear-gradient(135deg, #FFC107 0%, #FFB300 100%);
-    --sidebar-bg: #263238;
-    --sidebar-hover: #34495e;
-}*/
 
 html, body {
     height: 100% !important;

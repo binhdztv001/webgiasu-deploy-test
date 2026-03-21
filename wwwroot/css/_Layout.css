@@ -1,5 +1,5 @@
 ﻿/* ===========================
-   GLOBAL LAYOUT SAFE
+   HOMEPAGE, ABOUT, GUIDE, _LAYOUT CSS
    =========================== */
 
 html, body {
@@ -522,3 +522,413 @@ html, body {
     background: linear-gradient(135deg, #00c853, #00a843);
     box-shadow: 0 8px 20px rgba(0, 200, 83, 0.4);
 }
+
+/* ===========================
+   ABOUT PAGE
+   =========================== */
+
+.about-header {
+    background: linear-gradient(90deg, #00c853, #00bcd4, #00c853, #00bcd4);
+    background-size: 300% 100%;
+    animation: gradientWave 8s ease-in-out infinite;
+    color: white;
+    padding: 5rem 0;
+    margin-bottom: 3rem;
+    border-radius: 25px;
+    position: relative;
+    overflow: hidden;
+}
+
+    .about-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: rotate 20s linear infinite;
+    }
+
+    .about-header .container {
+        position: relative;
+        z-index: 1;
+    }
+
+    .about-header h1 {
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+        animation: fadeInDown 0.8s ease-out;
+    }
+
+    .about-header p {
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+        animation: fadeInUp 0.8s ease-out 0.2s backwards;
+    }
+
+.container .info-guide h2 {
+    color: #667eea;
+}
+
+.container .info-guide h3 {
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.container .info-guide .text-justify {
+    text-align: justify;
+    text-justify: inter-word;
+    line-height: 1.8;
+}
+
+.container .rounded-circle {
+    width: 70px;
+    height: 70px;
+    flex-shrink: 0;
+}
+
+    .container .rounded-circle i {
+        font-size: 2rem;
+    }
+
+/* Animations */
+@keyframes gradientWave {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Role card */
+.role-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+    .role-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    }
+
+.role-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2.5rem;
+    color: white;
+}
+
+.role-icon-student {
+    background: linear-gradient(135deg, #0d6efd 0%, #084298 100%);
+}
+
+.role-icon-mentor {
+    background: linear-gradient(135deg, #198754 0%, #0d4a2a 100%);
+}
+
+.role-icon-school {
+    background: linear-gradient(135deg, #ffc107 0%, #cc9a06 100%);
+}
+
+.role-icon-enterprise {
+    background: linear-gradient(135deg, #a1887f 0%, #8D6E63 100%);
+}
+
+/* Feature box */
+.feature-box {
+    padding: 2rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 2px solid rgba(0,0,0,0.05);
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+    .feature-box:hover {
+        background: white;
+        border-color: rgba(102, 126, 234, 0.3);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    .feature-box i {
+        font-size: 3rem;
+    }
+
+/* Reusable gradient circles */
+.icon-gradient-purple {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.icon-gradient-green {
+    background: linear-gradient(135deg, #00c853 0%, #00a843 100%);
+}
+
+.icon-gradient-violet {
+    background: linear-gradient(135deg, #9C27B0 0%, #8E24AA 100%);
+}
+
+.icon-gradient-pink {
+    background: linear-gradient(135deg, #E91E63 0%, #D81B60 100%);
+}
+
+/* CTA */
+.cta-bg {
+    background: linear-gradient(90deg, #00c853, #00bcd4, #00c853, #00bcd4);
+    background-size: 300% 100%;
+    animation: gradientWave 8s ease-in-out infinite;
+}
+
+    .cta-bg a {
+        border-radius: 50px;
+    }
+
+.btn-cta-student {
+    border-radius: 50px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 8px 20px rgba(0, 188, 212, 0.4);
+    transition: all 0.3s ease;
+}
+
+.btn-cta-mentor {
+    border-radius: 50px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #00c853 0%, #00a843 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 8px 20px rgba(0, 200, 83, 0.4);
+    transition: all 0.3s ease;
+}
+
+/* ===========================
+   GUIDE PAGE
+   =========================== */
+.guide-header {
+    background: linear-gradient(90deg, #00c853, #00bcd4, #00c853, #00bcd4);
+    background-size: 300% 100%;
+    animation: gradientWave 8s ease-in-out infinite;
+    color: white;
+    padding: 5rem 0;
+    margin-bottom: 3rem;
+    border-radius: 25px;
+    position: relative;
+    overflow: hidden;
+}
+
+.guide-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
+}
+
+@@keyframes gradientWave {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.guide-header .container {
+    position: relative;
+    z-index: 1;
+}
+
+.guide-header h1 {
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+    animation: fadeInDown 0.8s ease-out;
+}
+
+.guide-header p {
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+    animation: fadeInUp 0.8s ease-out 0.2s backwards;
+}
+
+@@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.guide-section {
+    margin-bottom: 4rem;
+}
+
+.guide-card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+    .guide-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+.step-number {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: white;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+    .step-number.step-number-1 {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .step-number.step-number-2 {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    }
+
+    .step-number.step-number-3 {
+        background: linear-gradient(135deg, #ffa751 0%, #ffe259 100%);
+    }
+
+    .step-number.step-number-4 {
+        background: linear-gradient(135deg, #209cff 0%, #68e0cf 100%);
+    }
+
+.accordion-button:not(.collapsed) {
+    background-color: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: rgba(102, 126, 234, 0.25);
+}
+
+/* Custom tab colors */
+#student-tab {
+    background: linear-gradient(135deg, #0d6efd 0%, #084298 100%);
+    color: white !important;
+    border: none;
+    margin-right: 0.5rem;
+}
+
+    #student-tab:hover,
+    #student-tab.active {
+        background: linear-gradient(135deg, #084298 0%, #0d6efd 100%);
+        color: white !important;
+    }
+
+#mentor-tab {
+    background: linear-gradient(135deg, #198754 0%, #0d4a2a 100%);
+    color: white !important;
+    border: none;
+    margin-right: 0.5rem;
+}
+
+    #mentor-tab:hover,
+    #mentor-tab.active {
+        background: linear-gradient(135deg, #0d4a2a 0%, #198754 100%);
+        color: white !important;
+    }
+
+#school-tab {
+    background: linear-gradient(135deg, #ffc107 0%, #cc9a06 100%);
+    color: white !important;
+    border: none;
+}
+
+    #school-tab:hover,
+    #school-tab.active {
+        background: linear-gradient(135deg, #cc9a06 0%, #ffc107 100%);
+        color: white !important;
+    }
+
+</style >

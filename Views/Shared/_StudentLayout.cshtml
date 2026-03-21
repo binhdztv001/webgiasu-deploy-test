@@ -36,7 +36,7 @@
     <!-- Top Header -->
     <nav class="top-header">
         <div class="container-fluid px-4">
-            <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center justify-content-between w-100">
                 <!-- Left: Logo & Toggle -->
                 <div class="d-flex align-items-center">
                     <button class="btn btn-link text-white me-3" id="sidebarToggle">
@@ -57,21 +57,30 @@
                     @await Component.InvokeAsync("MessageDropdown")
 
                     <!-- Live Clock -->
-                    <div class="header-clock d-flex align-items-center gap-2 text-white px-3 py-2 rounded" 
-                         style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px);">
+                    <div class="header-clock d-flex align-items-center gap-2 text-white px-3 py-2 rounded">
                         <i class="bi bi-clock fs-5"></i>
-                        <div class="d-flex flex-column" style="line-height: 1.2;">
-                            <span class="fw-semibold" id="currentTime" style="font-size: 0.95rem;">--:--:--</span>
-                            <small style="font-size: 0.7rem; opacity: 0.9;" id="currentDate">--, -- -- ----</small>
+                        <div class="d-flex flex-column">
+                            <span class="fw-semibold" id="currentTime">--:--:--</span>
+                            <small id="currentDate">--, -- -- ----</small>
                         </div>
                     </div>
                   
                     <!-- Profile -->
                     <div class="dropdown">
-                        <button class="btn btn-link text-white d-flex align-items-center gap-2 profile-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="https://ui-avatars.com/api/?name=@userName&background=fff&color=2196F3&size=40" 
-                                 class="rounded-circle profile-avatar" alt="Avatar" width="40" height="40">
+                        <button class="btn btn-link text-white d-flex align-items-center gap-2 profile-toggle"
+                                 type="button"
+                                 data-bs-toggle="dropdown"
+                                 data-bs-display="static">
+
+                            <img src="https://ui-avatars.com/api/?name=@userName&background=fff&color=2196F3&size=40"
+                                 class="rounded-circle profile-avatar"
+                                 alt="Avatar"
+                                 width="40"
+                                 height="40">
+
+                            <!-- Desktop only -->
                             <span class="d-none d-md-inline fw-semibold">@userName</span>
+
                             <i class="bi bi-chevron-down profile-chevron"></i>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end profile-dropdown">
@@ -133,8 +142,7 @@
             <div class="modal fade" id="logoutConfirmModal" tabindex="-1" data-bs-backdrop="false">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <div class="modal-header"
-                             style="background: linear-gradient(135deg, #f44336 0%, #e57373 100%);">
+                        <div class="modal-header modal-header-logout">
                             <h5 class="modal-title text-white">
                                 <i class="bi bi-box-arrow-right me-2"></i>Xác nhận đăng xuất
                             </h5>
@@ -375,7 +383,7 @@
     <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header" style="background: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%); color: white;">
+                <div class="modal-header">
                     <h5 class="modal-title" id="settingsModalLabel">
                         <i class="bi bi-gear me-2"></i>Cài đặt giao diện
                     </h5>
@@ -406,7 +414,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    
+
     <!-- Initialize Bootstrap Dropdowns -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -437,7 +445,7 @@
             });
         });
     </script>
-    
+
     <!-- Premium -->
     <script>
         function upgradePremium(e) {
@@ -493,7 +501,6 @@
         updateClock();
         setInterval(updateClock, 1000);
     </script>
-
 
     <script>
         (function() {

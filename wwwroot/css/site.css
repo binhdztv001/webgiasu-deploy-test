@@ -92,10 +92,12 @@ html {
     height: 100%;
     margin: 0;
 }
+
 html, body {
     max-width: 100%;
     overflow-x: hidden;
 }
+
 @media (min-width: 768px) {
     html {
         font-size: 16px;
@@ -111,7 +113,6 @@ body {
     transition: background 0.3s ease, color 0.3s ease;
     display: flex;
     flex-direction: column;
-    /*    min-height: 100vh;*/
 }
 
 /* ===========================
@@ -860,11 +861,15 @@ body {
 }
 
 .modal-header {
-    background: var(--gradient-primary);
+    background: var(--primary-gradient);
     color: white;
     border-bottom: none;
     padding: 1.5rem;
 }
+
+    .modal-header.modal-header-logout {
+        background: linear-gradient(135deg, #f44336 0%, #e57373 100%);
+    }
 
 .modal-footer {
     border-top: none;
@@ -1228,7 +1233,3 @@ body.dark-mode {
     body.dark-mode * {
         transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
     }
-
-/* ===========================
-   MOBILE RESTYLING
-   =========================== */
