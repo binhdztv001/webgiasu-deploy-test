@@ -1,0 +1,123 @@
+@model IEnumerable<Webgiasu.Models.Notification>
+@{
+    ViewData["Title"] = "Thông báo";
+    Layout = "~/Views/Shared/_SchoolLayout.cshtml";
+}
+
+<div class="dashboard-container">
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h5 class="fw-bold mb-1 text-dark">
+                <i class="bi bi-bell text-warning me-2"></i>Tất cả thông báo
+            </h5>
+            <p class="text-muted mb-0 small">Theo dõi tất cả các hoạt động và cập nhật quan trọng</p>
+        </div>
+        <button id="markAllRead" class="btn btn-outline-warning btn-sm">
+            <i class="bi bi-check-all me-1"></i> Đánh dấu tất cả đã đọc
+        </button>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div id="notificationList" class="list-group list-group-flush">
+                @if (!Model.Any())
+                {
+                    <div class="text-center py-5">
+                        <i class="bi bi-bell-slash text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-3">Bạn không có thông báo nào</p>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var notification in Model)
+                    {
+                        var iconClass = notification.Type switch
+                        {
+                            Webgiasu.Models.NotificationType.ProblemCreated => "bi-plus-circle",
+                            Webgiasu.Models.NotificationType.TutorAccepted => "bi-person-check",
+                            Webgiasu.Models.NotificationType.SolutionSubmitted => "bi-check-circle",
+                            Webgiasu.Models.NotificationType.PaymentCompleted => "bi-credit-card",
+                            Webgiasu.Models.NotificationType.GroupInvite => "bi-people",
+                            Webgiasu.Models.NotificationType.FriendRequest => "bi-person-plus",
+                            Webgiasu.Models.NotificationType.RatingReceived => "bi-star-fill",
+                            Webgiasu.Models.NotificationType.PaymentReceived => "bi-cash-stack",
+                            Webgiasu.Models.NotificationType.TutorApplied => "bi-person-raised-hand",
+                            Webgiasu.Models.NotificationType.ApplicationApproved => "bi-check-circle-fill",
+                            Webgiasu.Models.NotificationType.ApplicationRejected => "bi-x-circle",
+                            Webgiasu.Models.NotificationType.EnterpriseMentorCreated => "bi-person-plus-fill",
+                            Webgiasu.Models.NotificationType.EnterpriseSystemAlert => "bi-exclamation-triangle",
+                            _ => "bi-bell"
+                        };
+
+                        var bgClass = notification.Type switch
+                        {
+                            Webgiasu.Models.NotificationType.ProblemCreated => "bg-primary",
+                            Webgiasu.Models.NotificationType.TutorAccepted => "bg-info",
+                            Webgiasu.Models.NotificationType.SolutionSubmitted => "bg-success",
+                            Webgiasu.Models.NotificationType.PaymentCompleted => "bg-success",
+                            Webgiasu.Models.NotificationType.GroupInvite => "bg-warning",
+                            Webgiasu.Models.NotificationType.FriendRequest => "bg-primary",
+                            Webgiasu.Models.NotificationType.RatingReceived => "bg-warning",
+                            Webgiasu.Models.NotificationType.PaymentReceived => "bg-success",
+                            Webgiasu.Models.NotificationType.TutorApplied => "bg-info",
+                            Webgiasu.Models.NotificationType.ApplicationApproved => "bg-success",
+                            Webgiasu.Models.NotificationType.ApplicationRejected => "bg-danger",
+                            Webgiasu.Models.NotificationType.EnterpriseMentorCreated => "bg-brown",
+                            Webgiasu.Models.NotificationType.EnterpriseSystemAlert => "bg-warning",
+                            _ => "bg-secondary"
+                        };
+
+                        <div class="list-group-item list-group-item-action @(!notification.IsRead ? "bg-light border-start border-4 border-warning" : "") p-3">
+                            <div class="d-flex align-items-center">
+                                <div class="notification-icon @bgClass text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px;">
+                                    <i class="bi @iconClass fs-5"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <h6 class="mb-0 @(!notification.IsRead ? "fw-bold" : "")">@notification.Title</h6>
+                                        <small class="text-muted">@notification.CreatedDate.ToString("dd/MM/yyyy HH:mm")</small>
+                                    </div>
+                                    <p class="mb-1 text-secondary small">@notification.Message</p>
+                                    @if (!string.IsNullOrEmpty(notification.Link))
+                                    {
+                                        <a href="@notification.Link" onclick="markAsRead(@notification.Id)" class="btn btn-link btn-sm p-0 text-decoration-none text-warning fw-semibold mt-1">
+                                            Xem chi tiết <i class="bi bi-arrow-right small"></i>
+                                        </a>
+                                    }
+                                </div>
+                                @if (!notification.IsRead)
+                                {
+                                    <div class="status-indicator">
+                                        <span class="badge rounded-pill bg-danger" style="font-size: 0.65rem;">MỚI</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function markAsRead(id) {
+            fetch('/School/MarkNotificationAsRead/' + id, {
+                method: 'POST'
+            });
+        }
+
+        document.getElementById('markAllRead').addEventListener('click', function() {
+            if (confirm('Bạn có muốn đánh dấu tất cả thông báo là đã đọc?')) {
+                fetch('/School/MarkAllNotificationsAsRead', {
+                    method: 'POST'
+                }).then(response => response.json()).then(data => {
+                    if (data.success) {
+                        location.reload();
+                    }
+                });
+            }
+        });
+    </script>
+}

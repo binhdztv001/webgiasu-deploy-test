@@ -1,9 +1,4 @@
-﻿@using Webgiasu.Models.ViewModels
-@model MessageDropdownVM
-
-@{
-    var targetController = (ViewBag.MessageController as string) ?? "Student";
-}
+@model Webgiasu.Models.ViewModels.MessageDropdownVM
 
 <div class="dropdown">
     <button class="btn btn-link position-relative" type="button" data-bs-toggle="dropdown" data-bs-display="static">
@@ -36,7 +31,7 @@
             {
                 <li>
                     <a class="dropdown-item notification-item"
-                       asp-controller="@(targetController)"
+                       asp-controller="@(Model.ControllerName)"
                        asp-action="Messages"
                        asp-route-userId="@msg.SenderId">
                         <div class="d-flex">
@@ -61,7 +56,7 @@
         <li><hr class="dropdown-divider"></li>
         <li>
             <a class="dropdown-item text-center text-primary fw-semibold"
-               asp-controller="@(targetController)"
+               asp-controller="@(Model.ControllerName)"
                asp-action="Messages">
                 Xem tất cả tin nhắn
             </a>

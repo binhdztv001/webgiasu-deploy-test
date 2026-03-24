@@ -1,4 +1,4 @@
-﻿@model Webgiasu.Models.ViewModels.AdminDashboardViewModel
+@model Webgiasu.Models.ViewModels.AdminDashboardViewModel
 @{
     ViewData["Title"] = "Trang chủ - Admin";
     Layout = "_AdminLayout";
@@ -20,77 +20,77 @@
 </div>
 
 <!-- Stat Cards -->
-<div class="row g-4 mb-4">
-    <div class="col-xl-3 col-md-6">
-        <div class="card border-0 shadow-sm h-100 card-hover">
+<div class="row g-3 g-md-4 mb-4">
+    <div class="col-6 col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100 stat-card card-hover">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
+                <div class="d-flex justify-content-between align-items-start gap-2">
                     <div>
-                        <p class="text-muted mb-2 small">TỔNG DOANH THU</p>
+                        <p class="text-muted mb-2 small text-uppercase">TỔNG DOANH THU</p>
                         <h3 class="fw-bold mb-0 text-success">@Model.TotalRevenue.ToString("N0") đ</h3>
                         <p class="text-muted small mb-0 mt-2">
-                            <i class="bi bi-arrow-up text-success"></i> +12.5% so với tháng trước
+                            <i class="bi bi-arrow-up text-success"></i> +12.5%
                         </p>
                     </div>
-                    <div class="bg-success bg-opacity-10 p-3 rounded">
-                        <i class="bi bi-cash-stack text-success" style="font-size: 2rem;"></i>
+                    <div class="stat-icon bg-success bg-opacity-10 p-2 p-md-3 rounded">
+                        <i class="bi bi-cash-stack text-success"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="col-xl-3 col-md-6">
-        <div class="card border-0 shadow-sm h-100 card-hover">
+    <div class="col-6 col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100 stat-card card-hover">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
+                <div class="d-flex justify-content-between align-items-start gap-2">
                     <div>
-                        <p class="text-muted mb-2 small">TỔNG BÀI GIẢI</p>
+                        <p class="text-muted mb-2 small text-uppercase">TỔNG BÀI GIẢI</p>
                         <h3 class="fw-bold mb-0 text-warning">@Model.TotalProblems</h3>
                         <p class="text-muted small mb-0 mt-2">
-                            <i class="bi bi-arrow-up text-success"></i> +8.2% so với tháng trước
+                            <i class="bi bi-arrow-up text-success"></i> +8.2%
                         </p>
                     </div>
-                    <div class="bg-warning bg-opacity-10 p-3 rounded">
-                        <i class="bi bi-journal-check text-warning" style="font-size: 2rem;"></i>
+                    <div class="stat-icon bg-warning bg-opacity-10 p-2 p-md-3 rounded">
+                        <i class="bi bi-journal-check text-warning"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="col-xl-3 col-md-6">
-        <div class="card border-0 shadow-sm h-100 card-hover">
+    <div class="col-6 col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100 stat-card card-hover">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
+                <div class="d-flex justify-content-between align-items-start gap-2">
                     <div>
-                        <p class="text-muted mb-2 small">TỔNG MENTOR</p>
+                        <p class="text-muted mb-2 small text-uppercase">TỔNG MENTOR</p>
                         <h3 class="fw-bold mb-0 text-info">@Model.TotalTutors</h3>
                         <p class="text-muted small mb-0 mt-2">
-                            <i class="bi bi-dash text-muted"></i> Không đổi
+                            <i class="bi bi-dash text-muted"></i> Ổn định
                         </p>
                     </div>
-                    <div class="bg-info bg-opacity-10 p-3 rounded">
-                        <i class="bi bi-mortarboard-fill text-info" style="font-size: 2rem;"></i>
+                    <div class="stat-icon bg-info bg-opacity-10 p-2 p-md-3 rounded">
+                        <i class="bi bi-mortarboard-fill text-info"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="col-xl-3 col-md-6">
-        <div class="card border-0 shadow-sm h-100 card-hover">
+    <div class="col-6 col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100 stat-card card-hover">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
+                <div class="d-flex justify-content-between align-items-start gap-2">
                     <div>
-                        <p class="text-muted mb-2 small">TỔNG HỌC SINH</p>
+                        <p class="text-muted mb-2 small text-uppercase">TỔNG HỌC SINH</p>
                         <h3 class="fw-bold mb-0 text-primary">@Model.TotalStudents</h3>
                         <p class="text-muted small mb-0 mt-2">
-                            <i class="bi bi-arrow-up text-success"></i> +15.3% so với tháng trước
+                            <i class="bi bi-arrow-up text-success"></i> +15.3%
                         </p>
                     </div>
-                    <div class="bg-primary bg-opacity-10 p-3 rounded">
-                        <i class="bi bi-people-fill text-primary" style="font-size: 2rem;"></i>
+                    <div class="stat-icon bg-primary bg-opacity-10 p-2 p-md-3 rounded">
+                        <i class="bi bi-people-fill text-primary"></i>
                     </div>
                 </div>
             </div>
@@ -104,7 +104,7 @@
     <div class="col-lg-8">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header py-3" style="background: linear-gradient(135deg, #DC143C 0%, #FF1744 100%);">
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center align-items-start gap-3">
                     <div>
                         <h5 class="mb-1 fw-bold text-white">
                             <i class="bi bi-graph-up me-2"></i>Biểu đồ Doanh thu
@@ -126,8 +126,10 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body">
-                <canvas id="revenueChart" height="80"></canvas>
+            <div class="card-body p-2 p-md-3">
+                <div style="height: 250px; min-height: 250px;">
+                    <canvas id="revenueChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -180,8 +182,8 @@
 <div class="row g-4 mb-4">
     <div class="col-12">
         <div class="card border-0 shadow-sm">
-            <div class="card-header py-3" style="background: linear-gradient(135deg, #DC143C 0%, #FF1744 100%);">
-                <div class="d-flex justify-content-between align-items-center">
+            <div class="card-header py-3">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center align-items-start gap-3">
                     <div>
                         <h5 class="mb-1 fw-bold text-white">
                             <i class="bi bi-journal-text me-2"></i>Biểu đồ Số lượng Bài học / Bài giải
@@ -190,21 +192,23 @@
                     </div>
                     <div class="btn-group" role="group">
                         <input type="radio" class="btn-check" name="problemsTimeFilter" id="problemsWeek" autocomplete="off" checked>
-                        <label class="btn btn-outline-primary btn-sm" for="problemsWeek" onclick="updateProblemsChart('week')">Tuần</label>
+                        <label class="btn btn-outline-warning btn-sm" for="problemsWeek" onclick="updateProblemsChart('week')">Tuần</label>
 
                         <input type="radio" class="btn-check" name="problemsTimeFilter" id="problemsMonth" autocomplete="off">
-                        <label class="btn btn-outline-primary btn-sm" for="problemsMonth" onclick="updateProblemsChart('month')">Tháng</label>
+                        <label class="btn btn-outline-warning btn-sm" for="problemsMonth" onclick="updateProblemsChart('month')">Tháng</label>
 
                         <input type="radio" class="btn-check" name="problemsTimeFilter" id="problemsQuarter" autocomplete="off">
-                        <label class="btn btn-outline-primary btn-sm" for="problemsQuarter" onclick="updateProblemsChart('quarter')">Quý</label>
+                        <label class="btn btn-outline-warning btn-sm" for="problemsQuarter" onclick="updateProblemsChart('quarter')">Quý</label>
 
                         <input type="radio" class="btn-check" name="problemsTimeFilter" id="problemsYear" autocomplete="off">
-                        <label class="btn btn-outline-primary btn-sm" for="problemsYear" onclick="updateProblemsChart('year')">Năm</label>
+                        <label class="btn btn-outline-warning btn-sm" for="problemsYear" onclick="updateProblemsChart('year')">Năm</label>
                     </div>
                 </div>
             </div>
-            <div class="card-body">
-                <canvas id="problemsChart" height="80"></canvas>
+            <div class="card-body p-2 p-md-3">
+                <div style="height: 300px; min-height: 300px;">
+                    <canvas id="problemsChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -215,7 +219,7 @@
     <!-- Problem Types Pie Chart -->
     <div class="col-lg-6">
         <div class="card border-0 shadow-sm h-100">
-            <div class="card-header py-3" style="background: linear-gradient(135deg, #DC143C 0%, #FF1744 100%);">
+            <div class="card-header py-3">
                 <h5 class="mb-1 fw-bold text-white">
                     <i class="bi bi-pie-chart me-2"></i>Tỉ lệ Loại Bài toán
                 </h5>
@@ -264,7 +268,7 @@
     <!-- Tutor Ratings Pie Chart -->
     <div class="col-lg-6">
         <div class="card border-0 shadow-sm h-100">
-            <div class="card-header py-3" style="background: linear-gradient(135deg, #DC143C 0%, #FF1744 100%);">
+            <div class="card-header py-3">
                 <h5 class="mb-1 fw-bold text-white">
                     <i class="bi bi-star me-2"></i>Tỉ lệ Mentor theo Rating
                 </h5>

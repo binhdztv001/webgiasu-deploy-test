@@ -1,8 +1,9 @@
-﻿/* ===========================
+/* ===========================
    BODY & HTML - Không scroll body
    =========================== */
 
-html, body {
+html,
+body {
     height: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -42,16 +43,14 @@ body.modal-open {
     left: -150%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-        120deg,
-        transparent 0%,
-        transparent 40%,
-        rgba(255, 255, 255, 0.15) 45%,
-        rgba(255, 255, 255, 0.35) 50%,
-        rgba(255, 255, 255, 0.15) 55%,
-        transparent 60%,
-        transparent 100%
-    );
+    background: linear-gradient(120deg,
+            transparent 0%,
+            transparent 40%,
+            rgba(255, 255, 255, 0.15) 45%,
+            rgba(255, 255, 255, 0.35) 50%,
+            rgba(255, 255, 255, 0.15) 55%,
+            transparent 60%,
+            transparent 100%);
     animation: headerShimmer 4s ease-in-out infinite;
     pointer-events: none;
     z-index: 1;
@@ -64,16 +63,14 @@ body.modal-open {
     left: -150%;
     width: 80%;
     height: 100%;
-    background: linear-gradient(
-        120deg,
-        transparent 0%,
-        transparent 35%,
-        rgba(255, 255, 255, 0.08) 45%,
-        rgba(255, 255, 255, 0.2) 50%,
-        rgba(255, 255, 255, 0.08) 55%,
-        transparent 65%,
-        transparent 100%
-    );
+    background: linear-gradient(120deg,
+            transparent 0%,
+            transparent 35%,
+            rgba(255, 255, 255, 0.08) 45%,
+            rgba(255, 255, 255, 0.2) 50%,
+            rgba(255, 255, 255, 0.08) 55%,
+            transparent 65%,
+            transparent 100%);
     animation: headerShimmer 4s ease-in-out infinite;
     animation-delay: 0.3s;
     pointer-events: none;
@@ -84,21 +81,23 @@ body.modal-open {
     0% {
         left: -150%;
     }
+
     50% {
         left: 150%;
     }
+
     100% {
         left: 150%;
     }
 }
 
-.top-header > .container-fluid {
+.top-header>.container-fluid {
     height: 100%;
     display: flex;
     align-items: center;
 }
 
-.top-header > .container-fluid > .d-flex {
+.top-header>.container-fluid>.d-flex {
     height: 100%;
     width: 100%;
 }
@@ -159,23 +158,53 @@ body.modal-open {
 }
 
 @keyframes bellShake {
-    0%, 100% { transform: rotate(0deg); }
-    10%, 30%, 50%, 70%, 90% { transform: rotate(-10deg); }
-    20%, 40%, 60%, 80% { transform: rotate(10deg); }
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        transform: rotate(-10deg);
+    }
+
+    20%,
+    40%,
+    60%,
+    80% {
+        transform: rotate(10deg);
+    }
 }
 
-.top-header .dropdown > button:hover .bi-bell {
+.top-header .dropdown>button:hover .bi-bell {
     animation: bellShake 0.5s ease;
 }
 
 @keyframes chatBounce {
-    0%, 100% { transform: translateY(0); }
-    25% { transform: translateY(-3px); }
-    50% { transform: translateY(0); }
-    75% { transform: translateY(-3px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    25% {
+        transform: translateY(-3px);
+    }
+
+    50% {
+        transform: translateY(0);
+    }
+
+    75% {
+        transform: translateY(-3px);
+    }
 }
 
-.top-header .dropdown > button:hover .bi-chat-dots {
+.top-header .dropdown>button:hover .bi-chat-dots {
     animation: chatBounce 0.5s ease;
 }
 
@@ -209,14 +238,14 @@ body.modal-open {
     letter-spacing: 0.3px;
 }
 
-.top-header .dropdown > button {
+.top-header .dropdown>button {
     transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     will-change: transform;
     backface-visibility: hidden;
 }
 
-.top-header .dropdown > button::after {
+.top-header .dropdown>button::after {
     content: '';
     position: absolute;
     inset: -5px;
@@ -226,11 +255,11 @@ body.modal-open {
     transition: opacity 0.2s ease;
 }
 
-.top-header .dropdown > button:hover::after {
+.top-header .dropdown>button:hover::after {
     opacity: 1;
 }
 
-.top-header .dropdown > button:active {
+.top-header .dropdown>button:active {
     transform: scale(0.95);
 }
 
@@ -527,18 +556,26 @@ body.modal-open {
    =========================== */
 
 .sidebar {
-    position: relative !important;
+    position: relative;
     width: var(--sidebar-width);
-    height: 100% !important;
-    background: var(--sidebar-bg) !important;
+    height: 100%;
+    background: var(--sidebar-bg);
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
     transition: width 0.3s ease;
     z-index: 1020;
-    flex-shrink: 0 !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
+    flex-shrink: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+.main-content {
+    flex: 1;
+    display: block;
+    height: 100%;
+    overflow: hidden;
+    min-width: 0;
 }
 
 .sidebar::-webkit-scrollbar {
@@ -808,8 +845,7 @@ body.modal-open {
     min-width: 0 !important;
 }
 
-.main-content.expanded {
-}
+.main-content.expanded {}
 
 /* ===========================
    CONTENT WRAPPER
@@ -826,12 +862,12 @@ body.modal-open {
     flex-direction: column !important;
 }
 
-.content-wrapper > .dashboard-container,
-.content-wrapper > .page-header:first-child,
-.content-wrapper > div:first-child:not(.alert):not(.content-footer),
-.content-wrapper > .row:first-of-type {
+/* .content-wrapper>.dashboard-container,
+.content-wrapper>.page-header:first-child,
+.content-wrapper>div:first-child:not(.alert):not(.content-footer),
+.content-wrapper>.row:first-of-type {
     flex: 1 0 auto;
-}
+} */
 
 .content-wrapper::-webkit-scrollbar {
     width: 8px;
@@ -866,13 +902,13 @@ body.modal-open {
     flex-shrink: 0;
 }
 
-.content-wrapper > *:not(.content-footer):last-of-type {
+.content-wrapper>*:not(.content-footer):last-of-type {
     margin-bottom: 1.5rem;
 }
 
-.content-wrapper > .row:last-of-type,
-.content-wrapper > .card:last-of-type,
-.content-wrapper > div:last-of-type:not(.content-footer) {
+.content-wrapper>.row:last-of-type,
+.content-wrapper>.card:last-of-type,
+.content-wrapper>div:last-of-type:not(.content-footer) {
     margin-bottom: 1.5rem;
 }
 
@@ -923,6 +959,7 @@ body.modal-open {
         opacity: 0;
         transform: translateX(30px);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -973,8 +1010,13 @@ body.modal-open {
    =========================== */
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes fadeInUp {
@@ -982,6 +1024,7 @@ body.modal-open {
         opacity: 0;
         transform: translateY(15px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -993,6 +1036,7 @@ body.modal-open {
         opacity: 0;
         transform: translateX(-20px);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -1004,22 +1048,24 @@ body.modal-open {
         opacity: 0;
         transform: translateX(20px);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
     }
 }
 
+/* Removed base animations to prevent reload pop up */
 .content-wrapper {
-    animation: fadeIn 0.3s ease-out;
+    /* animation: fadeIn 0.3s ease-out; - Removed */
 }
 
 .sidebar {
-    animation: fadeInLeft 0.3s ease-out;
+    /* animation: fadeInLeft 0.3s ease-out; - Removed */
 }
 
 .main-content {
-    animation: fadeIn 0.3s ease-out;
+    /* animation: fadeIn 0.3s ease-out; - Removed */
 }
 
 /* ===========================
@@ -1135,14 +1181,15 @@ body.modal-open {
 
 @media (max-width: 992px) {
     .sidebar {
-        position: fixed;
-        left: 0;
-        top: var(--header-height);
-        bottom: 0;
-        height: calc(100vh - var(--header-height));
+        position: fixed !important;
+        left: 0 !important;
+        top: var(--header-height) !important;
+        bottom: 0 !important;
+        height: calc(100vh - var(--header-height)) !important;
         transform: translateX(-100%);
         transition: transform 0.3s ease;
-        z-index: 1040;
+        z-index: 1040 !important;
+        width: 280px !important;
     }
 
     .sidebar.show {
@@ -1153,6 +1200,7 @@ body.modal-open {
     .main-content,
     .main-content.expanded {
         width: 100%;
+        margin-left: 0 !important;
     }
 
     .sidebar-overlay {
@@ -1176,8 +1224,52 @@ body.modal-open {
 
 @media (max-width: 768px) {
     .content-wrapper {
-        padding: 1rem;
+        padding: 0.75rem;
     }
+
+    .stat-card .card-body {
+        padding: 1rem !important;
+    }
+
+    .stat-card h3 {
+        font-size: 1.25rem !important;
+    }
+
+    .stat-card p {
+        font-size: 0.7rem !important;
+        white-space: nowrap;
+    }
+
+    .navbar-brand span {
+        display: inline !important;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .row.g-3 {
+        --bs-gutter-x: 0.5rem;
+        --bs-gutter-y: 0.5rem;
+    }
+
+    .stat-card {
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 1.1rem;
+    }
+
+    .page-header h5 {
+        font-size: 1.1rem !important;
+    }
+}
+
+.bg-brown {
+    background-color: #795548 !important;
+    color: white !important;
 }
 
 /* ===========================
@@ -1218,6 +1310,7 @@ body.modal-open {
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1233,10 +1326,14 @@ body.modal-open {
 }
 
 @media (max-width: 991px) {
+
     .notification-dropdown,
     .profile-dropdown {
         width: 90vw;
-        max-width: 380px;
+        max-width: 320px;
+        position: fixed !important;
+        right: 10px !important;
+        left: auto !important;
     }
 }
 
@@ -1289,6 +1386,7 @@ body.modal-open .modal {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
     *,
     *::before,
     *::after {
@@ -1341,12 +1439,35 @@ img {
     margin-bottom: 0 !important;
 }
 
-.content-wrapper h1 { font-size: 1.75rem; font-weight: 700; }
-.content-wrapper h2 { font-size: 1.5rem; font-weight: 700; }
-.content-wrapper h3 { font-size: 1.25rem; font-weight: 600; }
-.content-wrapper h4 { font-size: 1.125rem; font-weight: 600; }
-.content-wrapper h5 { font-size: 1rem; font-weight: 600; }
-.content-wrapper h6 { font-size: 0.875rem; font-weight: 600; }
+.content-wrapper h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.content-wrapper h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.content-wrapper h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.content-wrapper h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.content-wrapper h5 {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.content-wrapper h6 {
+    font-size: 0.875rem;
+    font-weight: 600;
+}
 
 .content-wrapper p {
     font-size: 0.9rem;
@@ -1399,10 +1520,21 @@ img {
     animation-fill-mode: both;
 }
 
-.content-wrapper .row > div:nth-child(1) .card { animation-delay: 0.05s; }
-.content-wrapper .row > div:nth-child(2) .card { animation-delay: 0.1s; }
-.content-wrapper .row > div:nth-child(3) .card { animation-delay: 0.15s; }
-.content-wrapper .row > div:nth-child(4) .card { animation-delay: 0.2s; }
+.content-wrapper .row>div:nth-child(1) .card {
+    animation-delay: 0.05s;
+}
+
+.content-wrapper .row>div:nth-child(2) .card {
+    animation-delay: 0.1s;
+}
+
+.content-wrapper .row>div:nth-child(3) .card {
+    animation-delay: 0.15s;
+}
+
+.content-wrapper .row>div:nth-child(4) .card {
+    animation-delay: 0.2s;
+}
 
 .content-wrapper .card-header.bg-white {
     background: linear-gradient(135deg, #795548 0%, #8D6E63 100%) !important;
@@ -1456,30 +1588,30 @@ img {
     .sidebar.collapsed {
         width: var(--sidebar-collapsed-width);
     }
-    
+
     .sidebar.collapsed .nav-link span,
     .sidebar.collapsed .nav-link .badge,
     .sidebar.collapsed .sidebar-footer {
         display: none;
     }
-    
+
     .sidebar.collapsed .nav-link {
         justify-content: center;
         padding: 0.875rem;
     }
-    
+
     .sidebar.collapsed .nav-link i {
         margin: 0;
     }
 }
 
-.content-wrapper > .row > .col-lg-8 > .card,
-.content-wrapper > .row > .col-lg-4 > .card {
+.content-wrapper>.row>.col-lg-8>.card,
+.content-wrapper>.row>.col-lg-4>.card {
     transition: box-shadow 0.2s ease;
 }
 
-.content-wrapper > .row > .col-lg-8 > .card:hover,
-.content-wrapper > .row > .col-lg-4 > .card:hover {
+.content-wrapper>.row>.col-lg-8>.card:hover,
+.content-wrapper>.row>.col-lg-4>.card:hover {
     transform: none;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }

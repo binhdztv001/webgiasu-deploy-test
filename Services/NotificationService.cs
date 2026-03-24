@@ -1,4 +1,4 @@
-﻿using Webgiasu.Models;
+using Webgiasu.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Webgiasu.Services
@@ -18,6 +18,14 @@ namespace Webgiasu.Services
                 .Where(n => n.UserId == userId)
                 .OrderByDescending(n => n.CreatedDate)
                 .Take(count)
+                .ToList();
+        }
+
+        public List<Notification> GetAllNotifications(int userId)
+        {
+            return _db.Notifications
+                .Where(n => n.UserId == userId)
+                .OrderByDescending(n => n.CreatedDate)
                 .ToList();
         }
 
@@ -332,6 +340,30 @@ namespace Webgiasu.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ Error NotifyApplicationRejected: {ex.Message}");
+                return false;
+            }
+        }
+
+        public bool NotifyEnterpriseMentorCreated(int enterpriseId, int mentorId, string mentorName)
+        {
+            try
+            {
+                var notification = new Notification
+                {
+                    UserId = enterpriseId,
+                    Type = NotificationType.EnterpriseMentorCreated,
+                    Title = "Tạo Mentor thành công",
+                    Message = $"Tài khoản Mentor '{mentorName}' đã được tạo và kích hoạt",
+                    Link = "/Enterprise/ManageMentors",
+                    CreatedDate = DateTime.Now,
+                    IsRead = false
+                };
+
+                return CreateNotification(notification);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error NotifyEnterpriseMentorCreated: {ex.Message}");
                 return false;
             }
         }

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Webgiasu.Models.ViewModels;
 using Webgiasu.Services;
 using Webgiasu.Models;
@@ -23,20 +23,15 @@ public class MessageDropdownViewComponent : ViewComponent
         var messages = _messageService.GetRecentMessagesForDropdown(userId.Value);
         var unreadCount = _messageService.GetTotalUnreadCount(userId.Value);
 
-        // Xác định controller đích theo role của user
-        var user = _userService.GetUserById(userId.Value);
-        var targetController = "Student";
-        if (user != null && user.Role == UserRole.Tutor)
-        {
-            targetController = "Tutor";
-        }
-
-        ViewBag.MessageController = targetController;
+        // Determine target controller based on session role
+        var userRole = HttpContext.Session.GetString("UserRole");
+        var targetController = userRole == "Tutor" ? "Tutor" : "Student";
 
         return View(new MessageDropdownVM
         {
             Messages = messages,
-            UnreadCount = unreadCount
+            UnreadCount = unreadCount,
+            ControllerName = targetController
         });
     }
 }

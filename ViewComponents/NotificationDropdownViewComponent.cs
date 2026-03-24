@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Webgiasu.Models.ViewModels;
 using Webgiasu.Services;
 
@@ -22,10 +22,22 @@ namespace Webgiasu.ViewComponents
             var notifications = _notificationService.GetRecentNotifications(userId.Value, 4);
             var unreadCount = _notificationService.GetUnreadCount(userId.Value);
 
+            // Determine target controller based on session role
+            var userRole = HttpContext.Session.GetString("UserRole");
+            var targetController = userRole switch
+            {
+                "Admin" => "Admin",
+                "Tutor" => "Tutor",
+                "School" => "School",
+                "Enterprise" => "Enterprise",
+                _ => "Student"
+            };
+
             return View(new NotificationDropdownVM
             {
                 Notifications = notifications,
-                UnreadCount = unreadCount
+                UnreadCount = unreadCount,
+                ControllerName = targetController
             });
         }
     }

@@ -1,4 +1,4 @@
-﻿/* ===========================
+/* ===========================
    MOBILE RESTYLING
    =========================== */
 
@@ -131,5 +131,20 @@
 
     .step-card {
         padding: 1.5rem 1rem;
+    }
+
+    .guide-header {
+        padding: 2rem 0;
+        margin-bottom: 1.5rem;
+    }
+
+    .guide-header h1 {
+        font-size: 2rem;
+    }
+
+    .step-number {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
     }
 }

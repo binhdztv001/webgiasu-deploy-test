@@ -1,4 +1,4 @@
-﻿@model Webgiasu.Models.ViewModels.TutorDashboardViewModel
+@model Webgiasu.Models.ViewModels.TutorDashboardViewModel
 @using System.Text.RegularExpressions
 
 @{
@@ -41,29 +41,28 @@ Layout = "~/Views/Shared/_TutorLayout.cshtml";
 
 <!-- Page Header -->
 <div class="row mb-4 fade-in">
-    <div class="col">
+    <div class="col-12 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
         <div class="d-flex align-items-center gap-3">
-            <div class="bg-gradient rounded-circle p-3"
-                 style="background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);">
-                <i class="bi bi-mortarboard" style="font-size: 2rem; color:#2ecc71;"></i>
+            <div class="bg-gradient rounded-circle p-3 dashboard-header-bg">
+                <i class="bi bi-mortarboard dashboard-header-icon"></i>
             </div>
             <div>
                 <h2 class="fw-bold mb-1">Trang chủ Mentor</h2>
                 <p class="text-muted mb-0 small">Quản lý công việc và theo dõi thu nhập</p>
             </div>
         </div>
-    </div>
-    <div class="col-auto">
-        <a asp-action="AvailableProblems" class="btn btn-success btn-lg shadow-sm">
-            <i class="bi bi-search"></i> Tìm bài toán mới
-        </a>
+        <div>
+            <a asp-action="AvailableProblems" class="btn btn-success btn-lg shadow-sm w-100 w-md-auto">
+                <i class="bi bi-search"></i> Tìm bài toán mới
+            </a>
+        </div>
     </div>
 </div>
 
 <!-- Stats Cards -->
 <div class="row g-4 mb-4">
     <div class="col-lg-3 col-md-6">
-        <div class="card border-0 shadow-sm h-100 hover-lift">
+        <div class="card border-0 shadow-sm h-100 hover-card stat-card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
@@ -73,15 +72,15 @@ Layout = "~/Views/Shared/_TutorLayout.cshtml";
                             <i class="bi bi-arrow-up text-success"></i> Cơ hội mới
                         </p>
                     </div>
-                    <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
-                        <i class="bi bi-list-task text-primary" style="font-size: 1.75rem;"></i>
+                    <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center dashboard-stat-circle">
+                        <i class="bi bi-list-task text-primary dashboard-stat-icon"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-lg-3 col-md-6">
-        <div class="card border-0 shadow-sm h-100 hover-lift">
+        <div class="card border-0 shadow-sm h-100 hover-card stat-card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
@@ -91,15 +90,15 @@ Layout = "~/Views/Shared/_TutorLayout.cshtml";
                             <i class="bi bi-clock-history"></i> Đang thực hiện
                         </p>
                     </div>
-                    <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
-                        <i class="bi bi-briefcase text-warning" style="font-size: 1.75rem;"></i>
+                    <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center dashboard-stat-circle">
+                        <i class="bi bi-briefcase text-warning dashboard-stat-icon"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-lg-3 col-md-6">
-        <div class="card border-0 shadow-sm h-100 hover-lift">
+        <div class="card border-0 shadow-sm h-100 hover-card stat-card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
@@ -109,15 +108,15 @@ Layout = "~/Views/Shared/_TutorLayout.cshtml";
                             <i class="bi bi-check-circle"></i> Thành công
                         </p>
                     </div>
-                    <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
-                        <i class="bi bi-check-circle text-success" style="font-size: 1.75rem;"></i>
+                    <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center dashboard-stat-circle">
+                        <i class="bi bi-check-circle text-success dashboard-stat-icon"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-lg-3 col-md-6">
-        <div class="card border-0 shadow-sm h-100 hover-lift">
+        <div class="card border-0 shadow-sm h-100 hover-card stat-card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
@@ -127,8 +126,8 @@ Layout = "~/Views/Shared/_TutorLayout.cshtml";
                             <i class="bi bi-graph-up"></i> Tháng này
                         </p>
                     </div>
-                    <div class="bg-info bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
-                        <i class="bi bi-cash-stack text-info" style="font-size: 1.75rem;"></i>
+                    <div class="bg-info bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center dashboard-stat-circle">
+                        <i class="bi bi-cash-stack text-info dashboard-stat-icon"></i>
                     </div>
                 </div>
             </div>
@@ -141,14 +140,14 @@ Layout = "~/Views/Shared/_TutorLayout.cshtml";
 {
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #fff9e6 0%, #fff3cc 100%);">
+            <div class="card border-0 shadow-sm dashboard-rating-card">
                 <div class="card-body p-4">
-                    <div class="row align-items-center">
+                    <div class="row align-items-center g-4">
                         <div class="col-md-3 text-center">
                             <div class="position-relative d-inline-block">
-                                <i class="bi bi-star-fill text-warning" style="font-size: 4rem;"></i>
+                                <i class="bi bi-star-fill text-warning dashboard-rating-star"></i>
                                 <div class="position-absolute top-50 start-50 translate-middle">
-                                    <h2 class="fw-bold text-warning mb-0" style="font-size: 1.5rem; margin-top: 0.5rem;">
+                                    <h2 class="fw-bold text-warning mb-0 dashboard-rating-value">
                                         @avgRating.ToString("F1")
                                     </h2>
                                 </div>
@@ -156,7 +155,7 @@ Layout = "~/Views/Shared/_TutorLayout.cshtml";
                             <p class="text-muted mb-0 mt-2 small">Trên 5.0</p>
                             <p class="text-muted mb-0 small fw-semibold">Đánh giá trung bình</p>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 text-center">
                             <div class="mb-3">
                                 @for (int i = 1; i <= 5; i++)
                                 {
@@ -192,7 +191,7 @@ Layout = "~/Views/Shared/_TutorLayout.cshtml";
                             }
                         </div>
                         <div class="col-md-3 text-center">
-                            <a asp-action="MyRatings" class="btn btn-warning btn-lg shadow-sm">
+                            <a asp-action="MyRatings" class="btn btn-warning btn-lg shadow-sm w-100 w-md-auto">
                                 <i class="bi bi-star"></i> Xem chi tiết
                             </a>
                             <p class="text-muted small mb-0 mt-2">Xem tất cả đánh giá</p>
@@ -207,9 +206,9 @@ Layout = "~/Views/Shared/_TutorLayout.cshtml";
 <!-- Main Content Grid -->
 <div class="row g-4">
     <!-- Available Problems -->
-    <div class="col-lg-6 mb-4">
+    <div class="col-lg-6">
         <div class="card border-0 shadow-sm h-100">
-            <div class="card-header py-3" style="background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);">
+            <div class="card-header py-3 dashboard-panel-success">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h5 class="mb-1 fw-bold text-white">
@@ -263,7 +262,7 @@ Layout = "~/Views/Shared/_TutorLayout.cshtml";
                 {
                     <div class="text-center py-5">
                         <div class="mb-3">
-                            <i class="bi bi-inbox text-muted" style="font-size: 4rem; opacity: 0.3;"></i>
+                            <i class="bi bi-inbox text-muted dashboard-empty-icon"></i>
                         </div>
                         <h6 class="text-muted">Chưa có bài toán nào</h6>
                         <p class="text-muted small">Hãy quay lại sau để tìm cơ hội mới</p>
@@ -274,9 +273,9 @@ Layout = "~/Views/Shared/_TutorLayout.cshtml";
     </div>
 
     <!-- My Assigned Problems -->
-    <div class="col-lg-6 mb-4">
+    <div class="col-lg-6">
         <div class="card border-0 shadow-sm h-100">
-            <div class="card-header py-3" style="background: linear-gradient(135deg, #FF9800 0%, #FFC107 100%);">
+            <div class="card-header py-3 dashboard-panel-warning">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h5 class="mb-1 fw-bold text-white">
@@ -284,7 +283,7 @@ Layout = "~/Views/Shared/_TutorLayout.cshtml";
                         </h5>
                         <p class="text-white-50 small mb-0">Nhiệm vụ hiện tại của bạn</p>
                     </div>
-                    <span class="badge bg-white text-warning fs-6">@Model.MyAssignedProblems.Count bài</span>
+                    <span class="badge bg-white text-success fs-6">@Model.MyAssignedProblems.Count bài</span>
                 </div>
             </div>
             <div class="card-body pt-0">
@@ -352,7 +351,7 @@ Layout = "~/Views/Shared/_TutorLayout.cshtml";
                 {
                     <div class="text-center py-5">
                         <div class="mb-3">
-                            <i class="bi bi-briefcase text-muted" style="font-size: 4rem; opacity: 0.3;"></i>
+                            <i class="bi bi-briefcase text-muted dashboard-empty-icon"></i>
                         </div>
                         <h6 class="text-muted">Bạn chưa nhận bài nào</h6>
                         <p class="text-muted small mb-3">Hãy tìm và nhận bài toán mới</p>
@@ -370,7 +369,7 @@ Layout = "~/Views/Shared/_TutorLayout.cshtml";
 <div class="row">
     <div class="col-12">
         <div class="card border-0 shadow-sm">
-            <div class="card-header py-3" style="background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);">
+            <div class="card-header py-3 dashboard-panel-success">
                 <h5 class="mb-0 fw-bold text-white">
                     <i class="bi bi-bar-chart me-2"></i>Thống kê tổng quan
                 </h5>
@@ -378,36 +377,36 @@ Layout = "~/Views/Shared/_TutorLayout.cshtml";
             <div class="card-body">
                 <div class="row text-center g-4">
                     <div class="col-md-3">
-                        <div class="p-3 rounded hover-lift">
+                        <div class="p-3 rounded hover-card">
                             <div class="mb-3">
-                                <i class="bi bi-check2-circle text-primary" style="font-size: 3rem;"></i>
+                                <i class="bi bi-check2-circle text-primary dashboard-summary-icon"></i>
                             </div>
                             <h3 class="fw-bold text-primary mb-1">@Model.MySolutions.Count</h3>
                             <p class="text-muted mb-0 small">Tổng bài đã giải</p>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="p-3 rounded hover-lift">
+                        <div class="p-3 rounded hover-card">
                             <div class="mb-3">
-                                <i class="bi bi-star text-success" style="font-size: 3rem;"></i>
+                                <i class="bi bi-star text-success dashboard-summary-icon"></i>
                             </div>
                             <h3 class="fw-bold text-success mb-1">@Model.MySolutions.Count(s => s.Rating >= 4)</h3>
                             <p class="text-muted mb-0 small">Đánh giá tốt (≥4⭐)</p>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="p-3 rounded hover-lift">
+                        <div class="p-3 rounded hover-card">
                             <div class="mb-3">
-                                <i class="bi bi-hourglass-split text-warning" style="font-size: 3rem;"></i>
+                                <i class="bi bi-hourglass-split text-warning dashboard-summary-icon"></i>
                             </div>
                             <h3 class="fw-bold text-warning mb-1">@Model.MyAssignedProblems.Count(p => p.Status == Webgiasu.Models.ProblemStatus.InProgress)</h3>
                             <p class="text-muted mb-0 small">Đang thực hiện</p>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="p-3 rounded hover-lift">
+                        <div class="p-3 rounded hover-card">
                             <div class="mb-3">
-                                <i class="bi bi-cash-coin text-info" style="font-size: 3rem;"></i>
+                                <i class="bi bi-cash-coin text-info dashboard-summary-icon"></i>
                             </div>
                             <h3 class="fw-bold text-info mb-1">@Model.TotalEarnings.ToString("N0") đ</h3>
                             <p class="text-muted mb-0 small">Tổng thu nhập</p>

@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Thống kê - Nhà trường";
     Layout = "~/Views/Shared/_SchoolLayout.cshtml";
 }
@@ -108,7 +108,7 @@
                 <div class="card-header bg-warning bg-opacity-10">
                     <h5 class="mb-0"><i class="bi bi-table me-2 text-warning"></i>Danh sách lớp học chi tiết</h5>
                 </div>
-                <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                <div class="card-body scroll-area-md">
                     @{
                         var classDetails = ViewBag.ClassDetailsList as IEnumerable<dynamic>;
                         if (classDetails != null && classDetails.Any())
@@ -148,7 +148,7 @@
                         else
                         {
                             <div class="text-center py-5">
-                                <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                                <i class="bi bi-inbox text-muted icon-size-xxl"></i>
                                 <p class="text-muted mt-2">Chưa có lớp học nào</p>
                             </div>
                         }
@@ -270,8 +270,9 @@
 
         // Chart: Trạng thái lớp học (Bar Chart)
         const statusData = @Html.Raw(Json.Serialize(ViewBag.ClassesByStatus));
-        const statusLabels = statusData.map(x => x.status);
-        const statusValues = statusData.map(x => x.count);
+        console.log("Status Data:", statusData);
+        const statusLabels = statusData.map(x => x.status || x.Status);
+        const statusValues = statusData.map(x => x.count || x.Count);
 
         const statusChart = new Chart(document.getElementById('statusChart'), {
             type: 'bar',
@@ -322,11 +323,13 @@
 
         // Chart 3: Tăng trưởng theo tháng (Line Chart)
         const monthlyData = @Html.Raw(Json.Serialize(ViewBag.ClassesByMonth));
-        const monthLabels = monthlyData.map(x => x.month);
-        const monthValues = monthlyData.map(x => x.count);
+        console.log("Monthly Data:", monthlyData);
+        const monthLabels = monthlyData.map(x => x.month || x.Month);
+        const monthValues = monthlyData.map(x => x.count || x.Count);
 
         const studentsData = @Html.Raw(Json.Serialize(ViewBag.StudentsByMonth));
-        const studentValues = studentsData.map(x => x.count);
+        console.log("Students Data:", studentsData);
+        const studentValues = studentsData.map(x => x.count || x.Count);
 
         const monthlyChart = new Chart(document.getElementById('monthlyChart'), {
             type: 'line',
@@ -406,11 +409,11 @@
             });
         }
 
-        createCircularChart('completionRateChart', @ViewBag.CompletionRate, '#11998e', '#e0e0e0');
-        createCircularChart('activeRateChart', @activeRate, '#f093fb', '#e0e0e0');
-        createCircularChart('mentorRateChart', @mentorRate, '#4facfe', '#e0e0e0');
+        createCircularChart('completionRateChart', @Html.Raw(Json.Serialize(ViewBag.CompletionRate)), '#11998e', '#e0e0e0');
+        createCircularChart('activeRateChart', @Html.Raw(Json.Serialize(activeRate)), '#f093fb', '#e0e0e0');
+        createCircularChart('mentorRateChart', @Html.Raw(Json.Serialize(mentorRate)), '#4facfe', '#e0e0e0');
         
-        const avgValue = @avgStudents * 10; // Scale to percentage (assume max 10 students per class)
+        const avgValue = @Html.Raw(Json.Serialize(avgStudents)) * 10; // Scale to percentage (assume max 10 students per class)
         createCircularChart('studentAvgChart', avgValue > 100 ? 100 : avgValue, '#667eea', '#e0e0e0');
     </script>
 }

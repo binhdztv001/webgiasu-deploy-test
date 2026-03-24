@@ -1,4 +1,4 @@
-﻿@model List<Webgiasu.Models.Payment>
+@model List<Webgiasu.Models.Payment>
 @inject Webgiasu.Services.IUserService UserService
 @inject Webgiasu.Services.IProblemService ProblemService
 @{
@@ -15,44 +15,50 @@
     </div>
 </div>
 
-<div class="row g-3 mb-4">
-    <div class="col-md-3">
-        <div class="card text-center shadow-sm card-hover">
-            <div class="card-body">
-                <i class="bi bi-check-circle text-success" style="font-size: 2rem;"></i>
-                <h3 class="mt-2 mb-0">@Model.Count(p => p.Status == Webgiasu.Models.PaymentStatus.Completed)</h3>
-                <p class="text-muted mb-0">Đã thanh toán</p>
+<div class="row g-2 g-md-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card text-center shadow-sm card-hover h-100">
+            <div class="card-body p-3">
+                <i class="bi bi-check-circle text-success" style="font-size: 1.5rem;"></i>
+                <h4 class="mt-2 mb-0 fw-bold">@Model.Count(p => p.Status == Webgiasu.Models.PaymentStatus.Completed)</h4>
+                <p class="text-muted mb-0 extra-small">Đã thanh toán</p>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card text-center shadow-sm card-hover">
-            <div class="card-body">
-                <i class="bi bi-hourglass-split text-warning" style="font-size: 2rem;"></i>
-                <h3 class="mt-2 mb-0">@Model.Count(p => p.Status == Webgiasu.Models.PaymentStatus.Pending)</h3>
-                <p class="text-muted mb-0">Chờ thanh toán</p>
+    <div class="col-6 col-md-3">
+        <div class="card text-center shadow-sm card-hover h-100">
+            <div class="card-body p-3">
+                <i class="bi bi-hourglass-split text-warning" style="font-size: 1.5rem;"></i>
+                <h4 class="mt-2 mb-0 fw-bold">@Model.Count(p => p.Status == Webgiasu.Models.PaymentStatus.Pending)</h4>
+                <p class="text-muted mb-0 extra-small">Chờ thanh toán</p>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card text-center shadow-sm card-hover">
-            <div class="card-body">
-                <i class="bi bi-currency-dollar text-primary" style="font-size: 2rem;"></i>
-                <h3 class="mt-2 mb-0">@Model.Count</h3>
-                <p class="text-muted mb-0">Tổng giao dịch</p>
+    <div class="col-6 col-md-3">
+        <div class="card text-center shadow-sm card-hover h-100">
+            <div class="card-body p-3">
+                <i class="bi bi-currency-dollar text-primary" style="font-size: 1.5rem;"></i>
+                <h4 class="mt-2 mb-0 fw-bold">@Model.Count</h4>
+                <p class="text-muted mb-0 extra-small">Tổng giao dịch</p>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card text-center shadow-sm card-hover">
-            <div class="card-body">
-                <i class="bi bi-cash-stack text-info" style="font-size: 2rem;"></i>
-                <h4 class="mt-2 mb-0">@Model.Where(p => p.Status == Webgiasu.Models.PaymentStatus.Completed).Sum(p => p.Amount).ToString("N0") đ</h4>
-                <p class="text-muted mb-0">Tổng doanh thu</p>
+    <div class="col-6 col-md-3">
+        <div class="card text-center shadow-sm card-hover h-100">
+            <div class="card-body p-3">
+                <i class="bi bi-cash-stack text-info" style="font-size: 1.5rem;"></i>
+                <h5 class="mt-2 mb-0 fw-bold">@Model.Where(p => p.Status == Webgiasu.Models.PaymentStatus.Completed).Sum(p => p.Amount).ToString("N0") đ</h5>
+                <p class="text-muted mb-0 extra-small">Doanh thu</p>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .extra-small {
+        font-size: 0.75rem !important;
+    }
+</style>
 
 <div class="card shadow-sm">
 <div class="card-header py-3" style="background: linear-gradient(135deg, #DC143C 0%, #FF1744 100%);">

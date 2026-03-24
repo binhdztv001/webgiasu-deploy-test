@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Webgiasu.Models;
 using Webgiasu.Models.ViewModels;
 using Webgiasu.Services;
@@ -11,14 +11,16 @@ namespace Webgiasu.Controllers
         private readonly IProblemService _problemService;
         private readonly IPaymentService _paymentService;
         private readonly ISolutionService _solutionService;
+        private readonly INotificationService _notificationService;
 
         public AdminController(IUserService userService, IProblemService problemService, 
-            IPaymentService paymentService, ISolutionService solutionService)
+            IPaymentService paymentService, ISolutionService solutionService, INotificationService notificationService)
         {
             _userService = userService;
             _problemService = problemService;
             _paymentService = paymentService;
             _solutionService = solutionService;
+            _notificationService = notificationService;
         }
 
         private int GetCurrentUserId()
@@ -230,6 +232,37 @@ namespace Webgiasu.Controllers
 
             // TODO: Implement logs model and logic
             return View();
+        }
+
+        public IActionResult Notifications()
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return RedirectToAction("Login", "Account");
+
+            ViewBag.PendingTutorApprovals = _userService.GetPendingTutors().Count;
+            
+            var notifications = _notificationService.GetRecentNotifications(userId, 50);
+            return View(notifications);
+        }
+
+        [HttpPost]
+        public IActionResult MarkAllNotificationsAsRead()
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return Unauthorized();
+
+            _notificationService.MarkAllAsRead(userId);
+            return RedirectToAction("Notifications");
+        }
+
+        [HttpPost]
+        public IActionResult MarkNotificationAsRead(int id)
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return Unauthorized();
+
+            _notificationService.MarkAsRead(id);
+            return Ok();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using Webgiasu.Models;
@@ -15,9 +15,9 @@ namespace Webgiasu.Controllers
         private readonly AppDbContext _db;
         private readonly ISePayGateway _sePayGateway;
         private readonly SuiService _suiService;
-        private readonly NotificationService _notificationService;
+        private readonly INotificationService _notificationService;
         
-        public SePayController(AppDbContext db, ISePayGateway sePayGateway, SuiService suiService, NotificationService notificationService)
+        public SePayController(AppDbContext db, ISePayGateway sePayGateway, SuiService suiService, INotificationService notificationService)
         {
             _db = db;
             _sePayGateway = sePayGateway;

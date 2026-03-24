@@ -1,4 +1,4 @@
-﻿@model Webgiasu.Models.ViewModels.SubmitSolutionViewModel
+@model Webgiasu.Models.ViewModels.SubmitSolutionViewModel
 @{
     ViewData["Title"] = "Gửi lời giải";
     Layout = "_TutorLayout";
@@ -186,7 +186,7 @@
                             <span class="text-danger">*</span>
                         </label>
                         <textarea asp-for="Content"
-                                  class="form-control"
+                                  class="form-control hide-scrollbar"
                                   rows="20"
                                   placeholder="Nhập lời giải chi tiết của bạn...&#10;&#10;VD:&#10;Bước 1: Xác định dữ kiện...&#10;Bước 2: Áp dụng công thức...&#10;Bước 3: Tính toán...&#10;Kết luận: ..."
                                   required></textarea>

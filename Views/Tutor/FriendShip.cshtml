@@ -1,4 +1,4 @@
-﻿@model List<Webgiasu.Models.User>
+@model List<Webgiasu.Models.User>
 
 @{
     ViewData["Title"] = "Bạn Bè";
@@ -13,7 +13,7 @@
     <div class="page-header d-flex flex-wrap justify-content-between align-items-center mb-4">
         <div>
             <h5 class="fw-bold mb-1 text-dark">
-                <i class="bi bi-people-fill text-primary me-2"></i>Quản lý bạn bè
+                <i class="bi bi-people-fill text-success me-2"></i>Quản lý bạn bè
             </h5>
             <p class="text-muted mb-0 small">Kết nối và quản lý mạng lưới bạn bè của bạn</p>
         </div>
@@ -302,7 +302,7 @@
     </div>
 
     <!-- Find Friends Modal -->
-    <div class="modal fade" id="findFriendsModal" tabindex="-1" aria-labelledby="findFriendsModalLabel" aria-hidden="true">
+    <div class="modal fade" id="findFriendsModal" tabindex="-1" aria-labelledby="findFriendsModalLabel" aria-hidden="true" data-bs-backdrop="false">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -349,7 +349,6 @@
         </div>
     </div>
 </div>
-
 
 <script>
     // Search functionality

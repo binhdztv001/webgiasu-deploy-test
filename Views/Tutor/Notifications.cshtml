@@ -1,0 +1,80 @@
+﻿@model List<Webgiasu.Models.Notification>
+@{
+    ViewData["Title"] = "Thông báo";
+    Layout = "_TutorLayout";
+}
+
+<div>
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h5 class="fw-bold mb-1 text-dark">
+                <i class="bi bi-bell text-primary me-2"></i>Thông báo
+            </h5>
+            <p class="text-muted mb-0 small">Tất cả thông báo của bạn</p>
+        </div>
+        <div>
+            <form asp-action="MarkAllNotificationsAsRead" method="post">
+                <button type="submit" class="btn btn-outline-primary">
+                    <i class="bi bi-check-all me-1"></i>Đánh dấu tất cả đã đọc
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="list-group list-group-flush">
+                    @foreach (var notification in Model)
+                    {
+                        var iconClass = notification.Type switch
+                        {
+                            Webgiasu.Models.NotificationType.ProblemCreated => "bi-plus-circle",
+                            Webgiasu.Models.NotificationType.TutorAccepted => "bi-person-check",
+                            Webgiasu.Models.NotificationType.SolutionSubmitted => "bi-check-circle",
+                            Webgiasu.Models.NotificationType.PaymentCompleted => "bi-credit-card",
+                            _ => "bi-bell"
+                        };
+
+                        var bgClass = notification.Type switch
+                        {
+                            Webgiasu.Models.NotificationType.ProblemCreated => "bg-primary",
+                            Webgiasu.Models.NotificationType.TutorAccepted => "bg-info",
+                            Webgiasu.Models.NotificationType.SolutionSubmitted => "bg-success",
+                            Webgiasu.Models.NotificationType.PaymentCompleted => "bg-success",
+                            _ => "bg-secondary"
+                        };
+                        
+                        <a href="@(notification.Link ?? "#")" 
+                           class="list-group-item list-group-item-action @(!notification.IsRead ? "list-group-item-primary" : "")">
+                            <div class="d-flex align-items-start">
+                                <div class="notification-icon @bgClass me-3">
+                                    <i class="bi @iconClass text-white"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <h6 class="mb-1">@notification.Title</h6>
+                                        <small class="text-muted">@notification.CreatedDate.ToString("dd/MM/yyyy HH:mm")</small>
+                                    </div>
+                                    <p class="mb-1 text-muted">@notification.Message</p>
+                                    @if (!notification.IsRead)
+                                    {
+                                        <span class="badge bg-primary">Mới</span>
+                                    }
+                                </div>
+                            </div>
+                        </a>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-bell-slash text-muted icon-size-3xl"></i>
+                    <p class="text-muted mt-3">Không có thông báo nào</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

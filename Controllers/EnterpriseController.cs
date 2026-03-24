@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Webgiasu.Models;
 using Webgiasu.Services;
 using Microsoft.EntityFrameworkCore;
@@ -12,13 +12,15 @@ namespace Webgiasu.Controllers
         private readonly IUserService _userService;
         private readonly ISchoolClassService _classService;
         private readonly IStatisticsExportService _statisticsExportService;
+        private readonly INotificationService _notificationService;
 
-        public EnterpriseController(AppDbContext db, IUserService userService, ISchoolClassService classService, IStatisticsExportService statisticsExportService)
+        public EnterpriseController(AppDbContext db, IUserService userService, ISchoolClassService classService, IStatisticsExportService statisticsExportService, INotificationService notificationService)
         {
             _db = db;
             _userService = userService;
             _classService = classService;
             _statisticsExportService = statisticsExportService;
+            _notificationService = notificationService;
         }
 
         private int GetCurrentUserId()
@@ -164,6 +166,9 @@ namespace Webgiasu.Controllers
 
                 if (_userService.Register(mentor))
                 {
+                    // Thông báo cho Enterprise user
+                    _notificationService.NotifyEnterpriseMentorCreated(userId, mentor.Id, mentor.FullName);
+
                     TempData["Success"] = $"Tạo tài khoản Mentor thành công! Tên đăng nhập: {username}";
                     return RedirectToAction("ManageMentors");
                 }
@@ -807,6 +812,33 @@ namespace Webgiasu.Controllers
                 TempData["Error"] = "Đã xảy ra lỗi khi xuất Excel!";
                 return RedirectToAction("Statistics");
             }
+        }
+
+        // --- Notifications ---
+        public IActionResult Notifications()
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return RedirectToAction("Login", "Account");
+
+            var notifications = _notificationService.GetRecentNotifications(userId, 50);
+            return View(notifications);
+        }
+
+        [HttpPost]
+        public IActionResult MarkNotificationAsRead(int id)
+        {
+            var success = _notificationService.MarkAsRead(id);
+            return Json(new { success });
+        }
+
+        [HttpPost]
+        public IActionResult MarkAllNotificationsAsRead()
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return Json(new { success = false });
+
+            var success = _notificationService.MarkAllAsRead(userId);
+            return Json(new { success });
         }
     }
 }
