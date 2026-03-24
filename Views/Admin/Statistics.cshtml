@@ -1,4 +1,4 @@
-﻿@model Webgiasu.Models.ViewModels.AdminStatisticsViewModel
+@model Webgiasu.Models.ViewModels.AdminStatisticsViewModel
 @{
     ViewData["Title"] = "Thống kê";
     Layout = "_AdminLayout";
@@ -19,12 +19,12 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover table-sm">
                         <thead>
                             <tr>
                                 <th>Môn học</th>
                                 <th>Số lượng</th>
-                                <th>Tỷ lệ</th>
+                                <th class="d-none d-sm-table-cell">Tỷ lệ</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -38,11 +38,11 @@
                                     <td>
                                         <span class="badge bg-secondary">@item.Key</span>
                                     </td>
-                                    <td><strong>@item.Value</strong> bài</td>
-                                    <td>
-                                        <div class="progress" style="height: 20px;">
+                                    <td><strong>@item.Value</strong></td>
+                                    <td class="d-none d-sm-table-cell">
+                                        <div class="progress" style="height: 15px;">
                                             <div class="progress-bar bg-primary" role="progressbar" style="width: @percentage%" aria-valuenow="@percentage" aria-valuemin="0" aria-valuemax="100">
-                                                @percentage.ToString("F1")%
+                                                <small>@percentage.ToString("F1")%</small>
                                             </div>
                                         </div>
                                     </td>

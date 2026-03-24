@@ -1,158 +1,6 @@
-﻿@{
+@{
     ViewData["Title"] = "Hướng dẫn sử dụng";
 }
-
-<style>
-.guide-header {
-    background: linear-gradient(90deg, #00c853, #00bcd4, #00c853, #00bcd4);
-    background-size: 300% 100%;
-    animation: gradientWave 8s ease-in-out infinite;
-    color: white;
-    padding: 5rem 0;
-    margin-bottom: 3rem;
-    border-radius: 25px;
-    position: relative;
-    overflow: hidden;
-}
-    
-.guide-header::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-    animation: rotate 20s linear infinite;
-}
-    
-@@keyframes gradientWave {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-    
-@@keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-    
-.guide-header .container {
-    position: relative;
-    z-index: 1;
-}
-    
-.guide-header h1 {
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
-    animation: fadeInDown 0.8s ease-out;
-}
-    
-.guide-header p {
-    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
-    animation: fadeInUp 0.8s ease-out 0.2s backwards;
-}
-    
-@@keyframes fadeInDown {
-    from {
-        opacity: 0;
-        transform: translateY(-30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-    
-@@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-    
-    .guide-section {
-        margin-bottom: 4rem;
-    }
-    
-    .guide-card {
-        border: none;
-        border-radius: 15px;
-        overflow: hidden;
-        transition: all 0.3s ease;
-    }
-    
-    .guide-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
-    
-    .step-number {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        font-size: 1.2rem;
-        color: white;
-        margin-right: 1rem;
-        flex-shrink: 0;
-    }
-    
-    .accordion-button:not(.collapsed) {
-        background-color: rgba(102, 126, 234, 0.1);
-        color: #667eea;
-    }
-    
-    .accordion-button:focus {
-        box-shadow: none;
-        border-color: rgba(102, 126, 234, 0.25);
-    }
-    
-    /* Custom tab colors */
-    #student-tab {
-        background: linear-gradient(135deg, #0d6efd 0%, #084298 100%);
-        color: white !important;
-        border: none;
-        margin-right: 0.5rem;
-    }
-    
-    #student-tab:hover,
-    #student-tab.active {
-        background: linear-gradient(135deg, #084298 0%, #0d6efd 100%);
-        color: white !important;
-    }
-    
-    #mentor-tab {
-        background: linear-gradient(135deg, #198754 0%, #0d4a2a 100%);
-        color: white !important;
-        border: none;
-        margin-right: 0.5rem;
-    }
-    
-    #mentor-tab:hover,
-    #mentor-tab.active {
-        background: linear-gradient(135deg, #0d4a2a 0%, #198754 100%);
-        color: white !important;
-    }
-    
-    #school-tab {
-        background: linear-gradient(135deg, #ffc107 0%, #cc9a06 100%);
-        color: white !important;
-        border: none;
-    }
-    
-    #school-tab:hover,
-    #school-tab.active {
-        background: linear-gradient(135deg, #cc9a06 0%, #ffc107 100%);
-        color: white !important;
-    }
-</style>
 
 <div class="guide-header text-center">
     <div class="container">
@@ -189,14 +37,14 @@
             <div class="row mb-4">
                 <div class="col-lg-10 mx-auto">
                     <div class="card guide-card shadow-lg">
-                        <div class="card-body p-5">
+                        <div class="card-body p-3 p-md-5">
                             <h2 class="fw-bold mb-4 text-primary">
                                 <i class="bi bi-person-circle me-2"></i>Hướng dẫn cho Học sinh
                             </h2>
                             
                             <!-- Bước 1 -->
                             <div class="d-flex mb-4">
-                                <div class="step-number" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">1</div>
+                                <div class="step-number step-number-1">1</div>
                                 <div>
                                     <h4 class="fw-bold mb-2">Đăng ký tài khoản</h4>
                                     <p class="text-muted mb-2">
@@ -210,7 +58,7 @@
 
                             <!-- Bước 2 -->
                             <div class="d-flex mb-4">
-                                <div class="step-number" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">2</div>
+                                <div class="step-number step-number-2">2</div>
                                 <div>
                                     <h4 class="fw-bold mb-2">Đăng bài toán</h4>
                                     <p class="text-muted mb-2">
@@ -226,7 +74,7 @@
 
                             <!-- Bước 3 -->
                             <div class="d-flex mb-4">
-                                <div class="step-number" style="background: linear-gradient(135deg, #ffa751 0%, #ffe259 100%);">3</div>
+                                <div class="step-number step-number-3">3</div>
                                 <div>
                                     <h4 class="fw-bold mb-2">Nhận lời giải và đánh giá</h4>
                                     <p class="text-muted mb-2">
@@ -280,14 +128,14 @@
             <div class="row mb-4">
                 <div class="col-lg-10 mx-auto">
                     <div class="card guide-card shadow-lg">
-                        <div class="card-body p-5">
+                        <div class="card-body p-3 p-md-5">
                             <h2 class="fw-bold mb-4 text-success">
                                 <i class="bi bi-mortarboard me-2"></i>Hướng dẫn cho Mentor
                             </h2>
                             
                             <!-- Bước 1 -->
                             <div class="d-flex mb-4">
-                                <div class="step-number" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">1</div>
+                                <div class="step-number step-number-1">1</div>
                                 <div>
                                     <h4 class="fw-bold mb-2">Đăng ký và xác thực</h4>
                                     <p class="text-muted mb-2">
@@ -302,7 +150,7 @@
 
                             <!-- Bước 2 -->
                             <div class="d-flex mb-4">
-                                <div class="step-number" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">2</div>
+                                <div class="step-number step-number-2">2</div>
                                 <div>
                                     <h4 class="fw-bold mb-2">Tìm và nhận bài toán</h4>
                                     <p class="text-muted mb-2">
@@ -317,7 +165,7 @@
 
                             <!-- Bước 3 -->
                             <div class="d-flex mb-4">
-                                <div class="step-number" style="background: linear-gradient(135deg, #ffa751 0%, #ffe259 100%);">3</div>
+                                <div class="step-number step-number-3">3</div>
                                 <div>
                                     <h4 class="fw-bold mb-2">Giải bài và gửi lời giải</h4>
                                     <p class="text-muted mb-2">
@@ -332,7 +180,7 @@
 
                             <!-- Bước 4 -->
                             <div class="d-flex mb-4">
-                                <div class="step-number" style="background: linear-gradient(135deg, #209cff 0%, #68e0cf 100%);">4</div>
+                                <div class="step-number step-number-4">4</div>
                                 <div>
                                     <h4 class="fw-bold mb-2">Nhận thanh toán và đánh giá</h4>
                                     <p class="text-muted mb-2">
@@ -386,14 +234,14 @@
             <div class="row mb-4">
                 <div class="col-lg-10 mx-auto">
                     <div class="card guide-card shadow-lg">
-                        <div class="card-body p-5">
+                        <div class="card-body p-3 p-md-5">
                             <h2 class="fw-bold mb-4 text-warning">
                                 <i class="bi bi-building me-2"></i>Hướng dẫn cho Nhà trường
                             </h2>
                             
                             <!-- Bước 1 -->
                             <div class="d-flex mb-4">
-                                <div class="step-number" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">1</div>
+                                <div class="step-number step-number-1">1</div>
                                 <div>
                                     <h4 class="fw-bold mb-2">Đăng ký tài khoản nhà trường</h4>
                                     <p class="text-muted mb-2">
@@ -408,7 +256,7 @@
 
                             <!-- Bước 2 -->
                             <div class="d-flex mb-4">
-                                <div class="step-number" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">2</div>
+                                <div class="step-number step-number-2">2</div>
                                 <div>
                                     <h4 class="fw-bold mb-2">Quản lý học sinh</h4>
                                     <p class="text-muted mb-2">
@@ -423,7 +271,7 @@
 
                             <!-- Bước 3 -->
                             <div class="d-flex mb-4">
-                                <div class="step-number" style="background: linear-gradient(135deg, #ffa751 0%, #ffe259 100%);">3</div>
+                                <div class="step-number step-number-3">3</div>
                                 <div>
                                     <h4 class="fw-bold mb-2">Theo dõi tiến trình học tập</h4>
                                     <p class="text-muted mb-2">
@@ -438,7 +286,7 @@
 
                             <!-- Bước 4 -->
                             <div class="d-flex mb-4">
-                                <div class="step-number" style="background: linear-gradient(135deg, #209cff 0%, #68e0cf 100%);">4</div>
+                                <div class="step-number step-number-4">4</div>
                                 <div>
                                     <h4 class="fw-bold mb-2">Báo cáo và thống kê</h4>
                                     <p class="text-muted mb-2">
@@ -573,15 +421,15 @@
 
     <!-- Contact Support -->
     <div class="text-center mb-5">
-        <div class="card border-0 shadow-lg" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 20px;">
-            <div class="card-body p-5">
+        <div class="card border-0 shadow-lg cta-bg">
+            <div class="card-body p-3 p-md-5">
                 <h3 class="fw-bold text-white mb-3">Cần hỗ trợ thêm?</h3>
                 <p class="text-white mb-4">Đội ngũ hỗ trợ của chúng tôi luôn sẵn sàng giúp đỡ bạn 24/7</p>
                 <div class="d-flex justify-content-center gap-3 flex-wrap">
-                    <a href="mailto:support@giasu.com" class="btn btn-light btn-lg px-5" style="border-radius: 50px;">
+                    <a href="mailto:support@giasu.com" class="btn btn-light btn-lg px-5">
                         <i class="bi bi-envelope me-2"></i>Email hỗ trợ
                     </a>
-                    <a href="tel:1900xxxx" class="btn btn-outline-light btn-lg px-5" style="border-radius: 50px;">
+                    <a href="tel:1900xxxx" class="btn btn-outline-light btn-lg px-5">
                         <i class="bi bi-telephone me-2"></i>Hotline: 1900 xxxx
                     </a>
                 </div>

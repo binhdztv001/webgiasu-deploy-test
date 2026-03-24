@@ -1,4 +1,4 @@
-﻿/* ============================================
+/* ============================================
    Dropdown Fix - Comprehensive Solution
    ============================================ */
 
@@ -33,6 +33,7 @@
         opacity: 0;
         transform: translateY(-8px) translateZ(0);
     }
+
     100% {
         opacity: 1;
         transform: translateY(0) translateZ(0);
@@ -51,8 +52,8 @@
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18) !important;
     overflow: hidden !important;
     background: #fff;
-    --menu-color: #2196F3;
-    --menu-color-rgb: 33,150,243;
+    --profile-dropdown-color: #2196F3;
+    --profile-dropdown-color-rgb: 33, 150, 243;
 }
 
 /* Profile Dropdown Header */
@@ -61,7 +62,7 @@
     background: transparent;
 }
 
-.profile-dropdown .dropdown-header > div {
+.profile-dropdown .dropdown-header>div {
     padding: 1.25rem 1rem !important;
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     border-bottom: 1px solid #e9ecef;
@@ -108,60 +109,60 @@
     overflow: hidden;
 }
 
-    .profile-dropdown .profile-menu-item::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 6px;
-        height: 100%;
-        background: transparent;
-        transition: background 0.2s ease;
-    }
+.profile-dropdown .profile-menu-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 6px;
+    height: 100%;
+    background: transparent;
+    transition: background 0.2s ease;
+}
 
-    .profile-dropdown .profile-menu-item i {
-        font-size: 1.1rem;
-        width: 24px;
-        margin-right: 0.75rem;
-        color: #6c757d;
-        transition: all 0.2s ease;
-    }
+.profile-dropdown .profile-menu-item i {
+    font-size: 1.1rem;
+    width: 24px;
+    margin-right: 0.75rem;
+    color: #6c757d;
+    transition: all 0.2s ease;
+}
 
-    .profile-dropdown .profile-menu-item:hover {
-        background: linear-gradient( 90deg, rgba(var(--menu-color-rgb), 0.08) 0%, transparent 100% ) !important;
-        color: var(--menu-color);
-    }
+.profile-dropdown .profile-menu-item:hover {
+    background: linear-gradient(90deg, rgba(var(--profile-dropdown-color-rgb), 0.08) 0%, transparent 100%) !important;
+    color: var(--profile-dropdown-color);
+}
 
-        .profile-dropdown .profile-menu-item:hover::before {
-            background: var(--menu-color);
-        }
+.profile-dropdown .profile-menu-item:hover::before {
+    background: var(--profile-dropdown-color);
+}
 
-        .profile-dropdown .profile-menu-item:hover i {
-            color: var(--menu-color) ;
-        }
+.profile-dropdown .profile-menu-item:hover i {
+    color: var(--profile-dropdown-color);
+}
 
 /* Admin */
 body[data-theme="admin"] .profile-dropdown {
-    --menu-color: #263238 !important;
-    --menu-color-rgb: 255, 255, 255 !important;
+    --profile-dropdown-color: #263238 !important;
+    --profile-dropdown-color-rgb: 255, 255, 255 !important;
 }
 
 /* Tutor */
 body[data-theme="tutor"] .profile-dropdown {
-    --menu-color: #4CAF50 !important;
-    --menu-color-rgb: 76,175,80 !important;
+    --profile-dropdown-color: #4CAF50 !important;
+    --profile-dropdown-color-rgb: 76, 175, 80 !important;
 }
 
 /* School */
 body[data-theme="school"] .profile-dropdown {
-    --menu-color: #FF9800 !important;
-    --menu-color-rgb: 255,152,0 !important;
+    --profile-dropdown-color: #FF9800 !important;
+    --profile-dropdown-color-rgb: 255, 152, 0 !important;
 }
 
 /* Enterprise */
 body[data-theme="enterprise"] .profile-dropdown {
-    --menu-color: #795548 !important;
-    --menu-color-rgb: 109, 76, 65 !important;
+    --profile-dropdown-color: #795548 !important;
+    --profile-dropdown-color-rgb: 109, 76, 65 !important;
 }
 
 /* ===== Override Bootstrap dropdown-item states ===== */
@@ -176,20 +177,20 @@ body[data-theme="enterprise"] .profile-dropdown {
 .profile-dropdown .profile-menu-item:hover,
 .profile-dropdown .profile-menu-item:active,
 .profile-dropdown .profile-menu-item.active {
-    color: var(--menu-color) !important;
+    color: var(--profile-dropdown-color) !important;
 }
 
-    .profile-dropdown .profile-menu-item:hover::before,
-    .profile-dropdown .profile-menu-item:active::before,
-    .profile-dropdown .profile-menu-item.active::before {
-        background: var(--menu-color) !important;
-    }
+.profile-dropdown .profile-menu-item:hover::before,
+.profile-dropdown .profile-menu-item:active::before,
+.profile-dropdown .profile-menu-item.active::before {
+    background: var(--profile-dropdown-color) !important;
+}
 
-    .profile-dropdown .profile-menu-item:hover i,
-    .profile-dropdown .profile-menu-item:active i,
-    .profile-dropdown .profile-menu-item.active i {
-        color: var(--menu-color) !important;
-    }
+.profile-dropdown .profile-menu-item:hover i,
+.profile-dropdown .profile-menu-item:active i,
+.profile-dropdown .profile-menu-item.active i {
+    color: var(--profile-dropdown-color) !important;
+}
 
 /* Logout Item */
 .profile-dropdown .logout-item {
@@ -224,12 +225,6 @@ body[data-theme="enterprise"] .profile-dropdown {
     border-radius: 16px !important;
     overflow: hidden !important;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18) !important;
-}
-
-.notification-dropdown .dropdown-header {
-    padding: 1rem 1.25rem !important;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-bottom: none !important;
 }
 
 .notification-dropdown .dropdown-header h6 {
@@ -364,9 +359,17 @@ body[data-theme="enterprise"] .profile-dropdown {
 .top-header .dropdown-menu {
     position: absolute !important;
     top: 100% !important;
-    right: 0 !important;
-    left: auto !important;
     margin-top: 8px !important;
+}
+
+@media (min-width: 577px) {
+    .top-header .dropdown-menu.profile-dropdown,
+    .top-header .dropdown-menu.notification-dropdown,
+    .top-header .dropdown-menu.message-dropdown {
+        right: 0 !important;
+        left: auto !important;
+        transform: translateY(0) !important;
+    }
 }
 
 /* ========== Profile Avatar Styles ========== */
@@ -388,19 +391,28 @@ body[data-theme="enterprise"] .profile-dropdown {
 
 /* ========== Responsive ========== */
 @media (max-width: 576px) {
-    .notification-dropdown {
-        width: calc(100vw - 2rem) !important;
-        min-width: calc(100vw - 2rem) !important;
-        max-width: calc(100vw - 2rem) !important;
-        right: 1rem !important;
-        left: 1rem !important;
+    .top-header .dropdown {
+        position: static !important;
     }
-    
-    .profile-dropdown {
-        width: calc(100vw - 2rem) !important;
-        min-width: calc(100vw - 2rem) !important;
-        max-width: calc(100vw - 2rem) !important;
+
+    .top-header .dropdown-menu {
+        left: 1rem !important;
         right: 1rem !important;
+        width: calc(100vw - 2rem) !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        transform: none !important;
+        margin-top: 0.5rem !important;
+        top: 100% !important;
+    }
+
+    .notification-dropdown,
+    .profile-dropdown {
+        width: auto !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        right: auto !important;
+        left: auto !important;
     }
 }
 
@@ -410,7 +422,7 @@ body[data-theme="enterprise"] .profile-dropdown {
         min-width: 320px !important;
         max-width: 320px !important;
     }
-    
+
     .profile-dropdown {
         width: 260px !important;
         min-width: 260px !important;
@@ -525,11 +537,11 @@ body.modal-open {
     font-weight: 600 !important;
 }
 
-/* Fix cho layout có overflow hidden - CH? khi modal KHÔNG m? */
-html:not(.modal-open),
+/* Fix cho layout có overflow hidden - CHỈ khi modal KHÔNG mở */
+/* html:not(.modal-open),
 body:not(.modal-open) {
-    /* Gi? overflow nh? c? */
-}
+    Giữ overflow như cũ
+} */
 
 /* Khi modal m?, cho phép hi?n th? */
 html.modal-open .layout-container,

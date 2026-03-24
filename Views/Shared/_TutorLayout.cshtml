@@ -1,4 +1,4 @@
-﻿@using Webgiasu.Services
+@using Webgiasu.Services
 @inject IPremiumService PremiumService
 @{
     ViewBag.Theme = "tutor";
@@ -19,25 +19,6 @@
     <link rel="stylesheet" href="~/css/animations.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/tutor-layout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/dropdown-fix.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Webgiasu.styles.css" asp-append-version="true" />
-    <style>
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-        }
-
-         .modal-header {
-            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
-            color: #fff;
-        }
-
-         .modal-title {
-            font-weight: 600;
-        }
-
-         .btn-close {
-            filter: invert(1);
-        }
-    </style>
 </head>
 <body data-theme="@ViewBag.Theme">
     @{
@@ -54,7 +35,7 @@
     <!-- Top Header -->
     <nav class="top-header">
         <div class="container-fluid px-4">
-            <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center justify-content-between w-100">
                 <!-- Left: Logo & Toggle -->
                 <div class="d-flex align-items-center">
                     <button class="btn btn-link text-white me-3" id="sidebarToggle">
@@ -75,12 +56,11 @@
                     @await Component.InvokeAsync("MessageDropdown")
 
                     <!-- Live Clock -->
-                    <div class="header-clock d-flex align-items-center gap-2 text-white px-3 py-2 rounded" 
-                         style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px);">
+                    <div class="header-clock d-none d-lg-flex align-items-center gap-2 text-white px-3 py-2 rounded">
                         <i class="bi bi-clock fs-5"></i>
-                        <div class="d-flex flex-column" style="line-height: 1.2;">
-                            <span class="fw-semibold" id="currentTime" style="font-size: 0.95rem;">--:--:--</span>
-                            <small style="font-size: 0.7rem; opacity: 0.9;" id="currentDate">--, -- -- ----</small>
+                        <div class="d-flex flex-column clock-info">
+                            <span class="fw-semibold clock-time" id="currentTime">--:--:--</span>
+                            <small class="clock-date" id="currentDate">--, -- -- ----</small>
                         </div>
                     </div>
 
@@ -149,13 +129,12 @@
             <div class="modal fade" id="logoutConfirmModal" tabindex="-1" data-bs-backdrop="false">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <div class="modal-header"
-                             style="background: linear-gradient(135deg, #f44336 0%, #e57373 100%);">
-                            <h5 class="modal-title text-white">
+                        <div class="modal-header modal-header-logout">
+                            <h5 class="modal-title text-white tutor-modal-title">
                                 <i class="bi bi-box-arrow-right me-2"></i>Xác nhận đăng xuất
                             </h5>
                             <button type="button"
-                                    class="btn-close btn-close-white"
+                                    class="btn-close btn-close-white tutor-btn-close"
                                     data-bs-dismiss="modal"></button>
                         </div>
 

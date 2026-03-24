@@ -1,4 +1,4 @@
-﻿@using Webgiasu.Services
+@using Webgiasu.Services
 @{
     ViewBag.Theme = "school";
 }
@@ -18,12 +18,6 @@
     <link rel="stylesheet" href="~/css/animations.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/school-layout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/dropdown-fix.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Webgiasu.styles.css" asp-append-version="true" />
-    <style>
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-        }
-    </style>
 </head>
 <body data-theme="@ViewBag.Theme">
     @{
@@ -49,49 +43,15 @@
                 <!-- Right: Actions -->
                 <div class="d-flex align-items-center gap-3">
                     <!-- Notifications -->
-                    <div class="dropdown">
-                        <button class="btn btn-link position-relative" type="button" data-bs-toggle="dropdown" style="color: rgba(255,255,255,0.9);">
-                            <i class="bi bi-bell fs-5"></i>
-                            <span class="position-absolute bottom-0 start-70 rounded-pill bg-danger px-1 py-0"
-                                  style="font-size: 0.58rem;">
-                                3
-                            </span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end notification-dropdown">
-                            <li class="dropdown-header" style="background: linear-gradient(135deg, #FFC107 0%, #FFD54F 100%); padding: 1rem 1.25rem; margin: -0.5rem -0.5rem 0.5rem -0.5rem; border-radius: 12px 12px 0 0;">
-                                <h6 class="mb-0 text-white">Thông báo</h6>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <a class="dropdown-item notification-item" href="#">
-                                    <div class="d-flex">
-                                        <div class="notification-icon bg-success">
-                                            <i class="bi bi-check-circle"></i>
-                                        </div>
-                                        <div class="notification-content">
-                                            <p class="mb-1 fw-semibold">Lớp học mới được tạo</p>
-                                            <small class="text-muted">Lớp Toán 10A đã sẵn sàng</small>
-                                            <small class="d-block text-muted mt-1">10 phút trước</small>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <a class="dropdown-item text-center text-warning fw-semibold" href="#">
-                                    Xem tất cả thông báo
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                    @await Component.InvokeAsync("NotificationDropdown")
 
                     <!-- Live Clock -->
-                    <div class="header-clock d-flex align-items-center gap-2 text-white px-3 py-2 rounded" 
+                    <div class="header-clock d-none d-md-flex align-items-center gap-2 text-white px-2 px-md-3 py-2 rounded" 
                          style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px);">
                         <i class="bi bi-clock fs-5"></i>
                         <div class="d-flex flex-column" style="line-height: 1.2;">
-                            <span class="fw-semibold" id="currentTime" style="font-size: 0.95rem;">--:--:--</span>
-                            <small style="font-size: 0.7rem; opacity: 0.9;" id="currentDate">--, -- -- ----</small>
+                            <span class="fw-semibold" id="currentTime" style="font-size: 0.85rem;">--:--:--</span>
+                            <small style="font-size: 0.65rem; opacity: 0.9;" id="currentDate" class="d-none d-lg-block">--, -- -- ----</small>
                         </div>
                     </div>
                   

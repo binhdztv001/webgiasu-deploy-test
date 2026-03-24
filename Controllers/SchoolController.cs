@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Webgiasu.Models;
 using Webgiasu.Models.ViewModels;
@@ -12,14 +12,16 @@ namespace Webgiasu.Controllers
         private readonly IUserService _userService;
         private readonly ISchoolClassService _classService;
         private readonly IStatisticsExportService _statisticsExportService;
+        private readonly INotificationService _notificationService;
 
 
-        public SchoolController(AppDbContext db, IUserService userService, ISchoolClassService classService, IStatisticsExportService statisticsExportService)
+        public SchoolController(AppDbContext db, IUserService userService, ISchoolClassService classService, IStatisticsExportService statisticsExportService, INotificationService notificationService)
         {
             _db = db;
             _userService = userService;
             _classService = classService;
             _statisticsExportService = statisticsExportService;
+            _notificationService = notificationService;
         }
 
         private int GetCurrentUserId()
@@ -1525,8 +1527,60 @@ namespace Webgiasu.Controllers
             }
         }
 
+    // ============================================================
+    // NOTIFICATION ACTIONS
+    // ============================================================
 
+    // View all notifications
+    public IActionResult Notifications()
+    {
+        try
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return RedirectToAction("Login", "Account");
 
-
+            var notifications = _notificationService.GetAllNotifications(userId);
+            return View(notifications);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ Error in Notifications: {ex.Message}");
+            TempData["Error"] = "Đã xảy ra lỗi!";
+            return RedirectToAction("Dashboard");
+        }
     }
+
+    // Mark single notification as read (JSON API)
+    [HttpPost]
+    public IActionResult MarkNotificationAsRead(int id)
+    {
+        try
+        {
+            var success = _notificationService.MarkAsRead(id);
+            return Json(new { success = success });
+        }
+        catch
+        {
+            return Json(new { success = false });
+        }
+    }
+
+    // Mark all as read
+    [HttpPost]
+    public IActionResult MarkAllNotificationsAsRead()
+    {
+        try
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return Json(new { success = false });
+
+            var success = _notificationService.MarkAllAsRead(userId);
+            return Json(new { success = success });
+        }
+        catch
+        {
+            return Json(new { success = false });
+        }
+    }
+}
 }

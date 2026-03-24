@@ -1,4 +1,4 @@
-﻿@model Webgiasu.Models.User
+@model Webgiasu.Models.User
 @{
     ViewData["Title"] = "Cài đặt tài khoản";
     Layout = "_TutorLayout";
@@ -85,7 +85,7 @@
                         <label class="form-label fw-bold">
                             <i class="bi bi-person-lines-fill text-primary me-1"></i> Giới thiệu bản thân
                         </label>
-                        <textarea name="Bio" class="form-control" rows="4" placeholder="Mô tả về bạn, kinh nghiệm giảng dạy, phong cách dạy học...">@Model.Bio</textarea>
+                        <textarea name="Bio" class="form-control hide-scrollbar" rows="4" placeholder="Mô tả về bạn, kinh nghiệm giảng dạy, phong cách dạy học...">@Model.Bio</textarea>
                         <div class="form-text">Hãy giới thiệu ngắn gọn để học sinh hiểu rõ hơn về bạn</div>
                     </div>
 
@@ -124,7 +124,7 @@
                         <label class="form-label fw-bold">
                             <i class="bi bi-patch-check text-primary me-1"></i> Chứng chỉ
                         </label>
-                        <textarea name="Certificates" class="form-control" rows="3" placeholder="Liệt kê các chứng chỉ, bằng cấp liên quan...">@Model.Certificates</textarea>
+                        <textarea name="Certificates" class="form-control hide-scrollbar" rows="3" placeholder="Liệt kê các chứng chỉ, bằng cấp liên quan...">@Model.Certificates</textarea>
                         <div class="form-text">VD: IELTS 7.5, Chứng chỉ sư phạm, Giải Olympic...</div>
                     </div>
 

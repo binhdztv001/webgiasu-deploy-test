@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Webgiasu.Hubs;
@@ -1770,5 +1770,36 @@ namespace Webgiasu.Controllers
             }
         }
 
+        // ✅ Action: Mark notification as read
+        [HttpPost]
+        public IActionResult MarkNotificationAsRead(int id)
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return Unauthorized();
+
+            _notificationService.MarkAsRead(id);
+            return Ok();
+        }
+
+        // ✅ Action: View all notifications
+        public IActionResult Notifications()
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return RedirectToAction("Login", "Account");
+
+            var notifications = _notificationService.GetRecentNotifications(userId, 50);
+            return View(notifications);
+        }
+
+        // ✅ Action: Mark all as read
+        [HttpPost]
+        public IActionResult MarkAllNotificationsAsRead()
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return Unauthorized();
+
+            _notificationService.MarkAllAsRead(userId);
+            return RedirectToAction("Notifications");
+        }
     }
 }

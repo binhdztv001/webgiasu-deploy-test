@@ -1,4 +1,4 @@
-﻿namespace Webgiasu.Models
+namespace Webgiasu.Models
 {
     public enum NotificationType
     {
@@ -13,7 +13,9 @@
         PaymentReceived,          // Khi nhận được tiền thanh toán
         TutorApplied,           // ✅ THÊM MỚI
         ApplicationApproved,    // ✅ THÊM MỚI
-        ApplicationRejected     // ✅ THÊM MỚI (optional)
+        ApplicationRejected,    // ✅ THÊM MỚI (optional)
+        EnterpriseMentorCreated, // ✅ THÊM MỚI
+        EnterpriseSystemAlert   // ✅ THÊM MỚI
     }
 
     public class Notification

@@ -1,4 +1,4 @@
-﻿@model Webgiasu.Models.ViewModels.CreateProblemViewModel
+@model Webgiasu.Models.ViewModels.CreateProblemViewModel
 @{
     ViewData["Title"] = "Đăng bài toán mới";
     Layout = "~/Views/Shared/_StudentLayout.cshtml";
@@ -6,19 +6,19 @@
 
 <div>
     <!-- Page Header -->
-    <div class="page-header d-flex flex-wrap justify-content-between align-items-center">
+    <div class="page-header d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
         <div>
             <h5 class="fw-bold mb-1 text-dark">
                 <i class="bi bi-plus-circle text-primary me-2"></i>Đăng bài toán mới
             </h5>
             <p class="text-muted mb-0 small">Điền thông tin bài toán để nhận hỗ trợ từ Mentor</p>
         </div>
-        <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm">
+        <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm w-sm-auto">
             <i class="bi bi-arrow-left me-1"></i> Quay lại
         </a>
     </div>
 
-    <div class="row">
+    <div class="row g-4">
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-4">
@@ -36,7 +36,7 @@
                             <label asp-for="Description" class="form-label fw-semibold">
                                 <i class="bi bi-file-text text-primary me-1"></i> Mô tả chi tiết <span class="text-danger">*</span>
                             </label>
-                            <textarea asp-for="Description" class="form-control" rows="5" placeholder="Mô tả chi tiết bài toán của bạn..." required></textarea>
+                            <textarea asp-for="Description" class="form-control hide-scrollbar" rows="5" placeholder="Mô tả chi tiết bài toán của bạn..." required></textarea>
                         </div>
 
                         <div class="row g-3">
@@ -130,7 +130,7 @@
             <!-- Price Card -->
             <div class="card border-0 shadow-sm mb-3">
                 <div class="card-body text-center">
-                    <i class="bi bi-currency-dollar text-primary" style="font-size: 2.5rem;"></i>
+                    <i class="bi bi-currency-dollar text-primary icon-size-xl"></i>
                     <h6 class="mt-2 mb-1">Giá dự kiến</h6>
                     <p class="fs-4 fw-bold text-primary mb-0" id="priceDisplay">-- đ</p>
                     <small class="text-muted" id="priceHint">Chọn cấp học để xem giá</small>
@@ -139,7 +139,7 @@
 
             <!-- Education Level Info Card -->
             <div class="card border-0 shadow-sm mb-3">
-                <div class="card-header bg-white border-0">
+                <div class="card-header bg-white text-dark border-0">
                     <h6 class="mb-0 fw-bold"><i class="bi bi-info-circle text-info me-2"></i>Bảng giá theo cấp</h6>
                 </div>
                 <div class="card-body pt-2">
@@ -178,7 +178,7 @@
 
             <!-- Tips Card -->
             <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white border-0">
+                <div class="card-header bg-white text-dark border-0">
                     <h6 class="mb-0 fw-bold"><i class="bi bi-lightbulb text-warning me-2"></i>Mẹo hay</h6>
                 </div>
                 <div class="card-body pt-0">
@@ -281,6 +281,15 @@
     <script>
         CKEDITOR.replace('Description', {
             height: 300,
+            on: {
+                instanceReady: function (evt) {
+                    // Inject CSS into the CKEditor iframe to hide its scrollbar but keep scroll functionality
+                    var head = evt.editor.document.$.head;
+                    var style = evt.editor.document.$.createElement('style');
+                    style.innerHTML = 'html, body { -ms-overflow-style: none !important; scrollbar-width: none !important; } html::-webkit-scrollbar, body::-webkit-scrollbar { display: none !important; }';
+                    head.appendChild(style);
+                }
+            },
             removePlugins: 'elementspath,save,print,preview,find,flash,forms,iframe,fullscreen,sourcearea,maximize',
             removeButtons: 'Save,NewPage,ExportPdf,Preview,Print,Templates,SelectAll,' +
                            'Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,' +
@@ -297,18 +306,3 @@
         CKEDITOR.config.versionCheck = false;
     </script>
 }
-
-    <style>
-        .hover-card {
-            transition: all 0.3s ease;
-        }
-
-        .hover-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.1);
-        }
-
-        .form-check-input {
-            display: none;
-        }
-    </style>

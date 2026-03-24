@@ -1,10 +1,11 @@
-﻿using Webgiasu.Models;
+using Webgiasu.Models;
 
 namespace Webgiasu.Services
 {
     public interface INotificationService
     {
         List<Notification> GetRecentNotifications(int userId, int count = 5);
+        List<Notification> GetAllNotifications(int userId);
         int GetUnreadCount(int userId);
         bool CreateNotification(Notification notification);
         bool MarkAsRead(int notificationId);
@@ -23,6 +24,7 @@ namespace Webgiasu.Services
         bool NotifyTutorApplied(int studentId, int problemId, string tutorName);
         bool NotifyApplicationApproved(int tutorId, int problemId, string problemTitle);
         bool NotifyApplicationRejected(int tutorId, int problemId, string reason);
+        bool NotifyEnterpriseMentorCreated(int enterpriseId, int mentorId, string mentorName);
     }
 }
 

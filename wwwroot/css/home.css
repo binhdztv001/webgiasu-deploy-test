@@ -18,31 +18,23 @@
     font-weight: 700;
 }
 
-.hero-title i {
-    -webkit-text-fill-color: inherit;
-    background: inherit;
-}
+    .hero-title i {
+        -webkit-text-fill-color: inherit;
+        background: inherit;
+    }
 
 @keyframes gradientWave {
     0% {
         background-position: 0% 50%;
     }
+
     50% {
         background-position: 100% 50%;
     }
+
     100% {
         background-position: 0% 50%;
     }
-}
-
-.text-student {
-    color: #17a2b8;
-    font-weight: 700;
-}
-
-.text-mentor {
-    color: #ff9800;
-    font-weight: 700;
 }
 
 /* Responsive font sizes */
@@ -72,15 +64,6 @@
 }
 
 /* ===========================
-   SOLID GREEN BADGE
-   =========================== */
-
-.badge-solid-green {
-    color: #fff;
-    background: #19d27c;
-}
-
-/* ===========================
    HOVER CARD WITH GLOW EFFECT
    =========================== */
 
@@ -93,74 +76,54 @@
     z-index: 1;
 }
 
-/* Shimmer effect */
-.hover-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    transition: left 0.6s ease;
-    z-index: 10;
-    pointer-events: none;
-    border-radius: 16px;
-}
+    /* Shimmer effect */
+    .hover-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        transition: left 0.6s ease;
+        z-index: 10;
+        pointer-events: none;
+        border-radius: 16px;
+    }
 
-.hover-card:hover::before {
-    left: 100%;
-}
+    .hover-card:hover::before {
+        left: 100%;
+    }
 
-/* Glow effect on hover */
-.hover-card:hover {
-    transform: translateY(-12px) scale(1.02);
-    z-index: 10;
-}
+    /* Glow effect on hover */
+    .hover-card:hover {
+        transform: translateY(-12px) scale(1.02);
+        z-index: 10;
+    }
 
 /* Student Card - Blue Glow (first card) */
-.row.g-4 > .col-md-4:first-child .hover-card:hover,
+.row.g-4 > .col-md-6:first-child .hover-card:hover,
 .row.g-4 > div:first-child .hover-card:hover {
-    box-shadow: 
-        0 0 20px rgba(33, 150, 243, 0.5),
-        0 0 40px rgba(33, 150, 243, 0.4),
-        0 0 60px rgba(33, 150, 243, 0.3),
-        0 0 80px rgba(33, 150, 243, 0.2),
-        0 25px 50px rgba(33, 150, 243, 0.3) !important;
+    box-shadow: 0 0 20px rgba(33, 150, 243, 0.5), 0 0 40px rgba(33, 150, 243, 0.4), 0 0 60px rgba(33, 150, 243, 0.3), 0 0 80px rgba(33, 150, 243, 0.2), 0 25px 50px rgba(33, 150, 243, 0.3) !important;
 }
 
 /* Tutor Card - Green Glow (second card) */
-.row.g-4 > .col-md-4:nth-child(2) .hover-card:hover,
+.row.g-4 > .col-md-6:nth-child(2) .hover-card:hover,
 .row.g-4 > div:nth-child(2) .hover-card:hover {
-    box-shadow: 
-        0 0 20px rgba(76, 175, 80, 0.5),
-        0 0 40px rgba(76, 175, 80, 0.4),
-        0 0 60px rgba(76, 175, 80, 0.3),
-        0 0 80px rgba(76, 175, 80, 0.2),
-        0 25px 50px rgba(76, 175, 80, 0.3) !important;
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.5), 0 0 40px rgba(76, 175, 80, 0.4), 0 0 60px rgba(76, 175, 80, 0.3), 0 0 80px rgba(76, 175, 80, 0.2), 0 25px 50px rgba(76, 175, 80, 0.3) !important;
 }
 
 /* Admin Card - Red Glow (third card) */
-.row.g-4 > .col-md-4:nth-child(3) .hover-card:hover,
+.row.g-4 > .col-md-6:nth-child(3) .hover-card:hover,
 .row.g-4 > div:nth-child(3) .hover-card:hover {
-    box-shadow: 
-        0 0 20px rgba(220, 20, 60, 0.5),
-        0 0 40px rgba(220, 20, 60, 0.4),
-        0 0 60px rgba(220, 20, 60, 0.3),
-        0 0 80px rgba(220, 20, 60, 0.2),
-        0 25px 50px rgba(220, 20, 60, 0.3) !important;
+    box-shadow: 0 0 20px rgba(220, 20, 60, 0.5), 0 0 40px rgba(220, 20, 60, 0.4), 0 0 60px rgba(220, 20, 60, 0.3), 0 0 80px rgba(220, 20, 60, 0.2), 0 25px 50px rgba(220, 20, 60, 0.3) !important;
 }
 
 /* School Card - Yellow Glow (fourth card) */
 .row.g-4 > .col-md-6:nth-child(4) .hover-card:hover,
 .row.g-4 > .col-lg-3:nth-child(4) .hover-card:hover,
 .row.g-4 > div:nth-child(4) .hover-card:hover {
-    box-shadow: 
-        0 0 20px rgba(255, 193, 7, 0.6),
-        0 0 40px rgba(255, 193, 7, 0.5),
-        0 0 60px rgba(255, 193, 7, 0.4),
-        0 0 80px rgba(255, 193, 7, 0.3),
-        0 25px 50px rgba(255, 193, 7, 0.4) !important;
+    box-shadow: 0 0 20px rgba(255, 193, 7, 0.6), 0 0 40px rgba(255, 193, 7, 0.5), 0 0 60px rgba(255, 193, 7, 0.4), 0 0 80px rgba(255, 193, 7, 0.3), 0 25px 50px rgba(255, 193, 7, 0.4) !important;
 }
 
 /* Icon container glow on hover */
@@ -175,38 +138,26 @@
 /* Student icon glow */
 .row.g-4 > .col-md-4:first-child .hover-card:hover .rounded-circle,
 .row.g-4 > div:first-child .hover-card:hover .rounded-circle {
-    box-shadow: 
-        0 0 20px rgba(33, 150, 243, 0.6),
-        0 0 40px rgba(33, 150, 243, 0.4),
-        0 0 60px rgba(33, 150, 243, 0.2);
+    box-shadow: 0 0 20px rgba(33, 150, 243, 0.6), 0 0 40px rgba(33, 150, 243, 0.4), 0 0 60px rgba(33, 150, 243, 0.2);
 }
 
 /* Tutor icon glow */
 .row.g-4 > .col-md-4:nth-child(2) .hover-card:hover .rounded-circle,
 .row.g-4 > div:nth-child(2) .hover-card:hover .rounded-circle {
-    box-shadow: 
-        0 0 20px rgba(76, 175, 80, 0.6),
-        0 0 40px rgba(76, 175, 80, 0.4),
-        0 0 60px rgba(76, 175, 80, 0.2);
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.6), 0 0 40px rgba(76, 175, 80, 0.4), 0 0 60px rgba(76, 175, 80, 0.2);
 }
 
 /* Admin icon glow */
 .row.g-4 > .col-md-4:nth-child(3) .hover-card:hover .rounded-circle,
 .row.g-4 > div:nth-child(3) .hover-card:hover .rounded-circle {
-    box-shadow: 
-        0 0 20px rgba(220, 20, 60, 0.6),
-        0 0 40px rgba(220, 20, 60, 0.4),
-        0 0 60px rgba(220, 20, 60, 0.2);
+    box-shadow: 0 0 20px rgba(220, 20, 60, 0.6), 0 0 40px rgba(220, 20, 60, 0.4), 0 0 60px rgba(220, 20, 60, 0.2);
 }
 
 /* School icon glow */
 .row.g-4 > .col-md-6:nth-child(4) .hover-card:hover .rounded-circle,
 .row.g-4 > .col-lg-3:nth-child(4) .hover-card:hover .rounded-circle,
 .row.g-4 > div:nth-child(4) .hover-card:hover .rounded-circle {
-    box-shadow: 
-        0 0 20px rgba(255, 193, 7, 0.7),
-        0 0 40px rgba(255, 193, 7, 0.5),
-        0 0 60px rgba(255, 193, 7, 0.3);
+    box-shadow: 0 0 20px rgba(255, 193, 7, 0.7), 0 0 40px rgba(255, 193, 7, 0.5), 0 0 60px rgba(255, 193, 7, 0.3);
 }
 
 /* Pulse animation for icons on hover */
@@ -214,6 +165,7 @@
     0%, 100% {
         transform: scale(1.15);
     }
+
     50% {
         transform: scale(1.25);
     }
@@ -276,10 +228,10 @@
     display: inline-block;
 }
 
-.text-gradient i {
-    -webkit-text-fill-color: #667eea;
-    background: none;
-}
+    .text-gradient i {
+        -webkit-text-fill-color: #667eea;
+        background: none;
+    }
 
 /* ===========================
    FADE IN SECTION
@@ -290,12 +242,12 @@
     z-index: 10;
 }
 
-.fade-in h1,
-.fade-in p,
-.fade-in .badge {
-    position: relative;
-    z-index: 11;
-}
+    .fade-in h1,
+    .fade-in p,
+    .fade-in .badge {
+        position: relative;
+        z-index: 11;
+    }
 
 /* ===========================
    ICON BOUNCE ANIMATION
@@ -305,6 +257,7 @@
     0%, 100% {
         transform: translateY(0);
     }
+
     50% {
         transform: translateY(-10px);
     }
@@ -316,15 +269,6 @@
 }
 
 /* ===========================
-   SHADOW SOFT
-   =========================== */
-
-.shadow-soft {
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-    transition: box-shadow 0.4s ease, transform 0.4s ease;
-}
-
-/* ===========================
    HOVER LIFT EFFECT
    =========================== */
 
@@ -332,9 +276,9 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.hover-lift:hover {
-    transform: translateY(-5px);
-}
+    .hover-lift:hover {
+        transform: translateY(-5px);
+    }
 
 /* ===========================
    HOVER SCALE EFFECT
@@ -344,9 +288,9 @@
     transition: transform 0.3s ease;
 }
 
-.hover-scale:hover {
-    transform: scale(1.05);
-}
+    .hover-scale:hover {
+        transform: scale(1.05);
+    }
 
 /* ===========================
    CARD GLASS EFFECT
@@ -367,6 +311,7 @@
         transform: scale(1);
         opacity: 1;
     }
+
     50% {
         transform: scale(1.1);
         opacity: 0.8;
@@ -375,21 +320,6 @@
 
 .icon-pulse {
     animation: iconPulseStats 2s ease-in-out infinite;
-}
-
-/* ===========================
-   BUTTON PILL STYLE
-   =========================== */
-
-.btn-pill {
-    border-radius: 50px;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-    transition: all 0.3s ease;
-}
-
-.btn-pill:hover {
-    transform: translateY(-2px);
 }
 
 /* ===========================
@@ -403,11 +333,11 @@
     color: #ffffff !important;
 }
 
-.row.g-4 > .col-md-6:nth-child(4) .btn-warning i,
-.row.g-4 > .col-lg-3:nth-child(4) .btn-warning i,
-.row.g-4 > div:nth-child(4) .btn-warning i {
-    color: #ffffff !important;
-}
+    .row.g-4 > .col-md-6:nth-child(4) .btn-warning i,
+    .row.g-4 > .col-lg-3:nth-child(4) .btn-warning i,
+    .row.g-4 > div:nth-child(4) .btn-warning i {
+        color: #ffffff !important;
+    }
 
 /* ===========================
    3D CAROUSEL STYLES
@@ -436,133 +366,208 @@
     left: 50%;
     top: 50%;
     transform-style: preserve-3d;
-    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-                opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-                visibility 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
     transform: translate(-50%, -50%) translateZ(-400px) scale(0.6);
 }
 
-.carousel-card .card {
-    transition: box-shadow 0.3s ease, border 0.3s ease, transform 0.3s ease;
-}
+    /* ===== BASE ===== */
+    .carousel-card .card {
+        border: 2px solid rgba(0,0,0,0.1);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+        transition: all 0.3s ease;
+    }
 
-/* Active card (center) */
-.carousel-card.active {
-    transform: translate(-50%, -50%) translateZ(0) scale(1);
-    opacity: 1;
-    visibility: visible;
-    z-index: 10;
-    pointer-events: all;
-}
+    /* ===== COLOR BY TYPE ===== */
 
-.carousel-card.active .card {
-    box-shadow: 
-        0 20px 60px rgba(0, 0, 0, 0.2),
-        0 0 40px rgba(33, 150, 243, 0.3);
-}
+    /* 0 - Student */
+    .carousel-card[data-index="0"] .card {
+        border-color: rgba(33,150,243,0.35);
+    }
 
-/* Previous card (left) */
-.carousel-card.prev {
-    transform: translate(-150%, -50%) translateZ(-300px) rotateY(25deg) scale(0.8);
-    opacity: 0.6;
-    visibility: visible;
-    z-index: 5;
-    pointer-events: all;
-}
+    /* 1 - Mentor */
+    .carousel-card[data-index="1"] .card {
+        border-color: rgba(76,175,80,0.35);
+    }
 
-.carousel-card.prev .card {
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-}
+    /* 2 - Admin */
+    .carousel-card[data-index="2"] .card {
+        border-color: rgba(220,53,69,0.35);
+    }
 
-/* Next card (right) */
-.carousel-card.next {
-    transform: translate(50%, -50%) translateZ(-300px) rotateY(-25deg) scale(0.8);
-    opacity: 0.6;
-    visibility: visible;
-    z-index: 5;
-    pointer-events: all;
-}
+    /* 3 - Enterprise */
+    .carousel-card[data-index="3"] .card {
+        border-color: rgba(121,85,72,0.35);
+    }
 
-.carousel-card.next .card {
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-}
+    /* 4 - School */
+    .carousel-card[data-index="4"] .card {
+        border-color: rgba(255,193,7,0.4);
+    }
 
-/* Card hover effects in carousel */
-.carousel-card.active .card:hover {
-    transform: translateY(-10px) scale(1.02);
-    box-shadow: 
-        0 25px 70px rgba(0, 0, 0, 0.25),
-        0 0 50px rgba(33, 150, 243, 0.4);
-}
+    /* ===== ACTIVE ===== */
+    .carousel-card.active {
+        transform: translate(-50%, -50%) translateZ(0) scale(1);
+        opacity: 1;
+        visibility: visible;
+        z-index: 10;
+        pointer-events: all;
+    }
 
-/* Student card glow */
-.carousel-card[data-index="0"].active .card:hover {
-    box-shadow: 
-        0 0 25px rgba(33, 150, 243, 0.5),
-        0 0 50px rgba(33, 150, 243, 0.4),
-        0 25px 70px rgba(33, 150, 243, 0.3);
-}
+    /* ACTIVE GLOW */
+    .carousel-card[data-index="0"].active .card {
+        border-color: rgba(33,150,243,0.6);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2), 0 0 20px rgba(33,150,243,0.6), 0 0 40px rgba(33,150,243,0.4);
+    }
 
-/* Mentor card glow */
-.carousel-card[data-index="1"].active .card:hover {
-    box-shadow: 
-        0 0 25px rgba(76, 175, 80, 0.5),
-        0 0 50px rgba(76, 175, 80, 0.4),
-        0 25px 70px rgba(76, 175, 80, 0.3);
-}
+    .carousel-card[data-index="1"].active .card {
+        border-color: rgba(76,175,80,0.6);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2), 0 0 20px rgba(76,175,80,0.6), 0 0 40px rgba(76,175,80,0.4);
+    }
 
-/* School card glow */
-.carousel-card[data-index="2"].active .card:hover {
-    box-shadow: 
-        0 0 25px rgba(255, 193, 7, 0.6),
-        0 0 50px rgba(255, 193, 7, 0.5),
-        0 25px 70px rgba(255, 193, 7, 0.4);
-}
+    .carousel-card[data-index="2"].active .card {
+        border-color: rgba(220,53,69,0.6);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2), 0 0 20px rgba(220,53,69,0.6), 0 0 40px rgba(220,53,69,0.4);
+    }
 
-/* ===== ACTIVE CARD GLOW EFFECTS (Always visible) ===== */
+    .carousel-card[data-index="3"].active .card {
+        border-color: rgba(121,85,72,0.6);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2), 0 0 20px rgba(121,85,72,0.6), 0 0 40px rgba(121,85,72,0.4);
+    }
 
-/* Student card glow - Blue (index 0) */
-.carousel-card[data-index="0"].active .card {
-    border: 3px solid rgba(33, 150, 243, 0.6) !important;
-    box-shadow: 
-        0 20px 60px rgba(0, 0, 0, 0.2),
-        0 0 20px rgba(33, 150, 243, 0.6),
-        0 0 40px rgba(33, 150, 243, 0.4),
-        0 0 60px rgba(33, 150, 243, 0.3);
-}
+    .carousel-card[data-index="4"].active .card {
+        border-color: rgba(255,193,7,0.7);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2), 0 0 20px rgba(255,193,7,0.7), 0 0 40px rgba(255,193,7,0.5);
+    }
 
-/* Mentor card glow - Green (index 1) */
-.carousel-card[data-index="1"].active .card {
-    border: 3px solid rgba(76, 175, 80, 0.6) !important;
-    box-shadow: 
-        0 20px 60px rgba(0, 0, 0, 0.2),
-        0 0 20px rgba(76, 175, 80, 0.6),
-        0 0 40px rgba(76, 175, 80, 0.4),
-        0 0 60px rgba(76, 175, 80, 0.3);
-}
+    /* ===== PREV ===== */
+    .carousel-card.prev {
+        transform: translate(-150%, -50%) translateZ(-300px) rotateY(25deg) scale(0.8);
+        opacity: 0.6;
+        visibility: visible;
+        z-index: 5;
+        pointer-events: all;
+    }
 
-/* Admin card glow - Red (index 2) */
-.carousel-card[data-index="2"].active .card {
-    border: 3px solid rgba(220, 53, 69, 0.6) !important;
-    box-shadow: 
-        0 20px 60px rgba(0, 0, 0, 0.2),
-        0 0 20px rgba(220, 53, 69, 0.6),
-        0 0 40px rgba(220, 53, 69, 0.4),
-        0 0 60px rgba(220, 53, 69, 0.3);
-}
+    .carousel-card[data-index="0"].prev .card {
+        box-shadow: 0 10px 30px rgba(33,150,243,0.25);
+    }
 
-/* School card glow - Yellow (index 3) */
-.carousel-card[data-index="3"].active .card {
-    border: 3px solid rgba(255, 193, 7, 0.7) !important;
-    box-shadow: 
-        0 20px 60px rgba(0, 0, 0, 0.2),
-        0 0 20px rgba(255, 193, 7, 0.7),
-        0 0 40px rgba(255, 193, 7, 0.5),
-        0 0 60px rgba(255, 193, 7, 0.4);
-}
+    .carousel-card[data-index="1"].prev .card {
+        box-shadow: 0 10px 30px rgba(76,175,80,0.25);
+    }
+
+    .carousel-card[data-index="2"].prev .card {
+        box-shadow: 0 10px 30px rgba(220,53,69,0.25);
+    }
+
+    .carousel-card[data-index="3"].prev .card {
+        box-shadow: 0 10px 30px rgba(121,85,72,0.25);
+    }
+
+    .carousel-card[data-index="4"].prev .card {
+        box-shadow: 0 10px 30px rgba(255,193,7,0.3);
+    }
+
+    /* ===== NEXT ===== */
+    .carousel-card.next {
+        transform: translate(50%, -50%) translateZ(-300px) rotateY(-25deg) scale(0.8);
+        opacity: 0.6;
+        visibility: visible;
+        z-index: 5;
+        pointer-events: all;
+    }
+
+    .carousel-card[data-index="0"].next .card {
+        box-shadow: 0 10px 30px rgba(33,150,243,0.25);
+    }
+
+    .carousel-card[data-index="1"].next .card {
+        box-shadow: 0 10px 30px rgba(76,175,80,0.25);
+    }
+
+    .carousel-card[data-index="2"].next .card {
+        box-shadow: 0 10px 30px rgba(220,53,69,0.25);
+    }
+
+    .carousel-card[data-index="3"].next .card {
+        box-shadow: 0 10px 30px rgba(121,85,72,0.25);
+    }
+
+    .carousel-card[data-index="4"].next .card {
+        box-shadow: 0 10px 30px rgba(255,193,7,0.3);
+    }
+
+    /* ===== HOVER (CHỈ ACTIVE MỚI HOVER) ===== */
+    .carousel-card.active .card:hover {
+        transform: translateY(-10px) scale(1.02);
+    }
+
+    /* Hover theo màu riêng */
+    .carousel-card[data-index="0"].active .card:hover {
+        box-shadow: 0 25px 70px rgba(0,0,0,0.25), 0 0 50px rgba(33,150,243,0.4);
+    }
+
+    .carousel-card[data-index="1"].active .card:hover {
+        box-shadow: 0 25px 70px rgba(0,0,0,0.25), 0 0 50px rgba(76,175,80,0.4);
+    }
+
+    .carousel-card[data-index="2"].active .card:hover {
+        box-shadow: 0 25px 70px rgba(0,0,0,0.25), 0 0 50px rgba(220,53,69,0.4);
+    }
+
+    .carousel-card[data-index="3"].active .card:hover {
+        box-shadow: 0 25px 70px rgba(0,0,0,0.25), 0 0 50px rgba(121,85,72,0.4);
+    }
+
+    .carousel-card[data-index="4"].active .card:hover {
+        box-shadow: 0 25px 70px rgba(0,0,0,0.25), 0 0 50px rgba(255,193,7,0.5);
+    }
+
+    /* ICON BASE */
+    .carousel-card .icon-circle {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 3.5rem;
+        transition: all 0.3s ease;
+    }
+
+    /* 0 - Student */
+    .carousel-card[data-index="0"] .icon-circle {
+        background: #2196f3;
+        box-shadow: 0 0 20px rgba(33,150,243,0.5);
+    }
+
+    /* 1 - Mentor */
+    .carousel-card[data-index="1"] .icon-circle {
+        background: #4caf50;
+        box-shadow: 0 0 20px rgba(76,175,80,0.5);
+    }
+
+    /* 2 - Admin */
+    .carousel-card[data-index="2"] .icon-circle {
+        background: #dc3545;
+        box-shadow: 0 0 20px rgba(220,53,69,0.5);
+    }
+
+    /* 3 - Enterprise */
+    .carousel-card[data-index="3"] .icon-circle {
+        background: #795548;
+        box-shadow: 0 0 20px rgba(121,85,72,0.5);
+    }
+
+    /* 4 - School */
+    .carousel-card[data-index="4"] .icon-circle {
+        background: #ffc107;
+        box-shadow: 0 0 20px rgba(255,193,7,0.5);
+    }
 
 /* Navigation buttons */
 .carousel-nav {
@@ -585,13 +590,13 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-.carousel-nav:hover {
-    background: #D6C2A1;
-    color: white;
-    border-color: #D6C2A1;
-    transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 6px 20px rgba(214, 194, 161, 0.5);
-}
+    .carousel-nav:hover {
+        background: #D6C2A1;
+        color: white;
+        border-color: #D6C2A1;
+        transform: translateY(-50%) scale(1.1);
+        box-shadow: 0 6px 20px rgba(214, 194, 161, 0.5);
+    }
 
 .carousel-nav-left {
     left: 10%;
@@ -621,110 +626,110 @@
     border: 2px solid transparent;
 }
 
-/* Individual indicator colors (default state) */
-/* Indicator 0: Student - Blue */
-.indicator[data-slide="0"] {
-    background: rgba(33, 150, 243, 0.4);
-    border-color: rgba(33, 150, 243, 0.2);
-}
+    /* Individual indicator colors (default state) */
+    /* Indicator 0: Student - Blue */
+    .indicator[data-slide="0"] {
+        background: rgba(33, 150, 243, 0.4);
+        border-color: rgba(33, 150, 243, 0.2);
+    }
 
-/* Indicator 1: Mentor - Green */
-.indicator[data-slide="1"] {
-    background: rgba(76, 175, 80, 0.4);
-    border-color: rgba(76, 175, 80, 0.2);
-}
+    /* Indicator 1: Mentor - Green */
+    .indicator[data-slide="1"] {
+        background: rgba(76, 175, 80, 0.4);
+        border-color: rgba(76, 175, 80, 0.2);
+    }
 
-/* Indicator 2: Admin - Red */
-.indicator[data-slide="2"] {
-    background: rgba(220, 53, 69, 0.4);
-    border-color: rgba(220, 53, 69, 0.2);
-}
+    /* Indicator 2: Admin - Red */
+    .indicator[data-slide="2"] {
+        background: rgba(220, 53, 69, 0.4);
+        border-color: rgba(220, 53, 69, 0.2);
+    }
 
-/* Indicator 3: Enterprise - Brown */
-.indicator[data-slide="3"] {
-    background: rgba(121, 85, 72, 0.4);
-    border-color: rgba(121, 85, 72, 0.2);
-}
+    /* Indicator 3: Enterprise - Brown */
+    .indicator[data-slide="3"] {
+        background: rgba(121, 85, 72, 0.4);
+        border-color: rgba(121, 85, 72, 0.2);
+    }
 
-/* Indicator 4: School - Yellow */
-.indicator[data-slide="4"] {
-    background: rgba(255, 193, 7, 0.4);
-    border-color: rgba(255, 193, 7, 0.2);
-}
+    /* Indicator 4: School - Yellow */
+    .indicator[data-slide="4"] {
+        background: rgba(255, 193, 7, 0.4);
+        border-color: rgba(255, 193, 7, 0.2);
+    }
 
-/* Hover states */
-.indicator[data-slide="0"]:hover {
-    background: rgba(33, 150, 243, 0.7);
-    transform: scale(1.2);
-}
+    /* Hover states */
+    .indicator[data-slide="0"]:hover {
+        background: rgba(33, 150, 243, 0.7);
+        transform: scale(1.2);
+    }
 
-.indicator[data-slide="1"]:hover {
-    background: rgba(76, 175, 80, 0.7);
-    transform: scale(1.2);
-}
+    .indicator[data-slide="1"]:hover {
+        background: rgba(76, 175, 80, 0.7);
+        transform: scale(1.2);
+    }
 
-.indicator[data-slide="2"]:hover {
-    background: rgba(220, 53, 69, 0.7);
-    transform: scale(1.2);
-}
+    .indicator[data-slide="2"]:hover {
+        background: rgba(220, 53, 69, 0.7);
+        transform: scale(1.2);
+    }
 
-.indicator[data-slide="3"]:hover {
-    background: rgba(121, 85, 72, 0.7);
-    transform: scale(1.2);
-}
+    .indicator[data-slide="3"]:hover {
+        background: rgba(121, 85, 72, 0.7);
+        transform: scale(1.2);
+    }
 
-.indicator[data-slide="4"]:hover {
-    background: rgba(255, 193, 7, 0.7);
-    transform: scale(1.2);
-}
+    .indicator[data-slide="4"]:hover {
+        background: rgba(255, 193, 7, 0.7);
+        transform: scale(1.2);
+    }
 
-/* Active states - Full opacity with glow */
-/* Indicator 0 Active: Student - Blue */
-.indicator[data-slide="0"].active {
-    background: #2196F3;
-    border-color: #2196F3;
-    transform: scale(1.3);
-    box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
-}
+    /* Active states - Full opacity with glow */
+    /* Indicator 0 Active: Student - Blue */
+    .indicator[data-slide="0"].active {
+        background: #2196F3;
+        border-color: #2196F3;
+        transform: scale(1.3);
+        box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
+    }
 
-/* Indicator 1 Active: Mentor - Green */
-.indicator[data-slide="1"].active {
-    background: #4CAF50;
-    border-color: #4CAF50;
-    transform: scale(1.3);
-    box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
-}
+    /* Indicator 1 Active: Mentor - Green */
+    .indicator[data-slide="1"].active {
+        background: #4CAF50;
+        border-color: #4CAF50;
+        transform: scale(1.3);
+        box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+    }
 
-/* Indicator 2 Active: Admin - Red */
-.indicator[data-slide="2"].active {
-    background: #DC3545;
-    border-color: #DC3545;
-    transform: scale(1.3);
-    box-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
-}
+    /* Indicator 2 Active: Admin - Red */
+    .indicator[data-slide="2"].active {
+        background: #DC3545;
+        border-color: #DC3545;
+        transform: scale(1.3);
+        box-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
+    }
 
-/* Indicator 3 Active: Enterprise - Brown */
-.indicator[data-slide="3"].active {
-    background: #795548;
-    border-color: #795548;
-    transform: scale(1.3);
-    box-shadow: 0 0 10px rgba(121, 85, 72, 0.5);
-}
+    /* Indicator 3 Active: Enterprise - Brown */
+    .indicator[data-slide="3"].active {
+        background: #795548;
+        border-color: #795548;
+        transform: scale(1.3);
+        box-shadow: 0 0 10px rgba(121, 85, 72, 0.5);
+    }
 
-/* Indicator 4 Active: School - Yellow */
-.indicator[data-slide="4"].active {
-    background: #FFC107;
-    border-color: #FFC107;
-    transform: scale(1.3);
-    box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
-}
+    /* Indicator 4 Active: School - Yellow */
+    .indicator[data-slide="4"].active {
+        background: #FFC107;
+        border-color: #FFC107;
+        transform: scale(1.3);
+        box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+    }
 
 /* Responsive adjustments */
 @media (max-width: 1200px) {
     .carousel-nav-left {
         left: 5%;
     }
-    
+
     .carousel-nav-right {
         right: 5%;
     }
@@ -735,31 +740,31 @@
         height: 700px;
         perspective: 1000px;
     }
-    
+
     .carousel-card {
         width: 350px;
     }
-    
-    .carousel-card.prev {
-        transform: translate(-130%, -50%) translateZ(-200px) rotateY(20deg) scale(0.7);
-        opacity: 0.3;
-    }
-    
-    .carousel-card.next {
-        transform: translate(30%, -50%) translateZ(-200px) rotateY(-20deg) scale(0.7);
-        opacity: 0.3;
-    }
-    
+
+        .carousel-card.prev {
+            transform: translate(-130%, -50%) translateZ(-200px) rotateY(20deg) scale(0.7);
+            opacity: 0.3;
+        }
+
+        .carousel-card.next {
+            transform: translate(30%, -50%) translateZ(-200px) rotateY(-20deg) scale(0.7);
+            opacity: 0.3;
+        }
+
     .carousel-nav {
         width: 50px;
         height: 50px;
         font-size: 1.2rem;
     }
-    
+
     .carousel-nav-left {
         left: 2%;
     }
-    
+
     .carousel-nav-right {
         right: 2%;
     }
@@ -769,16 +774,16 @@
     .carousel-3d-container {
         height: 750px;
     }
-    
+
     .carousel-card {
         width: 320px;
     }
-    
-    .carousel-card.prev,
-    .carousel-card.next {
-        opacity: 0;
-        pointer-events: none;
-    }
+
+        .carousel-card.prev,
+        .carousel-card.next {
+            opacity: 0;
+            pointer-events: none;
+        }
 }
 
 /* School Register Button - White background, yellow text */
@@ -789,25 +794,25 @@
     border-width: 2px !important;
 }
 
-.school-register-btn i {
-    color: #ffc107 !important;
-}
+    .school-register-btn i {
+        color: #ffc107 !important;
+    }
 
-.school-register-btn:hover {
-    background: linear-gradient(135deg, #ffa751 0%, #ffe259 100%) !important;
-    color: #ffffff !important;
-    border-color: #ffc107 !important;
-    transform: translateY(-2px);
-}
+    .school-register-btn:hover {
+        background: linear-gradient(135deg, #ffa751 0%, #ffe259 100%) !important;
+        color: #ffffff !important;
+        border-color: #ffc107 !important;
+        transform: translateY(-2px);
+    }
 
-.school-register-btn:hover i {
-    color: #ffffff !important;
-}
+        .school-register-btn:hover i {
+            color: #ffffff !important;
+        }
 
-.school-register-btn:active {
-    background-color: #ffffff !important;
-    color: #ffc107 !important;
-}
+    .school-register-btn:active {
+        background-color: #ffffff !important;
+        color: #ffc107 !important;
+    }
 
 /* ===========================
    ENTERPRISE CARD BUTTON STYLES
@@ -839,21 +844,21 @@
     border: none !important;
 }
 
-.carousel-card[data-index="3"] .btn-pill[style*="border: 2px solid #795548"]:hover {
-    background: linear-gradient(135deg, #795548 0%, #8D6E63 100%) !important;
-    color: #ffffff !important;
-    border: none !important;
-    box-shadow: 0 0 20px rgba(121, 85, 72, 0.6);
-    transform: translateY(-2px);
-}
+    .carousel-card[data-index="3"] .btn-pill[style*="border: 2px solid #795548"]:hover {
+        background: linear-gradient(135deg, #795548 0%, #8D6E63 100%) !important;
+        color: #ffffff !important;
+        border: none !important;
+        box-shadow: 0 0 20px rgba(121, 85, 72, 0.6);
+        transform: translateY(-2px);
+    }
 
-.carousel-card[data-index="3"] .btn-pill[style*="border: 2px solid #795548"]:hover i {
-    color: #ffffff !important;
-}
+        .carousel-card[data-index="3"] .btn-pill[style*="border: 2px solid #795548"]:hover i {
+            color: #ffffff !important;
+        }
 
-.carousel-card[data-index="3"] .btn-pill[style*="border: 2px solid #795548"] i {
-    color: #795548 !important;
-}
+    .carousel-card[data-index="3"] .btn-pill[style*="border: 2px solid #795548"] i {
+        color: #795548 !important;
+    }
 
 /* Enterprise Login Button - Hover with stronger glow */
 .carousel-card[data-index="3"] .btn-pill[style*="background: linear-gradient(135deg, #795548"]:hover {
@@ -879,19 +884,19 @@
     overflow: hidden;
 }
 
-.cta-btn-student::before,
-.cta-btn-mentor::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.3);
-    transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
-}
+    .cta-btn-student::before,
+    .cta-btn-mentor::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
 
     .cta-btn-student:hover::before,
     .cta-btn-mentor:hover::before {
@@ -899,20 +904,20 @@
         height: 300px !important;
     }
 
-.cta-btn-student:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 30px rgba(0, 188, 212, 0.5) !important;
-}
+    .cta-btn-student:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(0, 188, 212, 0.5) !important;
+    }
 
-.cta-btn-mentor:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 30px rgba(0, 200, 83, 0.5) !important;
-}
+    .cta-btn-mentor:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(0, 200, 83, 0.5) !important;
+    }
 
-.cta-btn-student:active,
-.cta-btn-mentor:active {
-    transform: translateY(-1px);
-}
+    .cta-btn-student:active,
+    .cta-btn-mentor:active {
+        transform: translateY(-1px);
+    }
 
 /* ===== 4 STEPS CARDS GLOW EFFECTS ===== */
 /* Targeting section with class four-steps-section */
@@ -946,42 +951,22 @@
 
 /* Stats 1 - Blue Glow (Học sinh) */
 .row.mt-5.mb-5:last-of-type .row.g-4.text-center > .col-lg-3:nth-child(1) .hover-card:hover {
-    box-shadow: 
-        0 0 20px rgba(33, 150, 243, 0.5),
-        0 0 40px rgba(33, 150, 243, 0.4),
-        0 0 60px rgba(33, 150, 243, 0.3),
-        0 0 80px rgba(33, 150, 243, 0.2),
-        0 25px 50px rgba(33, 150, 243, 0.3) !important;
+    box-shadow: 0 0 20px rgba(33, 150, 243, 0.5), 0 0 40px rgba(33, 150, 243, 0.4), 0 0 60px rgba(33, 150, 243, 0.3), 0 0 80px rgba(33, 150, 243, 0.2), 0 25px 50px rgba(33, 150, 243, 0.3) !important;
 }
 
 /* Stats 2 - Green Glow (Mentor) */
 .row.mt-5.mb-5:last-of-type .row.g-4.text-center > .col-lg-3:nth-child(2) .hover-card:hover {
-    box-shadow: 
-        0 0 20px rgba(76, 175, 80, 0.5),
-        0 0 40px rgba(76, 175, 80, 0.4),
-        0 0 60px rgba(76, 175, 80, 0.3),
-        0 0 80px rgba(76, 175, 80, 0.2),
-        0 25px 50px rgba(76, 175, 80, 0.3) !important;
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.5), 0 0 40px rgba(76, 175, 80, 0.4), 0 0 60px rgba(76, 175, 80, 0.3), 0 0 80px rgba(76, 175, 80, 0.2), 0 25px 50px rgba(76, 175, 80, 0.3) !important;
 }
 
 /* Stats 3 - Orange/Yellow Glow (Bài toán đã giải) */
 .row.mt-5.mb-5:last-of-type .row.g-4.text-center > .col-lg-3:nth-child(3) .hover-card:hover {
-    box-shadow: 
-        0 0 20px rgba(255, 167, 81, 0.7),
-        0 0 40px rgba(255, 167, 81, 0.6),
-        0 0 60px rgba(255, 167, 81, 0.5),
-        0 0 80px rgba(255, 167, 81, 0.4),
-        0 25px 50px rgba(255, 167, 81, 0.4) !important;
+    box-shadow: 0 0 20px rgba(255, 167, 81, 0.7), 0 0 40px rgba(255, 167, 81, 0.6), 0 0 60px rgba(255, 167, 81, 0.5), 0 0 80px rgba(255, 167, 81, 0.4), 0 25px 50px rgba(255, 167, 81, 0.4) !important;
 }
 
 /* Stats 4 - RED Glow (Đánh giá trung bình) - Changed from Cyan to Red */
 .row.mt-5.mb-5:last-of-type .row.g-4.text-center > .col-lg-3:nth-child(4) .hover-card:hover {
-    box-shadow: 
-        0 0 20px rgba(220, 53, 69, 0.6),
-        0 0 40px rgba(220, 53, 69, 0.5),
-        0 0 60px rgba(220, 53, 69, 0.4),
-        0 0 80px rgba(220, 53, 69, 0.3),
-        0 25px 50px rgba(220, 53, 69, 0.4) !important;
+    box-shadow: 0 0 20px rgba(220, 53, 69, 0.6), 0 0 40px rgba(220, 53, 69, 0.5), 0 0 60px rgba(220, 53, 69, 0.4), 0 0 80px rgba(220, 53, 69, 0.3), 0 25px 50px rgba(220, 53, 69, 0.4) !important;
 }
 
 /* Fix for text clipping issue */
@@ -1003,6 +988,7 @@
     0%, 100% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(1.05);
     }
@@ -1020,25 +1006,26 @@
     transform-style: preserve-3d;
 }
 
-.four-steps-section .hover-card:hover {
-    transform: translateY(-15px) scale(1.03) rotateX(2deg);
-}
+    .four-steps-section .hover-card:hover {
+        transform: translateY(-15px) scale(1.03) rotateX(2deg);
+    }
 
-/* Step number badge animation on hover */
-.four-steps-section .hover-card:hover .badge.rounded-pill {
-    transform: rotate(360deg) scale(1.1);
-    transition: transform 0.6s ease;
-}
+        /* Step number badge animation on hover */
+        .four-steps-section .hover-card:hover .badge.rounded-pill {
+            transform: rotate(360deg) scale(1.1);
+            transition: transform 0.6s ease;
+        }
 
-/* Icon animation on hover */
-.four-steps-section .hover-card:hover .bi {
-    animation: iconRotate 0.6s ease;
-}
+        /* Icon animation on hover */
+        .four-steps-section .hover-card:hover .bi {
+            animation: iconRotate 0.6s ease;
+        }
 
 @keyframes iconRotate {
     0% {
         transform: rotate(0deg);
     }
+
     100% {
         transform: rotate(360deg);
     }
@@ -1053,6 +1040,7 @@
     0%, 100% {
         transform: translate(0, 0);
     }
+
     50% {
         transform: translate(-5px, -5px);
     }
@@ -1067,21 +1055,22 @@
     border: 1px solid rgba(102, 126, 234, 0.1);
 }
 
-.four-steps-section .text-center.mt-4:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.5), transparent);
-    animation: scanLine 2s linear infinite;
-}
+    .four-steps-section .text-center.mt-4:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.5), transparent);
+        animation: scanLine 2s linear infinite;
+    }
 
 @keyframes scanLine {
     0% {
         transform: translateX(-100%);
     }
+
     100% {
         transform: translateX(100%);
     }
@@ -1092,69 +1081,8 @@
     .four-steps-section h2 {
         font-size: 2rem !important;
     }
-    
+
     .four-steps-section .lead {
         font-size: 1rem !important;
     }
 }
-
-/* ===========================
-   FEATURE CARDS - EQUAL HEIGHT
-   =========================== */
-
-/* Target the 4 feature cards (AI, QR, Kết bạn, Diễn đàn) */
-.row.g-4.mt-4.justify-content-center > .col-md-6,
-.row.g-4.mt-4.justify-content-center > .col-lg-3 {
-    display: flex;
-}
-
-.row.g-4.mt-4.justify-content-center .text-center.p-4 {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    min-height: 260px;
-}
-
-/* Icon container */
-.row.g-4.mt-4.justify-content-center .mb-3 {
-    flex-shrink: 0;
-}
-
-/* Title */
-.row.g-4.mt-4.justify-content-center .fw-bold.mb-2 {
-    flex-shrink: 0;
-    min-height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Description text */
-.row.g-4.mt-4.justify-content-center .text-muted.small.mb-0 {
-    flex-grow: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-}
-
-/* Responsive adjustments for feature cards */
-@media (max-width: 992px) {
-    .row.g-4.mt-4.justify-content-center .text-center.p-4 {
-        min-height: 240px;
-    }
-}
-
-@media (max-width: 768px) {
-    .row.g-4.mt-4.justify-content-center .text-center.p-4 {
-        min-height: auto;
-    }
-    
-    .row.g-4.mt-4.justify-content-center .fw-bold.mb-2 {
-        min-height: auto;
-    }
-}
-
-
-
-

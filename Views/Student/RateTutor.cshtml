@@ -1,4 +1,4 @@
-﻿@model Webgiasu.Models.ViewModels.RatingViewModel
+@model Webgiasu.Models.ViewModels.RatingViewModel
 @{
     ViewData["Title"] = "Đánh giá Mentor";
     Layout = "_StudentLayout";
@@ -63,7 +63,7 @@
                             <i class="bi bi-chat-left-text"></i> Nhận xét (Tùy chọn)
                         </label>
                         <textarea asp-for="Comment" 
-                                  class="form-control" 
+                                  class="form-control hide-scrollbar" 
                                   rows="5" 
                                   placeholder="Chia sẻ trải nghiệm của bạn với Mentor này...&#10;&#10;Ví dụ:&#10;- Giải thích rất chi tiết và dễ hiểu&#10;- Phản hồi nhanh chóng&#10;- Lời giải chính xác và logic"></textarea>
                         <div class="form-text">
@@ -87,25 +87,25 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="d-flex align-items-start">
-                                        <span class="text-warning me-2">★★★★★</span>
+                                        <span class="text-warning me-2">★★★★</span>
                                         <small><strong>4 sao:</strong> Tốt, đáp ứng yêu cầu</small>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="d-flex align-items-start">
-                                        <span class="text-warning me-2">★★★★★</span>
+                                        <span class="text-warning me-2">★★★</span>
                                         <small><strong>3 sao:</strong> Trung bình, cần cải thiện</small>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="d-flex align-items-start">
-                                        <span class="text-warning me-2">★★★★★</span>
+                                        <span class="text-warning me-2">★★</span>
                                         <small><strong>2 sao:</strong> Kém, không đạt yêu cầu</small>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="d-flex align-items-start">
-                                        <span class="text-warning me-2">★★★★★</span>
+                                        <span class="text-warning me-2">★</span>
                                         <small><strong>1 sao:</strong> Rất kém, hoàn toàn không hài lòng</small>
                                     </div>
                                 </div>

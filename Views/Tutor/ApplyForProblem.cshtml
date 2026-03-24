@@ -1,4 +1,4 @@
-﻿@model Webgiasu.Models.ViewModels.ApplyProblemViewModel
+@model Webgiasu.Models.ViewModels.ApplyProblemViewModel
 @{
     ViewData["Title"] = "Đăng ký nhận bài";
     Layout = "_TutorLayout";
@@ -101,7 +101,7 @@
                                 Đề xuất của bạn <span class="text-danger">*</span>
                             </label>
                             <textarea asp-for="Proposal"
-                                      class="form-control"
+                                      class="form-control hide-scrollbar"
                                       rows="6"
                                       placeholder="Giới thiệu về bản thân, kinh nghiệm, phương pháp giải và cam kết hoàn thành..."></textarea>
                             <span asp-validation-for="Proposal" class="text-danger"></span>

@@ -1,4 +1,4 @@
-﻿@model List<Webgiasu.Models.User>
+@model List<Webgiasu.Models.User>
 
 @{
     ViewData["Title"] = "Bạn Bè";
@@ -302,7 +302,7 @@
     </div>
 
     <!-- Find Friends Modal -->
-    <div class="modal fade" id="findFriendsModal" tabindex="-1" aria-labelledby="findFriendsModalLabel" aria-hidden="true">
+    <div class="modal fade" id="findFriendsModal" tabindex="-1" aria-labelledby="findFriendsModalLabel" aria-hidden="true" data-bs-backdrop="false">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -349,35 +349,6 @@
         </div>
     </div>
 </div>
-
-<style>
-    .friend-card {
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .friend-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-    }
-
-    .nav-tabs .nav-link {
-        color: #6c757d;
-        border: none;
-        border-bottom: 3px solid transparent;
-        font-weight: 500;
-    }
-
-    .nav-tabs .nav-link:hover {
-        border-color: transparent;
-        color: #2196F3;
-    }
-
-    .nav-tabs .nav-link.active {
-        color: #2196F3;
-        border-bottom-color: #2196F3;
-        background-color: transparent;
-    }
-</style>
 
 <script>
     // Search functionality
