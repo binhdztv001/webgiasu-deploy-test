@@ -3,12 +3,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using System.Globalization;
 using System.Text;
+using Webgiasu.Data;
 using Webgiasu.Models;
 using Webgiasu.Services;
 
 // Set UTF-8 encoding
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 Console.OutputEncoding = Encoding.UTF8;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -97,6 +100,22 @@ builder.Services.AddHttpClient<ISerpApiService, SerpApiService>(client =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    try
+    {
+        // chạy migrations trước (nếu bạn muốn tự động cập nhật db tại startup)
+        // db.Database.Migrate();
+        SeedData.EnsureSeedData(db);
+        Console.WriteLine("✅ Seed data đã được chèn (nếu chưa có)");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ Lỗi khi seed data: {ex.Message}");
+    }
+}
 
 // Use Request Localization
 app.UseRequestLocalization();
