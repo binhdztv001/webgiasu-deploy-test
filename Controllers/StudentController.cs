@@ -1565,7 +1565,7 @@ namespace Webgiasu.Controllers
             }
         }
 
-        // ✅ UPDATE CreateProblem POST method
+        // Replace the existing CreateProblem POST action body with this improved version that creates a group when requested.
         [HttpPost]
         public IActionResult CreateProblem(CreateProblemViewModel model, decimal? CustomPrice)
         {
@@ -1576,7 +1576,7 @@ namespace Webgiasu.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    // ✅ TÍNH GIÁ THEO CẤP HỌC
+                    // TÍNH GIÁ THEO CẤP HỌC
                     decimal price;
 
                     if (CustomPrice.HasValue && CustomPrice.Value >= 10000)
@@ -1660,20 +1660,61 @@ namespace Webgiasu.Controllers
 
                     if (_problemService.CreateProblem(problem))
                     {
-                        // Tạo payment
-                        var payment = new Payment
+                        // If the user created a group problem, create the group using the group service
+                        if (model.IsGroupMode)
                         {
-                            StudentId = userId,
-                            ProblemId = problem.Id,
-                            Amount = price
-                        };
-                        _paymentService.CreatePayment(payment);
+                            // Use provided group name or fallback
+                            var groupName = string.IsNullOrWhiteSpace(model.GroupName) ? $"Nhóm_{userId}_{DateTime.Now:yyyyMMddHHmmss}" : model.GroupName;
 
-                        // ✅ TẠO NOTIFICATION
-                        _notificationService.NotifyProblemCreated(userId, problem.Id, problem.Title);
+                            var group = _problemGroupService.CreateProblemGroup(problem.Id, userId, groupName, price);
+                            if (group != null)
+                            {
+                                // Attempt to create initial group payment for the owner if member record exists
+                                try
+                                {
+                                    var members = _problemGroupService.GetGroupMembers(group.Id);
+                                    var ownerMember = members.FirstOrDefault(m => m.UserId == userId);
+                                    if (ownerMember != null)
+                                    {
+                                        // CreateGroupPayment signature used elsewhere: (groupId, memberId, userId, amount)
+                                        _paymentService.CreateGroupPayment(group.Id, ownerMember.Id, userId, group.PricePerMember);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine($"⚠️ Warning creating owner group payment: {ex.Message}");
+                                }
 
-                        TempData["Success"] = "Đăng bài toán thành công!";
-                        return RedirectToAction("Dashboard");
+                                // Notification - created group & problem
+                                _notificationService.NotifyProblemCreated(userId, problem.Id, problem.Title);
+
+                                TempData["Success"] = "Tạo nhóm và đăng bài toán thành công!";
+                                return RedirectToAction("MyGroups");
+                            }
+                            else
+                            {
+                                // If group creation failed, rollback problem maybe -- for now inform user
+                                TempData["Error"] = "Không thể tạo nhóm sau khi đăng bài toán. Vui lòng thử lại.";
+                                return RedirectToAction("Dashboard");
+                            }
+                        }
+                        else
+                        {
+                            // Individual problem: create payment
+                            var payment = new Payment
+                            {
+                                StudentId = userId,
+                                ProblemId = problem.Id,
+                                Amount = price
+                            };
+                            _paymentService.CreatePayment(payment);
+
+                            // Notification
+                            _notificationService.NotifyProblemCreated(userId, problem.Id, problem.Title);
+
+                            TempData["Success"] = "Đăng bài toán thành công!";
+                            return RedirectToAction("Dashboard");
+                        }
                     }
                 }
                 return View(model);

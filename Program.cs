@@ -90,6 +90,12 @@ builder.Services.AddSignalR();
 builder.Services.Configure<SePayOptions>(builder.Configuration.GetSection("SePay"));
 builder.Services.AddSingleton<ISePayGateway, SePayGateway>();
 
+builder.Services.AddHttpClient<ISerpApiService, SerpApiService>(client =>
+{
+    client.BaseAddress = new Uri("https://serpapi.com");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
 var app = builder.Build();
 
 // Use Request Localization
@@ -136,5 +142,14 @@ app.MapControllerRoute(
 
 app.MapHub<Webgiasu.Hubs.ChatHub>("/chatHub");
 app.MapHub<Webgiasu.Hubs.CommunityHub>("/communityHub");
+
+app.MapGet("/api/documentsearch", async (ISerpApiService serp, string q) =>
+{
+    if (string.IsNullOrWhiteSpace(q))
+        return Results.BadRequest(new { success = false, message = "Query is required" });
+
+    var results = await serp.SearchDocumentsAsync(q, "pdf");
+    return Results.Ok(new { success = true, results });
+});
 
 app.Run();
