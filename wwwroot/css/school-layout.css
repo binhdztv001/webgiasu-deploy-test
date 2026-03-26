@@ -740,12 +740,12 @@ body.modal-open {
     flex-direction: column !important;
 }
 
-.content-wrapper>.dashboard-container,
+/* .content-wrapper>.dashboard-container,
 .content-wrapper>.page-header:first-child,
 .content-wrapper>div:first-child:not(.alert):not(.content-footer),
 .content-wrapper>.row:first-of-type {
     flex: 1 0 auto;
-}
+} */
 
 .content-wrapper::-webkit-scrollbar {
     width: 8px;

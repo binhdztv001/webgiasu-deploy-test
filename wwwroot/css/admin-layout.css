@@ -857,10 +857,6 @@ body {
     min-width: 0 !important;
 }
 
-.main-content.expanded {
-    /* T? ??ng m? r?ng khi sidebar collapsed */
-}
-
 /* ===========================
    CONTENT WRAPPER - CH? PH?N NÀY SCROLL (bao g?m footer)
    =========================== */
@@ -877,12 +873,12 @@ body {
 }
 
 /* N?i dung chính - s? d?ng wrapper */
-.content-wrapper>.dashboard-container,
+/* .content-wrapper>.dashboard-container,
 .content-wrapper>.page-header:first-child,
 .content-wrapper>div:first-child:not(.alert):not(.content-footer),
 .content-wrapper>.row:first-of-type {
     flex: 1 0 auto;
-}
+} */
 
 /* Custom Scrollbar cho content-wrapper */
 .content-wrapper::-webkit-scrollbar {

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Webgiasu.Hubs;
@@ -739,6 +739,13 @@ namespace Webgiasu.Controllers
                 TempData["Error"] = "Đã xảy ra lỗi!";
                 return RedirectToAction("Dashboard");
             }
+        }
+
+        public IActionResult FindDocument()
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return RedirectToAction("Login", "Account");
+            return View();
         }
 
         // ==================== STATISTICS ====================

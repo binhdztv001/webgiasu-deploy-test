@@ -254,6 +254,12 @@
                                 <span>Thống kê cá nhân</span>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Tutor" asp-action="FindDocument">
+                                <i class="bi bi-search"></i>
+                                <span>Tìm tài liệu</span>
+                            </a>
+                        </li>
                         <li class="nav-divider"></li>
                         <li class="nav-item">
                             <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#settingsModal">
@@ -754,6 +760,18 @@
             // Initialize theme on page load
             document.addEventListener('DOMContentLoaded', initThemeSettings);
         })();
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const logoutForm = document.getElementById("logoutForm");
+
+            if (logoutForm) {
+                logoutForm.addEventListener("submit", function () {
+                    sessionStorage.removeItem("doc_search_chat");
+                });
+            }
+        });
     </script>
     
     @await RenderSectionAsync("Scripts", required: false)
