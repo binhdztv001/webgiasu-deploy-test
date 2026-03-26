@@ -1,0 +1,168 @@
+@{
+    ViewData["Title"] = "Tìm tài liệu";
+    Layout = "~/Views/Shared/_TutorLayout.cshtml";
+}
+<div class="page-header d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div class="mb-2 mb-md-0">
+        <h5 class="fw-bold mb-1 text-dark">
+            <i class="bi bi-book text-success me-2"></i>Tìm tài liệu
+        </h5>
+        <p class="text-muted mb-0 small">Tìm tài liệu học tập</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Dashboard" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Quay lại
+        </a>
+    </div>
+</div>
+
+<div id="chatMessages" class="chat-messages-wrapper">
+    <div class="chat-empty text-center text-muted py-5">
+        <i class="bi bi-robot mb-3"></i>
+        <p>Hãy nhập nội dung để tìm tài liệu học tập <i class="bi bi-book"></i></p>
+    </div>
+</div>
+
+<div class="chat-input-sticky">
+    <div class="chat-input-box">
+        <input type="text" id="chatInput" placeholder="Nhập câu hỏi hoặc tài liệu cần tìm..." autocomplete="off" />
+        <button id="sendBtn" class="btn btn-primary">
+            <i class="bi bi-send"></i>
+        </button>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    const input = document.getElementById("chatInput");
+    const btn = document.getElementById("sendBtn");
+    const chat = document.getElementById("chatMessages");
+
+    const container = document.querySelector(".content-wrapper");
+    const STORAGE_KEY = "doc_search_chat";
+
+    function scrollBottom() {
+        if (container) {
+            setTimeout(() => {
+                container.scrollTop = container.scrollHeight;
+            }, 50);
+        }
+    }
+
+function saveChat() {
+        const messages = [];
+        document.querySelectorAll(".chat-message").forEach(msg => {
+            const bubble = msg.querySelector(".bubble");
+            messages.push({
+                type: msg.classList.contains("chat-user") ? "user" : "bot",
+                content: bubble.innerHTML
+            });
+        });
+
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+    }
+    
+    function loadChat() {
+        const raw = sessionStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+
+        const messages = JSON.parse(raw);
+
+        const emptyState = chat.querySelector(".chat-empty");
+        if (emptyState) emptyState.remove();
+
+        messages.forEach(m => {
+            addMessage(m.content, m.type === "user" ? "chat-user" : "chat-bot", true);
+        });
+    }
+    
+    function addMessage(content, type, isHtml = false) {
+        const emptyState = chat.querySelector(".chat-empty");
+        if (emptyState) emptyState.remove();
+
+        const div = document.createElement("div");
+        div.className = "chat-message " + type;
+        
+        const bubble = document.createElement("div");
+        bubble.className = "bubble";
+        if (isHtml) {
+            bubble.innerHTML = content;
+        } else {
+            bubble.textContent = content;
+        }
+        
+        div.appendChild(bubble);
+        chat.appendChild(div);
+        scrollBottom();
+        saveChat();
+        return div;
+    }
+
+    function showTyping() {
+        const div = document.createElement("div");
+        div.className = "chat-message chat-bot typing-container";
+        div.innerHTML = `
+            <div class="bubble">
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+        `;
+        chat.appendChild(div);
+        scrollBottom();
+        return div;
+    }
+
+    async function sendMessage() {
+        const q = input.value.trim();
+        if (!q) return;
+
+        addMessage(q, "chat-user");
+        input.value = "";
+
+        const typingIndicator = showTyping();
+
+        try {
+            const res = await fetch(`/api/documentsearch?q=${encodeURIComponent(q)}`);
+            const data = await res.json();
+
+            typingIndicator.remove();
+
+            if (!data.results || data.results.length === 0) {
+                addMessage("Không tìm thấy tài liệu phù hợp.", "chat-bot");
+                return;
+            }
+
+            let html = '<div class="search-results-list">';
+            html += data.results.map(r => `
+                <div class="search-result-item">
+                    <a href="${r.url}" target="_blank" class="d-block">${r.title || r.url}</a>
+                    <div class="small text-muted mb-1">${r.sourceDomain}</div>
+                    ${r.snippet ? `<div class="small text-secondary">${r.snippet}</div>` : ''}
+                </div>
+            `).join("");
+            html += '</div>';
+
+            addMessage(html, "chat-bot", true);
+
+        } catch(err) {
+            typingIndicator.remove();
+            addMessage("⚠️ Lỗi khi kết nối với máy chủ tìm kiếm.", "chat-bot");
+            console.error("Search Error:", err);
+        }
+    }
+
+    btn.addEventListener("click", sendMessage);
+    input.addEventListener("keypress", e => {
+        if (e.key === "Enter") sendMessage();
+    });
+
+    // Auto focus on load
+    window.addEventListener('load', () => {
+        input.focus();
+        loadChat();
+    });
+</script>
+}

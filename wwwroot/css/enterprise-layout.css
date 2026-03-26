@@ -845,8 +845,6 @@ body.modal-open {
     min-width: 0 !important;
 }
 
-.main-content.expanded {}
-
 /* ===========================
    CONTENT WRAPPER
    =========================== */
@@ -1053,19 +1051,6 @@ body.modal-open {
         opacity: 1;
         transform: translateX(0);
     }
-}
-
-/* Removed base animations to prevent reload pop up */
-.content-wrapper {
-    /* animation: fadeIn 0.3s ease-out; - Removed */
-}
-
-.sidebar {
-    /* animation: fadeInLeft 0.3s ease-out; - Removed */
-}
-
-.main-content {
-    /* animation: fadeIn 0.3s ease-out; - Removed */
 }
 
 /* ===========================

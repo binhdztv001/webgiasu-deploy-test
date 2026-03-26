@@ -1801,5 +1801,12 @@ namespace Webgiasu.Controllers
             _notificationService.MarkAllAsRead(userId);
             return RedirectToAction("Notifications");
         }
+
+        public IActionResult FindDocument()
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return RedirectToAction("Login", "Account");
+            return View();
+        }
     }
 }

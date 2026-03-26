@@ -363,6 +363,7 @@ body[data-theme="enterprise"] .profile-dropdown {
 }
 
 @media (min-width: 577px) {
+
     .top-header .dropdown-menu.profile-dropdown,
     .top-header .dropdown-menu.notification-dropdown,
     .top-header .dropdown-menu.message-dropdown {
