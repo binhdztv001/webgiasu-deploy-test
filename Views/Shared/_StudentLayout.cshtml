@@ -1,4 +1,4 @@
-@using Webgiasu.Services
+﻿@using Webgiasu.Services
 @inject IPremiumService PremiumService
 
 @{
@@ -209,6 +209,8 @@
                                 <span class="position-relative">Lớp học của tôi</span>
                             </a>
                         </li>
+
+                       
                         <li class="nav-item">
                             <a asp-controller="Student" asp-action="MyClassSchedules" class="nav-link">
                                 <i class="bi bi-calendar-event"></i>
@@ -276,6 +278,60 @@
                         </li>
                     </ul>
                 </nav>
+
+                <!-- Thêm vào header/nav chỗ bạn muốn hiển thị ô tìm -->
+                <div class="ms-3 position-relative" style="min-width: 300px;">
+                    <input id="docSearchInput" class="form-control form-control-sm" type="search" placeholder="Tìm tài liệu (pdf)..." autocomplete="off" />
+                    <div id="docSearchResults" class="card position-absolute w-100 mt-1 d-none" style="z-index:1050; max-height:320px; overflow:auto;"></div>
+                </div>
+
+                <script>
+                    (function(){
+                      const input = document.getElementById('docSearchInput');
+                      const resultsDiv = document.getElementById('docSearchResults');
+                      let timer = 0;
+
+                      function renderResults(items) {
+                        if (!items || items.length === 0) {
+                          resultsDiv.innerHTML = '<div class="p-2 small text-muted">Không tìm thấy kết quả</div>';
+                          return;
+                        }
+                        resultsDiv.innerHTML = items.map(r => `
+                          <a class="d-block px-2 py-2 text-decoration-none text-dark border-bottom" target="_blank" href="${r.url}">
+                            <div class="fw-bold small text-truncate">${r.title || r.url}</div>
+                            <div class="small text-muted">${r.sourceDomain} • ${r.qualityScore} pts</div>
+                            <div class="small text-muted text-truncate">${r.snippet || ''}</div>
+                          </a>
+                        `).join('');
+                      }
+
+                      async function doSearch(q){
+                        try {
+                          resultsDiv.classList.remove('d-none');
+                          resultsDiv.innerHTML = '<div class="p-2 small text-muted">Đang tìm...</div>';
+                          const resp = await fetch(`/api/documentsearch?q=${encodeURIComponent(q)}`);
+                          if (!resp.ok) { resultsDiv.innerHTML = '<div class="p-2 small text-danger">Lỗi khi tìm</div>'; return; }
+                          const data = await resp.json();
+                          renderResults(data.results || []);
+                        } catch(e) {
+                          resultsDiv.innerHTML = '<div class="p-2 small text-danger">Lỗi</div>';
+                        }
+                      }
+
+                      input.addEventListener('input', function(){
+                        const q = this.value.trim();
+                        clearTimeout(timer);
+                        if (q.length < 3) { resultsDiv.classList.add('d-none'); return; }
+                        timer = setTimeout(()=> doSearch(q), 450);
+                      });
+
+                      document.addEventListener('click', function(e){
+                        if (!input.contains(e.target) && !resultsDiv.contains(e.target)) {
+                          resultsDiv.classList.add('d-none');
+                        }
+                      });
+                    })();
+                </script>
 
                 <!-- Sidebar Footer -->
                 <div class="sidebar-footer">
