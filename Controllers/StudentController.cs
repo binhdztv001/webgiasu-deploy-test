@@ -2652,7 +2652,9 @@ namespace Webgiasu.Controllers
             }
         }
 
-        public IActionResult ClassSchoolDetails(int id)
+        // Add/replace these methods inside StudentController
+
+        public IActionResult ScheduleDetails(int id)
         {
             try
             {
@@ -2667,7 +2669,6 @@ namespace Webgiasu.Controllers
                     return RedirectToAction("Dashboard");
                 }
 
-                // Kiểm tra xem học sinh có thuộc lớp học của lịch này không
                 var schedule = _db.ClassSchedules
                     .Include(s => s.Class)
                         .ThenInclude(c => c!.School)
@@ -2682,7 +2683,6 @@ namespace Webgiasu.Controllers
                     return RedirectToAction("MyClassSchedules");
                 }
 
-                // Kiểm tra học sinh có trong lớp này không
                 var isInClass = _db.ClassStudents
                     .Any(cs => cs.ClassId == schedule.ClassId && cs.StudentId == userId);
 
@@ -2692,9 +2692,7 @@ namespace Webgiasu.Controllers
                     return RedirectToAction("MyClassSchedules");
                 }
 
-                // ✅ FIX: Lấy số học sinh từ bảng ClassStudents thay vì navigation property
-                var studentCount = _db.ClassStudents
-                    .Count(cs => cs.ClassId == schedule.ClassId);
+                var studentCount = _db.ClassStudents.Count(cs => cs.ClassId == schedule.ClassId);
 
                 var model = new ScheduleDetailsViewModel
                 {
@@ -2715,16 +2713,70 @@ namespace Webgiasu.Controllers
                     Subject = schedule.Class.Subject,
                     TutorName = schedule.Class.Tutor?.FullName,
                     TutorEmail = schedule.Class.Tutor?.Email,
-                    TotalStudents = studentCount // ✅ Sử dụng giá trị đếm trực tiếp
+                    TotalStudents = studentCount
                 };
 
                 return View(model);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error in ScheduleDetails: {ex.Message}");
+                Console.WriteLine($"❌ Error in ScheduleDetails (Student): {ex.Message}");
                 TempData["Error"] = "Đã xảy ra lỗi!";
                 return RedirectToAction("MyClassSchedules");
+            }
+        }
+
+        public IActionResult ClassSchoolDetails(int id)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                var user = _userService.GetUserById(userId);
+                if (user == null || user.Role != UserRole.Student ||
+                    !user.Level.HasValue || user.Level.Value != EducationLevel.DaiHoc)
+                {
+                    TempData["Error"] = "Bạn không có quyền truy cập!";
+                    return RedirectToAction("Dashboard");
+                }
+
+                var classInfo = _db.SchoolClasses
+                    .Include(c => c.School)
+                    .Include(c => c.Tutor)
+                    .FirstOrDefault(c => c.Id == id);
+
+                if (classInfo == null)
+                {
+                    TempData["Error"] = "Không tìm thấy lớp học!";
+                    return RedirectToAction("MyClassSchool");
+                }
+
+                var students = _db.ClassStudents
+                    .Where(cs => cs.ClassId == id)
+                    .Include(cs => cs.Student)
+                    .Select(cs => new
+                    {
+                        Id = cs.Student!.Id,
+                        FullName = cs.Student.FullName,
+                        Email = cs.Student.Email ?? "",
+                        PhoneNumber = cs.Student.PhoneNumber ?? "",
+                        JoinedDate = cs.JoinedDate.ToString("dd/MM/yyyy")
+                    })
+                    .ToList();
+
+                ViewBag.Class = classInfo;
+                ViewBag.Students = students;
+                ViewBag.School = classInfo.School;
+                ViewBag.Tutor = classInfo.Tutor;
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in ClassSchoolDetails (Student): {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi!";
+                return RedirectToAction("MyClassSchool");
             }
         }
 
