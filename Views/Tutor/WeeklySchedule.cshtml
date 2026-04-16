@@ -70,13 +70,16 @@
                             <td class="row-label">Nhận bài</td>
                             @foreach (var day in Model)
                             {
-                                <td class="slot-cell @(day.ReceivedProblemTitles.Any() ? "slot-received" : "")">
-                                    @if (day.ReceivedProblemTitles.Any())
+                                <td class="slot-cell @(day.ReceivedProblems.Any() ? "slot-received" : "")">
+                                    @if (day.ReceivedProblems.Any())
                                     {
                                         <div class="slot-list">
-                                            @foreach (var title in day.ReceivedProblemTitles)
+                                            @foreach (var item in day.ReceivedProblems)
                                             {
-                                                <div class="slot-item">@title</div>
+                                                <div class="slot-item">
+                                                    <div class="fw-semibold">@item.Title</div>
+                                                    <div class="small text-muted">Giờ nhận: @item.Time.ToString("HH:mm")</div>
+                                                </div>
                                             }
                                         </div>
                                     }
@@ -87,13 +90,16 @@
                             <td class="row-label">Deadline</td>
                             @foreach (var day in Model)
                             {
-                                <td class="slot-cell @(day.DeadlineProblemTitles.Any() ? "slot-deadline" : "")">
-                                    @if (day.DeadlineProblemTitles.Any())
+                                <td class="slot-cell @(day.DeadlineProblems.Any() ? "slot-deadline" : "")">
+                                    @if (day.DeadlineProblems.Any())
                                     {
                                         <div class="slot-list">
-                                            @foreach (var title in day.DeadlineProblemTitles)
+                                            @foreach (var item in day.DeadlineProblems)
                                             {
-                                                <div class="slot-item">@title</div>
+                                                <div class="slot-item">
+                                                    <div class="fw-semibold">@item.Title</div>
+                                                    <div class="small text-muted">Giờ deadline: @item.Time.ToString("HH:mm")</div>
+                                                </div>
                                             }
                                         </div>
                                     }

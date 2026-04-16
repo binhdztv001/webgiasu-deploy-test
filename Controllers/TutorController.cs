@@ -384,21 +384,33 @@ namespace Webgiasu.Controllers
                     {
                         var date = weekStart.AddDays(i);
 
-                        var receivedTitles = problems
-                            .Where(p => receivedDateByProblemId.TryGetValue(p.Id, out var receivedDate) && receivedDate.Date == date)
-                            .Select(p => p.Title)
+                        var receivedProblems = problems
+                            .Where(p => receivedDateByProblemId.TryGetValue(p.Id, out var receivedDate) && receivedDate.Date == date.Date)
+                            .Select(p => new ProblemScheduleItemViewModel
+                            {
+                                Title = p.Title,
+                                Time = receivedDateByProblemId[p.Id]
+                            })
+                            .OrderBy(x => x.Time)
                             .ToList();
 
-                        var deadlineTitles = problems
-                            .Where(p => p.Deadline.Date == date)
-                            .Select(p => p.Title)
+                        var deadlineProblems = problems
+                            .Where(p => p.Deadline.Date == date.Date)
+                            .Select(p => new ProblemScheduleItemViewModel
+                            {
+                                Title = p.Title,
+                                Time = p.Deadline
+                            })
+                            .OrderBy(x => x.Time)
                             .ToList();
 
                         return new TutorScheduleDayViewModel
                         {
                             Date = date,
-                            ReceivedProblemTitles = receivedTitles,
-                            DeadlineProblemTitles = deadlineTitles
+                            ReceivedProblems = receivedProblems,
+                            DeadlineProblems = deadlineProblems,
+                            ReceivedProblemTitles = receivedProblems.Select(x => x.Title).ToList(),
+                            DeadlineProblemTitles = deadlineProblems.Select(x => x.Title).ToList()
                         };
                     })
                     .ToList();
