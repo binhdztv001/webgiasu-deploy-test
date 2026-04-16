@@ -354,6 +354,30 @@ namespace Webgiasu.Controllers
                 var today = DateTime.Today;
                 var offset = ((int)today.DayOfWeek + 6) % 7;
                 var weekStart = today.AddDays(-offset).AddDays(weekOffset * 7);
+                var weekEnd = weekStart.AddDays(6);
+
+                var weekExchangeSchedules = _db.ClassSchedules
+                    .Include(s => s.Class)
+                    .Where(s => s.Class != null
+                                && s.Class.TutorId == userId
+                                && s.ScheduleDate.Date >= weekStart.Date
+                                && s.ScheduleDate.Date <= weekEnd.Date
+                                && s.Status != ScheduleStatus.Cancelled)
+                    .OrderBy(s => s.ScheduleDate)
+                    .ThenBy(s => s.StartTime)
+                    .Select(s => new ScheduleListViewModel
+                    {
+                        Id = s.Id,
+                        Title = s.Title,
+                        ScheduleDate = s.ScheduleDate,
+                        StartTime = s.StartTime,
+                        EndTime = s.EndTime,
+                        MeetingType = s.MeetingType,
+                        Status = s.Status,
+                        ClassName = s.Class!.ClassName,
+                        Subject = s.Class.Subject
+                    })
+                    .ToList();
 
                 var model = Enumerable.Range(0, 7)
                     .Select(i =>
@@ -380,8 +404,9 @@ namespace Webgiasu.Controllers
                     .ToList();
 
                 ViewBag.WeekStart = weekStart;
-                ViewBag.WeekEnd = weekStart.AddDays(6);
+                ViewBag.WeekEnd = weekEnd;
                 ViewBag.WeekOffset = weekOffset;
+                ViewBag.WeekExchangeSchedules = weekExchangeSchedules;
 
                 return View(model);
             }
