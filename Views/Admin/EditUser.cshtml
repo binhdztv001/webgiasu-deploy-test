@@ -1,0 +1,107 @@
+﻿@model Webgiasu.Models.ViewModels.AdminEditUserViewModel
+@{
+    ViewData["Title"] = "Sửa người dùng";
+    Layout = "_AdminLayout";
+}
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card shadow-sm">
+            <div class="card-header py-3">
+                <h5 class="mb-0 text-white"><i class="bi bi-pencil-square me-2"></i>Sửa người dùng #@Model.Id</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="EditUser" method="post">
+                    @Html.AntiForgeryToken()
+                    <input asp-for="Id" type="hidden" />
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Username *</label>
+                            <input asp-for="Username" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Họ tên *</label>
+                            <input asp-for="FullName" class="form-control" required />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input asp-for="Email" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Số điện thoại</label>
+                            <input asp-for="PhoneNumber" class="form-control" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Mật khẩu mới (để trống nếu giữ nguyên)</label>
+                            <input asp-for="Password" type="password" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Xác nhận mật khẩu mới</label>
+                            <input asp-for="ConfirmPassword" type="password" class="form-control" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Vai trò</label>
+                            <select asp-for="Role" class="form-select" id="roleSelect">
+                                @foreach (var role in Enum.GetValues(typeof(Webgiasu.Models.UserRole)))
+                                {
+                                    <option value="@role">@role</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 d-flex align-items-end" id="approveWrap">
+                            <div class="form-check mb-2">
+                                <input asp-for="IsApproved" class="form-check-input" />
+                                <label asp-for="IsApproved" class="form-check-label">Trạng thái duyệt (Tutor)</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6" id="levelWrap">
+                            <label class="form-label">Cấp học</label>
+                            <select asp-for="Level" class="form-select">
+                                <option value="">-- Chọn cấp học --</option>
+                                @foreach (var level in Enum.GetValues(typeof(Webgiasu.Models.EducationLevel)))
+                                {
+                                    <option value="@((int)level)">@level</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-check-circle me-1"></i> Lưu thay đổi
+                        </button>
+                        <a asp-action="ManageUsers" class="btn btn-secondary">Quay lại</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const roleSelect = document.getElementById('roleSelect');
+            const levelWrap = document.getElementById('levelWrap');
+            const approveWrap = document.getElementById('approveWrap');
+
+            function toggleFields() {
+                const role = roleSelect.value;
+                const showLevel = role === 'Student' || role === 'Tutor';
+                const showApprove = role === 'Tutor';
+
+                levelWrap.style.display = showLevel ? '' : 'none';
+                approveWrap.style.display = showApprove ? 'flex' : 'none';
+            }
+
+            toggleFields();
+            roleSelect.addEventListener('change', toggleFields);
+        })();
+    </script>
+}

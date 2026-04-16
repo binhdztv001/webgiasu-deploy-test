@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Webgiasu.Hubs;
@@ -324,6 +324,71 @@ namespace Webgiasu.Controllers
             {
                 Console.WriteLine($"❌ Error in MyProblems: {ex.Message}");
                 TempData["Error"] = "Đã xảy ra lỗi khi tải danh sách bài toán!";
+                return RedirectToAction("Dashboard");
+            }
+        }
+
+        public IActionResult WeeklySchedule(int weekOffset = 0)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                weekOffset = Math.Clamp(weekOffset, -52, 52);
+
+                var problems = _db.Problems
+                    .Where(p => p.AssignedTutorId == userId && p.Status != ProblemStatus.Cancelled)
+                    .ToList();
+
+                var approvedApplications = _db.TutorApplications
+                    .Where(ta => ta.TutorId == userId && ta.Status == ApplicationStatus.Approved)
+                    .ToList();
+
+                var receivedDateByProblemId = approvedApplications
+                    .GroupBy(a => a.ProblemId)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Max(x => x.ResponsedDate ?? x.AppliedDate));
+
+                var today = DateTime.Today;
+                var offset = ((int)today.DayOfWeek + 6) % 7;
+                var weekStart = today.AddDays(-offset).AddDays(weekOffset * 7);
+
+                var model = Enumerable.Range(0, 7)
+                    .Select(i =>
+                    {
+                        var date = weekStart.AddDays(i);
+
+                        var receivedTitles = problems
+                            .Where(p => receivedDateByProblemId.TryGetValue(p.Id, out var receivedDate) && receivedDate.Date == date)
+                            .Select(p => p.Title)
+                            .ToList();
+
+                        var deadlineTitles = problems
+                            .Where(p => p.Deadline.Date == date)
+                            .Select(p => p.Title)
+                            .ToList();
+
+                        return new TutorScheduleDayViewModel
+                        {
+                            Date = date,
+                            ReceivedProblemTitles = receivedTitles,
+                            DeadlineProblemTitles = deadlineTitles
+                        };
+                    })
+                    .ToList();
+
+                ViewBag.WeekStart = weekStart;
+                ViewBag.WeekEnd = weekStart.AddDays(6);
+                ViewBag.WeekOffset = weekOffset;
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in WeeklySchedule: {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi khi tải thời khóa biểu!";
                 return RedirectToAction("Dashboard");
             }
         }

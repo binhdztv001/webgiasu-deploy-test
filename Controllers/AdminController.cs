@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Webgiasu.Models;
 using Webgiasu.Models.ViewModels;
 using Webgiasu.Services;
@@ -199,6 +199,205 @@ namespace Webgiasu.Controllers
 
             var users = _userService.GetAllUsers();
             return View(users);
+        }
+
+        [HttpGet]
+        public IActionResult CreateUser()
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return RedirectToAction("Login", "Account");
+
+            ViewBag.PendingTutorApprovals = _userService.GetPendingTutors().Count;
+            return View(new AdminCreateUserViewModel());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CreateUser(AdminCreateUserViewModel model)
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return RedirectToAction("Login", "Account");
+
+            ViewBag.PendingTutorApprovals = _userService.GetPendingTutors().Count;
+
+            if (string.IsNullOrWhiteSpace(model.Username) ||
+                string.IsNullOrWhiteSpace(model.Password) ||
+                string.IsNullOrWhiteSpace(model.FullName))
+            {
+                TempData["Error"] = "Vui lòng nhập đầy đủ thông tin bắt buộc!";
+                return View(model);
+            }
+
+            if (model.Password != model.ConfirmPassword)
+            {
+                TempData["Error"] = "Mật khẩu xác nhận không khớp!";
+                return View(model);
+            }
+
+            var usernameExists = _userService.GetAllUsers()
+                .Any(u => u.Username.Equals(model.Username, StringComparison.OrdinalIgnoreCase));
+            if (usernameExists)
+            {
+                TempData["Error"] = "Tên đăng nhập đã tồn tại!";
+                return View(model);
+            }
+
+            var user = new User
+            {
+                Username = model.Username.Trim(),
+                Password = model.Password,
+                FullName = model.FullName.Trim(),
+                Email = model.Email?.Trim() ?? string.Empty,
+                PhoneNumber = model.PhoneNumber?.Trim() ?? string.Empty,
+                Role = model.Role,
+                IsApproved = model.Role == UserRole.Tutor ? model.IsApproved : true,
+                Level = (model.Role == UserRole.Student || model.Role == UserRole.Tutor) ? model.Level : null,
+                RegisteredDate = DateTime.Now
+            };
+
+            if (_userService.Register(user))
+            {
+                TempData["Success"] = "Tạo người dùng thành công!";
+                return RedirectToAction("ManageUsers");
+            }
+
+            TempData["Error"] = "Không thể tạo người dùng!";
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult EditUser(int id)
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return RedirectToAction("Login", "Account");
+
+            ViewBag.PendingTutorApprovals = _userService.GetPendingTutors().Count;
+
+            var user = _userService.GetUserById(id);
+            if (user == null)
+            {
+                TempData["Error"] = "Không tìm thấy người dùng!";
+                return RedirectToAction("ManageUsers");
+            }
+
+            var model = new AdminEditUserViewModel
+            {
+                Id = user.Id,
+                Username = user.Username,
+                FullName = user.FullName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Role = user.Role,
+                IsApproved = user.IsApproved,
+                Level = user.Level
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EditUser(AdminEditUserViewModel model)
+        {
+            var currentAdminId = GetCurrentUserId();
+            if (currentAdminId == 0) return RedirectToAction("Login", "Account");
+
+            ViewBag.PendingTutorApprovals = _userService.GetPendingTutors().Count;
+
+            var existing = _userService.GetUserById(model.Id);
+            if (existing == null)
+            {
+                TempData["Error"] = "Không tìm thấy người dùng!";
+                return RedirectToAction("ManageUsers");
+            }
+
+            var usernameExists = _userService.GetAllUsers()
+                .Any(u => u.Id != model.Id && u.Username.Equals(model.Username, StringComparison.OrdinalIgnoreCase));
+            if (usernameExists)
+            {
+                TempData["Error"] = "Tên đăng nhập đã tồn tại!";
+                return View(model);
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Password) && model.Password != model.ConfirmPassword)
+            {
+                TempData["Error"] = "Mật khẩu xác nhận không khớp!";
+                return View(model);
+            }
+
+            if (existing.Role == UserRole.Admin && model.Role != UserRole.Admin)
+            {
+                var adminCount = _userService.GetUsersByRole(UserRole.Admin).Count;
+                if (adminCount <= 1)
+                {
+                    TempData["Error"] = "Không thể thay đổi vai trò của admin cuối cùng!";
+                    return View(model);
+                }
+            }
+
+            existing.Username = model.Username.Trim();
+            existing.FullName = model.FullName.Trim();
+            existing.Email = model.Email?.Trim() ?? string.Empty;
+            existing.PhoneNumber = model.PhoneNumber?.Trim() ?? string.Empty;
+            existing.Role = model.Role;
+            existing.IsApproved = model.Role == UserRole.Tutor ? model.IsApproved : true;
+            existing.Level = (model.Role == UserRole.Student || model.Role == UserRole.Tutor) ? model.Level : null;
+
+            if (!string.IsNullOrWhiteSpace(model.Password))
+            {
+                existing.Password = model.Password;
+            }
+
+            if (_userService.UpdateUser(existing))
+            {
+                TempData["Success"] = "Cập nhật người dùng thành công!";
+                return RedirectToAction("ManageUsers");
+            }
+
+            TempData["Error"] = "Không thể cập nhật người dùng!";
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteUser(int id)
+        {
+            var currentAdminId = GetCurrentUserId();
+            if (currentAdminId == 0) return RedirectToAction("Login", "Account");
+
+            if (id == currentAdminId)
+            {
+                TempData["Error"] = "Bạn không thể tự xóa tài khoản của chính mình!";
+                return RedirectToAction("ManageUsers");
+            }
+
+            var user = _userService.GetUserById(id);
+            if (user == null)
+            {
+                TempData["Error"] = "Không tìm thấy người dùng!";
+                return RedirectToAction("ManageUsers");
+            }
+
+            if (user.Role == UserRole.Admin)
+            {
+                var adminCount = _userService.GetUsersByRole(UserRole.Admin).Count;
+                if (adminCount <= 1)
+                {
+                    TempData["Error"] = "Không thể xóa admin cuối cùng!";
+                    return RedirectToAction("ManageUsers");
+                }
+            }
+
+            if (_userService.DeleteUser(id))
+            {
+                TempData["Success"] = "Xóa người dùng thành công!";
+            }
+            else
+            {
+                TempData["Error"] = "Không thể xóa người dùng. Có thể tài khoản đang phát sinh dữ liệu liên quan!";
+            }
+
+            return RedirectToAction("ManageUsers");
         }
 
         public IActionResult Reports()

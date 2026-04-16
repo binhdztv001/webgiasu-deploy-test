@@ -149,5 +149,23 @@ namespace Webgiasu.Services
                 return false;
             }
         }
+
+        public bool DeleteUser(int userId)
+        {
+            try
+            {
+                var user = _db.Users.Find(userId);
+                if (user == null) return false;
+
+                _db.Users.Remove(user);
+                _db.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error deleting user: {ex.Message}");
+                return false;
+            }
+        }
     }
 }

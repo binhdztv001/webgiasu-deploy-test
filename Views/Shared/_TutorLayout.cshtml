@@ -1,4 +1,4 @@
-@using Webgiasu.Services
+﻿@using Webgiasu.Services
 @inject IPremiumService PremiumService
 @{
     ViewBag.Theme = "tutor";
@@ -188,6 +188,12 @@
                             <a class="nav-link" asp-controller="Tutor" asp-action="MyProblems">
                                 <i class="bi bi-briefcase"></i>
                                 <span>Danh sách bài đã nhận</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Tutor" asp-action="WeeklySchedule">
+                                <i class="bi bi-calendar-week"></i>
+                                <span>Thời khóa biểu</span>
                             </a>
                         </li>
                         <li class="nav-item">

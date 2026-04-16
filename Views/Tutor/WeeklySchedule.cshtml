@@ -1,0 +1,187 @@
+﻿@model List<Webgiasu.Models.ViewModels.TutorScheduleDayViewModel>
+@{
+    ViewData["Title"] = "Thời khóa biểu";
+    Layout = "_TutorLayout";
+
+    string GetDayText(DateTime date)
+    {
+        return date.DayOfWeek switch
+        {
+            DayOfWeek.Monday => "Thứ 2",
+            DayOfWeek.Tuesday => "Thứ 3",
+            DayOfWeek.Wednesday => "Thứ 4",
+            DayOfWeek.Thursday => "Thứ 5",
+            DayOfWeek.Friday => "Thứ 6",
+            DayOfWeek.Saturday => "Thứ 7",
+            DayOfWeek.Sunday => "Chủ nhật",
+            _ => ""
+        };
+    }
+}
+
+<div class="schedule-board shadow-sm">
+    <div class="schedule-title text-center">
+        <h4 class="fw-bold mb-1">
+            <i class="bi bi-calendar-week me-2"></i>THỜI KHÓA BIỂU
+        </h4>
+        <small>
+            Tuần: @(((DateTime)ViewBag.WeekStart).ToString("dd/MM/yyyy")) - @(((DateTime)ViewBag.WeekEnd).ToString("dd/MM/yyyy"))
+        </small>
+    </div>
+
+    <div class="d-flex justify-content-center align-items-center gap-2 mb-3">
+        <a asp-action="WeeklySchedule" asp-route-weekOffset="@((int)ViewBag.WeekOffset - 1)" class="btn btn-outline-success btn-sm">
+            <i class="bi bi-chevron-left"></i> Tuần trước
+        </a>
+        <a asp-action="WeeklySchedule" asp-route-weekOffset="0" class="btn btn-success btn-sm">
+            Tuần này
+        </a>
+        <a asp-action="WeeklySchedule" asp-route-weekOffset="@((int)ViewBag.WeekOffset + 1)" class="btn btn-outline-success btn-sm">
+            Tuần sau <i class="bi bi-chevron-right"></i>
+        </a>
+    </div>
+
+    <div class="mb-3 d-flex flex-wrap gap-2 justify-content-center">
+        <span class="badge bg-primary">Ô xanh biển: Ngày nhận bài</span>
+        <span class="badge bg-danger">Ô đỏ: Deadline nộp học sinh</span>
+    </div>
+
+    <div class="table-responsive hide-scrollbar">
+        <table class="table schedule-table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th class="period-col">Mục</th>
+                    @foreach (var day in Model)
+                    {
+                        <th>
+                            <span class="day-badge">@GetDayText(day.Date)</span>
+                            <div class="day-date">@day.Date.ToString("dd/MM")</div>
+                        </th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="row-label">Nhận bài</td>
+                    @foreach (var day in Model)
+                    {
+                        <td class="slot-cell @(day.ReceivedProblemTitles.Any() ? "slot-received" : "")">
+                            @if (day.ReceivedProblemTitles.Any())
+                            {
+                                <div class="slot-list">
+                                    @foreach (var title in day.ReceivedProblemTitles)
+                                    {
+                                        <div class="slot-item">@title</div>
+                                    }
+                                </div>
+                            }
+                        </td>
+                    }
+                </tr>
+                <tr>
+                    <td class="row-label">Deadline</td>
+                    @foreach (var day in Model)
+                    {
+                        <td class="slot-cell @(day.DeadlineProblemTitles.Any() ? "slot-deadline" : "")">
+                            @if (day.DeadlineProblemTitles.Any())
+                            {
+                                <div class="slot-list">
+                                    @foreach (var title in day.DeadlineProblemTitles)
+                                    {
+                                        <div class="slot-item">@title</div>
+                                    }
+                                </div>
+                            }
+                        </td>
+                    }
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .schedule-board {
+        background: linear-gradient(135deg, #e8f8ee 0%, #d5f1e1 100%);
+        border: 2px solid #9ed8b8;
+        border-radius: 18px;
+        padding: 20px;
+    }
+
+    .schedule-title {
+        color: #1e7a4e;
+        margin-bottom: 16px;
+    }
+
+    .schedule-table {
+        border-collapse: separate;
+        border-spacing: 6px;
+        min-width: 900px;
+    }
+
+    .schedule-table thead th {
+        border: none;
+        text-align: center;
+        background: transparent;
+    }
+
+    .period-col {
+        width: 120px;
+        color: #2b5f45;
+        font-weight: 700;
+    }
+
+    .day-badge {
+        display: inline-block;
+        background: #33b36b;
+        color: #fff;
+        border-radius: 999px;
+        padding: 4px 12px;
+        font-size: 0.85rem;
+    }
+
+    .day-date {
+        margin-top: 4px;
+        color: #3c7d5a;
+        font-size: 0.8rem;
+    }
+
+    .row-label {
+        background: #7fd0a3;
+        color: #fff;
+        font-weight: 700;
+        border-radius: 10px;
+        text-align: center;
+        vertical-align: middle;
+        border: none;
+    }
+
+    .slot-cell {
+        background: #f5fff8;
+        min-height: 90px;
+        border-radius: 10px;
+        border: none;
+    }
+
+    .slot-received {
+        background: rgba(13, 110, 253, 0.16);
+    }
+
+    .slot-deadline {
+        background: rgba(220, 53, 69, 0.16);
+    }
+
+    .slot-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .slot-item {
+        font-size: 0.85rem;
+        line-height: 1.3;
+        background: rgba(255, 255, 255, 0.75);
+        border-radius: 8px;
+        padding: 6px 8px;
+    }
+</style>

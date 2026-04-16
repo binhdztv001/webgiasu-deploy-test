@@ -1,4 +1,4 @@
-@model IEnumerable<Webgiasu.Models.User>
+﻿@model IEnumerable<Webgiasu.Models.User>
 @{
     ViewData["Title"] = "Quản lý người dùng";
     Layout = "_AdminLayout";
@@ -12,6 +12,11 @@
                 <i class="bi bi-people text-danger"></i> Quản lý người dùng
             </h2>
             <p class="text-muted">Danh sách tất cả người dùng trong hệ thống</p>
+        </div>
+        <div class="col-auto">
+            <a asp-action="CreateUser" class="btn btn-danger">
+                <i class="bi bi-plus-circle me-1"></i> Thêm người dùng
+            </a>
         </div>
     </div>
 
@@ -46,11 +51,38 @@
     <!-- Users Table -->
     <div class="card shadow-sm">
         <div class="card-header py-3">
-            <h5 class="mb-0 text-white"><i class="bi bi-list-ul me-2"></i>Danh sách người dùng</h5>
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+                <h5 class="mb-0 text-white"><i class="bi bi-list-ul me-2"></i>Danh sách người dùng</h5>
+                <small class="text-white" id="usersCountLabel">@Model.Count() người dùng</small>
+            </div>
         </div>
         <div class="card-body">
+            <div class="row g-2 mb-3">
+                <div class="col-md-6">
+                    <input type="text" id="userSearchInput" class="form-control" placeholder="Tìm theo họ tên, username, email, SĐT..." />
+                </div>
+                <div class="col-md-3">
+                    <select id="roleFilter" class="form-select">
+                        <option value="">-- Lọc theo vai trò --</option>
+                        <option value="Student">Học sinh</option>
+                        <option value="Tutor">Gia sư</option>
+                        <option value="Admin">Admin</option>
+                        <option value="School">Trường học</option>
+                        <option value="Enterprise">Doanh nghiệp</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select id="statusFilter" class="form-select">
+                        <option value="">-- Lọc theo trạng thái --</option>
+                        <option value="active">Hoạt động</option>
+                        <option value="approved">Đã duyệt</option>
+                        <option value="pending">Chờ duyệt</option>
+                    </select>
+                </div>
+            </div>
+
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="table table-hover" id="usersTable">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -61,12 +93,19 @@
                             <th>Vai trò</th>
                             <th>Ngày đăng ký</th>
                             <th>Trạng thái</th>
+                            <th class="text-end">Hành động</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var user in Model.OrderByDescending(u => u.RegisteredDate))
                         {
-                            <tr>
+                            var statusKey = user.Role == Webgiasu.Models.UserRole.Tutor
+                                ? (user.IsApproved ? "approved" : "pending")
+                                : "active";
+
+                            var searchText = $"{user.FullName} {user.Username} {user.Email} {user.PhoneNumber}".ToLowerInvariant();
+
+                            <tr data-role="@user.Role" data-status="@statusKey" data-search="@searchText">
                                 <td class="fw-bold">#@user.Id</td>
                                 <td>@user.FullName</td>
                                 <td>@user.Username</td>
@@ -83,6 +122,18 @@
                                     {
                                         <span class="badge bg-success">
                                             <i class="bi bi-mortarboard"></i> Gia sư
+                                        </span>
+                                    }
+                                    else if (user.Role == Webgiasu.Models.UserRole.School)
+                                    {
+                                        <span class="badge bg-info">
+                                            <i class="bi bi-building"></i> Trường học
+                                        </span>
+                                    }
+                                    else if (user.Role == Webgiasu.Models.UserRole.Enterprise)
+                                    {
+                                        <span class="badge bg-secondary">
+                                            <i class="bi bi-briefcase"></i> Doanh nghiệp
                                         </span>
                                     }
                                     else
@@ -116,6 +167,19 @@
                                         </span>
                                     }
                                 </td>
+                                <td class="text-end">
+                                    <a asp-action="EditUser" asp-route-id="@user.Id" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-danger btn-delete-user"
+                                            data-user-id="@user.Id"
+                                            data-user-name="@user.FullName"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteUserModal">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
                             </tr>
                         }
                     </tbody>
@@ -124,3 +188,74 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>Xác nhận xóa người dùng</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0">Bạn có chắc chắn muốn xóa tài khoản <strong id="deleteUserName"></strong>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <form asp-action="DeleteUser" method="post" id="deleteUserForm" class="m-0">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="deleteUserId" />
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const searchInput = document.getElementById('userSearchInput');
+            const roleFilter = document.getElementById('roleFilter');
+            const statusFilter = document.getElementById('statusFilter');
+            const rows = document.querySelectorAll('#usersTable tbody tr');
+            const countLabel = document.getElementById('usersCountLabel');
+
+            function applyFilters() {
+                const searchValue = (searchInput.value || '').toLowerCase().trim();
+                const roleValue = roleFilter.value;
+                const statusValue = statusFilter.value;
+
+                let visibleCount = 0;
+
+                rows.forEach(row => {
+                    const rowSearch = row.dataset.search || '';
+                    const rowRole = row.dataset.role || '';
+                    const rowStatus = row.dataset.status || '';
+
+                    const matchSearch = !searchValue || rowSearch.includes(searchValue);
+                    const matchRole = !roleValue || rowRole === roleValue;
+                    const matchStatus = !statusValue || rowStatus === statusValue;
+
+                    const show = matchSearch && matchRole && matchStatus;
+                    row.style.display = show ? '' : 'none';
+                    if (show) visibleCount++;
+                });
+
+                countLabel.textContent = `${visibleCount} người dùng`;
+            }
+
+            searchInput.addEventListener('input', applyFilters);
+            roleFilter.addEventListener('change', applyFilters);
+            statusFilter.addEventListener('change', applyFilters);
+
+            const deleteUserName = document.getElementById('deleteUserName');
+            const deleteUserId = document.getElementById('deleteUserId');
+            document.querySelectorAll('.btn-delete-user').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    deleteUserId.value = this.dataset.userId;
+                    deleteUserName.textContent = this.dataset.userName;
+                });
+            });
+        })();
+    </script>
+}
