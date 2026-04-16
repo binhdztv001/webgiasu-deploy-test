@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Webgiasu.Hubs;
@@ -528,6 +528,102 @@ namespace Webgiasu.Controllers
             {
                 Console.WriteLine($"❌ Error in MyProblems: {ex.Message}");
                 TempData["Error"] = "Đã xảy ra lỗi khi tải danh sách bài toán!";
+                return RedirectToAction("Dashboard");
+            }
+        }
+
+        public IActionResult WeeklySchedule(int weekOffset = 0)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                if (userId == 0) return RedirectToAction("Login", "Account");
+
+                weekOffset = Math.Clamp(weekOffset, -52, 52);
+
+                var problems = _db.Problems
+                    .Where(p => p.StudentId == userId && p.Status != ProblemStatus.Cancelled)
+                    .ToList();
+
+                var approvedApplications = _db.TutorApplications
+                    .Where(ta => ta.Problem != null
+                                 && ta.Problem.StudentId == userId
+                                 && ta.Status == ApplicationStatus.Approved)
+                    .ToList();
+
+                var acceptedDateByProblemId = approvedApplications
+                    .GroupBy(a => a.ProblemId)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Max(x => x.ResponsedDate ?? x.AppliedDate));
+
+                var today = DateTime.Today;
+                var offset = ((int)today.DayOfWeek + 6) % 7;
+                var weekStart = today.AddDays(-offset).AddDays(weekOffset * 7);
+                var weekEnd = weekStart.AddDays(6);
+
+                var myClassIds = _db.ClassStudents
+                    .Where(cs => cs.StudentId == userId)
+                    .Select(cs => cs.ClassId)
+                    .ToList();
+
+                var weekExchangeSchedules = _db.ClassSchedules
+                    .Include(s => s.Class)
+                    .Where(s => myClassIds.Contains(s.ClassId)
+                                && s.ScheduleDate.Date >= weekStart.Date
+                                && s.ScheduleDate.Date <= weekEnd.Date
+                                && s.Status != ScheduleStatus.Cancelled)
+                    .OrderBy(s => s.ScheduleDate)
+                    .ThenBy(s => s.StartTime)
+                    .Select(s => new ScheduleListViewModel
+                    {
+                        Id = s.Id,
+                        Title = s.Title,
+                        ScheduleDate = s.ScheduleDate,
+                        StartTime = s.StartTime,
+                        EndTime = s.EndTime,
+                        MeetingType = s.MeetingType,
+                        Status = s.Status,
+                        ClassName = s.Class != null ? s.Class.ClassName : "Lớp học",
+                        Subject = s.Class != null ? s.Class.Subject : null
+                    })
+                    .ToList();
+
+                var model = Enumerable.Range(0, 7)
+                    .Select(i =>
+                    {
+                        var date = weekStart.AddDays(i);
+
+                        var acceptedTitles = problems
+                            .Where(p => acceptedDateByProblemId.TryGetValue(p.Id, out var acceptedDate) && acceptedDate.Date == date)
+                            .Select(p => p.Title)
+                            .ToList();
+
+                        var deadlineTitles = problems
+                            .Where(p => p.Deadline.Date == date)
+                            .Select(p => p.Title)
+                            .ToList();
+
+                        return new TutorScheduleDayViewModel
+                        {
+                            Date = date,
+                            ReceivedProblemTitles = acceptedTitles,
+                            DeadlineProblemTitles = deadlineTitles
+                        };
+                    })
+                    .ToList();
+
+                ViewBag.WeekStart = weekStart;
+                ViewBag.WeekEnd = weekEnd;
+                ViewBag.WeekOffset = weekOffset;
+                ViewBag.WeekExchangeSchedules = weekExchangeSchedules;
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in WeeklySchedule (Student): {ex.Message}");
+                TempData["Error"] = "Đã xảy ra lỗi khi tải thời khóa biểu!";
                 return RedirectToAction("Dashboard");
             }
         }

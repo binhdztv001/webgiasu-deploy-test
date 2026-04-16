@@ -1,4 +1,4 @@
-@using Webgiasu.Services
+﻿@using Webgiasu.Services
 @inject IPremiumService PremiumService
 
 @{
@@ -211,6 +211,13 @@
                         </li>
 
                        
+                        <li class="nav-item">
+                            <a asp-controller="Student" asp-action="WeeklySchedule" class="nav-link">
+                                <i class="bi bi-calendar-week"></i>
+                                <span class="position-relative">Thời khóa biểu</span>
+                            </a>
+                        </li>
+
                         <li class="nav-item">
                             <a asp-controller="Student" asp-action="MyClassSchedules" class="nav-link">
                                 <i class="bi bi-calendar-event"></i>
