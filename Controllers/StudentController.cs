@@ -1712,7 +1712,51 @@ namespace Webgiasu.Controllers
                         };
                     }
 
+                    string? imageUrl = "/images/default.jpg";
                     string? attachmentUrl = null;
+
+                    // ✅ HANDLE IMAGE UPLOAD - LƯU THỰC TẾ VÀO FOLDER
+                    if (model.ImageFile != null && model.ImageFile.Length > 0)
+                    {
+                        var allowedImageExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                        var allowedImageMimeTypes = new[] { "image/jpeg", "image/png", "image/gif" };
+
+                        var imageExt = Path.GetExtension(model.ImageFile.FileName).ToLowerInvariant();
+
+                        if (!allowedImageExtensions.Contains(imageExt))
+                        {
+                            ModelState.AddModelError("ImageFile", "Chỉ cho phép file JPG, PNG, GIF.");
+                            return View(model);
+                        }
+
+                        if (!allowedImageMimeTypes.Contains(model.ImageFile.ContentType))
+                        {
+                            ModelState.AddModelError("ImageFile", "Định dạng ảnh không hợp lệ.");
+                            return View(model);
+                        }
+
+                        if (model.ImageFile.Length > 5 * 1024 * 1024)
+                        {
+                            ModelState.AddModelError("ImageFile", "Ảnh tối đa 5MB.");
+                            return View(model);
+                        }
+
+                        // 📁 TẠO THƯMỤC NẾUKHÔNG TỒN TẠI
+                        var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
+                        Directory.CreateDirectory(uploadDir);
+
+                        // 🆔 TẠO TÊN FILE DUYY NHẤT
+                        var fileName = $"{Guid.NewGuid()}{imageExt}";
+                        var filePath = Path.Combine(uploadDir, fileName);
+
+                        // 💾 LƯU FILE VÀO ĐĨA
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            model.ImageFile.CopyTo(stream);
+                        }
+
+                        imageUrl = "/images/" + fileName;
+                    }
 
                     if (model.AttachmentFile != null && model.AttachmentFile.Length > 0)
                     {
@@ -1765,7 +1809,7 @@ namespace Webgiasu.Controllers
                         Description = model.Description,
                         Type = model.Type,
                         Difficulty = model.Difficulty,  // Giờ là cấp học
-                        ImageUrl = model.ImageFile != null ? $"/images/{model.ImageFile.FileName}" : "/images/default.jpg",
+                        ImageUrl = imageUrl,
                         AttachmentFile = attachmentUrl,
                         Deadline = model.Deadline,
                         Price = price,
