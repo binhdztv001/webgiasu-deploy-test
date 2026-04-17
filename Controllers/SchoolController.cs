@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Webgiasu.Models;
 using Webgiasu.Models.ViewModels;
@@ -872,7 +872,7 @@ namespace Webgiasu.Controllers
                 }
 
                 // Validate current password
-                if (school.Password != currentPassword)
+                if (!_userService.VerifyPassword(school, currentPassword))
                 {
                     TempData["Error"] = "Mật khẩu hiện tại không đúng!";
                     return RedirectToAction("Profile");

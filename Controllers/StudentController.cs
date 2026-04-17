@@ -474,7 +474,7 @@ namespace Webgiasu.Controllers
                 var user = _userService.GetUserById(userId);
                 if (user != null)
                 {
-                    if (user.Password == currentPassword)
+                    if (_userService.VerifyPassword(user, currentPassword))
                     {
                         user.Password = newPassword;
                         _userService.UpdateUser(user);
