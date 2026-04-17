@@ -17,7 +17,7 @@ namespace Webgiasu.Data
             var student = new User
             {
                 Username = "student1",
-                Password = "password",
+                Password = BCrypt.Net.BCrypt.HashPassword("password"),
                 FullName = "Nguyễn Văn A",
                 Email = "student1@example.com",
                 PhoneNumber = "0911000001",
@@ -29,7 +29,7 @@ namespace Webgiasu.Data
             var tutor1 = new User
             {
                 Username = "tutor1",
-                Password = "password",
+                Password = BCrypt.Net.BCrypt.HashPassword("password"),
                 FullName = "Trần Thị B",
                 Email = "tutor1@example.com",
                 PhoneNumber = "0911000002",
@@ -43,7 +43,7 @@ namespace Webgiasu.Data
             var tutor2 = new User
             {
                 Username = "tutor2",
-                Password = "password",
+                Password = BCrypt.Net.BCrypt.HashPassword("password"),
                 FullName = "Lê Văn C",
                 Email = "tutor2@example.com",
                 PhoneNumber = "0911000003",
@@ -55,7 +55,7 @@ namespace Webgiasu.Data
             var school = new User
             {
                 Username = "school1",
-                Password = "password",
+                Password = BCrypt.Net.BCrypt.HashPassword("password"),
                 FullName = "Trường THPT ABC",
                 Email = "school@example.com",
                 PhoneNumber = "0911999999",
@@ -67,7 +67,7 @@ namespace Webgiasu.Data
             var admin = new User
             {
                 Username = "admin",
-                Password = "admin",
+                Password = BCrypt.Net.BCrypt.HashPassword("admin"),
                 FullName = "Administrator",
                 Email = "admin@example.com",
                 PhoneNumber = "0900000000",

@@ -10,11 +10,52 @@ namespace Webgiasu.Services
         private readonly AppDbContext _db;
         public UserService(AppDbContext db) => _db = db;
 
+        private static bool IsBcryptHash(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return false;
+            return value.StartsWith("$2a$") || value.StartsWith("$2b$") || value.StartsWith("$2y$");
+        }
+
+        public string HashPassword(string password)
+        {
+            return BCrypt.Net.BCrypt.HashPassword(password);
+        }
+
+        public bool VerifyPassword(User user, string password)
+        {
+            if (user == null || string.IsNullOrWhiteSpace(password)) return false;
+
+            if (IsBcryptHash(user.Password))
+            {
+                return BCrypt.Net.BCrypt.Verify(password, user.Password);
+            }
+
+            return user.Password == password;
+        }
+
         public User? Login(string username, string password, UserRole role)
         {
             try
             {
-                return _db.Users.FirstOrDefault(u => u.Username == username && u.Password == password && u.Role == role);
+                var user = _db.Users.FirstOrDefault(u => u.Username == username && u.Role == role);
+                if (user == null)
+                {
+                    return null;
+                }
+
+                if (!VerifyPassword(user, password))
+                {
+                    return null;
+                }
+
+                // Tự động nâng cấp mật khẩu cũ (plain text) sang BCrypt sau lần đăng nhập thành công.
+                if (!IsBcryptHash(user.Password))
+                {
+                    user.Password = HashPassword(password);
+                    _db.SaveChanges();
+                }
+
+                return user;
             }
             catch (Exception ex)
             {
@@ -28,6 +69,11 @@ namespace Webgiasu.Services
             {
                 if (_db.Users.Any(u => u.Username == user.Username))
                     return false;
+
+                if (!string.IsNullOrWhiteSpace(user.Password) && !IsBcryptHash(user.Password))
+                {
+                    user.Password = HashPassword(user.Password);
+                }
 
                 user.RegisteredDate = DateTime.Now;
                 // Chỉ tự động phê duyệt nếu IsApproved chưa được set (mặc định cho Student)
@@ -127,7 +173,19 @@ namespace Webgiasu.Services
                 existing.FullName = user.FullName;
                 existing.Email = user.Email;
                 existing.PhoneNumber = user.PhoneNumber;
-                existing.Password = user.Password;
+
+                if (!string.IsNullOrWhiteSpace(user.Password))
+                {
+                    if (IsBcryptHash(user.Password))
+                    {
+                        existing.Password = user.Password;
+                    }
+                    else
+                    {
+                        existing.Password = HashPassword(user.Password);
+                    }
+                }
+
                 existing.IsApproved = user.IsApproved;
 
                 // ✅ UPDATE LEVEL

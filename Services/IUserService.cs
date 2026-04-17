@@ -6,6 +6,8 @@ namespace Webgiasu.Services
     public interface IUserService
     {
         User? Login(string username, string password, UserRole role);
+        bool VerifyPassword(User user, string password);
+        string HashPassword(string password);
         bool Register(User user);
         User? GetUserById(int id);
         List<User> GetAllUsers();
