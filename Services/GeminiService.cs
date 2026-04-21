@@ -7,6 +7,7 @@ public class GeminiService
     private readonly HttpClient _http;
     private readonly string _apiKey;
     private readonly string _model;
+    private readonly string _apiVersion;
     private readonly ILogger<GeminiService> _logger;
     private readonly IWebHostEnvironment _env; // ✅ Thêm để đọc file local
 
@@ -19,7 +20,8 @@ public class GeminiService
         _http = httpClient;
         _apiKey = config["Gemini:ApiKey"]
             ?? throw new InvalidOperationException("Gemini:ApiKey chưa được cấu hình");
-        _model = config["Gemini:Model"] ?? "gemini-1.5-flash";
+        _model = config["Gemini:Model"] ?? "gemini-3.1-flash-lite-preview";
+        _apiVersion = config["Gemini:ApiVersion"] ?? "v1beta";
         _logger = logger;
         _env = env;
         _http.Timeout = TimeSpan.FromSeconds(60);
@@ -34,8 +36,7 @@ public class GeminiService
     {
         try
         {
-            var apiVersion = "v1";
-            var url = $"https://generativelanguage.googleapis.com/{apiVersion}/models/{_model}:generateContent?key={_apiKey}";
+            var url = $"https://generativelanguage.googleapis.com/{_apiVersion}/models/{_model}:generateContent?key={_apiKey}";
 
             _logger.LogInformation("🔗 API URL: {Url}", url.Replace(_apiKey, "***"));
 
