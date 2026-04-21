@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Webgiasu.Models;
 using Webgiasu.Models.ViewModels;
 using Webgiasu.Services;
@@ -8,10 +12,12 @@ namespace Webgiasu.Controllers
     public class AccountController : Controller
     {
         private readonly IUserService _userService;
+        private readonly IConfiguration _configuration;
 
-        public AccountController(IUserService userService)
+        public AccountController(IUserService userService, IConfiguration configuration)
         {
             _userService = userService;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -43,6 +49,16 @@ namespace Webgiasu.Controllers
                     HttpContext.Session.SetInt32("UserId", user.Id);
                     HttpContext.Session.SetString("UserName", user.FullName);
                     HttpContext.Session.SetString("UserRole", user.Role.ToString());
+
+                    var jwtToken = GenerateJwtToken(user);
+                    Response.Cookies.Append("auth_token", jwtToken, new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.Lax,
+                        Expires = DateTimeOffset.UtcNow.AddHours(2),
+                        IsEssential = true
+                    });
 
                     // Redirect based on role
                     return user.Role switch
@@ -126,7 +142,37 @@ namespace Webgiasu.Controllers
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
+            Response.Cookies.Delete("auth_token");
             return RedirectToAction("Index", "Home");
+        }
+
+        private string GenerateJwtToken(User user)
+        {
+            var jwtKey = _configuration["Jwt:Key"] ?? "please-change-this-default-jwt-key-2026";
+            var jwtIssuer = _configuration["Jwt:Issuer"] ?? "Webgiasu";
+            var jwtAudience = _configuration["Jwt:Audience"] ?? "WebgiasuUsers";
+
+            var claims = new List<Claim>
+            {
+                new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new(JwtRegisteredClaimNames.UniqueName, user.Username),
+                new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new(ClaimTypes.Name, user.FullName),
+                new(ClaimTypes.Role, user.Role.ToString())
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: jwtIssuer,
+                audience: jwtAudience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(2),
+                signingCredentials: credentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }
