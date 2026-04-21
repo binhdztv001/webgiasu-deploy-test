@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -8,6 +9,7 @@ using System.Text;
 using Webgiasu.Data;
 using Webgiasu.Models;
 using Webgiasu.Services;
+using Microsoft.AspNetCore.Mvc;
 
 // Set UTF-8 encoding
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -55,7 +57,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+});
+builder.Services.AddAntiforgery(options =>
+{
+    options.HeaderName = "X-CSRF-TOKEN";
+    options.Cookie.Name = "XSRF-TOKEN";
+    options.Cookie.HttpOnly = false;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+});
 builder.Services.AddHttpClient<GeminiService>();
 builder.Services.AddScoped<GeminiService>();
 builder.Services.AddScoped<SuiService>();
@@ -208,6 +221,12 @@ app.MapGet("/api/documentsearch", async (ISerpApiService serp, string q) =>
 
     var results = await serp.SearchDocumentsAsync(q, "pdf");
     return Results.Ok(new { success = true, results });
+});
+
+app.MapGet("/antiforgery/token", (HttpContext context, IAntiforgery antiforgery) =>
+{
+    var tokens = antiforgery.GetAndStoreTokens(context);
+    return Results.Ok(new { token = tokens.RequestToken });
 });
 
 app.Run();
