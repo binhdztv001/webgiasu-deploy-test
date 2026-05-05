@@ -2,6 +2,7 @@
 namespace Webgiasu.Controllers
 {
     [ApiController]
+    [IgnoreAntiforgeryToken]
     [Route("api/ai")]
     public class AiController : ControllerBase
     {
