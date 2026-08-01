@@ -43,13 +43,15 @@ namespace Webgiasu.Controllers
         private readonly INotificationService _notificationService;
         private readonly ITutorApplicationService _tutorApplicationService;
         private readonly IStatisticsExportService _statisticsExportService;
+        private readonly IConfiguration _configuration;
 
 
-        public StudentController(AppDbContext db, IProblemService problemService, ISolutionService solutionService, 
+        public StudentController(AppDbContext db, IProblemService problemService, ISolutionService solutionService,
             IPaymentService paymentService, IUserService userService, IRatingService ratingService,
             IFriendshipService friendshipService, IMessageService messageService, IPremiumService premiumService,
             ICommunityService communityService, IHubContext<CommunityHub> hubContext, IProblemGroupService problemGroupService, ISePayGateway sePayGateway
-            , INotificationService notificationService, ITutorApplicationService tutorApplicationService, IStatisticsExportService statisticsExportService)
+            , INotificationService notificationService, ITutorApplicationService tutorApplicationService, IStatisticsExportService statisticsExportService,
+            IConfiguration configuration)
         {
             _db = db;
             _problemService = problemService;
@@ -67,6 +69,7 @@ namespace Webgiasu.Controllers
             _notificationService = notificationService;
             _tutorApplicationService = tutorApplicationService;
             _statisticsExportService = statisticsExportService;
+            _configuration = configuration;
         }
 
         private int GetCurrentUserId()
@@ -347,6 +350,12 @@ namespace Webgiasu.Controllers
         [HttpGet]
         public IActionResult PaymentCheckout(int paymentId)
         {
+            if (!_configuration.GetValue<bool>("Features:PaymentEnabled"))
+            {
+                TempData["Error"] = "Tính năng thanh toán đang tạm khóa trong bản thử nghiệm.";
+                return RedirectToAction("Payments");
+            }
+
             var userId = GetCurrentUserId();
             if (userId == 0) return RedirectToAction("Login", "Account");
 
@@ -2302,6 +2311,12 @@ namespace Webgiasu.Controllers
         {
             try
             {
+                if (!_configuration.GetValue<bool>("Features:PaymentEnabled"))
+                {
+                    TempData["Error"] = "Tính năng thanh toán đang tạm khóa trong bản thử nghiệm.";
+                    return RedirectToAction("MyGroups");
+                }
+
                 var userId = GetCurrentUserId();
                 if (userId == 0) return RedirectToAction("Login", "Account");
 

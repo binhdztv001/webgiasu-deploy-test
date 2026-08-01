@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -18,8 +19,13 @@ Console.OutputEncoding = Encoding.UTF8;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Render/Railway assign the listening port dynamically via PORT; fall back to 8080 for local Docker runs
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "please-change-this-default-jwt-key-2026";
 var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "Webgiasu";
@@ -167,6 +173,16 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+// Render/Railway terminate HTTPS at their edge proxy and forward plain HTTP to the container.
+// Without this, the app thinks every request is HTTP, breaking the Secure antiforgery cookie (login/CSRF).
+var forwardedHeaderOptions = new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+};
+forwardedHeaderOptions.KnownNetworks.Clear();
+forwardedHeaderOptions.KnownProxies.Clear();
+app.UseForwardedHeaders(forwardedHeaderOptions);
+
 // Use Request Localization
 app.UseRequestLocalization();
 
@@ -213,6 +229,8 @@ app.MapControllerRoute(
 
 app.MapHub<Webgiasu.Hubs.ChatHub>("/chatHub");
 app.MapHub<Webgiasu.Hubs.CommunityHub>("/communityHub");
+
+app.MapGet("/healthz", () => Results.Ok());
 
 app.MapGet("/api/documentsearch", async (ISerpApiService serp, string q) =>
 {
