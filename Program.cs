@@ -12,6 +12,10 @@ using Webgiasu.Models;
 using Webgiasu.Services;
 using Microsoft.AspNetCore.Mvc;
 
+// App code uses DateTime.Now (Kind=Local/Unspecified) throughout; Npgsql's default strict
+// UTC-only timestamp handling would reject those values, so restore the pre-6.0 lenient behavior.
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 // Set UTF-8 encoding
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 Console.OutputEncoding = Encoding.UTF8;
